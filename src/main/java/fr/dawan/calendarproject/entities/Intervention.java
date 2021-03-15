@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,11 +22,11 @@ public class Intervention {
 	private long id;
 	
 	//dateDebut, dateFin, many interv to one Employe, many interv. to one
-	@Temporal(TemporalType.DATE)
+	@Column(columnDefinition = "dateStart")
 	private LocalDate dateStart;
 	
 	//OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-	@Temporal(TemporalType.DATE)
+	@Column(columnDefinition = "dateEnd")
 	private LocalDate dateEnd;
 	
 	@Version
