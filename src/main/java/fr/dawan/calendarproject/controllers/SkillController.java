@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,29 +12,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.services.InterventionService;
+import fr.dawan.calendarproject.dto.AvancedSkillDto;
+import fr.dawan.calendarproject.services.SkillService;
 
 @RestController
-@RequestMapping("/api/interventions")
-public class InterventionController {
+@RequestMapping("/api/skills")
+public class SkillController {
 
 	@Autowired
-	private InterventionService interventionService;
+	private SkillService skillService;
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<InterventionDto> getAll() {
-		return interventionService.getAllInterventions();
+	public List<AvancedSkillDto> getAll() {
+		return skillService.getAllSkills();
 	}
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public InterventionDto getById(@PathVariable("id") long id) {
-		return interventionService.getById(id);
+	public AvancedSkillDto getById(@PathVariable("id") long id) {
+		return skillService.getById(id);
 	}
 
 	// DELETE - supprimer
@@ -43,7 +41,7 @@ public class InterventionController {
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			System.out.println("inside delete... ");
-			interventionService.deleteById(id);
+			skillService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
@@ -52,26 +50,13 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@RequestBody InterventionDto course) {
-		return interventionService.saveOrUpdate(course);
+	public AvancedSkillDto save(@RequestBody AvancedSkillDto course) {
+		return skillService.saveOrUpdate(course);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto update(@RequestBody InterventionDto course) {
-		return interventionService.saveOrUpdate(course);
+	public AvancedSkillDto update(@RequestBody AvancedSkillDto course) {
+		return skillService.saveOrUpdate(course);
 	}
-
-	// Search
-	@GetMapping(value = "/search", produces = "application/json")
-	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
-		if (!formation.isEmpty()) {
-			if (StringUtils.isNumeric(formation))
-				return interventionService.getByCourseId(Long.parseLong(formation));
-			else
-				return interventionService.getByCourseTitle(formation);
-		}
-		return null;
-	}
-
 }

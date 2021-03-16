@@ -5,17 +5,14 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,42 +26,40 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.controllers.InterventionController;
-import fr.dawan.calendarproject.dto.CourseDto;
-import fr.dawan.calendarproject.dto.EmployeeDto;
+import fr.dawan.calendarproject.dto.AvancedUserDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.entities.Employee;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class CalendarprojectApplicationTestsIntervention {
-	
+
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
 	private InterventionController interventionController;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper; // objet permettant de convertir String <=> JSON/XML
-	
+
 	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	LocalDate localDate = LocalDate.now();
-	
+
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-		//SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //peut le faire dabs ContactDto aussi @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")"
+		// SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //peut le faire
+		// dabs ContactDto aussi @JsonFormat(shape = Shape.STRING, pattern =
+		// "yyyy-MM-dd")"
 		objectMapper.setDateFormat(df);
 	}
 
-	
 	@Test
 	void contextLoads() {
 		assertThat(interventionController).isNotNull();
 	}
-	
-	
+
 	@Test
 	void testFindAll() {
 		try {
@@ -76,8 +71,7 @@ class CalendarprojectApplicationTestsIntervention {
 			fail(e.getMessage());
 		}
 	}
-	
-	
+
 	@Test
 	void testFindById() {
 		try {
@@ -88,29 +82,27 @@ class CalendarprojectApplicationTestsIntervention {
 
 			InterventionDto intDto = objectMapper.readValue(jsonRep, InterventionDto.class);
 
-			//Pb avec la date		
-			//intDto.getDateStart()
+			// Pb avec la date
+			// intDto.getDateStart()
 			assertEquals("2021-03-10", df.format(intDto.getDateStart()));
-			assertEquals("Ahmed", intDto.getEmployee().getName());
+			assertEquals("Ahmed", intDto.getEmployee().getFirstName());
 			assertEquals("Java Advanced ++", intDto.getCourse().getTitle());
 
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 	}
-	
-	
+
 	@Test
 	void testSave() {
 		try {
-			
+
 			InterventionDto intToInsert = new InterventionDto();
-			intToInsert.setDateStart(localDate.parse("2020-03-15"));
-			intToInsert.setDateEnd(localDate.parse("2020-03-20"));
-			EmployeeDto emp1 = new EmployeeDto();
+			intToInsert.setDateStart(LocalDate.parse("2020-03-15"));
+			intToInsert.setDateEnd(LocalDate.parse("2020-03-20"));
+			AvancedUserDto emp1 = new AvancedUserDto();
 			emp1.setId(1);
 			intToInsert.setEmployee(emp1);
-			
 
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 			String jsonReq = objectMapper.writeValueAsString(intToInsert);
@@ -127,57 +119,52 @@ class CalendarprojectApplicationTestsIntervention {
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
-		
+
 	}
-	
-	
+
 	@Test
 	void testUpdate() {
 		/*
-		try {
-
-			InterventionDto courseToupdate = interventionController.getById(3);
-			courseToupdate.setTitle("Angular");;
-
-			String jsonReq = objectMapper.writeValueAsString(courseToupdate);
-
-			String jsonReponse = mockMvc.perform(put("/api/courses") // VERB + URI
-					.contentType(MediaType.APPLICATION_JSON) // consumes MIME TYPE
-					.accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
-					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-			InterventionDto cDto = objectMapper.readValue(jsonReponse, InterventionDto.class);
-			assertEquals(3, cDto.getId());
-			assertEquals("Angular", cDto.getTitle());
-
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		*/
+		 * try {
+		 * 
+		 * InterventionDto courseToupdate = interventionController.getById(3);
+		 * courseToupdate.setTitle("Angular");;
+		 * 
+		 * String jsonReq = objectMapper.writeValueAsString(courseToupdate);
+		 * 
+		 * String jsonReponse = mockMvc.perform(put("/api/courses") // VERB + URI
+		 * .contentType(MediaType.APPLICATION_JSON) // consumes MIME TYPE
+		 * .accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
+		 * .content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().
+		 * getContentAsString();
+		 * 
+		 * InterventionDto cDto = objectMapper.readValue(jsonReponse,
+		 * InterventionDto.class); assertEquals(3, cDto.getId());
+		 * assertEquals("Angular", cDto.getTitle());
+		 * 
+		 * } catch (Exception e) { fail(e.getMessage()); }
+		 */
 	}
-	
-	
+
 	@Test
 	void testDelete() {
 		/*
-		try {
-		
-		}
-			//InterventionDto cDto = new InterventionDto();
-			//cDto.setId(5);
-
-			byte[] jsonReponseBytes =  mockMvc.perform(delete("/api/courses/5").accept(MediaType.APPLICATION_JSON))
-					.andExpect(status().isAccepted()).andReturn().getResponse().getContentAsByteArray();
-			String jsonReponse = new String(jsonReponseBytes, StandardCharsets.UTF_8);
-
-			//assertNull(cDto.getEmail());
-			
-			assertEquals("suppression effectuée", jsonReponse);
-
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		*/
+		 * try {
+		 * 
+		 * } //InterventionDto cDto = new InterventionDto(); //cDto.setId(5);
+		 * 
+		 * byte[] jsonReponseBytes =
+		 * mockMvc.perform(delete("/api/courses/5").accept(MediaType.APPLICATION_JSON))
+		 * .andExpect(status().isAccepted()).andReturn().getResponse().
+		 * getContentAsByteArray(); String jsonReponse = new String(jsonReponseBytes,
+		 * StandardCharsets.UTF_8);
+		 * 
+		 * //assertNull(cDto.getEmail());
+		 * 
+		 * assertEquals("suppression effectuée", jsonReponse);
+		 * 
+		 * } catch (Exception e) { fail(e.getMessage()); }
+		 */
 	}
 
 }

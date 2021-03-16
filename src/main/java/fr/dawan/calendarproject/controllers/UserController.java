@@ -14,34 +14,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.EmployeeDto;
-import fr.dawan.calendarproject.services.EmployeeService;
+import fr.dawan.calendarproject.dto.AvancedUserDto;
+import fr.dawan.calendarproject.services.UserService;
 
 @RestController
-@RequestMapping("/api/employees")
-public class EmployeeController {
+@RequestMapping("/api/users")
+public class UserController {
 
 	@Autowired
-	private EmployeeService employeeService;
+	private UserService userService;
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<EmployeeDto> getAll() {
-		return employeeService.getAllEmployees();
+	public List<AvancedUserDto> getAll() {
+		return userService.getAllUsers();
 	}
-	
-	//GET - id
-    @GetMapping(value = "/{id}", produces = { "application/json", "application/xml"})
-    public EmployeeDto getById(@PathVariable("id") long id) {
-        return employeeService.getById(id);
-    }
+
+	// GET - id
+	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
+	public AvancedUserDto getById(@PathVariable("id") long id) {
+		return userService.getById(id);
+	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			System.out.println("inside delete... ");
-			employeeService.deleteById(id);
+			userService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
@@ -50,13 +50,13 @@ public class EmployeeController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public EmployeeDto save(@RequestBody EmployeeDto course) {
-		return employeeService.saveOrUpdate(course);
+	public AvancedUserDto save(@RequestBody AvancedUserDto course) {
+		return userService.saveOrUpdate(course);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public EmployeeDto update(@RequestBody EmployeeDto course) {
-		return employeeService.saveOrUpdate(course);
+	public AvancedUserDto update(@RequestBody AvancedUserDto course) {
+		return userService.saveOrUpdate(course);
 	}
 }

@@ -11,45 +11,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.AvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
-import fr.dawan.calendarproject.dto.EmployeeDto;
-import fr.dawan.calendarproject.entities.Employee;
-import fr.dawan.calendarproject.repositories.EmployeeRepository;
+import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.repositories.UserRepository;
 
 @Service
 @Transactional
-public class EmployeeServiceImpl implements EmployeeService {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
-	EmployeeRepository employeeRepository;
-	
+	UserRepository employeeRepository;
+
 	@Override
-	public List<EmployeeDto> getAllEmployees() {
-		List<Employee> employees = employeeRepository.findAll();
-		List<EmployeeDto> result = new ArrayList<EmployeeDto>();
-		
-		for (Employee e : employees) {
-			result.add(DtoTools.convert(e, EmployeeDto.class));
+	public List<AvancedUserDto> getAllUsers() {
+		List<User> employees = employeeRepository.findAll();
+		List<AvancedUserDto> result = new ArrayList<AvancedUserDto>();
+
+		for (User e : employees) {
+			result.add(DtoTools.convert(e, AvancedUserDto.class));
 		}
-		
+
 		return result;
 	}
 
 	@Override
-	public List<EmployeeDto> getAllEmployees(int page, int max) {
-		List<Employee> employees = employeeRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
-		List<EmployeeDto> result = new ArrayList<EmployeeDto>();
-		
-		for (Employee e : employees) {
-			result.add(DtoTools.convert(e, EmployeeDto.class));
+	public List<AvancedUserDto> getAllUsers(int page, int max) {
+		List<User> employees = employeeRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
+		List<AvancedUserDto> result = new ArrayList<AvancedUserDto>();
+
+		for (User e : employees) {
+			result.add(DtoTools.convert(e, AvancedUserDto.class));
 		}
 		return result;
 	}
 
 	@Override
-	public EmployeeDto getById(long id) {
-		Optional<Employee> employee = employeeRepository.findById(id);
-		return DtoTools.convert(employee.get(), EmployeeDto.class);
+	public AvancedUserDto getById(long id) {
+		Optional<User> employee = employeeRepository.findById(id);
+		return DtoTools.convert(employee.get(), AvancedUserDto.class);
 	}
 
 	@Override
@@ -58,10 +58,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public EmployeeDto saveOrUpdate(EmployeeDto employee) {
-		Employee e =  DtoTools.convert(employee, Employee.class);
-		e = employeeRepository.saveAndFlush(e);
-		return DtoTools.convert(e, EmployeeDto.class);
+	public AvancedUserDto saveOrUpdate(AvancedUserDto user) {
+		User u = DtoTools.convert(user, User.class);
+		u = employeeRepository.saveAndFlush(u);
+		return DtoTools.convert(u, AvancedUserDto.class);
 	}
 
 	@Override

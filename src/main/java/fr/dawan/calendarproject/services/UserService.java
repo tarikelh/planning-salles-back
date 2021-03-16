@@ -2,15 +2,20 @@ package fr.dawan.calendarproject.services;
 
 import java.util.List;
 
-import fr.dawan.calendarproject.dto.EmployeeDto;
+import fr.dawan.calendarproject.dto.AvancedUserDto;
 
-public interface EmployeeService {
+public interface UserService {
 
-	List<EmployeeDto> getAllEmployees();
-	List<EmployeeDto> getAllEmployees(int page, int max);
-	EmployeeDto getById(long id);
+	List<AvancedUserDto> getAllUsers();
+
+	List<AvancedUserDto> getAllUsers(int page, int max);
+
+	AvancedUserDto getById(long id);
+
 	void deleteById(long id);
-	EmployeeDto saveOrUpdate(EmployeeDto employee);
+
+	AvancedUserDto saveOrUpdate(AvancedUserDto employee);
+
 	long count();
-	
+
 }

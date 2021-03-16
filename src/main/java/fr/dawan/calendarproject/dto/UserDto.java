@@ -1,24 +1,16 @@
 package fr.dawan.calendarproject.dto;
 
-import fr.dawan.calendarproject.entities.Employee.EmployeeType;
+import fr.dawan.calendarproject.entities.UserType;
 
-public class EmployeeDto {
+public class UserDto {
 
 	private long id;
 
-	private String name;
+	private String firstName;
 
-	private EmployeeType type;
-	
-	private int version;
+	private String mail;
 
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
+	private UserType type;
 
 	public long getId() {
 		return id;
@@ -28,19 +20,27 @@ public class EmployeeDto {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String name) {
+		this.firstName = name;
 	}
 
-	public EmployeeType getType() {
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public UserType getType() {
 		return type;
 	}
 
-	public void setType(EmployeeType type) {
+	public void setType(UserType type) {
 		this.type = type;
 	}
 }

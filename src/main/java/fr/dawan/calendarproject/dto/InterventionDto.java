@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class InterventionDto {
 
@@ -11,12 +10,12 @@ public class InterventionDto {
 
 	private LocalDate dateEnd;
 
-	private EmployeeDto employee;
+	private AvancedUserDto employee;
 
 	private CourseDto course;
-	
+
 	private int version;
-	
+
 	public int getVersion() {
 		return version;
 	}
@@ -53,11 +52,11 @@ public class InterventionDto {
 		this.dateEnd = dateEnd;
 	}
 
-	public EmployeeDto getEmployee() {
+	public AvancedUserDto getEmployee() {
 		return employee;
 	}
 
-	public void setEmployee(EmployeeDto employee) {
+	public void setEmployee(AvancedUserDto employee) {
 		this.employee = employee;
 	}
 
