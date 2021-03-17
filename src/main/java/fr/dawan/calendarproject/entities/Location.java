@@ -38,6 +38,18 @@ public class Location {
 		return id;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getCity() {
 		return city;
 	}
