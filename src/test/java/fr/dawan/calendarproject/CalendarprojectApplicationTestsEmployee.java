@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.dawan.calendarproject.controllers.UserController;
 import fr.dawan.calendarproject.dto.AvancedUserDto;
 import fr.dawan.calendarproject.dto.UserDto;
-import fr.dawan.calendarproject.entities.UserType;
+import fr.dawan.calendarproject.enums.UserType;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -1,7 +1,7 @@
 package fr.dawan.calendarproject.dto;
 
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.UserType;
+import fr.dawan.calendarproject.enums.UserType;
 
 public class UserDto {
 

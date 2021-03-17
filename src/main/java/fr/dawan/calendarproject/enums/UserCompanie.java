@@ -1,4 +1,4 @@
-package fr.dawan.calendarproject.entities;
+package fr.dawan.calendarproject.enums;
 
 public enum UserCompanie {
 	DAWAN, JEHANN

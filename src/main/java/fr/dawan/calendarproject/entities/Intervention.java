@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import fr.dawan.calendarproject.enums.InterventionStatus;
+
 @Entity
 public class Intervention {
 	@Id

@@ -18,6 +18,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import fr.dawan.calendarproject.enums.UserCompanie;
+import fr.dawan.calendarproject.enums.UserType;
+
 @Entity
 public class User {
 	@Id
