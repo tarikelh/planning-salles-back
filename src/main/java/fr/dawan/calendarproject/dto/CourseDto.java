@@ -5,16 +5,6 @@ public class CourseDto {
 	private long id;
 
 	private String title;
-	
-	private int version;
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
 
 	public long getId() {
 		return id;

@@ -28,7 +28,7 @@ public class Intervention {
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Course course;
 
-	// @JoinColumn(name = "employee_id", nullable = false) //nom par defaut
+	// @JoinColumn(name = "user_id", nullable = false) //nom par defaut
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private User user;
 
@@ -50,23 +50,23 @@ public class Intervention {
 	public Intervention() {
 	}
 
-	public Intervention(String planningComment, Location location, Course course, User employee,
-			InterventionStatus status, LocalDate dateStart, LocalDate dateEnd) {
+	public Intervention(String planningComment, Location location, Course course, User user, InterventionStatus status,
+			LocalDate dateStart, LocalDate dateEnd) {
 		setPlanningComment(planningComment);
 		setLocation(location);
 		setCourse(course);
-		setUser(employee);
+		setUser(user);
 		setStatus(status);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
 	}
 
-	public Intervention(String planningComment, Location location, Course course, User employee, LocalDate dateStart,
+	public Intervention(String planningComment, Location location, Course course, User user, LocalDate dateStart,
 			LocalDate dateEnd) {
 		setPlanningComment(planningComment);
 		setLocation(location);
 		setCourse(course);
-		setUser(employee);
+		setUser(user);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
 	}
@@ -164,7 +164,7 @@ public class Intervention {
 	@Override
 	public String toString() {
 		return "Intervention [id=" + getId() + ", planningComment=" + getPlanningComment() + ", location="
-				+ getLocation() + ", course=" + getCourse() + ", employee=" + getUser() + ", status=" + getStatus()
+				+ getLocation() + ", course=" + getCourse() + ", user=" + getUser() + ", status=" + getStatus()
 				+ ", dateStart=" + getDateStart() + ", dateEnd=" + getDateEnd() + ", version=" + getVersion() + "]";
 	}
 

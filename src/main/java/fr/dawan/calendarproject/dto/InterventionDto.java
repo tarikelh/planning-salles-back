@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
 
+import fr.dawan.calendarproject.entities.Location;
+
 public class InterventionDto {
 
 	private long id;
@@ -10,23 +12,13 @@ public class InterventionDto {
 
 	private LocalDate dateEnd;
 
-	private AvancedUserDto employee;
+	private String planningComment;
+
+	private AvancedUserDto user;
 
 	private CourseDto course;
 
-	private int version;
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public InterventionDto() {
-		course = new CourseDto();
-	}
+	private Location location;
 
 	public long getId() {
 		return id;
@@ -52,12 +44,20 @@ public class InterventionDto {
 		this.dateEnd = dateEnd;
 	}
 
-	public AvancedUserDto getEmployee() {
-		return employee;
+	public String getPlanningComment() {
+		return planningComment;
 	}
 
-	public void setEmployee(AvancedUserDto employee) {
-		this.employee = employee;
+	public void setPlanningComment(String planningComment) {
+		this.planningComment = planningComment;
+	}
+
+	public AvancedUserDto getUser() {
+		return user;
+	}
+
+	public void setUser(AvancedUserDto user) {
+		this.user = user;
 	}
 
 	public CourseDto getCourse() {
@@ -66,5 +66,13 @@ public class InterventionDto {
 
 	public void setCourse(CourseDto course) {
 		this.course = course;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 }

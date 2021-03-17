@@ -85,7 +85,7 @@ class CalendarprojectApplicationTestsIntervention {
 			// Pb avec la date
 			// intDto.getDateStart()
 			assertEquals("2021-03-10", df.format(intDto.getDateStart()));
-			assertEquals("Ahmed", intDto.getEmployee().getFirstName());
+			assertEquals("Ahmed", intDto.getUser().getFirstName());
 			assertEquals("Java Advanced ++", intDto.getCourse().getTitle());
 
 		} catch (Exception e) {
@@ -102,7 +102,7 @@ class CalendarprojectApplicationTestsIntervention {
 			intToInsert.setDateEnd(LocalDate.parse("2020-03-20"));
 			AvancedUserDto emp1 = new AvancedUserDto();
 			emp1.setId(1);
-			intToInsert.setEmployee(emp1);
+			intToInsert.setUser(emp1);
 
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 			String jsonReq = objectMapper.writeValueAsString(intToInsert);
