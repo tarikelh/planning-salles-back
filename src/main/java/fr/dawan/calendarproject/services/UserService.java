@@ -15,6 +15,8 @@ public interface UserService {
 	void deleteById(long id);
 
 	AvancedUserDto saveOrUpdate(AvancedUserDto employee);
+	
+	AvancedUserDto findByEmail(String email);
 
 	long count();
 

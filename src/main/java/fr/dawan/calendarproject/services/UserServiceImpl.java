@@ -16,6 +16,7 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -62,6 +63,15 @@ public class UserServiceImpl implements UserService {
 		User u = DtoTools.convert(user, User.class);
 		u = employeeRepository.saveAndFlush(u);
 		return DtoTools.convert(u, AvancedUserDto.class);
+	}
+	
+	@Override
+	public AvancedUserDto findByEmail(String email) {
+		User u = employeeRepository.findByEmail(email);
+		if(u!=null)
+			return DtoTools.convert(u, AvancedUserDto.class);
+		
+		return null;
 	}
 
 	@Override

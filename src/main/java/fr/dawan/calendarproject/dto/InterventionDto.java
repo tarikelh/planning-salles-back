@@ -3,23 +3,29 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 
 import fr.dawan.calendarproject.entities.Location;
+import fr.dawan.calendarproject.enums.InterventionStatus;
 
 public class InterventionDto {
 
 	private long id;
+	
+	private String planningComment;
+	
+	private Location location;
+	
+	private CourseDto course;
+	
+	private AvancedUserDto user;
+	
+	private InterventionStatus status; 
+	
+	private boolean optionStatus; //change to confirmStatus name
 
 	private LocalDate dateStart;
 
 	private LocalDate dateEnd;
 
-	private String planningComment;
-
-	private AvancedUserDto user;
-
-	private CourseDto course;
-
-	private Location location;
-
+	
 	public long getId() {
 		return id;
 	}
@@ -74,5 +80,21 @@ public class InterventionDto {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	public InterventionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(InterventionStatus status) {
+		this.status = status;
+	}
+
+	public boolean isOptionStatus() {
+		return optionStatus;
+	}
+
+	public void setOptionStatus(boolean optionStatus) {
+		this.optionStatus = optionStatus;
 	}
 }

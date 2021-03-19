@@ -26,17 +26,18 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
-	// demander a mohamed
-	// private long contact;
-	@ManyToOne(cascade = CascadeType.PERSIST)
-	private Location location;
-
+	
 	@Column(nullable = false, length = 255)
 	private String firstName;
 
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private Location location;
+
 	@Column(unique = true, nullable = false, length = 255)
 	private String mail;
+	
+	@Column(nullable = false, length = 150)
+	private String password;
 
 	@Column(nullable = true)
 	private LocalDate dateEntry;
@@ -54,6 +55,9 @@ public class User {
 
 	@Enumerated(EnumType.STRING)
 	private UserCompanie companie;
+	
+	@Column(nullable = true)
+	private String imagePath;
 
 	@Version
 	private int version;
@@ -151,6 +155,34 @@ public class User {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public UserCompanie getCompanie() {
+		return companie;
+	}
+
+	public void setCompanie(UserCompanie companie) {
+		this.companie = companie;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	@Override

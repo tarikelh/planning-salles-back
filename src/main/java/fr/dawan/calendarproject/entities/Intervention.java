@@ -17,12 +17,13 @@ import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
 public class Intervention {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(nullable = true, length = 255)
-	private String planningComment;
+	private String planningComment; //InterventionComment (red dot) > rename?
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Location location;
@@ -36,14 +37,19 @@ public class Intervention {
 
 	@Enumerated(EnumType.STRING)
 	private InterventionStatus status;
+	
+	@Column(nullable = false)
+	private boolean optionStatus;
 
 	// dateDebut, dateFin, many interv to one Employe, many interv. to one
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private LocalDate dateStart;
 
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(nullable = true)
+	@Column(nullable = false)
 	private LocalDate dateEnd;
+	
+	private OperationModif operationModif = new OperationModif(new Intervention(planningComment, location, course, user, status, optionStatus, dateStart, dateEnd));
 
 	@Version
 	private int version;
@@ -52,26 +58,20 @@ public class Intervention {
 	public Intervention() {
 	}
 
+	
+
 	public Intervention(String planningComment, Location location, Course course, User user, InterventionStatus status,
-			LocalDate dateStart, LocalDate dateEnd) {
+			boolean optionStatus, LocalDate dateStart, LocalDate dateEnd) {
 		setPlanningComment(planningComment);
 		setLocation(location);
 		setCourse(course);
 		setUser(user);
 		setStatus(status);
+		setOptionStatus(optionStatus);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
 	}
 
-	public Intervention(String planningComment, Location location, Course course, User user, LocalDate dateStart,
-			LocalDate dateEnd) {
-		setPlanningComment(planningComment);
-		setLocation(location);
-		setCourse(course);
-		setUser(user);
-		setDateStart(dateStart);
-		setDateEnd(dateEnd);
-	}
 
 	public long getId() {
 		return id;
@@ -116,6 +116,14 @@ public class Intervention {
 	public void setStatus(InterventionStatus status) {
 		this.status = status;
 	}
+	
+	public boolean isOptionStatus() {
+		return optionStatus;
+	}
+
+	public void setOptionStatus(boolean optionStatus) {
+		this.optionStatus = optionStatus;
+	}
 
 	public LocalDate getDateStart() {
 		return dateStart;
@@ -129,7 +137,9 @@ public class Intervention {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) {
+	public void setDateEnd(LocalDate dateEnd) throws IllegalArgumentException {
+		if(dateEnd.isBefore(dateStart))
+			throw new IllegalArgumentException("La date de fin doit être après la date de début de l'intervention.");
 		this.dateEnd = dateEnd;
 	}
 
@@ -140,6 +150,7 @@ public class Intervention {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+	
 
 	@Override
 	public int hashCode() {
@@ -165,9 +176,9 @@ public class Intervention {
 
 	@Override
 	public String toString() {
-		return "Intervention [id=" + getId() + ", planningComment=" + getPlanningComment() + ", location="
-				+ getLocation() + ", course=" + getCourse() + ", user=" + getUser() + ", status=" + getStatus()
-				+ ", dateStart=" + getDateStart() + ", dateEnd=" + getDateEnd() + ", version=" + getVersion() + "]";
+		return "Intervention [id=" + id + ", planningComment=" + planningComment + ", location=" + location
+				+ ", course=" + course + ", user=" + user + ", status=" + status + ", optionStatus=" + optionStatus
+				+ ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
 
 }
