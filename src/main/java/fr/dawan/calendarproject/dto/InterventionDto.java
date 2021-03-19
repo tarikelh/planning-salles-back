@@ -2,10 +2,12 @@ package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
 
+import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
-public class InterventionDto {
+public class InterventionDto implements Cloneable {
 
 	private long id;
 	
@@ -97,4 +99,21 @@ public class InterventionDto {
 	public void setOptionStatus(boolean optionStatus) {
 		this.optionStatus = optionStatus;
 	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
+	//METHODS TO TRANSFER IN INTERVENTION ENTITIES ???
+	//Memento Methods
+	public InterventionMemento createMemento() throws Exception {
+		return new InterventionMemento((InterventionDto)this.clone());
+	}
+	
+	public void restore(InterventionMemento memento) throws Exception {	
+		//Utilisation de la bibliothèque ModelMapper > switch to InterventionDto.class ?
+		//Verify method with Mohamed
+		InterventionDto myIntervention = memento.getState();
+	} 
 }

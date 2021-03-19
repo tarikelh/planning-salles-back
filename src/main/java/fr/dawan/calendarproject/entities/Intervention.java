@@ -15,6 +15,7 @@ import javax.persistence.Version;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
+//Cloneable for the Momento
 @Entity
 public class Intervention {
 	
@@ -48,8 +49,6 @@ public class Intervention {
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(nullable = false)
 	private LocalDate dateEnd;
-	
-	private OperationModif operationModif = new OperationModif(new Intervention(planningComment, location, course, user, status, optionStatus, dateStart, dateEnd));
 
 	@Version
 	private int version;
@@ -60,8 +59,9 @@ public class Intervention {
 
 	
 
-	public Intervention(String planningComment, Location location, Course course, User user, InterventionStatus status,
+	public Intervention(long id, String planningComment, Location location, Course course, User user, InterventionStatus status,
 			boolean optionStatus, LocalDate dateStart, LocalDate dateEnd) {
+		setId(id);
 		setPlanningComment(planningComment);
 		setLocation(location);
 		setCourse(course);
@@ -72,9 +72,13 @@ public class Intervention {
 		setDateEnd(dateEnd);
 	}
 
-
+	
 	public long getId() {
 		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getPlanningComment() {
@@ -142,7 +146,7 @@ public class Intervention {
 			throw new IllegalArgumentException("La date de fin doit être après la date de début de l'intervention.");
 		this.dateEnd = dateEnd;
 	}
-
+	
 	public int getVersion() {
 		return version;
 	}
@@ -151,7 +155,6 @@ public class Intervention {
 		this.version = version;
 	}
 	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -180,5 +183,4 @@ public class Intervention {
 				+ ", course=" + course + ", user=" + user + ", status=" + status + ", optionStatus=" + optionStatus
 				+ ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
-
 }
