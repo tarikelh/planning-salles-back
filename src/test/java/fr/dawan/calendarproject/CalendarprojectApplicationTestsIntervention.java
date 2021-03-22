@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.controllers.InterventionController;
 import fr.dawan.calendarproject.dto.AvancedUserDto;
+import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 
 @SpringBootTest
@@ -124,47 +127,41 @@ class CalendarprojectApplicationTestsIntervention {
 
 	@Test
 	void testUpdate() {
-		/*
-		 * try {
-		 * 
-		 * InterventionDto courseToupdate = interventionController.getById(3);
-		 * courseToupdate.setTitle("Angular");;
-		 * 
-		 * String jsonReq = objectMapper.writeValueAsString(courseToupdate);
-		 * 
-		 * String jsonReponse = mockMvc.perform(put("/api/courses") // VERB + URI
-		 * .contentType(MediaType.APPLICATION_JSON) // consumes MIME TYPE
-		 * .accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
-		 * .content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().
-		 * getContentAsString();
-		 * 
-		 * InterventionDto cDto = objectMapper.readValue(jsonReponse,
-		 * InterventionDto.class); assertEquals(3, cDto.getId());
-		 * assertEquals("Angular", cDto.getTitle());
-		 * 
-		 * } catch (Exception e) { fail(e.getMessage()); }
-		 */
+		try {
+
+			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
+			InterventionDto interventionToupdate = interventionController.getById(2);
+			interventionToupdate.setDateEnd(LocalDate.parse("2020-03-21"));
+
+			String jsonReq = objectMapper.writeValueAsString(interventionController);
+
+			String jsonReponse = mockMvc.perform(put("/api/interventions") // VERB + URI
+					.contentType(MediaType.APPLICATION_JSON) // consumes MIME TYPE
+					.accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
+					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+			InterventionDto intDto = objectMapper.readValue(jsonReponse, InterventionDto.class);
+			assertEquals(2, intDto.getId());
+			assertEquals("2020-03-21", intDto.getDateEnd().toString());
+
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
 	void testDelete() {
-		/*
-		 * try {
-		 * 
-		 * } //InterventionDto cDto = new InterventionDto(); //cDto.setId(5);
-		 * 
-		 * byte[] jsonReponseBytes =
-		 * mockMvc.perform(delete("/api/courses/5").accept(MediaType.APPLICATION_JSON))
-		 * .andExpect(status().isAccepted()).andReturn().getResponse().
-		 * getContentAsByteArray(); String jsonReponse = new String(jsonReponseBytes,
-		 * StandardCharsets.UTF_8);
-		 * 
-		 * //assertNull(cDto.getEmail());
-		 * 
-		 * assertEquals("suppression effectuée", jsonReponse);
-		 * 
-		 * } catch (Exception e) { fail(e.getMessage()); }
-		 */
+		try {
+			byte[] jsonReponseBytes =  mockMvc.perform(delete("/api/interventions/2").accept(MediaType.APPLICATION_JSON))
+					.andExpect(status().isAccepted()).andReturn().getResponse().getContentAsByteArray();
+			String jsonReponse = new String(jsonReponseBytes, StandardCharsets.UTF_8);
+			
+			assertEquals("suppression effectuée", jsonReponse);
+
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 }
