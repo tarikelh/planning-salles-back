@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
+import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 
 @Service
@@ -22,7 +24,10 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
-	InterventionRepository interventionRepository;
+	private InterventionRepository interventionRepository;
+	
+	@Autowired
+	private InterventionCaretaker caretaker;
 	
 
 	@Override
@@ -61,8 +66,14 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public InterventionDto saveOrUpdate(InterventionDto intervention) {
-		interventionRepository.save(DtoTools.convert(intervention, Intervention.class));
+	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
+		Intervention x = DtoTools.convert(intervention, Intervention.class);
+		//construire objet interventionMemento
+		InterventionMemento m = new InterventionMemento();
+		m.setState(DtoTools.convert(m, InterventionMementoDto.class));
+		//sauvegarder le memento
+		caretaker.addMemento(intervention.getId(), "test", m.createMemento());
+		interventionRepository.save(x);
 		return intervention;
 	}
 
@@ -88,6 +99,7 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
+		
 	}
 
 	@Override

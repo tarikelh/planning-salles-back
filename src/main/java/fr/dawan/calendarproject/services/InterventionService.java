@@ -14,7 +14,7 @@ public interface InterventionService {
 
 	void deleteById(long id);
 
-	InterventionDto saveOrUpdate(InterventionDto intervention);
+	InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception;
 	
 	List<InterventionDto> getByCourseId(long id);
 	

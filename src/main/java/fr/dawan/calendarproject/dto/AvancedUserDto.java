@@ -2,6 +2,9 @@ package fr.dawan.calendarproject.dto;
 
 import java.util.Set;
 
+import javax.persistence.Embeddable;
+
+
 public class AvancedUserDto extends UserDto {
 
 	private Set<SkillDto> skills;

@@ -29,7 +29,9 @@ public class InterventionController {
 	
 	@Autowired
 	private InterventionCaretaker caretaker;
-
+	
+	//private InterventionMemento interventionMemento;
+	
 	
 	// GET
 	@GetMapping(produces = "application/json")
@@ -60,7 +62,6 @@ public class InterventionController {
 	public InterventionDto save(@RequestBody InterventionDto intervention) {
 		try {
 			//TO CHECK
-			caretaker.addMemento(intervention.getId(), "test", intervention.createMemento());
 			return interventionService.saveOrUpdate(intervention);
 		} catch (Exception e) {
 			e.printStackTrace(); //Pb lors de la création
@@ -71,7 +72,14 @@ public class InterventionController {
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
 	public InterventionDto update(@RequestBody InterventionDto intervention) {
-		return interventionService.saveOrUpdate(intervention);
+		try {
+			return interventionService.saveOrUpdate(intervention);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//throw e > ec
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	// Search

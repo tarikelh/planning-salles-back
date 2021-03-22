@@ -1,5 +1,8 @@
 package fr.dawan.calendarproject.dto;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class CourseDto {
 
 	private long id;
