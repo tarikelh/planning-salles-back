@@ -50,13 +50,13 @@ public class UserController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public AvancedUserDto save(@RequestBody AvancedUserDto course) {
-		return userService.saveOrUpdate(course);
+	public AvancedUserDto save(@RequestBody AvancedUserDto user) {
+		return userService.saveOrUpdate(user);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AvancedUserDto update(@RequestBody AvancedUserDto course) {
-		return userService.saveOrUpdate(course);
+	public AvancedUserDto update(@RequestBody AvancedUserDto user) {
+		return userService.saveOrUpdate(user);
 	}
 }

@@ -50,13 +50,13 @@ public class SkillController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public AvancedSkillDto save(@RequestBody AvancedSkillDto course) {
-		return skillService.saveOrUpdate(course);
+	public AvancedSkillDto save(@RequestBody AvancedSkillDto skill) {
+		return skillService.saveOrUpdate(skill);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AvancedSkillDto update(@RequestBody AvancedSkillDto course) {
-		return skillService.saveOrUpdate(course);
+	public AvancedSkillDto update(@RequestBody AvancedSkillDto skill) {
+		return skillService.saveOrUpdate(skill);
 	}
 }

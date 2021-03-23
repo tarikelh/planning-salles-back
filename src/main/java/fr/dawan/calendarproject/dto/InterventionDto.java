@@ -1,8 +1,7 @@
 package fr.dawan.calendarproject.dto;
 
-import java.time.LocalDate;
+import java.util.Date;
 
-import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 
@@ -10,21 +9,21 @@ public class InterventionDto implements Cloneable {
 
 	private long id;
 	
-	private String planningComment;
+	private String comment;
 	
-	private Location location;
+	private LocationDto location;
 	
 	private CourseDto course;
 	
 	private AvancedUserDto user;
 	
-	private InterventionStatus status; 
+	private InterventionStatus type; 
 	
-	private boolean optionStatus; //change to confirmStatus name
+	private boolean validated;
 
-	private LocalDate dateStart;
+	private Date dateStart;
 
-	private LocalDate dateEnd;
+	private Date dateEnd;
 
 	
 	public long getId() {
@@ -35,28 +34,28 @@ public class InterventionDto implements Cloneable {
 		this.id = id;
 	}
 
-	public LocalDate getDateStart() {
+	public Date getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(LocalDate dateStart) {
+	public void setDateStart(Date dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public LocalDate getDateEnd() {
+	public Date getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) {
+	public void setDateEnd(Date dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 
-	public String getPlanningComment() {
-		return planningComment;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setPlanningComment(String planningComment) {
-		this.planningComment = planningComment;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public AvancedUserDto getUser() {
@@ -75,30 +74,30 @@ public class InterventionDto implements Cloneable {
 		this.course = course;
 	}
 
-	public Location getLocation() {
+	public LocationDto getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(LocationDto location) {
 		this.location = location;
 	}
-
-	public InterventionStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(InterventionStatus status) {
-		this.status = status;
-	}
-
-	public boolean isOptionStatus() {
-		return optionStatus;
-	}
-
-	public void setOptionStatus(boolean optionStatus) {
-		this.optionStatus = optionStatus;
-	}
 	
+	public boolean isValidated() {
+		return validated;
+	}
+
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
+
+	public InterventionStatus getType() {
+		return type;
+	}
+
+	public void setType(InterventionStatus type) {
+		this.type = type;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();

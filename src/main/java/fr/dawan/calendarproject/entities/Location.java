@@ -29,13 +29,25 @@ public class Location {
 		setCity(city);
 		setColor(color);
 	}
-
+	
 	public Location(String city) {
 		setCity(city);
+	}
+	
+	//CHANGE FOR SETTER
+	public Location(long id, String city, String color, int version) {
+		this.id = id;
+		this.city = city;
+		this.color = color;
+		this.version = version;
 	}
 
 	public long getId() {
 		return id;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public int getVersion() {
@@ -44,10 +56,6 @@ public class Location {
 
 	public void setVersion(int version) {
 		this.version = version;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getCity() {
@@ -64,40 +72,6 @@ public class Location {
 
 	public void setColor(String color) {
 		this.color = color;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Location other = (Location) obj;
-		if (city == null) {
-			if (other.city != null)
-				return false;
-		} else if (!city.equals(other.city))
-			return false;
-		if (color == null) {
-			if (other.color != null)
-				return false;
-		} else if (!color.equals(other.color))
-			return false;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 
 	@Override

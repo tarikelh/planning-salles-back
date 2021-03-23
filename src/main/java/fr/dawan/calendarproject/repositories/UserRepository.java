@@ -10,6 +10,6 @@ import fr.dawan.calendarproject.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query("FROM User u WHERE u.mail = :mail")
-	User findByEmail(@Param("mail") String mail);
+	@Query("FROM User u WHERE u.email = :email")
+	User findByEmail(@Param("email") String email);
 }

@@ -58,6 +58,18 @@ public class Skill {
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	@Override
 	public int hashCode() {

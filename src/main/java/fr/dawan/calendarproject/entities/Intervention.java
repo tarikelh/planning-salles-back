@@ -1,10 +1,9 @@
 package fr.dawan.calendarproject.entities;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
@@ -25,31 +26,33 @@ public class Intervention {
 	private long id;
 
 	@Column(nullable = true, length = 255)
-	private String planningComment; //InterventionComment (red dot) > rename?
+	private String comment;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private Location location;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private Course course;
 
 	// @JoinColumn(name = "user_id", nullable = false) //nom par defaut
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
 
 	@Enumerated(EnumType.STRING)
-	private InterventionStatus status;
+	private InterventionStatus type;
 	
 	@Column(nullable = false)
-	private boolean optionStatus;
+	private boolean validated;
 
 	// dateDebut, dateFin, many interv to one Employe, many interv. to one
 	@Column(nullable = false)
-	private LocalDate dateStart;
+	@Temporal(TemporalType.DATE)
+	private Date dateStart;
 
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(nullable = false)
-	private LocalDate dateEnd;
+	@Temporal(TemporalType.DATE)
+	private Date dateEnd;
 
 	@Version
 	private int version;
@@ -60,20 +63,36 @@ public class Intervention {
 
 	
 
-	public Intervention(long id, String planningComment, Location location, Course course, User user, InterventionStatus status,
-			boolean optionStatus, LocalDate dateStart, LocalDate dateEnd) {
+	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
+			boolean validated, Date dateStart, Date dateEnd) {
 		setId(id);
-		setPlanningComment(planningComment);
+		setComment(comment);
 		setLocation(location);
 		setCourse(course);
 		setUser(user);
-		setStatus(status);
-		setOptionStatus(optionStatus);
+		setType(type);
+		setValidated(validated);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
 	}
-
 	
+	
+	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
+			boolean validated, Date dateStart, Date dateEnd, int version) {
+		this.id = id;
+		this.comment = comment;
+		this.location = location;
+		this.course = course;
+		this.user = user;
+		this.type = type;
+		this.validated = validated;
+		this.dateStart = dateStart;
+		this.dateEnd = dateEnd;
+		this.version = version;
+	}
+
+
+
 	public long getId() {
 		return id;
 	}
@@ -82,12 +101,12 @@ public class Intervention {
 		this.id = id;
 	}
 
-	public String getPlanningComment() {
-		return planningComment;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setPlanningComment(String planningComment) {
-		this.planningComment = planningComment;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public Location getLocation() {
@@ -114,37 +133,41 @@ public class Intervention {
 		this.user = user;
 	}
 
-	public InterventionStatus getStatus() {
-		return status;
+	public InterventionStatus getType() {
+		return type;
 	}
 
-	public void setStatus(InterventionStatus status) {
-		this.status = status;
-	}
-	
-	public boolean isOptionStatus() {
-		return optionStatus;
+
+
+	public void setType(InterventionStatus type) {
+		this.type = type;
 	}
 
-	public void setOptionStatus(boolean optionStatus) {
-		this.optionStatus = optionStatus;
+
+
+	public boolean isValidated() {
+		return validated;
 	}
 
-	public LocalDate getDateStart() {
+
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
+
+
+	public Date getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(LocalDate dateStart) {
+	public void setDateStart(Date dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public LocalDate getDateEnd() {
+	public Date getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) throws IllegalArgumentException {
-		if(dateEnd.isBefore(dateStart))
-			throw new IllegalArgumentException("La date de fin doit être après la date de début de l'intervention.");
+	public void setDateEnd(Date dateEnd) throws IllegalArgumentException {
 		this.dateEnd = dateEnd;
 	}
 	
@@ -178,10 +201,14 @@ public class Intervention {
 		return true;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "Intervention [id=" + id + ", planningComment=" + planningComment + ", location=" + location
-				+ ", course=" + course + ", user=" + user + ", status=" + status + ", optionStatus=" + optionStatus
-				+ ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", version=" + version + "]";
+		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
+				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
+				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
+
+	
 }

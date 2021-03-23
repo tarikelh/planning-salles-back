@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.enums.UserCompanie;
+import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 
 public class UserDto {
@@ -9,18 +8,22 @@ public class UserDto {
 	private long id;
 
 	private String firstName;
+	
+	private String lastName;
 
-	private Location location;
+	private LocationDto location;
 
-	private String mail;
+	private String email;
+	
+	private String password;
 
 	private UserType type;
 	
-	private UserCompanie companie;
+	private UserCompany company;
 	
 	private String imagePath;
 	
-	private String password;
+	
 
 	public long getId() {
 		return id;
@@ -37,21 +40,29 @@ public class UserDto {
 	public void setFirstName(String name) {
 		this.firstName = name;
 	}
+	
+	public String getLastName() {
+		return lastName;
+	}
 
-	public Location getLocation() {
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public LocationDto getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(LocationDto location) {
 		this.location = location;
 	}
 
-	public String getMail() {
-		return mail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public UserType getType() {
@@ -62,12 +73,12 @@ public class UserDto {
 		this.type = type;
 	}
 
-	public UserCompanie getCompanie() {
-		return companie;
+	public UserCompany getCompany() {
+		return company;
 	}
 
-	public void setCompanie(UserCompanie companie) {
-		this.companie = companie;
+	public void setCompany(UserCompany company) {
+		this.company = company;
 	}
 
 	public String getImagePath() {

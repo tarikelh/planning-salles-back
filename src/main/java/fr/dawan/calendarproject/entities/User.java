@@ -1,6 +1,5 @@
 package fr.dawan.calendarproject.entities;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,7 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
-import fr.dawan.calendarproject.enums.UserCompanie;
+import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 
 @Entity
@@ -26,27 +25,23 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(nullable = false, length = 255)
 	private String firstName;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@Column(nullable = false, length = 255)
+	private String lastName;
+
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private Location location;
 
 	@Column(unique = true, nullable = false, length = 255)
-	private String mail;
-	
+	private String email;
+
 	@Column(nullable = false, length = 150)
 	private String password;
 
-	@Column(nullable = true)
-	private LocalDate dateEntry;
-
-	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(nullable = true)
-	private LocalDate dateExit;
-
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
 	private Set<Skill> skills;
 
@@ -54,8 +49,8 @@ public class User {
 	private UserType type;
 
 	@Enumerated(EnumType.STRING)
-	private UserCompanie companie;
-	
+	private UserCompany company;
+
 	@Column(nullable = true)
 	private String imagePath;
 
@@ -69,29 +64,31 @@ public class User {
 	public User() {
 	}
 
-	public User(long contact, Location location, String firstName, String mail, LocalDate dateEntry, LocalDate dateExit,
-			long planningOrder, Set<Skill> skills, UserType type, int version) {
+	public User(long contact, Location location, String firstName, String email, long planningOrder, Set<Skill> skills,
+			UserType type, int version) {
 //		setContact(contact);
 		setLocation(location);
 		setFirstName(firstName);
-		setMail(mail);
-		setDateEntry(dateEntry);
-		setDateExit(dateExit);
+		setEmail(email);
 		setSkills(skills);
 		setType(type);
 	}
 
-	public long getId() {
-		return id;
+	// CHANGE FOR SETTER
+	public User(long id, String firstName, String lastName, Location location, String email,
+			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.location = location;
+		this.email = email;
+		this.password = password;
+		this.skills = skills;
+		this.type = type;
+		this.company = company;
+		this.imagePath = imagePath;
+		this.version = version;
 	}
-
-//	public long getContact() {
-//		return contact;
-//	}
-//
-//	public void setContact(long contact) {
-//		this.contact = contact;
-//	}
 
 	public Location getLocation() {
 		return location;
@@ -109,28 +106,20 @@ public class User {
 		this.firstName = firstName;
 	}
 
-	public String getMail() {
-		return mail;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public LocalDate getDateEntry() {
-		return dateEntry;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setDateEntry(LocalDate dateEntry) {
-		this.dateEntry = dateEntry;
-	}
-
-	public LocalDate getDateExit() {
-		return dateExit;
-	}
-
-	public void setDateExit(LocalDate dateExit) {
-		this.dateExit = dateExit;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Set<Skill> getSkills() {
@@ -157,16 +146,20 @@ public class User {
 		this.version = version;
 	}
 	
+	public long getId() {
+		return id;
+	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	public UserCompanie getCompanie() {
-		return companie;
+	public UserCompany getCompany() {
+		return company;
 	}
 
-	public void setCompanie(UserCompanie companie) {
-		this.companie = companie;
+	public void setCompany(UserCompany company) {
+		this.company = company;
 	}
 
 	public String getPassword() {
@@ -176,7 +169,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -209,9 +202,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + getId() + ", location=" + getLocation() + ", firstName=" + getFirstName() + ", mail="
-				+ getMail() + ", dateEntry=" + getDateEntry() + ", dateExit=" + getDateEntry() + ", skills="
-				+ getSkills() + ", type=" + getType() + ", version=" + getVersion() + "]";
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", location=" + location
+				+ ", email=" + email + ", password=" + password + ", skills=" + skills + ", type=" + type + ", company="
+				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
 	}
-
 }

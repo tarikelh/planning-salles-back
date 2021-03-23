@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,11 @@ import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
 
 @Service
 @Transactional
@@ -27,7 +32,19 @@ public class InterventionServiceImpl implements InterventionService {
 	private InterventionRepository interventionRepository;
 	
 	@Autowired
+	private LocationRepository locationRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
 	private InterventionCaretaker caretaker;
+	
+	@Autowired
+	private InterventionMementoRepository interventionMementoRepository;
 	
 
 	@Override
@@ -67,13 +84,20 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
-		Intervention x = DtoTools.convert(intervention, Intervention.class);
+		Intervention interv = DtoTools.convert(intervention, Intervention.class);
 		//construire objet interventionMemento
-		InterventionMemento m = new InterventionMemento();
-		m.setState(DtoTools.convert(m, InterventionMementoDto.class));
+		InterventionMemento intMemento = new InterventionMemento();
+		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
 		//sauvegarder le memento
-		caretaker.addMemento(intervention.getId(), "test", m.createMemento());
-		interventionRepository.save(x);
+		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		//saveAndFlush
+		interventionMementoRepository.saveAndFlush(intMemento);
+		//List<InterventionMemento> testList = interventionMementoRepository.findAll();
+		//pour récupérer la bonne version de chaque Objets appelés dans Intervention
+		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
+		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
+		interv.setUser(userRepository.getOne(interv.getUser().getId()));
+		interventionRepository.saveAndFlush(interv);
 		return intervention;
 	}
 
