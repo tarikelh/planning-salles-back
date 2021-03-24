@@ -1,34 +1,31 @@
 package fr.dawan.calendarproject.dto;
 
-import java.time.LocalDate;
 import java.util.Date;
 
-public class InterventionDto {
+import fr.dawan.calendarproject.enums.InterventionStatus;
+
+
+public class InterventionDto implements Cloneable {
 
 	private long id;
-
-	private LocalDate dateStart;
-
-	private LocalDate dateEnd;
-
-	private EmployeeDto employee;
-
+	
+	private String comment;
+	
+	private LocationDto location;
+	
 	private CourseDto course;
 	
-	private int version;
+	private AvancedUserDto user;
 	
-	public int getVersion() {
-		return version;
-	}
+	private InterventionStatus type; 
+	
+	private boolean validated;
 
-	public void setVersion(int version) {
-		this.version = version;
-	}
+	private Date dateStart;
 
-	public InterventionDto() {
-		course = new CourseDto();
-	}
+	private Date dateEnd;
 
+	
 	public long getId() {
 		return id;
 	}
@@ -37,28 +34,36 @@ public class InterventionDto {
 		this.id = id;
 	}
 
-	public LocalDate getDateStart() {
+	public Date getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(LocalDate dateStart) {
+	public void setDateStart(Date dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public LocalDate getDateEnd() {
+	public Date getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) {
+	public void setDateEnd(Date dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 
-	public EmployeeDto getEmployee() {
-		return employee;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setEmployee(EmployeeDto employee) {
-		this.employee = employee;
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public AvancedUserDto getUser() {
+		return user;
+	}
+
+	public void setUser(AvancedUserDto user) {
+		this.user = user;
 	}
 
 	public CourseDto getCourse() {
@@ -68,4 +73,34 @@ public class InterventionDto {
 	public void setCourse(CourseDto course) {
 		this.course = course;
 	}
+
+	public LocationDto getLocation() {
+		return location;
+	}
+
+	public void setLocation(LocationDto location) {
+		this.location = location;
+	}
+	
+	public boolean isValidated() {
+		return validated;
+	}
+
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
+
+	public InterventionStatus getType() {
+		return type;
+	}
+
+	public void setType(InterventionStatus type) {
+		this.type = type;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 }

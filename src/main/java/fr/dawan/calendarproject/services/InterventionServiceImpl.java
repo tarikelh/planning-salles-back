@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,15 +14,38 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.InterventionCaretaker;
+import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
 
 @Service
 @Transactional
 public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
-	InterventionRepository interventionRepository;
+	private InterventionRepository interventionRepository;
+	
+	@Autowired
+	private LocationRepository locationRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private InterventionCaretaker caretaker;
+	
+	@Autowired
+	private InterventionMementoRepository interventionMementoRepository;
+	
 
 	@Override
 	public List<InterventionDto> getAllInterventions() {
@@ -59,8 +83,21 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public InterventionDto saveOrUpdate(InterventionDto intervention) {
-		interventionRepository.save(DtoTools.convert(intervention, Intervention.class));
+	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
+		Intervention interv = DtoTools.convert(intervention, Intervention.class);
+		//construire objet interventionMemento
+		InterventionMemento intMemento = new InterventionMemento();
+		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
+		//sauvegarder le memento
+		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		//saveAndFlush
+		interventionMementoRepository.saveAndFlush(intMemento);
+		//List<InterventionMemento> testList = interventionMementoRepository.findAll();
+		//pour récupérer la bonne version de chaque Objets appelés dans Intervention
+		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
+		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
+		interv.setUser(userRepository.getOne(interv.getUser().getId()));
+		interventionRepository.saveAndFlush(interv);
 		return intervention;
 	}
 
@@ -86,6 +123,7 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
+		
 	}
 
 	@Override

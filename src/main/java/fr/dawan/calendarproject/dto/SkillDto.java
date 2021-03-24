@@ -1,10 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
-public class CourseDto {
-
+public class SkillDto {
 	private long id;
 
 	private String title;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.services.InterventionService;
 
 @RestController
@@ -25,18 +26,24 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
-
+	
+	@Autowired
+	private InterventionCaretaker caretaker;
+	
+	//private InterventionMemento interventionMemento;
+	
+	
 	// GET
 	@GetMapping(produces = "application/json")
 	public List<InterventionDto> getAll() {
 		return interventionService.getAllInterventions();
 	}
-	
-	//GET - id
-    @GetMapping(value = "/{id}", produces = { "application/json", "application/xml"})
-    public InterventionDto getById(@PathVariable("id") long id) {
-        return interventionService.getById(id);
-    }
+
+	// GET - id
+	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
+	public InterventionDto getById(@PathVariable("id") long id) {
+		return interventionService.getById(id);
+	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
@@ -52,26 +59,39 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@RequestBody InterventionDto course) {
-		return interventionService.saveOrUpdate(course);
+	public InterventionDto save(@RequestBody InterventionDto intervention) {
+		try {
+			//TO CHECK
+			return interventionService.saveOrUpdate(intervention);
+		} catch (Exception e) {
+			e.printStackTrace(); //Pb lors de la création
+			return null;
+		}
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto update(@RequestBody InterventionDto course) {
-		return interventionService.saveOrUpdate(course);
+	public InterventionDto update(@RequestBody InterventionDto intervention) {
+		try {
+			return interventionService.saveOrUpdate(intervention);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//throw e > ec
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
-	//Search
-    @GetMapping(value = "/search", produces = "application/json")
-    public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
-        if(!formation.isEmpty()) {
-            if(StringUtils.isNumeric(formation))
-                return interventionService.getByCourseId(Long.parseLong(formation));
-            else
-                return interventionService.getByCourseTitle(formation);
-        }
-        return null;
-    }
+
+	// Search
+	@GetMapping(value = "/search", produces = "application/json")
+	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
+		if (!formation.isEmpty()) {
+			if (StringUtils.isNumeric(formation))
+				return interventionService.getByCourseId(Long.parseLong(formation));
+			else
+				return interventionService.getByCourseTitle(formation);
+		}
+		return null;
+	}
 
 }

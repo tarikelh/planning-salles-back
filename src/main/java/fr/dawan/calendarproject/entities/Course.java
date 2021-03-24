@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table()
 public class Course {
 	
 	@Id
@@ -26,7 +25,6 @@ public class Course {
 	public Course() {
 		
 	}
-	
 	
 	public long getId() {
 		return id;
