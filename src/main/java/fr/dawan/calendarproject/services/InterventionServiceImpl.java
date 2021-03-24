@@ -90,13 +90,13 @@ public class InterventionServiceImpl implements InterventionService {
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
 		//sauvegarder le memento
 		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
-		//saveAndFlush
 		interventionMementoRepository.saveAndFlush(intMemento);
 		//List<InterventionMemento> testList = interventionMementoRepository.findAll();
 		//pour récupérer la bonne version de chaque Objets appelés dans Intervention
 		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
 		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
 		interv.setUser(userRepository.getOne(interv.getUser().getId()));
+		interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		interventionRepository.saveAndFlush(interv);
 		return intervention;
 	}

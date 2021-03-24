@@ -64,6 +64,9 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public CourseDto saveOrUpdate(CourseDto courseDto) {
         Course c = DtoTools.convert(courseDto, Course.class);
+        if(c.getId() != 0) {
+        	c.setVersion(courseRepository.getOne(c.getId()).getVersion());
+        }
         c = courseRepository.saveAndFlush(c);
         return DtoTools.convert(c, CourseDto.class);
 	}
