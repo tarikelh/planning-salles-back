@@ -24,6 +24,7 @@ import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.CsvToolsGeneric;
 
 @Service
 @Transactional
@@ -67,6 +68,11 @@ public class InterventionServiceImpl implements InterventionService {
 			interventionsDto.add(DtoTools.convert(intervention, InterventionDto.class));
 		}
 		return interventionsDto;
+	}
+	
+	@Override
+	public void getAllIntMementoCSV() throws Exception {
+		CsvToolsGeneric.toCsv("interventionMemento.csv", caretaker.getAllMemento(), ";");
 	}
 
 	@Override

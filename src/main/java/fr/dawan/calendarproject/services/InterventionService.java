@@ -21,5 +21,8 @@ public interface InterventionService {
 	List<InterventionDto> getByCourseTitle(String title);
 
 	long count();
+	
+	//Method created for the test - to delete from here after?
+	public void getAllIntMementoCSV() throws Exception;
 
 }
