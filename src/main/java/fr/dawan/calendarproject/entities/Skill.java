@@ -34,8 +34,6 @@ public class Skill {
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "skill_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> users = new HashSet<User>();
 	
-//	@ManyToMany(mappedBy = "skills")
-//	private Set<User> users = new HashSet<User>();
 
 	@Version
 	private int version;
@@ -43,9 +41,11 @@ public class Skill {
 	public Skill() {
 	}
 
-	public Skill(String title, Set<User> users) {
+	public Skill(long id, String title, Set<User> users, int version) {
+		setId(id);
 		setTitle(title);
 		setUsers(users);
+		setVersion(version);
 	}
 
 	public long getId() {

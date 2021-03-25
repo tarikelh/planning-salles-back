@@ -26,6 +26,12 @@ public class Course {
 		
 	}
 	
+	public Course(long id, String title, int version) {
+		setId(id);
+		setTitle(title);
+		setVersion(version);
+	}
+
 	public long getId() {
 		return id;
 	}

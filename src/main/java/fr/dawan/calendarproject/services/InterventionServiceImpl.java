@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -84,22 +85,25 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		// construire objet interventionMemento
-		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		// sauvegarder le memento
-		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
-		interventionMementoRepository.saveAndFlush(intMemento);
-		// List<InterventionMemento> testList = interventionMementoRepository.findAll();
-		// pour récupérer la bonne version de chaque Objets appelés dans Intervention
+
+		// Call last version of each objects called in Intervention and save Intervention
 		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
 		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
 		interv.setUser(userRepository.getOne(interv.getUser().getId()));
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
-		interventionRepository.saveAndFlush(interv);
-		return intervention;
+		interv = interventionRepository.saveAndFlush(interv);
+
+		// Memento creation
+		// Build interventionMemento object
+		InterventionMemento intMemento = new InterventionMemento();
+		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
+		// Save memento
+		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		interventionMementoRepository.saveAndFlush(intMemento);
+
+		return DtoTools.convert(interv, InterventionDto.class);
 	}
 
 	// Search

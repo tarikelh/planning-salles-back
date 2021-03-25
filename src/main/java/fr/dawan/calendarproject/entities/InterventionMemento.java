@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,22 +26,25 @@ public class InterventionMemento implements Cloneable {
 	@Embedded
 	private InterventionMementoDto state;
 
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date dateState;
+	//Verify with the group to set up the time >> change for TIMESTAMP in order to have date + time because can update the same day so we need to have the time
+	//Question : do they prefer to seperate the date and the time?
+	//Need to fix the time for FR
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreatedState;
 
+	//Do we really need version here?
 	@Version
 	private int version;
 
 	public InterventionMemento() {
-		this.dateState = new Date();
+		this.dateCreatedState = new Date();
 	}
 
 	// rôle sauvegarde de l'état
 	// vérifier pour la date
 	public InterventionMemento(InterventionMementoDto state) {
 		this.state = state;
-		this.dateState = new Date();
+		this.dateCreatedState = new Date();
 	}
 	
 
@@ -60,12 +64,12 @@ public class InterventionMemento implements Cloneable {
 		this.id = id;
 	}
 
-	public Date getDateState() {
-		return dateState;
+	public Date getDateCreatedState() {
+		return dateCreatedState;
 	}
 
-	public void setDateState(Date dateState) {
-		this.dateState = dateState;
+	public void setDateCreatedState(Date dateCreatedState) {
+		this.dateCreatedState = dateCreatedState;
 	}
 
 	public int getVersion() {
@@ -76,10 +80,19 @@ public class InterventionMemento implements Cloneable {
 		this.version = version;
 	}
 
+	//Change all toString for a StringBuilder and not a concatenation
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InterventionMemento [state=").append(state).append("]");
+		builder.append("InterventionMemento [id=");
+		builder.append(id);
+		builder.append(", state=");
+		builder.append(state);
+		builder.append(", dateCreatedState=");
+		builder.append(dateCreatedState);
+		builder.append(", version=");
+		builder.append(version);
+		builder.append("]");
 		return builder.toString();
 	}
 	
@@ -87,7 +100,7 @@ public class InterventionMemento implements Cloneable {
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
 	//Memento Methods
 	public InterventionMemento createMemento() throws Exception {
 		//InterventionMemento temp = new InterventionMemento((InterventionMementoDto)this.clone());

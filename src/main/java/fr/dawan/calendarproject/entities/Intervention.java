@@ -17,7 +17,6 @@ import javax.persistence.Version;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
-//Cloneable for the Momento
 @Entity
 public class Intervention {
 	
@@ -60,11 +59,9 @@ public class Intervention {
 	// Constructor important pour la sérialization (exemple Jackson)
 	public Intervention() {
 	}
-
 	
-
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, Date dateStart, Date dateEnd) {
+			boolean validated, Date dateStart, Date dateEnd, int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -74,24 +71,8 @@ public class Intervention {
 		setValidated(validated);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
+		setVersion(version);
 	}
-	
-	
-	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, Date dateStart, Date dateEnd, int version) {
-		this.id = id;
-		this.comment = comment;
-		this.location = location;
-		this.course = course;
-		this.user = user;
-		this.type = type;
-		this.validated = validated;
-		this.dateStart = dateStart;
-		this.dateEnd = dateEnd;
-		this.version = version;
-	}
-
-
 
 	public long getId() {
 		return id;
