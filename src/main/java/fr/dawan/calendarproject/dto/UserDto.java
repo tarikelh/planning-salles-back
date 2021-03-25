@@ -22,8 +22,6 @@ public class UserDto {
 	private UserCompany company;
 	
 	private String imagePath;
-	
-	
 
 	public long getId() {
 		return id;

@@ -6,8 +6,6 @@ public class LocationDto {
 	private String city;
 
 	private String color;
-	
-	
 
 	public long getId() {
 		return id;

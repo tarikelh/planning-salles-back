@@ -8,7 +8,7 @@ public class CourseDto {
 	private long id;
 
 	private String title;
-
+	
 	public long getId() {
 		return id;
 	}

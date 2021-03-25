@@ -25,21 +25,11 @@ public class Location {
 	public Location() {
 	}
 
-	public Location(String city, String color) {
+	public Location(long id, String city, String color, int version) {
+		setId(id);
 		setCity(city);
 		setColor(color);
-	}
-	
-	public Location(String city) {
-		setCity(city);
-	}
-	
-	//CHANGE FOR SETTER
-	public Location(long id, String city, String color, int version) {
-		this.id = id;
-		this.city = city;
-		this.color = color;
-		this.version = version;
+		setVersion(version);
 	}
 
 	public long getId() {

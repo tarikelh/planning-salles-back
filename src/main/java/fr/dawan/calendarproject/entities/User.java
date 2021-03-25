@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,10 +42,16 @@ public class User {
 	@Column(nullable = false, length = 150)
 	private String password;
 
-	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
-	private Set<Skill> skills;
+//	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+//	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
+//	inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
+//	private Set<Skill> skills = new HashSet<Skill>();
+	
+	@ManyToMany
+	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+	private Set<Skill> skills = new HashSet<Skill>();
 
+	
 	@Enumerated(EnumType.STRING)
 	private UserType type;
 
@@ -57,37 +64,24 @@ public class User {
 	@Version
 	private int version;
 
-	// @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-	// private List<Intervention> interventions = new ArrayList<Intervention>();
 
 	// Constructor important pour la sérialization (exemple Jackson)
 	public User() {
 	}
 
-	public User(long contact, Location location, String firstName, String email, long planningOrder, Set<Skill> skills,
-			UserType type, int version) {
-//		setContact(contact);
-		setLocation(location);
-		setFirstName(firstName);
-		setEmail(email);
-		setSkills(skills);
-		setType(type);
-	}
-
-	// CHANGE FOR SETTER
 	public User(long id, String firstName, String lastName, Location location, String email,
 			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.location = location;
-		this.email = email;
-		this.password = password;
-		this.skills = skills;
-		this.type = type;
-		this.company = company;
-		this.imagePath = imagePath;
-		this.version = version;
+		setId(id);
+		setFirstName(firstName);
+		setLastName(lastName);
+		setLocation(location);
+		setEmail(email);
+		setPassword(password);
+		setSkills(skills);
+		setType(type);
+		setCompany(company);
+		setImagePath(imagePath);
+		setVersion(version);
 	}
 
 	public Location getLocation() {
