@@ -44,6 +44,18 @@ public class InterventionController {
 	public InterventionDto getById(@PathVariable("id") long id) {
 		return interventionService.getById(id);
 	}
+	
+	// GET Memento >> Implemented for the CSV test
+	//Need to create a InterventionMemento controller (for now only this method)??
+	@GetMapping(value = "/memento")
+	public ResponseEntity<?> getAllMementoCSV() {
+		try {
+			interventionService.getAllIntMementoCSV();
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("création csv InterventionMemento effectuée");
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("création non réalisée");
+		}
+	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")

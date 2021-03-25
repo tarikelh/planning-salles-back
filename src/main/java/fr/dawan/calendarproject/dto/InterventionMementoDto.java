@@ -122,5 +122,28 @@ public class InterventionMementoDto implements Cloneable {
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(interventionId);
+		builder.append(";");
+		builder.append(comment);
+		builder.append(";");
+		builder.append(locationId);
+		builder.append(";");
+		builder.append(courseId);
+		builder.append(";");
+		builder.append(userId);
+		builder.append(";");
+		builder.append(type);
+		builder.append(";");
+		builder.append(isValidated);
+		builder.append(";");
+		builder.append(dateStart);
+		builder.append(";");
+		builder.append(dateEnd);
+		return builder.toString();
+	}
 	
 }

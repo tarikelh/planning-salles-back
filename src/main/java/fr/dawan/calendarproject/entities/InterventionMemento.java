@@ -1,9 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
