@@ -70,22 +70,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AvancedUserDto saveOrUpdate(AvancedUserDto user) {
 		User u = DtoTools.convert(user, User.class);
-		if (u.getId() != 0) {
-			u.setLocation(locationRepository.getOne(u.getLocation().getId()));
-			// pb with skills - BETTER TO TRANSFORM WITH ID SKILL and not the whole object skill
-			// Or add Version in the Dto
-			// Skill version to update
-			List<Skill> listSkill = skillRepository.findAll();
-			Set<Skill> listSkillToUpdate = u.getSkills();
-			for (Skill skill : listSkillToUpdate) {
-				for (Skill skillRef : listSkill) {
-					if (skill.getId() == skillRef.getId()) {
-						int updatedVersion = skillRef.getVersion();
-						skill.setVersion(updatedVersion);
-					}
+		// pb with skills - BETTER TO TRANSFORM WITH ID SKILL and not the whole object skill
+		// Or add Version in the Dto
+		// Skill version to update
+		List<Skill> listSkill = skillRepository.findAll();
+		Set<Skill> listSkillToUpdate = u.getSkills();
+		for (Skill skill : listSkillToUpdate) {
+			for (Skill skillRef : listSkill) {
+				if (skill.getId() == skillRef.getId()) {
+					int updatedVersion = skillRef.getVersion();
+					skill.setVersion(updatedVersion);
 				}
 			}
-			u.setSkills(listSkillToUpdate);
+		}
+		u.setSkills(listSkillToUpdate);
+		u.setLocation(locationRepository.getOne(u.getLocation().getId()));
+		if (u.getId() != 0) {
 			u.setVersion(employeeRepository.getOne(u.getId()).getVersion());
 		}
 		u = employeeRepository.saveAndFlush(u);

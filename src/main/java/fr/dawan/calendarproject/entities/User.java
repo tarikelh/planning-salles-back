@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,10 +42,16 @@ public class User {
 	@Column(nullable = false, length = 150)
 	private String password;
 
-	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
-	private Set<Skill> skills;
+//	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+//	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
+//	inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
+//	private Set<Skill> skills = new HashSet<Skill>();
+	
+	@ManyToMany
+	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+	private Set<Skill> skills = new HashSet<Skill>();
 
+	
 	@Enumerated(EnumType.STRING)
 	private UserType type;
 

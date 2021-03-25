@@ -92,7 +92,9 @@ public class SkillServiceImpl implements SkillService {
 			}
 		}
 		s.setUsers(listUserToUpdate);
-		s.setVersion(skillRepository.getOne(s.getId()).getVersion());
+		if (s.getId() != 0) {
+			s.setVersion(skillRepository.getOne(s.getId()).getVersion());
+		}
 		s = skillRepository.saveAndFlush(s);
 		return DtoTools.convert(s, AvancedSkillDto.class);
 	}

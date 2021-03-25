@@ -30,22 +30,21 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionRepository interventionRepository;
-	
+
 	@Autowired
 	private LocationRepository locationRepository;
-	
+
 	@Autowired
 	private CourseRepository courseRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private InterventionCaretaker caretaker;
-	
+
 	@Autowired
 	private InterventionMementoRepository interventionMementoRepository;
-	
 
 	@Override
 	public List<InterventionDto> getAllInterventions() {
@@ -85,18 +84,20 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		//construire objet interventionMemento
+		// construire objet interventionMemento
 		InterventionMemento intMemento = new InterventionMemento();
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		//sauvegarder le memento
+		// sauvegarder le memento
 		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
 		interventionMementoRepository.saveAndFlush(intMemento);
-		//List<InterventionMemento> testList = interventionMementoRepository.findAll();
-		//pour récupérer la bonne version de chaque Objets appelés dans Intervention
+		// List<InterventionMemento> testList = interventionMementoRepository.findAll();
+		// pour récupérer la bonne version de chaque Objets appelés dans Intervention
 		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
 		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
 		interv.setUser(userRepository.getOne(interv.getUser().getId()));
-		interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
+		if (interv.getId() != 0) {
+			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
+		}
 		interventionRepository.saveAndFlush(interv);
 		return intervention;
 	}
@@ -118,12 +119,11 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getByCourseTitle(String title) {
 		List<Intervention> interventions = interventionRepository.findByCourseTitle(title);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
-
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
-		
+
 	}
 
 	@Override
