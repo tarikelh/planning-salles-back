@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.services;
 
+import java.util.Date;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -24,5 +25,8 @@ public interface InterventionService {
 	
 	//Method created for the test - to delete from here after?
 	public void getAllIntMementoCSV() throws Exception;
+	
+	//Method created for the test - to delete from here after?
+	public void getAllIntMementoCSVDates(Date dateStart, Date dateEnd) throws Exception;
 
 }

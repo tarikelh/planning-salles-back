@@ -27,7 +27,12 @@ public class InterventionMemento implements Cloneable {
 	//Verify with the group to set up the time >> change for TIMESTAMP in order to have date + time because can update the same day so we need to have the time
 	//Question : do they prefer to seperate the date and the time?
 	//Need to fix the time for FR
+	/*
 	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateCreatedState;
+	*/
+	
+	@Temporal(TemporalType.DATE)
 	private Date dateCreatedState;
 
 	//Do we really need version here?

@@ -1,10 +1,24 @@
 package fr.dawan.calendarproject.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +40,13 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
-	
+
 	@Autowired
 	private InterventionCaretaker caretaker;
-	
-	//private InterventionMemento interventionMemento;
-	
-	
+
+	@Value("${app.storagefolder}")
+	private String storagefolder;
+
 	// GET
 	@GetMapping(produces = "application/json")
 	public List<InterventionDto> getAll() {
@@ -44,16 +58,62 @@ public class InterventionController {
 	public InterventionDto getById(@PathVariable("id") long id) {
 		return interventionService.getById(id);
 	}
-	
+
 	// GET Memento >> Implemented for the CSV test
-	//Need to create a InterventionMemento controller (for now only this method)??
-	@GetMapping(value = "/memento")
+	// Need to create a InterventionMemento controller (for now only this method)??
+	@GetMapping(value = "/memento", produces = "text/csv")
 	public ResponseEntity<?> getAllMementoCSV() {
 		try {
+			// Create CSV
 			interventionService.getAllIntMementoCSV();
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("création csv InterventionMemento effectuée");
+			
+			// Return CSV
+			// change "interventionMementoDates.csv" for a parameter (in .properties?) here
+			// and in InterventionCaretaker
+			String filename = "interventionMemento.csv";
+			File file = new File(filename);
+			Path path = Paths.get(file.getAbsolutePath());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + filename + "\"");
+			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			headers.add("Pragma", "no-cache");
+			headers.add("Expires", "0");
+
+			return ResponseEntity.ok().headers(headers).contentLength(file.length())
+					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("création non réalisée");
+		}
+	}
+
+	// GET Memento between 2 dates >> Implemented for the CSV test
+	// Need to create a InterventionMemento controller (for now only this method)??
+	@GetMapping(value = "/memento-dates", produces = "text/csv")
+	public ResponseEntity<?> getAllMementoCSVDates(
+			@RequestParam("dateStart") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateStart,
+			@RequestParam("dateEnd") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateEnd) {
+		try {
+			// Create CSV
+			interventionService.getAllIntMementoCSVDates(dateStart, dateEnd);
+			// Return CSV
+			// change "interventionMementoDates.csv" for a parameter (in .properties?) here
+			// and in InterventionCaretaker
+			String filename = "interventionMementoDates.csv";
+			File file = new File(filename);
+			Path path = Paths.get(file.getAbsolutePath());
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + filename + "\"");
+			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			headers.add("Pragma", "no-cache");
+			headers.add("Expires", "0");
+
+			return ResponseEntity.ok().headers(headers).contentLength(file.length())
+					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
+
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("création csv non réalisée");
 		}
 	}
 
@@ -73,10 +133,10 @@ public class InterventionController {
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public InterventionDto save(@RequestBody InterventionDto intervention) {
 		try {
-			//TO CHECK
+			// TO CHECK
 			return interventionService.saveOrUpdate(intervention);
 		} catch (Exception e) {
-			e.printStackTrace(); //Pb lors de la création
+			e.printStackTrace(); // Pb lors de la création
 			return null;
 		}
 	}
@@ -88,7 +148,7 @@ public class InterventionController {
 			return interventionService.saveOrUpdate(intervention);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//throw e > ec
+			// throw e > ec
 			e.printStackTrace();
 			return null;
 		}

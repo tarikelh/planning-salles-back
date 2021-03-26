@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,9 +71,15 @@ public class InterventionServiceImpl implements InterventionService {
 		return interventionsDto;
 	}
 	
+	//For InterventionMemento CSV - to move in InterventionMementoServiceImpl ?
 	@Override
 	public void getAllIntMementoCSV() throws Exception {
 		CsvToolsGeneric.toCsv("interventionMemento.csv", caretaker.getAllMemento(), ";");
+	}
+	
+	//For InterventionMemento CSV between two dates - to move in InterventionMementoServiceImpl ?
+	public void getAllIntMementoCSVDates(Date dateStart, Date dateEnd) throws Exception {
+		CsvToolsGeneric.toCsv("interventionMementoDates.csv", caretaker.getAllMementoDates(dateStart, dateEnd), ";");
 	}
 
 	@Override
@@ -91,7 +98,6 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-
 		// Call last version of each objects called in Intervention and save Intervention
 		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
 		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
