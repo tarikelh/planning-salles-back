@@ -48,7 +48,9 @@ public class Intervention {
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
-
+	
+	private Intervention nextIntervention;
+	
 	@Version
 	private int version;
 
@@ -57,7 +59,7 @@ public class Intervention {
 	}
 	
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, Intervention nextIntervention, int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -67,6 +69,7 @@ public class Intervention {
 		setValidated(validated);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
+		setNextIntervention(nextIntervention);
 		setVersion(version);
 	}
 
@@ -122,11 +125,9 @@ public class Intervention {
 		return validated;
 	}
 
-
 	public void setValidated(boolean validated) {
 		this.validated = validated;
 	}
-
 
 	public LocalDate getDateStart() {
 		return dateStart;
@@ -144,6 +145,14 @@ public class Intervention {
 		this.dateEnd = dateEnd;
 	}
 	
+	public Intervention getNextIntervention() {
+		return nextIntervention;
+	}
+
+	public void setNextIntervention(Intervention nextIntervention) {
+		this.nextIntervention = nextIntervention;
+	}
+
 	public int getVersion() {
 		return version;
 	}
@@ -174,14 +183,10 @@ public class Intervention {
 		return true;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
-
-	
 }

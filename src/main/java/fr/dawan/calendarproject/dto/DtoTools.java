@@ -22,6 +22,7 @@ public class DtoTools {
 			mapper.map(src -> src.getLocation().getId(), InterventionDto::setLocationId);
 			mapper.map(src -> src.getCourse().getId(), InterventionDto::setCourseId);
 			mapper.map(src -> src.getCourse().getId(), InterventionDto::setCourseId);
+			mapper.map(src -> src.getNextIntervention().getId(), InterventionDto::setNextInterventionId);
 		});
 		
 		Converter<Set<Skill>, List<Long>> skillsToIdsList = new AbstractConverter<Set<Skill>, List<Long>>() {

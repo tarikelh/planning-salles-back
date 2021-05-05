@@ -4,28 +4,28 @@ import java.time.LocalDate;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
-
 public class InterventionDto implements Cloneable {
 
 	private long id;
-	
+
 	private String comment;
-	
+
 	private long locationId;
-	
+
 	private long courseId;
-	
+
 	private long userId;
-	
-	private InterventionStatus type; 
-	
+
+	private InterventionStatus type;
+
 	private boolean validated;
-	
+
 	private LocalDate dateStart;
 
 	private LocalDate dateEnd;
 
-	
+	private long nextInterventionId;
+
 	public long getId() {
 		return id;
 	}
@@ -98,9 +98,17 @@ public class InterventionDto implements Cloneable {
 		this.type = type;
 	}
 
+	public long getNextInterventionId() {
+		return nextInterventionId;
+	}
+
+	public void setNextInterventionId(long nextInterventionId) {
+		this.nextInterventionId = nextInterventionId;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-	
+
 }

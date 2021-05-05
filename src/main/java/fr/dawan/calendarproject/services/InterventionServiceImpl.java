@@ -102,6 +102,10 @@ public class InterventionServiceImpl implements InterventionService {
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
+	
+		if (intervention.getNextInterventionId() > 0) {
+			interv.setNextIntervention(interventionRepository.getOne(intervention.getNextInterventionId()));
+		}
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
