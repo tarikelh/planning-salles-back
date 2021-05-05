@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.AvancedUserDto;
+import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.services.UserService;
 
 @RestController
@@ -27,13 +27,13 @@ public class UserController {
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AvancedUserDto> getAll() {
+	public List<AdvancedUserDto> getAll() {
 		return userService.getAllUsers();
 	}
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public AvancedUserDto getById(@PathVariable("id") long id) {
+	public AdvancedUserDto getById(@PathVariable("id") long id) {
 		return userService.getById(id);
 	}
 
@@ -51,13 +51,13 @@ public class UserController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public AvancedUserDto save(@RequestBody AvancedUserDto user) {
+	public AdvancedUserDto save(@RequestBody AdvancedUserDto user) {
 		return userService.saveOrUpdate(user);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AvancedUserDto update(@RequestBody AvancedUserDto user) {
+	public AdvancedUserDto update(@RequestBody AdvancedUserDto user) {
 		return userService.saveOrUpdate(user);
 	}
 }

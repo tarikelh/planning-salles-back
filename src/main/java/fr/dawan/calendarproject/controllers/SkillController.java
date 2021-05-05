@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.AvancedSkillDto;
+import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.services.SkillService;
 
 @RestController
@@ -26,13 +26,13 @@ public class SkillController {
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AvancedSkillDto> getAll() {
+	public List<AdvancedSkillDto> getAll() {
 		return skillService.getAllSkills();
 	}
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public AvancedSkillDto getById(@PathVariable("id") long id) {
+	public AdvancedSkillDto getById(@PathVariable("id") long id) {
 		return skillService.getById(id);
 	}
 
@@ -50,13 +50,13 @@ public class SkillController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public AvancedSkillDto save(@RequestBody AvancedSkillDto skill) {
+	public AdvancedSkillDto save(@RequestBody AdvancedSkillDto skill) {
 		return skillService.saveOrUpdate(skill);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AvancedSkillDto update(@RequestBody AvancedSkillDto skill) {
+	public AdvancedSkillDto update(@RequestBody AdvancedSkillDto skill) {
 		return skillService.saveOrUpdate(skill);
 	}
 }

@@ -10,7 +10,7 @@ import javax.persistence.Version;
 
 @Entity
 public class Course {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;

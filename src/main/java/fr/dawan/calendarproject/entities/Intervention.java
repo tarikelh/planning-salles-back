@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
@@ -44,14 +42,12 @@ public class Intervention {
 	private boolean validated;
 
 	// dateDebut, dateFin, many interv to one Employe, many interv. to one
-	@Column(nullable = false)
-	@Temporal(TemporalType.DATE)
-	private Date dateStart;
+	@Column(nullable = false, columnDefinition = "DATE")
+	private LocalDate dateStart;
 
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-	@Column(nullable = false)
-	@Temporal(TemporalType.DATE)
-	private Date dateEnd;
+	@Column(nullable = false, columnDefinition = "DATE")
+	private LocalDate dateEnd;
 
 	@Version
 	private int version;
@@ -61,7 +57,7 @@ public class Intervention {
 	}
 	
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, Date dateStart, Date dateEnd, int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -118,13 +114,9 @@ public class Intervention {
 		return type;
 	}
 
-
-
 	public void setType(InterventionStatus type) {
 		this.type = type;
 	}
-
-
 
 	public boolean isValidated() {
 		return validated;
@@ -136,19 +128,19 @@ public class Intervention {
 	}
 
 
-	public Date getDateStart() {
+	public LocalDate getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(Date dateStart) {
+	public void setDateStart(LocalDate dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public Date getDateEnd() {
+	public LocalDate getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(Date dateEnd) throws IllegalArgumentException {
+	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 	

@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import fr.dawan.calendarproject.dto.AvancedSkillDto;
+import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
@@ -35,32 +36,32 @@ public class SkillServiceImpl implements SkillService {
 	LocationRepository locationRepository;
 
 	@Override
-	public List<AvancedSkillDto> getAllSkills() {
+	public List<AdvancedSkillDto> getAllSkills() {
 		List<Skill> skills = skillRepository.findAll();
-		List<AvancedSkillDto> result = new ArrayList<AvancedSkillDto>();
+		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(DtoTools.convert(s, AvancedSkillDto.class));
+			result.add(DtoTools.convert(s, AdvancedSkillDto.class));
 		}
 
 		return result;
 	}
 
 	@Override
-	public List<AvancedSkillDto> getAllSkills(int page, int max) {
+	public List<AdvancedSkillDto> getAllSkills(int page, int max) {
 		List<Skill> skills = skillRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
-		List<AvancedSkillDto> result = new ArrayList<AvancedSkillDto>();
+		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(DtoTools.convert(s, AvancedSkillDto.class));
+			result.add(DtoTools.convert(s, AdvancedSkillDto.class));
 		}
 		return result;
 	}
 
 	@Override
-	public AvancedSkillDto getById(long id) {
+	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		return DtoTools.convert(skill.get(), AvancedSkillDto.class);
+		return DtoTools.convert(skill.get(), AdvancedSkillDto.class);
 	}
 
 	@Override
@@ -69,34 +70,20 @@ public class SkillServiceImpl implements SkillService {
 	}
 
 	@Override
-	public AvancedSkillDto saveOrUpdate(AvancedSkillDto skill) {
+	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
 		Skill s = DtoTools.convert(skill, Skill.class);
-		// pb with users - BETTER TO TRANSFORM WITH ID User and not the whole object user
-		//Or add Version in the Dto
-		// Skill version to update
-		List<User> listUser = userRepository.findAll();
-		List<Location> listLoc = locationRepository.findAll();
-		Set<User> listUserToUpdate = s.getUsers();
-		for (User user : listUserToUpdate) {
-			for (User userRef : listUser) {
-				if (user.getId() == userRef.getId()) {
-					int updatedUserVersion = userRef.getVersion();
-					user.setVersion(updatedUserVersion);
-				}
-			}
-			for (Location loc : listLoc) {
-				if(user.getLocation().getId() == loc.getId()) {
-					int updatedLocVersion = loc.getVersion();
-					user.getLocation().setVersion(updatedLocVersion);
-				}
-			}
-		}
-		s.setUsers(listUserToUpdate);
+		
+		Set<User> usersList = new HashSet<User>();
+		skill.getUsersId().forEach(id -> {
+			usersList.add(userRepository.getOne(id));
+		});
+		s.setUsers(usersList);
+
 		if (s.getId() != 0) {
 			s.setVersion(skillRepository.getOne(s.getId()).getVersion());
 		}
 		s = skillRepository.saveAndFlush(s);
-		return DtoTools.convert(s, AvancedSkillDto.class);
+		return DtoTools.convert(s, AdvancedSkillDto.class);
 	}
 
 	@Override

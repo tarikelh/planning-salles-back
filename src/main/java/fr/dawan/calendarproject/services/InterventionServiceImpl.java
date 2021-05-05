@@ -99,9 +99,9 @@ public class InterventionServiceImpl implements InterventionService {
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
 		// Call last version of each objects called in Intervention and save Intervention
-		interv.setLocation(locationRepository.getOne(interv.getLocation().getId()));
-		interv.setCourse(courseRepository.getOne(interv.getCourse().getId()));
-		interv.setUser(userRepository.getOne(interv.getUser().getId()));
+		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
+		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
+		interv.setUser(userRepository.getOne(intervention.getUserId()));
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}

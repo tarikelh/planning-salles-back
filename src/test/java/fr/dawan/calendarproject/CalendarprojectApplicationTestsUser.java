@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.controllers.UserController;
-import fr.dawan.calendarproject.dto.AvancedUserDto;
+import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.enums.UserType;
 
 @SpringBootTest
@@ -79,7 +79,7 @@ class CalendarprojectApplicationTestsUser {
 			String jsonRep = new String(arr, StandardCharsets.UTF_8);
 
 			// transform le String en ContactDto
-			AvancedUserDto empDto = objectMapper.readValue(jsonRep, AvancedUserDto.class);
+			AdvancedUserDto empDto = objectMapper.readValue(jsonRep, AdvancedUserDto.class);
 
 			assertEquals("Admin", empDto.getFirstName());
 
@@ -91,7 +91,7 @@ class CalendarprojectApplicationTestsUser {
 	@Test
 	void testSave() {
 		try {
-			AvancedUserDto empToInsert = new AvancedUserDto();
+			AdvancedUserDto empToInsert = new AdvancedUserDto();
 			empToInsert.setFirstName("Jade");
 			empToInsert.setType(UserType.COMMERCIAL);
 
@@ -104,7 +104,7 @@ class CalendarprojectApplicationTestsUser {
 					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 			String jsonReponse = new String(jsonReponseBytes, StandardCharsets.UTF_8);
 
-			AvancedUserDto empDto = objectMapper.readValue(jsonReponse, AvancedUserDto.class);
+			AdvancedUserDto empDto = objectMapper.readValue(jsonReponse, AdvancedUserDto.class);
 			assertTrue(empDto.getId() != 0);
 
 		} catch (Exception e) {
@@ -117,7 +117,7 @@ class CalendarprojectApplicationTestsUser {
 		try {
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-			AvancedUserDto empToupdate = employeeController.getById(2);
+			AdvancedUserDto empToupdate = employeeController.getById(2);
 			empToupdate.setFirstName("AhmedModif");
 			empToupdate.setType(UserType.ADMINISTRATIF);
 
@@ -128,7 +128,7 @@ class CalendarprojectApplicationTestsUser {
 					.accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
 					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-			AvancedUserDto empDto = objectMapper.readValue(jsonReponse, AvancedUserDto.class);
+			AdvancedUserDto empDto = objectMapper.readValue(jsonReponse, AdvancedUserDto.class);
 			assertEquals(2, empDto.getId());
 			assertEquals("AhmedModif", empDto.getFirstName());
 

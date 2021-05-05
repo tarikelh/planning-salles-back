@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.controllers.SkillController;
-import fr.dawan.calendarproject.dto.AvancedSkillDto;
+import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -77,7 +77,7 @@ class CalendarprojectApplicationTestsSkill {
 			String jsonRep = new String(arr, StandardCharsets.UTF_8);
 
 			// transform le String en ContactDto
-			AvancedSkillDto sDto = objectMapper.readValue(jsonRep, AvancedSkillDto.class);
+			AdvancedSkillDto sDto = objectMapper.readValue(jsonRep, AdvancedSkillDto.class);
 
 			assertEquals("Angular", sDto.getTitle());
 
@@ -90,7 +90,7 @@ class CalendarprojectApplicationTestsSkill {
 	@Test
 	void testSave() {
 		try {
-			AvancedSkillDto skillToInsert = new AvancedSkillDto();
+			AdvancedSkillDto skillToInsert = new AdvancedSkillDto();
 			skillToInsert.setTitle("C#");
 
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
@@ -102,7 +102,7 @@ class CalendarprojectApplicationTestsSkill {
 					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 			String jsonReponse = new String(jsonReponseBytes, StandardCharsets.UTF_8);
 
-			AvancedSkillDto sDto = objectMapper.readValue(jsonReponse, AvancedSkillDto.class);
+			AdvancedSkillDto sDto = objectMapper.readValue(jsonReponse, AdvancedSkillDto.class);
 			assertTrue(sDto.getId() != 0);
 
 		} catch (Exception e) {
@@ -117,7 +117,7 @@ class CalendarprojectApplicationTestsSkill {
 
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-			AvancedSkillDto skillToupdate = skillController.getById(3);
+			AdvancedSkillDto skillToupdate = skillController.getById(3);
 			skillToupdate.setTitle("C# et .NET");;
 
 			String jsonReq = objectMapper.writeValueAsString(skillToupdate);
@@ -127,7 +127,7 @@ class CalendarprojectApplicationTestsSkill {
 					.accept(MediaType.APPLICATION_JSON) // produces MIME TYPE
 					.content(jsonReq)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-			AvancedSkillDto sDto = objectMapper.readValue(jsonReponse, AvancedSkillDto.class);
+			AdvancedSkillDto sDto = objectMapper.readValue(jsonReponse, AdvancedSkillDto.class);
 			assertEquals(3, sDto.getId());
 			assertEquals("C# et .NET", sDto.getTitle());
 

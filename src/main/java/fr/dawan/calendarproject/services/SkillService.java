@@ -2,19 +2,19 @@ package fr.dawan.calendarproject.services;
 
 import java.util.List;
 
-import fr.dawan.calendarproject.dto.AvancedSkillDto;
+import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 
 public interface SkillService {
 
-	List<AvancedSkillDto> getAllSkills();
+	List<AdvancedSkillDto> getAllSkills();
 
-	List<AvancedSkillDto> getAllSkills(int page, int max);
+	List<AdvancedSkillDto> getAllSkills(int page, int max);
 
-	AvancedSkillDto getById(long id);
+	AdvancedSkillDto getById(long id);
 
 	void deleteById(long id);
 
-	AvancedSkillDto saveOrUpdate(AvancedSkillDto skill);
+	AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill);
 
 	long count();
 

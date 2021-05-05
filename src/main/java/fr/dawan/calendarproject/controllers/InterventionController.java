@@ -1,9 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -12,9 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -132,6 +127,7 @@ public class InterventionController {
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	public InterventionDto save(@RequestBody InterventionDto intervention) {
+		
 		try {
 			// TO CHECK
 			return interventionService.saveOrUpdate(intervention);
@@ -150,6 +146,7 @@ public class InterventionController {
 			// TODO Auto-generated catch block
 			// throw e > ec
 			e.printStackTrace();
+			ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getStackTrace());
 			return null;
 		}
 	}

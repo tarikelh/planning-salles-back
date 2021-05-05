@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
@@ -11,19 +11,19 @@ public class InterventionDto implements Cloneable {
 	
 	private String comment;
 	
-	private LocationDto location;
+	private long locationId;
 	
-	private CourseDto course;
+	private long courseId;
 	
-	private AvancedUserDto user;
+	private long userId;
 	
 	private InterventionStatus type; 
 	
 	private boolean validated;
+	
+	private LocalDate dateStart;
 
-	private Date dateStart;
-
-	private Date dateEnd;
+	private LocalDate dateEnd;
 
 	
 	public long getId() {
@@ -34,19 +34,19 @@ public class InterventionDto implements Cloneable {
 		this.id = id;
 	}
 
-	public Date getDateStart() {
+	public LocalDate getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(Date dateStart) {
+	public void setDateStart(LocalDate dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public Date getDateEnd() {
+	public LocalDate getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(Date dateEnd) {
+	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 
@@ -58,30 +58,30 @@ public class InterventionDto implements Cloneable {
 		this.comment = comment;
 	}
 
-	public AvancedUserDto getUser() {
-		return user;
+	public long getLocationId() {
+		return locationId;
 	}
 
-	public void setUser(AvancedUserDto user) {
-		this.user = user;
+	public void setLocationId(long locationId) {
+		this.locationId = locationId;
 	}
 
-	public CourseDto getCourse() {
-		return course;
+	public long getCourseId() {
+		return courseId;
 	}
 
-	public void setCourse(CourseDto course) {
-		this.course = course;
+	public void setCourseId(long courseId) {
+		this.courseId = courseId;
 	}
 
-	public LocationDto getLocation() {
-		return location;
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setLocation(LocationDto location) {
-		this.location = location;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
-	
+
 	public boolean isValidated() {
 		return validated;
 	}
