@@ -11,7 +11,7 @@ public class UserDto {
 	
 	private String lastName;
 
-	private LocationDto location;
+	private long locationId;
 
 	private String email;
 	
@@ -47,12 +47,12 @@ public class UserDto {
 		this.lastName = lastName;
 	}
 
-	public LocationDto getLocation() {
-		return location;
+	public long getLocationId() {
+		return locationId;
 	}
 
-	public void setLocation(LocationDto location) {
-		this.location = location;
+	public void setLocationId(long locationId) {
+		this.locationId = locationId;
 	}
 
 	public String getEmail() {

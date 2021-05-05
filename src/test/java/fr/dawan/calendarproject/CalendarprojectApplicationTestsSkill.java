@@ -58,7 +58,7 @@ class CalendarprojectApplicationTestsSkill {
 	void testFindAll() {
 		try {
 			mockMvc.perform(get("/api/skills").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-					.andExpect(jsonPath("$[0].title", is("Angular")));
+				.andExpect(jsonPath("$[0].title", is("Angular")));
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}

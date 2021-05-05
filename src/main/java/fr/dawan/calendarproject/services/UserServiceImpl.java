@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 		});
 		u.setSkills(skillsList);
 
-		u.setLocation(locationRepository.getOne(u.getLocation().getId()));
+		u.setLocation(locationRepository.getOne(user.getLocationId()));
 		if (u.getId() != 0) {
 			u.setVersion(userRepository.getOne(u.getId()).getVersion());
 		}

@@ -23,7 +23,7 @@ public class DtoTools {
 			mapper.map(src -> src.getCourse().getId(), InterventionDto::setCourseId);
 			mapper.map(src -> src.getCourse().getId(), InterventionDto::setCourseId);
 		});
-
+		
 		Converter<Set<Skill>, List<Long>> skillsToIdsList = new AbstractConverter<Set<Skill>, List<Long>>() {
 			@Override
 			protected List<Long> convert(Set<Skill> context) {
@@ -39,6 +39,7 @@ public class DtoTools {
 
 		myMapper.typeMap(User.class, AdvancedUserDto.class).addMappings(mapper -> {
 			mapper.using(skillsToIdsList).map(User::getSkills, AdvancedUserDto::setSkillsId);
+			mapper.map(src -> src.getLocation().getId(), AdvancedUserDto::setLocationId);
 		});
 
 
