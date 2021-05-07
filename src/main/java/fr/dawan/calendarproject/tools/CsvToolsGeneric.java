@@ -18,7 +18,8 @@ public class CsvToolsGeneric {
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("long")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("double")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("String")
-							|| fields[i].getType().getSimpleName().equalsIgnoreCase("Date")) {
+							|| fields[i].getType().getSimpleName().equalsIgnoreCase("LocalDate")
+							|| fields[i].getType().getSimpleName().equalsIgnoreCase("LocalDateTime")) {
 						bw.write(fields[i].getName());
 						if (i < fields.length - 1) {
 							bw.write(separator);

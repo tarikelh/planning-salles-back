@@ -1,12 +1,11 @@
 package fr.dawan.calendarproject.entities;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,14 +48,15 @@ public class InterventionCaretaker {
 		return intMementoRepository.findAll();
 	}
 	
-	public List<InterventionMemento> getAllMementoDates(Date dateStart, Date dateEnd) {
+	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
 		List<InterventionMemento> lstMem = intMementoRepository.findAll();
 		List<InterventionMemento> lstMemDates = new ArrayList<InterventionMemento>();
-		//Can improve the comparaison between two dates with a CompareTo > check with the group what they prefer
-		Date dateStartInclusive = DateUtils.addDays(dateStart, -1);
-		Date dateEndInclusive = DateUtils.addDays(dateEnd, +1);
+		//Can improve the comparison between two dates with a CompareTo > check with the group what they prefer
+		LocalDate dateStartInclusive = dateStart.minusDays(1);
+		LocalDate dateEndInclusive = dateEnd.plusDays(1);
 		for (InterventionMemento interventionMemento : lstMem) {
-			if(interventionMemento.getDateCreatedState().after(dateStartInclusive) && interventionMemento.getDateCreatedState().before(dateEndInclusive)) {
+			LocalDate mementoDate = interventionMemento.getDateCreatedState().toLocalDate();
+			if(mementoDate.isAfter(dateStartInclusive) && mementoDate.isBefore(dateEndInclusive)) {
 				lstMemDates.add(interventionMemento);
 			}
 		}

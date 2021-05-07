@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Embeddable;
 
@@ -21,17 +21,19 @@ public class InterventionMementoDto implements Cloneable {
 	
 	private InterventionStatus type; 
 	
-	private boolean isValidated; //change to confirmStatus name
+	private boolean validated; //change to confirmStatus name
 
-	private Date dateStart;
+	private LocalDate dateStart;
 
-	private Date dateEnd;
-
+	private LocalDate dateEnd;
 	
+	private long masterInterventionId;
+	
+	private boolean isMaster;
+
 	public long getInterventionId() {
 		return interventionId;
 	}
-
 
 	public void setInterventionId(long interventionId) {
 		this.interventionId = interventionId;
@@ -68,22 +70,22 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 
-	public Date getDateStart() {
+	public LocalDate getDateStart() {
 		return dateStart;
 	}
 
 
-	public void setDateStart(Date dateStart) {
+	public void setDateStart(LocalDate dateStart) {
 		this.dateStart = dateStart;
 	}
 
 
-	public Date getDateEnd() {
+	public LocalDate getDateEnd() {
 		return dateEnd;
 	}
 
 
-	public void setDateEnd(Date dateEnd) {
+	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 
@@ -108,13 +110,31 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 
-	public boolean isValidated() {
-		return isValidated;
+	public boolean getValidated() {
+		return validated;
 	}
 
 
-	public void setValidated(boolean isValidated) {
-		this.isValidated = isValidated;
+	public void setValidated(boolean validated) {
+		this.validated = validated;
+	}
+
+	public long getMasterInterventionId() {
+		return masterInterventionId;
+	}
+
+
+	public void setMasterInterventionId(long masterInterventionId) {
+		this.masterInterventionId = masterInterventionId;
+	}
+
+	public boolean isMaster() {
+		return isMaster;
+	}
+
+
+	public void setMaster(boolean isMaster) {
+		this.isMaster = isMaster;
 	}
 
 
@@ -138,11 +158,15 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(";");
 		builder.append(type);
 		builder.append(";");
-		builder.append(isValidated);
+		builder.append(validated);
 		builder.append(";");
 		builder.append(dateStart);
 		builder.append(";");
 		builder.append(dateEnd);
+		builder.append(";");
+		builder.append(masterInterventionId);
+		builder.append(";");
+		builder.append(isMaster);
 		return builder.toString();
 	}
 	

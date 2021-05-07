@@ -1,9 +1,8 @@
 package fr.dawan.calendarproject.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -70,15 +68,16 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 		return interventionsDto;
 	}
-	
-	//For InterventionMemento CSV - to move in InterventionMementoServiceImpl ?
+
+	// For InterventionMemento CSV - to move in InterventionMementoServiceImpl ?
 	@Override
 	public void getAllIntMementoCSV() throws Exception {
 		CsvToolsGeneric.toCsv("interventionMemento.csv", caretaker.getAllMemento(), ";");
 	}
-	
-	//For InterventionMemento CSV between two dates - to move in InterventionMementoServiceImpl ?
-	public void getAllIntMementoCSVDates(Date dateStart, Date dateEnd) throws Exception {
+
+	// For InterventionMemento CSV between two dates - to move in
+	// InterventionMementoServiceImpl ?
+	public void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
 		CsvToolsGeneric.toCsv("interventionMementoDates.csv", caretaker.getAllMementoDates(dateStart, dateEnd), ";");
 	}
 
@@ -98,14 +97,14 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		// Call last version of each objects called in Intervention and save Intervention
+		// Call last version of each objects called in Intervention and save
+		// Intervention
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
-	
-		if (intervention.getNextInterventionId() > 0) {
-			interv.setNextIntervention(interventionRepository.getOne(intervention.getNextInterventionId()));
-		}
+		if (intervention.getMasterInterventionId() > 0)
+			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
+
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
@@ -119,7 +118,8 @@ public class InterventionServiceImpl implements InterventionService {
 		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
 		interventionMementoRepository.saveAndFlush(intMemento);
 
-		return DtoTools.convert(interv, InterventionDto.class);
+//		return DtoTools.convert(interv, InterventionDto.class);
+		return intervention;
 	}
 
 	// Search
@@ -143,7 +143,6 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
-
 	}
 
 	@Override

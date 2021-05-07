@@ -24,7 +24,9 @@ public class InterventionDto implements Cloneable {
 
 	private LocalDate dateEnd;
 
-	private long nextInterventionId;
+	private long masterInterventionId;
+
+	private boolean isMaster;
 
 	public long getId() {
 		return id;
@@ -98,12 +100,20 @@ public class InterventionDto implements Cloneable {
 		this.type = type;
 	}
 
-	public long getNextInterventionId() {
-		return nextInterventionId;
+	public long getMasterInterventionId() {
+		return masterInterventionId;
 	}
 
-	public void setNextInterventionId(long nextInterventionId) {
-		this.nextInterventionId = nextInterventionId;
+	public void setMasterInterventionId(long masterId) {
+		this.masterInterventionId = masterId;
+	}
+
+	public boolean isMaster() {
+		return isMaster;
+	}
+
+	public void setMaster(boolean isMaster) {
+		this.isMaster = isMaster;
 	}
 
 	@Override

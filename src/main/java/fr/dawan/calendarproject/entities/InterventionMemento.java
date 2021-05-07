@@ -1,14 +1,12 @@
 package fr.dawan.calendarproject.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -32,22 +30,21 @@ public class InterventionMemento implements Cloneable {
 	private Date dateCreatedState;
 	*/
 	
-	@Temporal(TemporalType.DATE)
-	private Date dateCreatedState;
+	private LocalDateTime dateCreatedState;
 
 	//Do we really need version here?
 	@Version
 	private int version;
 
 	public InterventionMemento() {
-		this.dateCreatedState = new Date();
+		this.dateCreatedState = LocalDateTime.now();
 	}
 
 	// rôle sauvegarde de l'état
 	// vérifier pour la date
 	public InterventionMemento(InterventionMementoDto state) {
 		this.state = state;
-		this.dateCreatedState = new Date();
+		this.dateCreatedState = LocalDateTime.now();
 	}
 	
 
@@ -67,11 +64,11 @@ public class InterventionMemento implements Cloneable {
 		this.id = id;
 	}
 
-	public Date getDateCreatedState() {
+	public LocalDateTime getDateCreatedState() {
 		return dateCreatedState;
 	}
 
-	public void setDateCreatedState(Date dateCreatedState) {
+	public void setDateCreatedState(LocalDateTime dateCreatedState) {
 		this.dateCreatedState = dateCreatedState;
 	}
 

@@ -3,7 +3,8 @@ package fr.dawan.calendarproject.controllers;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -86,8 +87,8 @@ public class InterventionController {
 	// Need to create a InterventionMemento controller (for now only this method)??
 	@GetMapping(value = "/memento-dates", produces = "text/csv")
 	public ResponseEntity<?> getAllMementoCSVDates(
-			@RequestParam("dateStart") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateStart,
-			@RequestParam("dateEnd") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateEnd) {
+			@RequestParam("dateStart") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateStart,
+			@RequestParam("dateEnd") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateEnd) {
 		try {
 			// Create CSV
 			interventionService.getAllIntMementoCSVDates(dateStart, dateEnd);

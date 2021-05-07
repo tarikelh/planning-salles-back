@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
@@ -17,7 +21,7 @@ import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
 public class Intervention {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -37,7 +41,7 @@ public class Intervention {
 
 	@Enumerated(EnumType.STRING)
 	private InterventionStatus type;
-	
+
 	@Column(nullable = false)
 	private boolean validated;
 
@@ -48,8 +52,11 @@ public class Intervention {
 	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
+
+	@ManyToOne
+	private Intervention masterIntervention;
 	
-	private Intervention nextIntervention;
+	private boolean isMaster;
 	
 	@Version
 	private int version;
@@ -57,9 +64,10 @@ public class Intervention {
 	// Constructor important pour la sérialization (exemple Jackson)
 	public Intervention() {
 	}
-	
+
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, Intervention nextIntervention, int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster, Intervention masterIntervention,
+			int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -69,7 +77,8 @@ public class Intervention {
 		setValidated(validated);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
-		setNextIntervention(nextIntervention);
+		setMasterIntervention(masterIntervention);
+		setMaster(isMaster);
 		setVersion(version);
 	}
 
@@ -145,12 +154,20 @@ public class Intervention {
 		this.dateEnd = dateEnd;
 	}
 	
-	public Intervention getNextIntervention() {
-		return nextIntervention;
+	public Intervention getMasterIntervention() {
+		return masterIntervention;
 	}
 
-	public void setNextIntervention(Intervention nextIntervention) {
-		this.nextIntervention = nextIntervention;
+	public void setMasterIntervention(Intervention masterIntervention) {
+		this.masterIntervention = masterIntervention;
+	}
+
+	public boolean isMaster() {
+		return isMaster;
+	}
+
+	public void setMaster(boolean isMaster) {
+		this.isMaster = isMaster;
 	}
 
 	public int getVersion() {
@@ -160,7 +177,7 @@ public class Intervention {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
