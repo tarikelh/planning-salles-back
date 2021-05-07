@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Da Calendar Log Files ###
+interventionMementoDates.csv
