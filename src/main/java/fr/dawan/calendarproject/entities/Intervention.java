@@ -1,7 +1,8 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,15 +12,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+
 import javax.persistence.Version;
 
+import fr.dawan.calendarproject.annotations.DatesSequenceValidation;
 import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.exceptions.BadInterventionFormatException;
 
 @Entity
+@DatesSequenceValidation(startField = "dateStart", endField = "dateEnd")
 public class Intervention {
 
 	@Id
@@ -55,19 +57,19 @@ public class Intervention {
 
 	@ManyToOne
 	private Intervention masterIntervention;
-	
+
 	private boolean isMaster;
-	
+
 	@Version
 	private int version;
 
 	// Constructor important pour la sérialization (exemple Jackson)
-	public Intervention() {
+	public Intervention() throws Exception {
 	}
 
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster, Intervention masterIntervention,
-			int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster,
+			Intervention masterIntervention, int version) throws Exception {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -150,10 +152,10 @@ public class Intervention {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) {
+	public void setDateEnd(LocalDate dateEnd) throws IllegalArgumentException {
 		this.dateEnd = dateEnd;
 	}
-	
+
 	public Intervention getMasterIntervention() {
 		return masterIntervention;
 	}
@@ -205,5 +207,26 @@ public class Intervention {
 		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
+	}
+
+	public static void checkIntegrity(Intervention i) throws BadInterventionFormatException {
+		Map<String, String> errors = new HashMap<String, String>();
+		
+//		if (i.getDateStart().isAfter(i.getDateEnd()))
+//			errors.put("BadDatesSequence", "Start date must be before en end date.");
+
+		if (i.isMaster() == true && i.getMasterIntervention() != null)
+			errors.put("MasterInterventionLoop", "A master intervention cannot has a master intervention.");
+		
+		if (!errors.isEmpty()) {
+			StringBuilder errorString = new StringBuilder();
+			errors.forEach((k, v) -> {
+				errorString.append(k);
+				errorString.append(": ");
+				errorString.append(v);
+			});
+			
+			throw new BadInterventionFormatException(errorString.toString());
+		}
 	}
 }

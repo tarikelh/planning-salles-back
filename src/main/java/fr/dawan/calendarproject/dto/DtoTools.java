@@ -8,7 +8,6 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 
-import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 

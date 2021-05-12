@@ -97,17 +97,18 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		// Call last version of each objects called in Intervention and save
-		// Intervention
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
+
 		if (intervention.getMasterInterventionId() > 0)
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
+		Intervention.checkIntegrity(interv);
+		
 		interv = interventionRepository.saveAndFlush(interv);
 
 		// Memento creation
@@ -115,11 +116,15 @@ public class InterventionServiceImpl implements InterventionService {
 		InterventionMemento intMemento = new InterventionMemento();
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
 		// Save memento
-		caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		try {
+			caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		interventionMementoRepository.saveAndFlush(intMemento);
 
-//		return DtoTools.convert(interv, InterventionDto.class);
-		return intervention;
+		return DtoTools.convert(interv, InterventionDto.class);
 	}
 
 	// Search
