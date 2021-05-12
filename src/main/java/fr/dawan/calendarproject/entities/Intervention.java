@@ -2,7 +2,9 @@ package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,8 +19,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
 import fr.dawan.calendarproject.annotations.DatesSequenceValidation;
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.enums.InterventionStatus;
-import fr.dawan.calendarproject.exceptions.BadInterventionFormatException;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 
 @Entity
 @DatesSequenceValidation(startField = "dateStart", endField = "dateEnd")
@@ -209,24 +212,21 @@ public class Intervention {
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
 
-	public static void checkIntegrity(Intervention i) throws BadInterventionFormatException {
-		Map<String, String> errors = new HashMap<String, String>();
-		
-//		if (i.getDateStart().isAfter(i.getDateEnd()))
-//			errors.put("BadDatesSequence", "Start date must be before en end date.");
+	public static boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
+		Set<APIError> errors = new HashSet<APIError>();
+		String instanceClass = i.getClass().toString();
+
+		if (i.getDateStart().isAfter(i.getDateEnd()))
+			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before en end date."));
 
 		if (i.isMaster() == true && i.getMasterIntervention() != null)
-			errors.put("MasterInterventionLoop", "A master intervention cannot has a master intervention.");
-		
+			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
+					"A master intervention cannot has a master intervention."));
+
 		if (!errors.isEmpty()) {
-			StringBuilder errorString = new StringBuilder();
-			errors.forEach((k, v) -> {
-				errorString.append(k);
-				errorString.append(": ");
-				errorString.append(v);
-			});
-			
-			throw new BadInterventionFormatException(errorString.toString());
+			throw new InvalidInterventionFormatException(errors);
 		}
+
+		return true;
 	}
 }

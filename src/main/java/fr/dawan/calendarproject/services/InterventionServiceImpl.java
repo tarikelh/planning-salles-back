@@ -107,23 +107,23 @@ public class InterventionServiceImpl implements InterventionService {
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
-		Intervention.checkIntegrity(interv);
 		
-		interv = interventionRepository.saveAndFlush(interv);
-
-		// Memento creation
-		// Build interventionMemento object
-		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		// Save memento
-		try {
-			caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (Intervention.checkIntegrity(interv)) {
+			interv = interventionRepository.saveAndFlush(interv);
+			
+			// Memento creation
+			// Build interventionMemento object
+			InterventionMemento intMemento = new InterventionMemento();
+			intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
+			// Save memento
+			try {
+				caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			interventionMementoRepository.saveAndFlush(intMemento);
 		}
-		interventionMementoRepository.saveAndFlush(intMemento);
-
 		return DtoTools.convert(interv, InterventionDto.class);
 	}
 

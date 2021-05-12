@@ -9,7 +9,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
-import fr.dawan.calendarproject.exceptions.BadInterventionFormatException;
 import fr.dawan.calendarproject.services.InterventionService;
 
 @RestController
@@ -133,35 +129,14 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@RequestBody InterventionDto intervention) {
-
-		try {
-			// TO CHECK
-			return interventionService.saveOrUpdate(intervention);
-		} catch (Exception e) {
-			e.printStackTrace(); // Pb lors de la création
-			return null;
-		}
+	public InterventionDto save(@Valid @RequestBody InterventionDto intervention) throws Exception {
+		return interventionService.saveOrUpdate(intervention);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
 	public InterventionDto update(@Valid @RequestBody InterventionDto intervention, BindingResult br) throws Exception {
 		return interventionService.saveOrUpdate(intervention);
-//		throw new BadInterventionFormatException("COUCOU JE SUIS UNE ERREUR 2");
-//		try {
-////			if (br.hasErrors()) {
-////				br.getAllErrors().forEach(e -> System.out.println(e));
-////				System.out.println("date non valides");
-////				return null;
-////			} else {
-////			}
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			// throw e > ec
-//			e.printStackTrace();
-//			return null;
-//		}
 	}
 
 	// Search

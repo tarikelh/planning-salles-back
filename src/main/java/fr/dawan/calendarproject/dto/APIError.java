@@ -1,23 +1,41 @@
 package fr.dawan.calendarproject.dto;
 
-import org.springframework.http.HttpStatus;
-
 public class APIError {
 
-	private HttpStatus status;
+	private int errorCode;
+	private String instanceClass;
+	private String type;
 	private String message;
 
-	public APIError(HttpStatus internalServerError, String message) {
-		this.status = internalServerError;
-		this.message = message;
+	public APIError(int errorCode, String instanceClass, String type, String message) {
+		setErrorCode(errorCode);
+		setInstanceClass(instanceClass);
+		setType(type);
+		setMessage(message);
 	}
 
-	public HttpStatus getStatus() {
-		return status;
+	public int getErrorCode() {
+		return errorCode;
 	}
 
-	public void setStatus(HttpStatus status) {
-		this.status = status;
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getInstanceClass() {
+		return instanceClass;
+	}
+
+	public void setInstanceClass(String instanceClass) {
+		this.instanceClass = instanceClass;
 	}
 
 	public String getMessage() {
