@@ -2,8 +2,10 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -97,6 +100,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
+		
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
@@ -108,22 +112,21 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
 		
-		if (Intervention.checkIntegrity(interv)) {
-			interv = interventionRepository.saveAndFlush(interv);
-			
-			// Memento creation
-			// Build interventionMemento object
-			InterventionMemento intMemento = new InterventionMemento();
-			intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-			// Save memento
-			try {
-				caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			interventionMementoRepository.saveAndFlush(intMemento);
+		Intervention.checkIntegrity(interv);
+		interv = interventionRepository.saveAndFlush(interv);
+
+		// Memento creation
+		// Build interventionMemento object
+		InterventionMemento intMemento = new InterventionMemento();
+		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
+		// Save memento
+		try {
+			caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		interventionMementoRepository.saveAndFlush(intMemento);
 		return DtoTools.convert(interv, InterventionDto.class);
 	}
 

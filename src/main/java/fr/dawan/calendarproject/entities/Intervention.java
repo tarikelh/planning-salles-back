@@ -1,9 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -215,14 +213,19 @@ public class Intervention {
 	public static boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = i.getClass().toString();
+		String path = "/api/interventions"; 
 
 		if (i.getDateStart().isAfter(i.getDateEnd()))
-			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before en end date."));
+			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
 
 		if (i.isMaster() == true && i.getMasterIntervention() != null)
 			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
-					"A master intervention cannot has a master intervention."));
-
+					"A master intervention cannot has a master intervention.", path));
+		
+		// CHECK FOR OVERLAPING INTERVENTION
+		// CHECK FOR VALID STATUS TYPE
+		// CHECK EXISTENCE OF SUB OBJECTS loc user course
+		
 		if (!errors.isEmpty()) {
 			throw new InvalidInterventionFormatException(errors);
 		}

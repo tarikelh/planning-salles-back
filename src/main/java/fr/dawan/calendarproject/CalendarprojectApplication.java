@@ -34,7 +34,7 @@ public class CalendarprojectApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				// registry.addMapping("/api/contacts").allowedMethods("GET").allowedOrigins("*");
 				// registry.addMapping("/api/contacts").allowedMethods("POST","PUT").allowedOrigins("jehann.fr");
-				registry.addMapping("/**").allowedOrigins("*");
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST","PUT", "DELETE");
 			}
 
 			// CONVERTERS

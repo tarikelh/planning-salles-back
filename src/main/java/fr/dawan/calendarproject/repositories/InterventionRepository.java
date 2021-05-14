@@ -17,5 +17,4 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
     @Query("FROM Intervention i WHERE i.course.title LIKE :title")
     List<Intervention> findByCourseTitle(@Param("title") String title);
-
 }

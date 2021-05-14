@@ -24,7 +24,6 @@ public class InterventionExceptionHandler extends ResponseEntityExceptionHandler
 		StringWriter sw = new StringWriter();
 
 		Logger.getAnonymousLogger().log(Level.SEVERE, sw.toString());
-//		APIError myError = new APIError(400, ex.getMessage());
 
 		return handleExceptionInternal(ex, ex.getErrors(), headers, HttpStatus.BAD_REQUEST, request);
 	}

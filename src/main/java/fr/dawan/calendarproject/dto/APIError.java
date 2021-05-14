@@ -6,12 +6,14 @@ public class APIError {
 	private String instanceClass;
 	private String type;
 	private String message;
+	private String path;
 
-	public APIError(int errorCode, String instanceClass, String type, String message) {
+	public APIError(int errorCode, String instanceClass, String type, String message, String path) {
 		setErrorCode(errorCode);
 		setInstanceClass(instanceClass);
 		setType(type);
 		setMessage(message);
+		setPath(path);
 	}
 
 	public int getErrorCode() {
@@ -44,6 +46,14 @@ public class APIError {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

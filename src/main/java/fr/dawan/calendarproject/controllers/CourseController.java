@@ -40,7 +40,6 @@ public class CourseController {
 	@DeleteMapping(value="/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id" ) long id) {
 		try {
-			System.out.println("inside delete... ");
 			courseService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
 		} catch (Exception ex) {
