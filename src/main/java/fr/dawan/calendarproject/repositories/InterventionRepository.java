@@ -17,5 +17,12 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
     @Query("FROM Intervention i WHERE i.course.title LIKE :title")
     List<Intervention> findByCourseTitle(@Param("title") String title);
-
+    
+    // get only master event
+    @Query("FROM Intervention i WHERE i.isMaster = true")
+    List<Intervention> getMasterIntervention();
+    
+    // get events without master (children and orphan
+    @Query("FROM Intervention i WHERE i.isMaster = false")
+    List<Intervention> getSubInterventions();
 }

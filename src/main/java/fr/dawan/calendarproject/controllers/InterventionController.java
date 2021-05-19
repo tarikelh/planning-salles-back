@@ -54,6 +54,19 @@ public class InterventionController {
 	public InterventionDto getById(@PathVariable("id") long id) {
 		return interventionService.getById(id);
 	}
+	
+	// GET - Masters Interventions
+	@GetMapping(value = "/masters",produces = "application/json")
+	public List<InterventionDto> getMasterIntervention() {
+		return interventionService.getMasterIntervention();
+	}
+	
+	// GET - NO Masters Interventions
+	@GetMapping(value = "/sub",produces = "application/json")
+	public List<InterventionDto> getSubInterventions() {
+		return interventionService.getSubInterventions();
+	}
+	
 
 	// GET Memento >> Implemented for the CSV test
 	// Need to create a InterventionMemento controller (for now only this method)??
