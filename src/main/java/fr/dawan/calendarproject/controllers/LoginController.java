@@ -29,7 +29,7 @@ public class LoginController {
 	
 	
 	@PostMapping(value="/authenticate", consumes = "application/json")
-	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) throws Exception{
+	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) throws Exception {
 		UserDto cDto = userService.findByEmail(loginObj.getEmail());
 		//String hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
 		String pwd = loginObj.getPassword();
@@ -42,7 +42,7 @@ public class LoginController {
 			String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
 			TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
 			
-			return ResponseEntity.ok(new LoginResponseDto(token));
+			return ResponseEntity.ok(new LoginResponseDto(cDto.getId(), cDto.getFullName(), token));
 		}else
 			throw new Exception("Erreur : identifiants incorrects !");
 	}

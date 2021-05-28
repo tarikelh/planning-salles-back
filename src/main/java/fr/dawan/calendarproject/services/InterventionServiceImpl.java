@@ -2,10 +2,8 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -100,7 +97,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		
+
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
@@ -111,7 +108,7 @@ public class InterventionServiceImpl implements InterventionService {
 		if (interv.getId() != 0) {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
-		
+
 		Intervention.checkIntegrity(interv);
 		interv = interventionRepository.saveAndFlush(interv);
 
@@ -150,6 +147,15 @@ public class InterventionServiceImpl implements InterventionService {
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
+		return iDtos;
+	}
+
+	@Override
+	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
+		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
+		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		for (Intervention i : interventions)
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 		return iDtos;
 	}
 

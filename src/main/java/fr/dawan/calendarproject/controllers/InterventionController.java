@@ -150,5 +150,10 @@ public class InterventionController {
 		}
 		return null;
 	}
+	
+	@GetMapping(value = "/interval", produces="application/json")
+	public List<InterventionDto> getFromUserByDateRange(@RequestParam("userId") long userId, @RequestParam("start") String start, @RequestParam("end") String end) {
+		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
+	}
 
 }
