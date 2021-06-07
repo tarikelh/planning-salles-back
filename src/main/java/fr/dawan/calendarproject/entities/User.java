@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,11 +44,11 @@ public class User {
 
 	@Column(nullable = false, length = 150)
 	private String password;
-	
+
 	@ManyToMany()
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<Skill>();
-	
+
 	@Enumerated(EnumType.STRING)
 	private UserType type;
 
@@ -59,13 +61,12 @@ public class User {
 	@Version
 	private int version;
 
-
 	// Constructor important pour la sérialization (exemple Jackson)
 	public User() {
 	}
 
-	public User(long id, String firstName, String lastName, Location location, String email,
-			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+	public User(long id, String firstName, String lastName, Location location, String email, String password,
+			Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
 		setId(id);
 		setFirstName(firstName);
 		setLastName(lastName);
@@ -134,7 +135,7 @@ public class User {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -195,9 +196,10 @@ public class User {
 				+ ", email=" + email + ", password=" + password + ", skills=" + skills + ", type=" + type + ", company="
 				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
 	}
-	
-	public static boolean checkIntegrity(User u, Set<APIError> errors) {
-		
-		return true;
+
+	static public boolean emailIsValid(String email) {
+		Pattern emailRegex = Pattern.compile("^(.+)@(.+)$");
+		final Matcher matcher = emailRegex.matcher(email);
+		return matcher.matches();
 	}
 }

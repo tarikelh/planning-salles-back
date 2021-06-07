@@ -24,11 +24,6 @@ public class Skill {
 
 	@Column(unique = true, nullable = false, length = 255)
 	private String title;
-
-//	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-//	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"), 
-//	inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-//	private Set<User> users = new HashSet<User>();
 	
 	@ManyToMany
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "skill_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
