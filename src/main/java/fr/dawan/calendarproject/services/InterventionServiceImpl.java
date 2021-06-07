@@ -101,8 +101,10 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
+		checkIntegrity(intervention);
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		checkIntegrity(interv);
+		
+		
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
@@ -196,7 +198,7 @@ public class InterventionServiceImpl implements InterventionService {
 		return iDtos;
 	}
 	
-	public boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
+	public boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = i.getClass().toString();
 		String path = "/api/interventions";
@@ -204,7 +206,7 @@ public class InterventionServiceImpl implements InterventionService {
 		if (i.getDateStart().isAfter(i.getDateEnd()))
 			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
 
-		if (i.isMaster() == true && i.getMasterIntervention() != null)
+		if (i.isMaster() == true && i.getMasterInterventionId() != 0)
 			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
 					"A master intervention cannot has a master intervention.", path));
 		
@@ -213,8 +215,30 @@ public class InterventionServiceImpl implements InterventionService {
 			errors.add(new APIError(403, instanceClass, "UnknownInterventionType",
 					message, path));
 		}
-		// CHECK FOR OVERLAPING INTERVENTION
-		// CHECK EXISTENCE OF SUB OBJECTS loc user course
+	
+		if (!locationRepository.findById(i.getLocationId()).isPresent()) {
+			String message = "Location with id: " + i.getLocationId() + " does not exist.";
+			errors.add(new APIError(404, instanceClass, "LocationNotFound",
+					message, path));
+		}
+		
+		if (!userRepository.findById(i.getUserId()).isPresent()) {
+			String message = "User with id: " + i.getUserId() + " does not exist.";
+			errors.add(new APIError(404, instanceClass, "UserNotFound",
+					message, path));
+		}
+		
+		if (!courseRepository.findById(i.getCourseId()).isPresent()) {
+			String message = "Course with id: " + i.getCourseId() + " does not exist.";
+			errors.add(new APIError(404, instanceClass, "CourseNotFound",
+					message, path));
+		}
+		
+		if (getFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd(), 0, 2).size() > 1) {
+			String message = "Intervention dates overlap with existing intervention.";
+			errors.add(new APIError(404, instanceClass, "DateOverlap",
+					message, path));
+		}
 		
 		if (!errors.isEmpty()) {
 			throw new InvalidInterventionFormatException(errors);
