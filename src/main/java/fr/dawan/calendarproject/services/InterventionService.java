@@ -29,5 +29,7 @@ public interface InterventionService {
 	//Method created for the test - to delete from here after?
 	public void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
 
-	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end);
+	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end, int page, int size);
+	
+	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size);
 }

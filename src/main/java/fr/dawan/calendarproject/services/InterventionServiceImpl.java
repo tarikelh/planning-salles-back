@@ -151,8 +151,16 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
-		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
+	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end, int page, int size) {
+		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end, PageRequest.of(page, size));
+		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		for (Intervention i : interventions)
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
+		return iDtos;
+	}
+	
+	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size) {
+		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end, PageRequest.of(page, size));
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
