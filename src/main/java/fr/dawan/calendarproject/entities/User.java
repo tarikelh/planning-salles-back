@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 
@@ -41,16 +42,10 @@ public class User {
 
 	@Column(nullable = false, length = 150)
 	private String password;
-
-//	@ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-//	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
-//	inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
-//	private Set<Skill> skills = new HashSet<Skill>();
 	
 	@ManyToMany()
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<Skill>();
-
 	
 	@Enumerated(EnumType.STRING)
 	private UserType type;
@@ -199,5 +194,10 @@ public class User {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", location=" + location
 				+ ", email=" + email + ", password=" + password + ", skills=" + skills + ", type=" + type + ", company="
 				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
+	}
+	
+	public static boolean checkIntegrity(User u, Set<APIError> errors) {
+		
+		return true;
 	}
 }

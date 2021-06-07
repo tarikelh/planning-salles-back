@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,15 +12,18 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Version;
 
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+
+import fr.dawan.calendarproject.annotations.DatesSequenceValidation;
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 
 @Entity
+@DatesSequenceValidation(startField = "dateStart", endField = "dateEnd")
 public class Intervention {
 
 	@Id
@@ -35,10 +39,10 @@ public class Intervention {
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private Course course;
 
-	// @JoinColumn(name = "user_id", nullable = false) //nom par defaut
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
 
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private InterventionStatus type;
 
@@ -55,19 +59,19 @@ public class Intervention {
 
 	@ManyToOne
 	private Intervention masterIntervention;
-	
+
 	private boolean isMaster;
-	
+
 	@Version
 	private int version;
 
 	// Constructor important pour la sérialization (exemple Jackson)
-	public Intervention() {
+	public Intervention() throws Exception {
 	}
 
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster, Intervention masterIntervention,
-			int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster,
+			Intervention masterIntervention, int version) throws Exception {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -150,10 +154,10 @@ public class Intervention {
 		return dateEnd;
 	}
 
-	public void setDateEnd(LocalDate dateEnd) {
+	public void setDateEnd(LocalDate dateEnd) throws IllegalArgumentException {
 		this.dateEnd = dateEnd;
 	}
-	
+
 	public Intervention getMasterIntervention() {
 		return masterIntervention;
 	}

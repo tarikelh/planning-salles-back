@@ -4,8 +4,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +77,7 @@ public class InterventionController {
 		try {
 			// Create CSV
 			interventionService.getAllIntMementoCSV();
-			
+
 			// Return CSV
 			// change "interventionMementoDates.csv" for a parameter (in .properties?) here
 			// and in InterventionCaretaker
@@ -140,29 +142,14 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@RequestBody InterventionDto intervention) {
-		
-		try {
-			// TO CHECK
-			return interventionService.saveOrUpdate(intervention);
-		} catch (Exception e) {
-			e.printStackTrace(); // Pb lors de la création
-			return null;
-		}
+	public InterventionDto save(@Valid @RequestBody InterventionDto intervention) throws Exception {
+		return interventionService.saveOrUpdate(intervention);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto update(@RequestBody InterventionDto intervention) {
-		try {
-			return interventionService.saveOrUpdate(intervention);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// throw e > ec
-			e.printStackTrace();
-			ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getStackTrace());
-			return null;
-		}
+	public InterventionDto update(@Valid @RequestBody InterventionDto intervention, BindingResult br) throws Exception {
+		return interventionService.saveOrUpdate(intervention);
 	}
 
 	// Search
@@ -176,5 +163,26 @@ public class InterventionController {
 		}
 		return null;
 	}
+	
+	@GetMapping(value = "/interval/{userId}/{page}/{size}", produces="application/json")
+	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
+			@RequestParam("start") String start, 
+			@RequestParam("end") String end, 
+			@PathVariable("page") int page,
+			@PathVariable("size") int size) {
+		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end), page, size);
+	}
+	
+	@GetMapping(value = "/interval/{page}/{size}", produces="application/json")
+	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, 
+			@RequestParam("end") String end, 
+			@PathVariable("page") int page,
+			@PathVariable("size") int size) {
+		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end), page, size);
+	}
+	
+//	public List<InterventionDto> getUserIcalFile(long userId) {
+//		
+//	}
 
 }
