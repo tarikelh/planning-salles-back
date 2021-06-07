@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 		User u = DtoTools.convert(user, User.class);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
-		
+
 		if (user.getSkillsId() != null) {
 			user.getSkillsId().forEach(id -> {
 				skillsList.add(skillRepository.getOne(id));

@@ -176,6 +176,26 @@ public class InterventionServiceImpl implements InterventionService {
 		return interventionRepository.count();
 	}
 	
+	@Override
+	public List<InterventionDto> getMasterIntervention() {
+		List<Intervention> interventions = interventionRepository.getMasterIntervention();
+		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		for (Intervention i : interventions)
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
+
+		return iDtos;
+	}
+
+	@Override
+	public List<InterventionDto> getSubInterventions() {
+		List<Intervention> interventions = interventionRepository.getSubInterventions();
+		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		for (Intervention i : interventions)
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
+
+		return iDtos;
+	}
+	
 	public boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = i.getClass().toString();
@@ -202,5 +222,4 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return true;
 	}
-
 }

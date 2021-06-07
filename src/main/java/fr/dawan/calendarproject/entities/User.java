@@ -42,8 +42,8 @@ public class User {
 
 	@Column(nullable = false, length = 150)
 	private String password;
-
-	@ManyToMany
+	
+	@ManyToMany()
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<Skill>();
 	
