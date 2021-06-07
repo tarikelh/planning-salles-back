@@ -47,7 +47,7 @@ public class User {
 //	inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
 //	private Set<Skill> skills = new HashSet<Skill>();
 	
-	@ManyToMany
+	@ManyToMany()
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<Skill>();
 

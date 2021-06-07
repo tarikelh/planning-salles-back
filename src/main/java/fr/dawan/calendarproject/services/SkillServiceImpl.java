@@ -74,9 +74,11 @@ public class SkillServiceImpl implements SkillService {
 		Skill s = DtoTools.convert(skill, Skill.class);
 		
 		Set<User> usersList = new HashSet<User>();
-		skill.getUsersId().forEach(id -> {
-			usersList.add(userRepository.getOne(id));
-		});
+		if (skill.getUsersId() != null) {
+			skill.getUsersId().forEach(id -> {
+				usersList.add(userRepository.getOne(id));
+			});
+		}
 		s.setUsers(usersList);
 
 		if (s.getId() != 0) {

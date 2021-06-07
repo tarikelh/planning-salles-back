@@ -23,10 +23,14 @@ public interface InterventionService {
 
 	long count();
 	
-	//Method created for the test - to delete from here after?
-	public void getAllIntMementoCSV() throws Exception;
+	List<InterventionDto> getMasterIntervention();
+	
+	List<InterventionDto> getSubInterventions();
 	
 	//Method created for the test - to delete from here after?
-	public void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
+	void getAllIntMementoCSV() throws Exception;
+	
+	//Method created for the test - to delete from here after?
+	void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
 
 }
