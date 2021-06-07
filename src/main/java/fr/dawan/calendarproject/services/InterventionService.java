@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 
 public interface InterventionService {
 	
@@ -32,4 +34,6 @@ public interface InterventionService {
 	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end, int page, int size);
 	
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size);
+	
+	boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException;
 }

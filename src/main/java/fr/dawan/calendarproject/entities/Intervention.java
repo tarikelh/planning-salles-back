@@ -210,32 +210,4 @@ public class Intervention {
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
-
-	public static boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
-		Set<APIError> errors = new HashSet<APIError>();
-		String instanceClass = i.getClass().toString();
-		String path = "/api/interventions";
-
-		if (i.getDateStart().isAfter(i.getDateEnd()))
-			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
-
-		if (i.isMaster() == true && i.getMasterIntervention() != null)
-			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
-					"A master intervention cannot has a master intervention.", path));
-		
-		if (!InterventionStatus.contains(i.getType().toString())) {
-			String message = "Type: " + i.getType().toString() + " is not a valid type.";
-			errors.add(new APIError(403, instanceClass, "UnknownInterventionType",
-					message, path));
-		}
-		// CHECK FOR OVERLAPING INTERVENTION
-		// CHECK FOR VALID STATUS TYPE
-		// CHECK EXISTENCE OF SUB OBJECTS loc user course
-		
-		if (!errors.isEmpty()) {
-			throw new InvalidInterventionFormatException(errors);
-		}
-
-		return true;
-	}
 }

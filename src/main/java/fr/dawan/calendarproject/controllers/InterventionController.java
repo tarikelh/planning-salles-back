@@ -151,8 +151,8 @@ public class InterventionController {
 		return null;
 	}
 	
-	@GetMapping(value = "/interval/{page}/{size}", produces="application/json")
-	public List<InterventionDto> getFromUserByDateRange(@RequestParam("userId") long userId, 
+	@GetMapping(value = "/interval/{userId}/{page}/{size}", produces="application/json")
+	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
 			@RequestParam("start") String start, 
 			@RequestParam("end") String end, 
 			@PathVariable("page") int page,
@@ -167,5 +167,9 @@ public class InterventionController {
 			@PathVariable("size") int size) {
 		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end), page, size);
 	}
+	
+//	public List<InterventionDto> getUserIcalFile(long userId) {
+//		
+//	}
 
 }

@@ -2,8 +2,10 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -12,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -97,7 +102,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-
+		checkIntegrity(interv);
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
@@ -109,7 +114,6 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
 		}
 
-		Intervention.checkIntegrity(interv);
 		interv = interventionRepository.saveAndFlush(interv);
 
 		// Memento creation
@@ -171,4 +175,32 @@ public class InterventionServiceImpl implements InterventionService {
 	public long count() {
 		return interventionRepository.count();
 	}
+	
+	public boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException {
+		Set<APIError> errors = new HashSet<APIError>();
+		String instanceClass = i.getClass().toString();
+		String path = "/api/interventions";
+
+		if (i.getDateStart().isAfter(i.getDateEnd()))
+			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
+
+		if (i.isMaster() == true && i.getMasterIntervention() != null)
+			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
+					"A master intervention cannot has a master intervention.", path));
+		
+		if (!InterventionStatus.contains(i.getType().toString())) {
+			String message = "Type: " + i.getType().toString() + " is not a valid type.";
+			errors.add(new APIError(403, instanceClass, "UnknownInterventionType",
+					message, path));
+		}
+		// CHECK FOR OVERLAPING INTERVENTION
+		// CHECK EXISTENCE OF SUB OBJECTS loc user course
+		
+		if (!errors.isEmpty()) {
+			throw new InvalidInterventionFormatException(errors);
+		}
+
+		return true;
+	}
+
 }
