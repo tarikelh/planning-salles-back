@@ -2,10 +2,6 @@ package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
 
-import fr.dawan.calendarproject.annotations.DatesSequenceValidation;
-import fr.dawan.calendarproject.enums.InterventionStatus;
-
-@DatesSequenceValidation(startField = "dateStart", endField = "dateEnd")
 public class InterventionDto implements Cloneable {
 
 	private long id;

@@ -1,8 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,17 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import fr.dawan.calendarproject.annotations.DatesSequenceValidation;
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.enums.InterventionStatus;
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 
 @Entity
-@DatesSequenceValidation(startField = "dateStart", endField = "dateEnd")
 public class Intervention {
 
 	@Id
