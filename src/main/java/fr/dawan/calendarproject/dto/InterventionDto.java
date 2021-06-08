@@ -18,7 +18,7 @@ public class InterventionDto implements Cloneable {
 
 	private long userId;
 
-	private InterventionStatus type;
+	private String type;
 
 	private boolean validated;
 
@@ -94,11 +94,11 @@ public class InterventionDto implements Cloneable {
 		this.validated = validated;
 	}
 
-	public InterventionStatus getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(InterventionStatus type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -122,5 +122,4 @@ public class InterventionDto implements Cloneable {
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-
 }

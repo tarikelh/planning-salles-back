@@ -18,6 +18,9 @@ import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.enums.UserCompany;
+import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
@@ -141,6 +144,17 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		// Company + type enums must be valid
+		if (!UserCompany.contains(u.getCompany())) {
+			String message = "Company: " + u.getCompany() + " is not valid.";
+			errors.add(new APIError(403, instanceClass, "UnknownUserCompany",
+					message, path));
+		}
+		
+		if (!UserType.contains(u.getType())) {
+			String message = "Type: " + u.getType() + " is not valid.";
+			errors.add(new APIError(403, instanceClass, "UnknownUserType",
+					message, path));
+		}
 		//If Image > must exist
 		if (!errors.isEmpty()) {
 			throw new InvalidInterventionFormatException(errors);

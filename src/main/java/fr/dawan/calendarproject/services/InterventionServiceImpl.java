@@ -210,7 +210,7 @@ public class InterventionServiceImpl implements InterventionService {
 			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
 					"A master intervention cannot has a master intervention.", path));
 		
-		if (!InterventionStatus.contains(i.getType().toString())) {
+		if (!InterventionStatus.contains(i.getType())) {
 			String message = "Type: " + i.getType().toString() + " is not a valid type.";
 			errors.add(new APIError(403, instanceClass, "UnknownInterventionType",
 					message, path));

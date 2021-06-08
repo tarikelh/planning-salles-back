@@ -168,6 +168,22 @@ public class User {
 		this.imagePath = imagePath;
 	}
 
+	public String getEnumCompany() {
+		return this.company.toString();
+	}
+	
+	public void setEnumCompany(String company) {
+		this.company = UserCompany.valueOf(company);
+	}
+	
+	public String getEnumType() {
+		return this.type.toString();
+	}
+	
+	public void setEnumType(String type) {
+		this.type = UserType.valueOf(type);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

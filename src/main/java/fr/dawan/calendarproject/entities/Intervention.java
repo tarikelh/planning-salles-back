@@ -181,7 +181,15 @@ public class Intervention {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-
+	
+	public void setEnumType(String type) {
+		this.type = InterventionStatus.valueOf(type);
+	}
+	
+	public String getEnumType() {
+		return this.type.toString();
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

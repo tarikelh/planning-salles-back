@@ -93,7 +93,7 @@ class CalendarprojectApplicationTestsUser {
 		try {
 			AdvancedUserDto empToInsert = new AdvancedUserDto();
 			empToInsert.setFirstName("Jade");
-			empToInsert.setType(UserType.COMMERCIAL);
+			empToInsert.setType("COMMERCIAL");
 
 			objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 			String jsonReq = objectMapper.writeValueAsString(empToInsert);
@@ -119,7 +119,7 @@ class CalendarprojectApplicationTestsUser {
 
 			AdvancedUserDto empToupdate = employeeController.getById(2);
 			empToupdate.setFirstName("AhmedModif");
-			empToupdate.setType(UserType.ADMINISTRATIF);
+			empToupdate.setType("ADMINISTRATIF");
 
 			String jsonReq = objectMapper.writeValueAsString(empToupdate);
 

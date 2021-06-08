@@ -19,6 +19,7 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -106,6 +107,10 @@ public class SkillServiceImpl implements SkillService {
 				errors.add(new APIError(404, instanceClass, "UserNotFound",
 						message, path));
 			}
+		}
+		
+		if (!errors.isEmpty()) {
+			throw new InvalidInterventionFormatException(errors);
 		}
 		
 		return true;
