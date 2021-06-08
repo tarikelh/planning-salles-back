@@ -18,4 +18,5 @@ public interface SkillService {
 
 	long count();
 
+	boolean checkIntegrity(AdvancedSkillDto s);
 }

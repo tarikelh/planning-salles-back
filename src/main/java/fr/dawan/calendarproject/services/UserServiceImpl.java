@@ -13,10 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.enums.UserCompany;
+import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -70,6 +75,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
+		checkIntegrity(user);
 		User u = DtoTools.convert(user, User.class);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
@@ -103,4 +109,57 @@ public class UserServiceImpl implements UserService {
 		return userRepository.count();
 	}
 
+	public boolean checkIntegrity(AdvancedUserDto u) {
+		Set<APIError> errors = new HashSet<APIError>();
+		String instanceClass = u.getClass().toString();
+		String path = "/api/users";
+		//Location Must EXIST
+		if (!locationRepository.findById(u.getLocationId()).isPresent()) {
+			String message = "Location with id: " + u.getLocationId() + " does not exist.";
+			errors.add(new APIError(404, instanceClass, "LocationNotFound",
+					message, path));
+		}
+		
+		//IF Skill > Must EXIST
+		for (long skillId : u.getSkillsId()) {
+			if(!skillRepository.findById(skillId).isPresent()) {
+				String message = "Skill with id: " + skillId + " does not exist.";
+				errors.add(new APIError(404, instanceClass, "SkillNotFound",
+						message, path));
+			}
+		}
+
+		//Email > valid, uniq
+		if (!User.emailIsValid(u.getEmail())) {
+			String message = "Email must be valid.";
+			errors.add(new APIError(404, instanceClass, "InvalidEmail",
+					message, path));
+		}
+		
+		//password > 8 char min
+		if(u.getPassword().length() < 8) {
+			String message = "Password must be at least 8 characters long";
+			errors.add(new APIError(404, instanceClass, "PasswordTooShort",
+					message, path));
+		}
+		
+		// Company + type enums must be valid
+		if (!UserCompany.contains(u.getCompany())) {
+			String message = "Company: " + u.getCompany() + " is not valid.";
+			errors.add(new APIError(403, instanceClass, "UnknownUserCompany",
+					message, path));
+		}
+		
+		if (!UserType.contains(u.getType())) {
+			String message = "Type: " + u.getType() + " is not valid.";
+			errors.add(new APIError(403, instanceClass, "UnknownUserType",
+					message, path));
+		}
+		//If Image > must exist
+		if (!errors.isEmpty()) {
+			throw new InvalidInterventionFormatException(errors);
+		}
+
+		return true;
+	}
 }

@@ -39,5 +39,5 @@ public interface InterventionService {
 	
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size);
 	
-	boolean checkIntegrity(Intervention i) throws InvalidInterventionFormatException;
+	boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException;
 }
