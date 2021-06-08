@@ -146,7 +146,6 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidInterventionFormatException(errors);
 		}
 
-		
 		return true;
 	}
 }
