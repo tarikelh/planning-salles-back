@@ -1,18 +1,16 @@
 package fr.dawan.calendarproject.dto;
 
 public class LoginResponseDto {
-	
-	private long id;
-	private String name;
+
+	private UserDto user;
 	private String token;
 
 	public LoginResponseDto() {
-		
+
 	}
-	
-	public LoginResponseDto(long id, String name, String token) {
-		this.id = id;
-		this.name = name;
+
+	public LoginResponseDto(UserDto user, String token) {
+		this.user = user;
 		this.token = token;
 	}
 
@@ -24,21 +22,11 @@ public class LoginResponseDto {
 		this.token = token;
 	}
 
-	public long getId() {
-		return id;
+	public UserDto getUser() {
+		return user;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setUser(UserDto user) {
+		this.user = user;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	
 }
