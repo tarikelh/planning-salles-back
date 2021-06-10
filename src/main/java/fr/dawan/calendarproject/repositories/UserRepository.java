@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.enums.UserType;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -15,6 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("FROM User u WHERE u.email = :email")
 	User findByEmail(@Param("email") String email);
 	
-	@Query("FROM User u WHERE u.type = :type")
-	List<User> findAllByType(@Param("type") String type);
+	@Query(value = "FROM User u WHERE u.type = :type")
+	List<User> findAllByType(@Param("type") UserType type);
 }
