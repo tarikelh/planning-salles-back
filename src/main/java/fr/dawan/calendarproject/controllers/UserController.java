@@ -30,6 +30,12 @@ public class UserController {
 	public List<AdvancedUserDto> getAll() {
 		return userService.getAllUsers();
 	}
+	
+	// GET by Type
+	@GetMapping(value = "search/{type}", produces = "application/json")
+	public List<AdvancedUserDto> getAllByType(@PathVariable("type") String type) {
+		return userService.getAllUsersByType(type);
+	}
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })

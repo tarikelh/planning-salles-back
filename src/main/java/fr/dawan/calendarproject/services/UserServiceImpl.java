@@ -50,6 +50,17 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
+	
+	@Override
+	public List<AdvancedUserDto> getAllUsersByType(String type) {
+		List<User> users = userRepository.findAllByType(type);
+		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+
+		for (User u : users) {
+			result.add(DtoTools.convert(u, AdvancedUserDto.class));
+		}
+		return result;
+	}
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers(int page, int max) {
