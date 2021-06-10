@@ -21,5 +21,6 @@ public interface UserService {
 	AdvancedUserDto findByEmail(String email);
 
 	long count();
-
+	
+	boolean checkIntegrity(AdvancedUserDto u);
 }

@@ -17,9 +17,9 @@ public class UserDto {
 	
 	private String password;
 
-	private UserType type;
+	private String type;
 	
-	private UserCompany company;
+	private String company;
 	
 	private String imagePath;
 
@@ -63,19 +63,19 @@ public class UserDto {
 		this.email = email;
 	}
 
-	public UserType getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(UserType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
-	public UserCompany getCompany() {
+	public String getCompany() {
 		return company;
 	}
 
-	public void setCompany(UserCompany company) {
+	public void setCompany(String company) {
 		this.company = company;
 	}
 

@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -71,6 +73,7 @@ public class SkillServiceImpl implements SkillService {
 
 	@Override
 	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
+		checkIntegrity(skill);
 		Skill s = DtoTools.convert(skill, Skill.class);
 		
 		Set<User> usersList = new HashSet<User>();
@@ -91,5 +94,25 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public long count() {
 		return skillRepository.count();
+	}
+	
+	public boolean checkIntegrity(AdvancedSkillDto s) {
+		Set<APIError> errors = new HashSet<APIError>();
+		String instanceClass = s.getClass().toString();
+		String path = "/api/skills";
+		
+		for (long userId : s.getUsersId()) {
+			if(!userRepository.findById(userId).isPresent()) {
+				String message = "User with id: " + userId + " does not exist.";
+				errors.add(new APIError(404, instanceClass, "UserNotFound",
+						message, path));
+			}
+		}
+		
+		if (!errors.isEmpty()) {
+			throw new InvalidInterventionFormatException(errors);
+		}
+		
+		return true;
 	}
 }
