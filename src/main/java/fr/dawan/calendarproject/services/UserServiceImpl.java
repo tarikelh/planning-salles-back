@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
-
 			for (User u : users) {
 				result.add(DtoTools.convert(u, AdvancedUserDto.class));
 			}

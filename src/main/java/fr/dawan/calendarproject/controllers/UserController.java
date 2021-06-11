@@ -32,7 +32,7 @@ public class UserController {
 	}
 	
 	// GET by Type
-	@GetMapping(value = "search/{type}", produces = "application/json")
+	@GetMapping(value = "/search/{type}", produces = "application/json")
 	public List<AdvancedUserDto> getAllByType(@PathVariable("type") String type) {
 		return userService.getAllUsersByType(type);
 	}

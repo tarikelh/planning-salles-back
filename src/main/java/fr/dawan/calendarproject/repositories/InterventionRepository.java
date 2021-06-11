@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.enums.UserType;
 
 @Repository
 public interface InterventionRepository extends JpaRepository<Intervention, Long> {
@@ -32,7 +33,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i WHERE i.isMaster = true")
 	List<Intervention> getMasterIntervention();
 
-	// get events without master (children and orphan
-	@Query("FROM Intervention i WHERE i.isMaster = false")
-	List<Intervention> getSubInterventions();
+	// get events without master (children and orphan)
+	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type")
+	List<Intervention> getAllChildrenByUserType(@Param("type") UserType type);
 }

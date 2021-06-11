@@ -22,6 +22,7 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
@@ -189,13 +190,20 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getSubInterventions() {
-		List<Intervention> interventions = interventionRepository.getSubInterventions();
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
-		for (Intervention i : interventions)
-			iDtos.add(DtoTools.convert(i, InterventionDto.class));
+	public List<InterventionDto> getSubInterventions(String type) {
+		if(UserType.contains(type)) {
+			UserType userType = UserType.valueOf(type);
+			List<Intervention> interventions = interventionRepository.getAllChildrenByUserType(userType);
+			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+			for (Intervention i : interventions)
+				iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
-		return iDtos;
+			return iDtos;
+		} else {
+			// HANDLE ERROR
+			return null;
+		}
+
 	}
 	
 	public boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException {
