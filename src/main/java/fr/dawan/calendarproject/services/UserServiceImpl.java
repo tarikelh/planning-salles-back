@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
 		checkIntegrity(user);
+		
 		User u = DtoTools.convert(user, User.class);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
@@ -137,14 +138,16 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//IF Skill > Must EXIST
-		for (long skillId : u.getSkillsId()) {
-			if(!skillRepository.findById(skillId).isPresent()) {
-				String message = "Skill with id: " + skillId + " does not exist.";
-				errors.add(new APIError(404, instanceClass, "SkillNotFound",
-						message, path));
+		if (u.getSkillsId() != null) {
+			for (long skillId : u.getSkillsId()) {
+				if(!skillRepository.findById(skillId).isPresent()) {
+					String message = "Skill with id: " + skillId + " does not exist.";
+					errors.add(new APIError(404, instanceClass, "SkillNotFound",
+							message, path));
+				}
 			}
 		}
-
+		
 		//Email > valid, uniq
 		if (!User.emailIsValid(u.getEmail())) {
 			String message = "Email must be valid.";
