@@ -21,18 +21,16 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 public class LocationServiceImpl implements LocationService {
 
 	@Autowired
-	LocationRepository locationRepository;
+	private LocationRepository locationRepository;
 
 	@Override
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
 
-		// Solution 1 à la mano - conversion vers Dto
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
 			result.add(DtoTools.convert(l, LocationDto.class));
 		}
-
 		return result;
 	}
 

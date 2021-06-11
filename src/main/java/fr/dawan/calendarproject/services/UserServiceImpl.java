@@ -18,7 +18,6 @@ import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
@@ -31,7 +30,7 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
@@ -108,7 +107,7 @@ public class UserServiceImpl implements UserService {
 	public long count() {
 		return userRepository.count();
 	}
-
+	
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = u.getClass().toString();

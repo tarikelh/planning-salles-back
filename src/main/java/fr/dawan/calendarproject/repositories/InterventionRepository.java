@@ -19,7 +19,10 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.course.title LIKE :title")
 	List<Intervention> findByCourseTitle(@Param("title") String title);
-
+	
+	@Query("FROM Intervention i WHERE i.user.id = :userId")
+	List<Intervention> findByUserId(@Param("userId") long userId);
+	
 	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.id = :id AND i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end")
 	List<Intervention> findFromUserByDateRange(@Param("id") long userId, @Param("start") LocalDate dateStart,
 			@Param("end") LocalDate dateEnd, Pageable p);
@@ -32,7 +35,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i WHERE i.isMaster = true")
 	List<Intervention> getMasterIntervention();
 
-	// get events without master (children and orphan
+	// get events without master (children and orphan)
 	@Query("FROM Intervention i WHERE i.isMaster = false")
 	List<Intervention> getSubInterventions();
 }
