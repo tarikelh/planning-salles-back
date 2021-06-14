@@ -18,7 +18,6 @@ import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
@@ -53,13 +52,18 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
-		List<User> users = userRepository.findAllByType(type);
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
-
-		for (User u : users) {
-			result.add(DtoTools.convert(u, AdvancedUserDto.class));
+		if (UserType.contains(type)){
+			UserType userType = UserType.valueOf(type);
+			List<User> users = userRepository.findAllByType(userType);
+			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+			for (User u : users) {
+				result.add(DtoTools.convert(u, AdvancedUserDto.class));
+			}
+			return result;
+		} else {
+			// HANDLE ERROR
+			return null;
 		}
-		return result;
 	}
 
 	@Override
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
 		checkIntegrity(user);
+		
 		User u = DtoTools.convert(user, User.class);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
@@ -132,14 +137,16 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		//IF Skill > Must EXIST
-		for (long skillId : u.getSkillsId()) {
-			if(!skillRepository.findById(skillId).isPresent()) {
-				String message = "Skill with id: " + skillId + " does not exist.";
-				errors.add(new APIError(404, instanceClass, "SkillNotFound",
-						message, path));
+		if (u.getSkillsId() != null) {
+			for (long skillId : u.getSkillsId()) {
+				if(!skillRepository.findById(skillId).isPresent()) {
+					String message = "Skill with id: " + skillId + " does not exist.";
+					errors.add(new APIError(404, instanceClass, "SkillNotFound",
+							message, path));
+				}
 			}
 		}
-
+		
 		//Email > valid, uniq
 		if (!User.emailIsValid(u.getEmail())) {
 			String message = "Email must be valid.";

@@ -27,7 +27,7 @@ public interface InterventionService {
 	
 	List<InterventionDto> getMasterIntervention();
 	
-	List<InterventionDto> getSubInterventions();
+	List<InterventionDto> getSubInterventions(String type);
 	
 	//Method created for the test - to delete from here after?
 	void getAllIntMementoCSV() throws Exception;
