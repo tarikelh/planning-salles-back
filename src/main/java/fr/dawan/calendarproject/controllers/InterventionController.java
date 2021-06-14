@@ -63,10 +63,11 @@ public class InterventionController {
 		return interventionService.getMasterIntervention();
 	}
 	
-	// GET - NO Masters Interventions && verify UserType
-	@GetMapping(value = "/sub/{type}",produces = "application/json")
-	public List<InterventionDto> getSubInterventions(@PathVariable("type") String type) {
-		return interventionService.getSubInterventions(type);
+	// GET - NO Masters Interventions && verify UserType && between two dates
+	@GetMapping(value = "/sub",produces = "application/json")
+	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
+			@RequestParam("end") String end) {
+		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
 

@@ -190,10 +190,10 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getSubInterventions(String type) {
+	public List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
 		if(UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
-			List<Intervention> interventions = interventionRepository.getAllChildrenByUserType(userType);
+			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType, dateStart, dateEnd);
 			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 			for (Intervention i : interventions)
 				iDtos.add(DtoTools.convert(i, InterventionDto.class));
