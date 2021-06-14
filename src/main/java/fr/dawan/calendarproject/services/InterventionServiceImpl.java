@@ -22,6 +22,7 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.enums.InterventionStatus;
+import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
@@ -167,19 +168,16 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end, int page,
-			int size) {
-		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end,
-				PageRequest.of(page, size));
+	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
+		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 		return iDtos;
 	}
-
-	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size) {
-		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end,
-				PageRequest.of(page, size));
+	
+	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
+		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
@@ -202,13 +200,19 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getSubInterventions() {
-		List<Intervention> interventions = interventionRepository.getSubInterventions();
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
-		for (Intervention i : interventions)
-			iDtos.add(DtoTools.convert(i, InterventionDto.class));
+	public List<InterventionDto> getSubInterventions(String type) {
+		if(UserType.contains(type)) {
+			UserType userType = UserType.valueOf(type);
+			List<Intervention> interventions = interventionRepository.getAllChildrenByUserType(userType);
+			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+			for (Intervention i : interventions)
+				iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
-		return iDtos;
+			return iDtos;
+		} else {
+			// HANDLE ERROR
+			return null;
+		}
 	}
 
 	public Calendar exportCalendarAsICal(long userId) {
@@ -268,10 +272,13 @@ public class InterventionServiceImpl implements InterventionService {
 			String message = "Course with id: " + i.getCourseId() + " does not exist.";
 			errors.add(new APIError(404, instanceClass, "CourseNotFound", message, path));
 		}
-
-		if (getFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd(), 0, 2).size() > 1) {
-			String message = "Intervention dates overlap with existing intervention.";
-			errors.add(new APIError(404, instanceClass, "DateOverlap", message, path));
+		
+		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {
+			if (interv.getId() != i.getId()) {
+				String message = "Intervention dates overlap the intervention with id: "+ interv.getId() + ".";
+				errors.add(new APIError(404, instanceClass, "DateOverlap",
+						message, path));
+			}
 		}
 
 		if (!errors.isEmpty()) {

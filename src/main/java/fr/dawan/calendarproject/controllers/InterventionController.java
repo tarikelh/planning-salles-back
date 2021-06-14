@@ -67,10 +67,10 @@ public class InterventionController {
 		return interventionService.getMasterIntervention();
 	}
 	
-	// GET - NO Masters Interventions
-	@GetMapping(value = "/sub",produces = "application/json")
-	public List<InterventionDto> getSubInterventions() {
-		return interventionService.getSubInterventions();
+	// GET - NO Masters Interventions && verify UserType
+	@GetMapping(value = "/sub/{type}",produces = "application/json")
+	public List<InterventionDto> getSubInterventions(@PathVariable("type") String type) {
+		return interventionService.getSubInterventions(type);
 	}
 	
 
@@ -168,21 +168,16 @@ public class InterventionController {
 		return null;
 	}
 	
-	@GetMapping(value = "/interval/{userId}/{page}/{size}", produces="application/json")
+	@GetMapping(value = "/interval/{userId}", produces="application/json")
 	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
 			@RequestParam("start") String start, 
-			@RequestParam("end") String end, 
-			@PathVariable("page") int page,
-			@PathVariable("size") int size) {
-		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end), page, size);
+			@RequestParam("end") String end) {
+		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
-	@GetMapping(value = "/interval/{page}/{size}", produces="application/json")
-	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, 
-			@RequestParam("end") String end, 
-			@PathVariable("page") int page,
-			@PathVariable("size") int size) {
-		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end), page, size);
+	@GetMapping(value = "/interval", produces="application/json")
+	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, @RequestParam("end") String end) {
+		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
 	@GetMapping(value = "/ical/{userId}")

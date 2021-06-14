@@ -7,6 +7,8 @@ import fr.dawan.calendarproject.dto.AdvancedUserDto;
 public interface UserService {
 
 	List<AdvancedUserDto> getAllUsers();
+	
+	List<AdvancedUserDto> getAllUsersByType(String type);
 
 	List<AdvancedUserDto> getAllUsers(int page, int max);
 
