@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 
 public interface InterventionService {
