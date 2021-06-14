@@ -11,7 +11,9 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.services.InterventionService;
+import fr.dawan.calendarproject.tools.ICalTools;
+import net.fortuna.ical4j.model.Calendar;
 
 @RestController
 @RequestMapping("/api/interventions")
@@ -176,8 +180,24 @@ public class InterventionController {
 		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
+	@GetMapping(value = "/ical/{userId}")
+	public ResponseEntity<Resource> exportUserInteventions(@PathVariable("userId")long userId) throws Exception {
+		Calendar calendar = interventionService.exportCalendarAsICal(userId);
+		
+		String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
+		File f = new File(fileName);
+		ByteArrayResource resource = ICalTools.generateICSFile(calendar, fileName, f);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"mycalendar.ics\"");
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
+
+		return ResponseEntity.ok().headers(headers).contentLength(f.length())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+	}
 //	public List<InterventionDto> getUserIcalFile(long userId) {
 //		
 //	}
-
 }

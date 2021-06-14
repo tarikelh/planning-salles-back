@@ -216,4 +216,8 @@ public class User {
 		final Matcher matcher = emailRegex.matcher(email);
 		return matcher.matches();
 	}
+
+	public String getFullname() {
+		return this.firstName + " " + this.lastName;
+	}
 }
