@@ -158,16 +158,16 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end, int page, int size) {
-		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end, PageRequest.of(page, size));
+	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
+		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 		return iDtos;
 	}
 	
-	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end, int page, int size) {
-		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end, PageRequest.of(page, size));
+	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
+		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
 			iDtos.add(DtoTools.convert(i, InterventionDto.class));
@@ -203,7 +203,6 @@ public class InterventionServiceImpl implements InterventionService {
 			// HANDLE ERROR
 			return null;
 		}
-
 	}
 	
 	public boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException {
@@ -242,12 +241,14 @@ public class InterventionServiceImpl implements InterventionService {
 					message, path));
 		}
 		
-		if (getFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd(), 0, 2).size() > 1) {
-			String message = "Intervention dates overlap with existing intervention.";
-			errors.add(new APIError(404, instanceClass, "DateOverlap",
-					message, path));
+		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {
+			if (interv.getId() != i.getId()) {
+				String message = "Intervention dates overlap the intervention with id: "+ interv.getId() + ".";
+				errors.add(new APIError(404, instanceClass, "DateOverlap",
+						message, path));
+			}
 		}
-		
+
 		if (!errors.isEmpty()) {
 			throw new InvalidInterventionFormatException(errors);
 		}

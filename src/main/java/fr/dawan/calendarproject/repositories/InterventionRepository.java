@@ -23,11 +23,10 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.id = :id AND i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end")
 	List<Intervention> findFromUserByDateRange(@Param("id") long userId, @Param("start") LocalDate dateStart,
-			@Param("end") LocalDate dateEnd, Pageable p);
+			@Param("end") LocalDate dateEnd);
 
 	@Query("FROM Intervention i WHERE i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end")
-	List<Intervention> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd,
-			Pageable p);
+	List<Intervention> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 
 	// get only master event
 	@Query("FROM Intervention i WHERE i.isMaster = true")
