@@ -29,7 +29,7 @@ public interface InterventionService {
 	
 	List<InterventionDto> getMasterIntervention();
 	
-	List<InterventionDto> getSubInterventions(String type);
+	List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
 	
 	//Method created for the test - to delete from here after?
 	void getAllIntMementoCSV() throws Exception;

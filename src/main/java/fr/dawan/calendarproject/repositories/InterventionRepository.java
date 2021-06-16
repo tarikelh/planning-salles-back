@@ -34,10 +34,8 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i WHERE i.isMaster = true")
 	List<Intervention> getMasterIntervention();
 
-	// get events without master (children and orphan)
-	@Query("FROM Intervention i WHERE i.isMaster = false")
-	List<Intervention> getSubInterventions();
-
-	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type")
-	List<Intervention> getAllChildrenByUserType(@Param("type") UserType type);
+	// get events without master (children and orphan) by UserType and between a range of Dates
+	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
+	List<Intervention> getAllChildrenByUserTypeAndDates(@Param("type") UserType type, @Param("start") LocalDate dateStart,
+			@Param("end") LocalDate dateEnd);
 }
