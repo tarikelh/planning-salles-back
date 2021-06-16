@@ -3,7 +3,6 @@ package fr.dawan.calendarproject.repositories;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +19,9 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.course.title LIKE :title")
 	List<Intervention> findByCourseTitle(@Param("title") String title);
+	
+	@Query("FROM Intervention i WHERE i.user.id = :userId")
+	List<Intervention> findByUserId(@Param("userId") long userId);
 
 	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.id = :id AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
 	List<Intervention> findFromUserByDateRange(@Param("id") long userId, @Param("start") LocalDate dateStart,
@@ -36,5 +38,4 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
 	List<Intervention> getAllChildrenByUserTypeAndDates(@Param("type") UserType type, @Param("start") LocalDate dateStart,
 			@Param("end") LocalDate dateEnd);
-	
 }

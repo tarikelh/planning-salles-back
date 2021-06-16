@@ -30,6 +30,17 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.CsvToolsGeneric;
+import fr.dawan.calendarproject.tools.ICalTools;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.XProperty;
 
 @Service
 @Transactional
@@ -104,8 +115,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
 		checkIntegrity(intervention);
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
-		
-		
+
 		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
 		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
 		interv.setUser(userRepository.getOne(intervention.getUserId()));
@@ -178,7 +188,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public long count() {
 		return interventionRepository.count();
 	}
-	
+
 	@Override
 	public List<InterventionDto> getMasterIntervention() {
 		List<Intervention> interventions = interventionRepository.getMasterIntervention();
@@ -204,41 +214,63 @@ public class InterventionServiceImpl implements InterventionService {
 			return null;
 		}
 	}
-	
+
+	public Calendar exportCalendarAsICal(long userId) {
+
+		List<Intervention> lst = interventionRepository.findByUserId(userId) ;
+		
+		Calendar calendar = new Calendar();
+		calendar.getProperties().add(new ProdId("-//Dawan Calendar//iCal4j 1.0//FR"));
+		calendar.getProperties().add(Version.VERSION_2_0);
+		calendar.getProperties().add(CalScale.GREGORIAN);
+		String calName = lst.get(0).getUser().getLastName() + lst.get(0).getUser().getFirstName();
+		calendar.getProperties().add(new XProperty("X-CALNAME", calName));
+		
+		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
+		VTimeZone tz = timeZone.getVTimeZone();
+		
+		if (lst != null) {
+			for (Intervention intervention : lst) {
+				VEvent event = ICalTools.createVEvent(intervention, tz);
+				calendar.getComponents().add(event);
+			}
+		}
+
+		return calendar;
+	}
+
 	public boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = i.getClass().toString();
 		String path = "/api/interventions";
 
 		if (i.getDateStart().isAfter(i.getDateEnd()))
-			errors.add(new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
+			errors.add(
+					new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
 
 		if (i.isMaster() == true && i.getMasterInterventionId() != 0)
 			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
 					"A master intervention cannot has a master intervention.", path));
-		
+
 		if (!InterventionStatus.contains(i.getType())) {
 			String message = "Type: " + i.getType().toString() + " is not a valid type.";
-			errors.add(new APIError(403, instanceClass, "UnknownInterventionType",
-					message, path));
+			errors.add(new APIError(403, instanceClass, "UnknownInterventionType", message, path));
 		}
-	
+
 		if (!locationRepository.findById(i.getLocationId()).isPresent()) {
 			String message = "Location with id: " + i.getLocationId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "LocationNotFound",
-					message, path));
+			errors.add(new APIError(404, instanceClass, "LocationNotFound", message, path));
 		}
-		
+
 		if (!userRepository.findById(i.getUserId()).isPresent()) {
 			String message = "User with id: " + i.getUserId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "UserNotFound",
-					message, path));
+			errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 		}
-		
+
 		if (!courseRepository.findById(i.getCourseId()).isPresent()) {
 			String message = "Course with id: " + i.getCourseId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "CourseNotFound",
-					message, path));
+			errors.add(new APIError(404, instanceClass, "CourseNotFound", message, path));
 		}
 		
 		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {

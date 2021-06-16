@@ -30,7 +30,7 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
 	public long count() {
 		return userRepository.count();
 	}
-
+	
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = u.getClass().toString();
