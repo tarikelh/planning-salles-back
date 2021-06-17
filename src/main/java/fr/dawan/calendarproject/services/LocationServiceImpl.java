@@ -61,9 +61,7 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public LocationDto saveOrUpdate(LocationDto locationDto) {
 		Location l = DtoTools.convert(locationDto, Location.class);
-		if(l.getId() != 0) {
-			l.setVersion(locationRepository.getOne(l.getId()).getVersion());
-		}
+
 		l = locationRepository.saveAndFlush(l);
 		return DtoTools.convert(l, LocationDto.class);
 	}

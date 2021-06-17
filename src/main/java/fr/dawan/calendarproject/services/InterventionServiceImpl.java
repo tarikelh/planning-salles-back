@@ -123,10 +123,6 @@ public class InterventionServiceImpl implements InterventionService {
 		if (intervention.getMasterInterventionId() > 0)
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 
-		if (interv.getId() != 0) {
-			interv.setVersion(interventionRepository.getOne(interv.getId()).getVersion());
-		}
-
 		interv = interventionRepository.saveAndFlush(interv);
 
 		// Memento creation
