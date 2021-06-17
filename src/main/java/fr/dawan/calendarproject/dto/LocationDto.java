@@ -6,6 +6,8 @@ public class LocationDto {
 	private String city;
 
 	private String color;
+	
+	private int version;
 
 	public long getId() {
 		return id;
@@ -30,4 +32,13 @@ public class LocationDto {
 	public void setColor(String color) {
 		this.color = color;
 	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 }

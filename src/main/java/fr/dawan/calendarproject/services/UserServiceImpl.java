@@ -104,9 +104,7 @@ public class UserServiceImpl implements UserService {
 		u.setSkills(skillsList);
 
 		u.setLocation(locationRepository.getOne(user.getLocationId()));
-		if (u.getId() != 0) {
-			u.setVersion(userRepository.getOne(u.getId()).getVersion());
-		}
+
 		u = userRepository.saveAndFlush(u);
 		return DtoTools.convert(u, AdvancedUserDto.class);
 	}

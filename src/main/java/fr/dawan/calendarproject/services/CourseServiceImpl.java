@@ -22,25 +22,24 @@ public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	CourseRepository courseRepository;
-	
+
 	@Override
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
-		
-		//Solution 1 à la mano - conversion vers Dto
+
+		// Solution 1 à la mano - conversion vers Dto
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
 			result.add(DtoTools.convert(c, CourseDto.class));
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public List<CourseDto> getAllCourses(int page, int max) {
-		List<Course> courses = courseRepository.findAll(PageRequest.of(page, max))
-				.get().collect(Collectors.toList());
-        List<CourseDto> result = new ArrayList<CourseDto>();	
+		List<Course> courses = courseRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
+		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
 			result.add(DtoTools.convert(c, CourseDto.class));
 		}
@@ -50,10 +49,10 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public CourseDto getById(long id) {
 		Optional<Course> c = courseRepository.findById(id);
-		if(c.isPresent())
+		if (c.isPresent())
 			return DtoTools.convert(c.get(), CourseDto.class);
-		
-	 return null;
+
+		return null;
 	}
 
 	@Override
@@ -63,12 +62,10 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseDto saveOrUpdate(CourseDto courseDto) {
-        Course c = DtoTools.convert(courseDto, Course.class);
-        if(c.getId() != 0) {
-        	c.setVersion(courseRepository.getOne(c.getId()).getVersion());
-        }
-        c = courseRepository.saveAndFlush(c);
-        return DtoTools.convert(c, CourseDto.class);
+		Course c = DtoTools.convert(courseDto, Course.class);
+
+		c = courseRepository.saveAndFlush(c);
+		return DtoTools.convert(c, CourseDto.class);
 	}
 
 	@Override

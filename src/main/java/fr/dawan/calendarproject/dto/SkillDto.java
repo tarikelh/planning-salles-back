@@ -5,6 +5,8 @@ public class SkillDto {
 
 	private String title;
 
+	private int version;
+	
 	public long getId() {
 		return id;
 	}
@@ -20,4 +22,13 @@ public class SkillDto {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 }

@@ -84,9 +84,6 @@ public class SkillServiceImpl implements SkillService {
 		}
 		s.setUsers(usersList);
 
-		if (s.getId() != 0) {
-			s.setVersion(skillRepository.getOne(s.getId()).getVersion());
-		}
 		s = skillRepository.saveAndFlush(s);
 		return DtoTools.convert(s, AdvancedSkillDto.class);
 	}

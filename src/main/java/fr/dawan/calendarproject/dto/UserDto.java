@@ -1,8 +1,5 @@
 package fr.dawan.calendarproject.dto;
 
-import fr.dawan.calendarproject.enums.UserCompany;
-import fr.dawan.calendarproject.enums.UserType;
-
 public class UserDto {
 
 	private long id;
@@ -22,6 +19,8 @@ public class UserDto {
 	private String company;
 	
 	private String imagePath;
+	
+	private int version;
 
 	public long getId() {
 		return id;
@@ -98,4 +97,13 @@ public class UserDto {
 	public String getFullName() {
 		return firstName + " "+ lastName;
 	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 }
