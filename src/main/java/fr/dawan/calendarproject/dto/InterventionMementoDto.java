@@ -30,8 +30,6 @@ public class InterventionMementoDto implements Cloneable {
 	private long masterInterventionId;
 	
 	private boolean isMaster;
-	
-	private int version;
 
 	public long getInterventionId() {
 		return interventionId;
@@ -137,14 +135,6 @@ public class InterventionMementoDto implements Cloneable {
 
 	public void setMaster(boolean isMaster) {
 		this.isMaster = isMaster;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
 	}
 
 	@Override
