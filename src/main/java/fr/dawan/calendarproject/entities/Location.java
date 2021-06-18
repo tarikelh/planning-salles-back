@@ -13,10 +13,10 @@ public class Location {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = false, length = 255, unique = true)
 	private String city;
 
-	@Column(nullable = true, length = 9)
+	@Column(nullable = true, length = 9, unique = true)
 	private String color;
 
 	@Version

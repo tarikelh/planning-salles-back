@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 
 @ControllerAdvice
-public class InterventionExceptionHandler extends ResponseEntityExceptionHandler {
+public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = { InvalidInterventionFormatException.class })
-	protected ResponseEntity<Object> handleConflict(InvalidInterventionFormatException ex, WebRequest request) {
+	@ExceptionHandler(value = { EntityFormatException.class })
+	protected ResponseEntity<Object> handleConflict(EntityFormatException ex, WebRequest request) {
 		HttpHeaders headers = new HttpHeaders();
 
 		StringWriter sw = new StringWriter();
