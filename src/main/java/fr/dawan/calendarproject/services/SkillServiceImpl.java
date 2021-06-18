@@ -16,10 +16,9 @@ import org.springframework.stereotype.Service;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.DtoTools;
-import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -107,7 +106,7 @@ public class SkillServiceImpl implements SkillService {
 		}
 		
 		if (!errors.isEmpty()) {
-			throw new InvalidInterventionFormatException(errors);
+			throw new EntityFormatException(errors);
 		}
 		
 		return true;

@@ -23,7 +23,7 @@ import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -236,7 +236,7 @@ public class InterventionServiceImpl implements InterventionService {
 		return calendar;
 	}
 
-	public boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException {
+	public boolean checkIntegrity(InterventionDto i) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = i.getClass().toString();
 		String path = "/api/interventions";
@@ -278,7 +278,7 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		if (!errors.isEmpty()) {
-			throw new InvalidInterventionFormatException(errors);
+			throw new EntityFormatException(errors);
 		}
 
 		return true;

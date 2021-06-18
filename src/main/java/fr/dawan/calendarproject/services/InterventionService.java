@@ -3,10 +3,7 @@ package fr.dawan.calendarproject.services;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.core.io.ByteArrayResource;
-
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
 import net.fortuna.ical4j.model.Calendar;
 
 public interface InterventionService {
@@ -43,5 +40,5 @@ public interface InterventionService {
 	
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end);
 
-	boolean checkIntegrity(InterventionDto i) throws InvalidInterventionFormatException;
+	boolean checkIntegrity(InterventionDto i);
 }

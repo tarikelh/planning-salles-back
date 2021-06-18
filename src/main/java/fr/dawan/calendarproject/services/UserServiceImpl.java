@@ -20,7 +20,7 @@ import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
-import fr.dawan.calendarproject.exceptions.InvalidInterventionFormatException;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
 		}
 		//If Image > must exist
 		if (!errors.isEmpty()) {
-			throw new InvalidInterventionFormatException(errors);
+			throw new EntityFormatException(errors);
 		}
 
 		return true;

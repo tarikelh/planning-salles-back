@@ -4,12 +4,12 @@ import java.util.Set;
 
 import fr.dawan.calendarproject.dto.APIError;
 
-public class InvalidInterventionFormatException extends RuntimeException {
+public class EntityFormatException extends RuntimeException {
 
 	private Set<APIError> errors;
 	private static final long serialVersionUID = 1L;
 
-	public InvalidInterventionFormatException(Set<APIError> errors) {
+	public EntityFormatException(Set<APIError> errors) {
 		setErrors(errors);
 	}
 
