@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.services;
 import java.time.LocalDate;
 import java.util.List;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import net.fortuna.ical4j.model.Calendar;
 
@@ -22,7 +23,7 @@ public interface InterventionService {
 	
 	List<InterventionDto> getByCourseTitle(String title);
 
-	long count();
+	CountDto count(String type);
 	
 	List<InterventionDto> getMasterIntervention();
 	
@@ -41,4 +42,5 @@ public interface InterventionService {
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end);
 
 	boolean checkIntegrity(InterventionDto i);
+	
 }
