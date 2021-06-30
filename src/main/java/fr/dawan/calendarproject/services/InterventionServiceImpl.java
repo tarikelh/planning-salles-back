@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -181,8 +182,12 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public long count() {
-		return interventionRepository.count();
+	public CountDto count(String type) {
+		if(UserType.contains(type)) {
+			UserType userType = UserType.valueOf(type);
+			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
+		}
+		return null; // Exception
 	}
 
 	@Override
