@@ -26,13 +26,13 @@ public class Intervention {
 	@Column(nullable = true, length = 255)
 	private String comment;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
 	private Location location;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
 	private Course course;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, cascade = CascadeType.MERGE)
 	private User user;
 
 	@NotNull
