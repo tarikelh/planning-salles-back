@@ -261,20 +261,20 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 		
 		if (i.isMaster()) {
-//			if(i.getLocationId() != 0) {
-//				String message = "Location id should be 0 for a master event.";
-//				errors.add(new APIError(407, instanceClass, "MasterEventLocation", message, path));
-//			}
-//			
-//			if(i.getCourseId() != 0) {
-//				String message = "Course id should be 0 for a master event.";
-//				errors.add(new APIError(407, instanceClass, "MasterEventCourse", message, path));
-//			}
-//			
-//			if(i.getUserId() != 0) {
-//				String message = "User id should be 0 for a master event.";
-//				errors.add(new APIError(407, instanceClass, "MasterEventUser", message, path));
-//			}
+			if(i.getLocationId() != 0) {
+				String message = "Location id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventLocation", message, path));
+			}
+			
+			if(i.getCourseId() != 0) {
+				String message = "Course id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventCourse", message, path));
+			}
+			
+			if(i.getUserId() != 0) {
+				String message = "User id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventUser", message, path));
+			}
 		} else {
 			if (!locationRepository.findById(i.getLocationId()).isPresent()) {
 				String message = "Location with id: " + i.getLocationId() + " does not exist.";
