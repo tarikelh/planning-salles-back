@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 		//Location Must EXIST
 		if (!locationRepository.findById(u.getLocationId()).isPresent()) {
 			String message = "Location with id: " + u.getLocationId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "LocationNotFound",
+			errors.add(new APIError(301, instanceClass, "LocationNotFound",
 					message, path));
 		}
 		
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
 			for (long skillId : u.getSkillsId()) {
 				if(!skillRepository.findById(skillId).isPresent()) {
 					String message = "Skill with id: " + skillId + " does not exist.";
-					errors.add(new APIError(404, instanceClass, "SkillNotFound",
+					errors.add(new APIError(302, instanceClass, "SkillNotFound",
 							message, path));
 				}
 			}
@@ -148,27 +148,33 @@ public class UserServiceImpl implements UserService {
 		//Email > valid, uniq
 		if (!User.emailIsValid(u.getEmail())) {
 			String message = "Email must be valid.";
-			errors.add(new APIError(404, instanceClass, "InvalidEmail",
+			errors.add(new APIError(303, instanceClass, "InvalidEmail",
+					message, path));
+		}
+		
+		if(userRepository.findByEmail(u.getEmail()) != null) {
+			String message = "Email already used.";
+			errors.add(new APIError(304, instanceClass, "EmailNotUniq",
 					message, path));
 		}
 		
 		//password > 8 char min
 		if(u.getPassword().length() < 8) {
 			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(404, instanceClass, "PasswordTooShort",
+			errors.add(new APIError(305, instanceClass, "PasswordTooShort",
 					message, path));
 		}
 		
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
 			String message = "Company: " + u.getCompany() + " is not valid.";
-			errors.add(new APIError(403, instanceClass, "UnknownUserCompany",
+			errors.add(new APIError(306, instanceClass, "UnknownUserCompany",
 					message, path));
 		}
 		
 		if (!UserType.contains(u.getType())) {
 			String message = "Type: " + u.getType() + " is not valid.";
-			errors.add(new APIError(403, instanceClass, "UnknownUserType",
+			errors.add(new APIError(307, instanceClass, "UnknownUserType",
 					message, path));
 		}
 		//If Image > must exist

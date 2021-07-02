@@ -116,13 +116,19 @@ public class InterventionServiceImpl implements InterventionService {
 		checkIntegrity(intervention);
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
 
-		interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
-		interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
-		interv.setUser(userRepository.getOne(intervention.getUserId()));
-
-		if (intervention.getMasterInterventionId() > 0)
+		if (!intervention.isMaster()) {
+			interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
+			interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
+			interv.setUser(userRepository.getOne(intervention.getUserId()));
+		} else {
+			interv.setLocation(null);
+			interv.setCourse(null);
+			interv.setUser(null);
+		}
+		
+		if (intervention.getMasterInterventionId() > 0) 
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
-
+		
 		interv = interventionRepository.saveAndFlush(interv);
 
 		// Memento creation
@@ -253,21 +259,39 @@ public class InterventionServiceImpl implements InterventionService {
 			String message = "Type: " + i.getType().toString() + " is not a valid type.";
 			errors.add(new APIError(403, instanceClass, "UnknownInterventionType", message, path));
 		}
-
-		if (!locationRepository.findById(i.getLocationId()).isPresent()) {
-			String message = "Location with id: " + i.getLocationId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "LocationNotFound", message, path));
+		
+		if (i.isMaster()) {
+			if(i.getLocationId() != 0) {
+				String message = "Location id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventLocation", message, path));
+			}
+			
+			if(i.getCourseId() != 0) {
+				String message = "Course id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventCourse", message, path));
+			}
+			
+			if(i.getUserId() != 0) {
+				String message = "User id should be 0 for a master event.";
+				errors.add(new APIError(407, instanceClass, "MasterEventUser", message, path));
+			}
+		} else {
+			if (!locationRepository.findById(i.getLocationId()).isPresent()) {
+				String message = "Location with id: " + i.getLocationId() + " does not exist.";
+				errors.add(new APIError(404, instanceClass, "LocationNotFound", message, path));
+			}
+			
+			if (!courseRepository.findById(i.getCourseId()).isPresent()) {
+				String message = "Course with id: " + i.getCourseId() + " does not exist.";
+				errors.add(new APIError(404, instanceClass, "CourseNotFound", message, path));
+			}
+			
+			if (!userRepository.findById(i.getUserId()).isPresent()) {
+				String message = "User with id: " + i.getUserId() + " does not exist.";
+				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
+			}		
 		}
 
-		if (!userRepository.findById(i.getUserId()).isPresent()) {
-			String message = "User with id: " + i.getUserId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
-		}
-
-		if (!courseRepository.findById(i.getCourseId()).isPresent()) {
-			String message = "Course with id: " + i.getCourseId() + " does not exist.";
-			errors.add(new APIError(404, instanceClass, "CourseNotFound", message, path));
-		}
 		
 		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {
 			if (interv.getId() != i.getId()) {
