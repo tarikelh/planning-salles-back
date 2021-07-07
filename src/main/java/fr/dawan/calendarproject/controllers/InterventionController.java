@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.services.InterventionService;
@@ -198,7 +199,11 @@ public class InterventionController {
 		return ResponseEntity.ok().headers(headers).contentLength(f.length())
 				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
-//	public List<InterventionDto> getUserIcalFile(long userId) {
-//		
-//	}
+
+	//Count
+	@GetMapping(value = "/count", produces = { "application/json", "application/xml" })
+	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
+		return interventionService.count(type);
+	}
+	
 }
