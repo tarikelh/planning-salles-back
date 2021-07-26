@@ -11,6 +11,15 @@ public class CourseDto {
 	
 	private int version;
 	
+	public CourseDto() {
+	}
+	
+	public CourseDto(long id, String title, int version) {
+		this.id = id;
+		this.title = title;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}

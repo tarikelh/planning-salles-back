@@ -32,8 +32,12 @@ public class CourseController {
 	
 	//GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml"})
-	public CourseDto getById(@PathVariable("id") long id) {
-		return courseService.getById(id);
+	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+		CourseDto cDto = courseService.getById(id);
+		if (cDto != null)
+			return ResponseEntity.status(HttpStatus.OK).body(cDto);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with id "+ id +" Not Found");
 	}
 	
 	//DELETE - supprimer
@@ -41,9 +45,9 @@ public class CourseController {
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id" ) long id) {
 		try {
 			courseService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Course with id " + id + " deleted");
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with id " + id + " Not Found");
 		}
 	}
 	
@@ -58,5 +62,4 @@ public class CourseController {
 	public CourseDto update(@RequestBody CourseDto course) {
 		return courseService.saveOrUpdate(course);
 	}
-
 }
