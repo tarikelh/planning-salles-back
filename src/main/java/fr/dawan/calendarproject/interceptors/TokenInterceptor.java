@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import fr.dawan.calendarproject.TokenSaver;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Component
@@ -17,14 +16,14 @@ public class TokenInterceptor implements HandlerInterceptor {
 	private JwtTokenUtil jwtTokenUtil;
 
 	// A commenter si nous avons besoin d'insérer nouveau contact sans token
-	/*
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
-		System.out.println(">>>>>> inside Token Interceptor...");
-		System.out.println("URI =" + request.getRequestURI());
-		System.out.println("Header (authorization) :" + request.getHeader("Authorization"));
+		//System.out.println(">>>>>> inside Token Interceptor...");
+		//System.out.println("URI =" + request.getRequestURI());
+		//System.out.println("Header (authorization) :" + request.getHeader("Authorization"));
 
 		if (!request.getRequestURI().equals("/authenticate")) {
 			String headerAuth = request.getHeader("Authorization");
@@ -42,10 +41,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 				throw new Exception("Erreur : jeton non reconnu !");
 
 			// TODO autres extractions du jeton ou autres traitements
-
 		}
 		return true;
 	}
-	*/
 	
 }
