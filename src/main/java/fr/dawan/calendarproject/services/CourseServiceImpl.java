@@ -62,6 +62,9 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public CourseDto saveOrUpdate(CourseDto courseDto) {
+		if (courseDto.getId() > 0 && !courseRepository.findById(courseDto.getId()).isPresent())
+			return null;
+		
 		Course c = DtoTools.convert(courseDto, Course.class);
 
 		c = courseRepository.saveAndFlush(c);

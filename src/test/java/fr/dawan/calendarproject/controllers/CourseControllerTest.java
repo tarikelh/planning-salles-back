@@ -2,14 +2,16 @@ package fr.dawan.calendarproject.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -119,22 +121,66 @@ class CourseControllerTest {
 	}
 
 	@Test
-	void shouldCreateNewUser() throws Exception {
-		
-		CourseDto newCourse = new CourseDto(0, "Photoshop", 0);
+	void shouldCreateNewCourse() throws Exception {
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		
+		CourseDto newCourse = new CourseDto(0, "Photoshop", 0);
+		CourseDto resMock = new CourseDto(4, "Photoshop", 0);
 		String newCourseJson = objectMapper.writeValueAsString(newCourse);
 		
-		when(courseService.saveOrUpdate(newCourse)).thenReturn(new CourseDto(4, "Photoshop", 0));
-		mockMvc.perform(post("/api/users")
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.characterEncoding("utf-8").accept(MediaType.APPLICATION_JSON)
-			.content(newCourseJson));
+		when(courseService.saveOrUpdate(any(CourseDto.class))).thenReturn(resMock);
+		
+		mockMvc.perform(post("/api/courses")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8").accept(MediaType.APPLICATION_JSON)
+				.content(newCourseJson))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(4)))
+				.andExpect(jsonPath("$.title", is(newCourse.getTitle())))
+				.andExpect(jsonPath("$.version", is(newCourse.getVersion())));
 	}
 
 	@Test
-	void testUpdate() {
-		fail("Not yet implemented");
+	void shouldUpdateCourse() throws Exception {
+		
+		CourseDto updated = new CourseDto(
+				courses.get(0).getId(), 
+				courses.get(0).getTitle(),
+				courses.get(0).getVersion());
+		
+				updated.setTitle("Java EE");
+		
+		String updatedJson = objectMapper.writeValueAsString(updated);
+		
+		when(courseService.saveOrUpdate(any(CourseDto.class))).thenReturn(updated);
+		
+		mockMvc.perform(put("/api/courses")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8").accept(MediaType.APPLICATION_JSON)
+				.content(updatedJson))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.title", is(updated.getTitle())))
+				.andExpect(jsonPath("$.title", not(courses.get(0).getTitle())));
+	}
+	
+	@Test
+	void shouldReturn404WhenUpdateWithWrongId() throws Exception {
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		
+		CourseDto newCourse = new CourseDto(120, "Photoshop", 0);
+		String newCourseJson = objectMapper.writeValueAsString(newCourse);
+		
+		when(courseService.saveOrUpdate(newCourse)).thenReturn(null);
+		
+		String res = mockMvc.perform(put("/api/courses")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(newCourseJson))
+				.andExpect(status().isNotFound())
+				.andReturn().getResponse().getContentAsString();
+		
+		assertEquals(res, "Course with id " + newCourse.getId() + " Not Found");
 	}
 }

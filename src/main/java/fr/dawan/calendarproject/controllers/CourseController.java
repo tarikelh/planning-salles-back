@@ -59,7 +59,13 @@ public class CourseController {
 	
 	//PUT - modifier
 	@PutMapping(consumes="application/json", produces = "application/json")
-	public CourseDto update(@RequestBody CourseDto course) {
-		return courseService.saveOrUpdate(course);
+	public ResponseEntity<?> update(@RequestBody CourseDto course) {
+		
+		CourseDto response = courseService.saveOrUpdate(course);
+		
+		if (response != null)
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with id "+ course.getId() +" Not Found");
 	}
 }

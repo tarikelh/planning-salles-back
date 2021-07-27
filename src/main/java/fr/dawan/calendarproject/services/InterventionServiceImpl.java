@@ -289,10 +289,9 @@ public class InterventionServiceImpl implements InterventionService {
 			if (!userRepository.findById(i.getUserId()).isPresent()) {
 				String message = "User with id: " + i.getUserId() + " does not exist.";
 				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
-			}		
+			}
 		}
 
-		
 		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {
 			if (interv.getId() != i.getId()) {
 				String message = "Intervention dates overlap the intervention with id: "+ interv.getId() + ".";
