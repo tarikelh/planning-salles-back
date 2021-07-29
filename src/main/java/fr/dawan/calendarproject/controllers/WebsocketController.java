@@ -35,8 +35,20 @@ public class WebsocketController {
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
 		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
 			System.out.println("Erreur : jeton non reconnu !");
+		
+		return messageWebsocketDto;
     	
-        return messageWebsocketDto;
+		/*
+		if(messageWebsocketDto.getId() != null || messageWebsocketDto.getId() != "" 
+				&& messageWebsocketDto.getEvent() != null || messageWebsocketDto.getEvent() != "" 
+				&& messageWebsocketDto.getType() != null || messageWebsocketDto.getType() != "" )
+			return messageWebsocketDto;
+		else {
+			System.out.println("error");
+			return null;
+		}
+		*/
+			
     }
 	
 }
