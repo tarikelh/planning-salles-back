@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.LocationDto;
+import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -24,6 +26,7 @@ import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.HashTools;
 
 @Service
 @Transactional
@@ -34,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private LocationRepository locationRepository;
+	
+	@Autowired
+	private LocationService locationService;
 
 	@Autowired
 	private SkillRepository skillRepository;
@@ -108,6 +114,39 @@ public class UserServiceImpl implements UserService {
 		u = userRepository.saveAndFlush(u);
 		return DtoTools.convert(u, AdvancedUserDto.class);
 	}
+	
+	@Override
+	public AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user) {
+		User u = DtoTools.convert(user, User.class);
+		
+		Set<Skill> skillsList = new HashSet<Skill>();
+
+		if (user.getSkillsId() != null) {
+			user.getSkillsId().forEach(id -> {
+				skillsList.add(skillRepository.getOne(id));
+			});
+		}
+		u.setSkills(skillsList);
+
+		u.setLocation(locationRepository.getOne(user.getLocationId()));
+
+		// Hash Password
+//		try {
+//			if (u.getId() == 0) {
+//					u.setPassword(HashTools.hashSHA512(u.getPassword()));
+//				} else {
+//					AdvancedUserDto userInDB = getById(u.getId());
+//					if (!userInDB.getPassword().equals(u.getPassword())) {
+//						u.setPassword(HashTools.hashSHA512(u.getPassword()));
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		u = userRepository.saveAndFlush(u);
+		return DtoTools.convert(u, AdvancedUserDto.class);
+			
+}
 
 	@Override
 	public AdvancedUserDto findByEmail(String email) {
