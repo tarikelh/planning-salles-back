@@ -24,8 +24,9 @@ public class WebsocketController {
     @MessageMapping("/chat")    
     // Sends the return value of this method to /topic/messages
     @SendTo("/topic/messages")
-    public MessageWebsocketDto getMessages(MessageWebsocketDto messageWebsocketDto, @Header(name = "token") String header){
+    public MessageWebsocketDto getMessages(MessageWebsocketDto messageWebsocketDto, @Header(name = "token") String header) throws Exception{
     	
+    	// verify the token before to send a websocket message
     	String accessToken = header.split(" ")[1];
     	
     	if (jwtTokenUtil.isTokenExpired(accessToken))
@@ -35,19 +36,13 @@ public class WebsocketController {
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
 		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
 			System.out.println("Erreur : jeton non reconnu !");
-		
-		return messageWebsocketDto;
-    	
-		/*
-		if(messageWebsocketDto.getId() != null || messageWebsocketDto.getId() != "" 
-				&& messageWebsocketDto.getEvent() != null || messageWebsocketDto.getEvent() != "" 
-				&& messageWebsocketDto.getType() != null || messageWebsocketDto.getType() != "" )
+
+		// Verify message format from the websocket
+		if(messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null && messageWebsocketDto.getType() != null )
 			return messageWebsocketDto;
 		else {
-			System.out.println("error");
-			return null;
+			throw new Exception("Erreur : websocket message incorrect !");
 		}
-		*/
 			
     }
 	
