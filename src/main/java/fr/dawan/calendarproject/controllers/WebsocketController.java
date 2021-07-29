@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,6 +14,8 @@ import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Controller
 public class WebsocketController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
 	
     @Autowired
 	private JwtTokenUtil jwtTokenUtil;

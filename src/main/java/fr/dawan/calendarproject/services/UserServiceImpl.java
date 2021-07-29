@@ -97,9 +97,9 @@ public class UserServiceImpl implements UserService {
 		User u = DtoTools.convert(user, User.class);
 		
 		try {
-			if(u.getId()==0) {
+			if(u.getId() == 0) {
 				u.setPassword(HashTools.hashSHA512(u.getPassword()));
-			}else {
+			} else {
 				UserDto userInDB = getById(u.getId());
 				if(!userInDB.getPassword().equals(u.getPassword())) {
 					u.setPassword(HashTools.hashSHA512(u.getPassword()));
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
 					message, path));
 		}
 		
-		if(userRepository.findByEmail(u.getEmail()) != null) {
+		if(u.getId() == 0 && userRepository.findByEmail(u.getEmail()) != null) {
 			String message = "Email already used.";
 			errors.add(new APIError(304, instanceClass, "EmailNotUniq",
 					message, path));

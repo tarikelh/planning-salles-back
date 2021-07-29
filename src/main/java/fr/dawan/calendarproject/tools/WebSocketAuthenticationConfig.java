@@ -28,6 +28,7 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
     @Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
+ // Token verification when client try to connect to the websocket
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -57,4 +58,5 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
             }
         });
     }
+  
 }
