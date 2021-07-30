@@ -16,6 +16,8 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.exceptions.TokenException;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
 
 @Configuration
@@ -23,13 +25,14 @@ import fr.dawan.calendarproject.interceptors.TokenSaver;
 //@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConfigurer {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketAuthenticationConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebSocketAuthenticationConfig.class);
+	private APIError error;
 
-    @Autowired
+	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
- // Token verification when client try to connect to the websocket
-    @Override
+	// Token verification when client try to connect to the websocket
+	@Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
         	
@@ -43,20 +46,24 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
 
                     String accessToken = authorization.get(0).split(" ")[1];
                     
-                    if (jwtTokenUtil.isTokenExpired(accessToken))
-                    	System.out.println("Erreur : jeton expiré !");
-                    	//throw new Exception("Erreur : jeton expiré !");
-                    
-
+                    if (jwtTokenUtil.isTokenExpired(accessToken)) {
+                    	error = new APIError(999, "websocket", "TokenExpired",
+                    			"Error : token expired !", "websocket");
+                    	throw new TokenException(error);
+                    }
+                    	
+              
     				String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-    				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
-    					System.out.println("Erreur : jeton non reconnu !");
-    					//throw new Exception("Erreur : jeton non reconnu !");
+    				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
+                    	error = new APIError(999, "websocket", "TokenError",
+                    			"Error : token not known !", "websocket");
+                    	throw new TokenException(error);
+    				}
     				
                 }
                 return message;
             }
         });
     }
-  
+
 }

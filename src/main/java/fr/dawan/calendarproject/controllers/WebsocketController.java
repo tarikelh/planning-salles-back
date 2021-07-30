@@ -30,12 +30,12 @@ public class WebsocketController {
     	String accessToken = header.split(" ")[1];
     	
     	if (jwtTokenUtil.isTokenExpired(accessToken))
-        	System.out.println("Erreur : jeton expiré !");
+    		throw new Exception("Erreur : jeton expiré !");
         
 
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
 		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
-			System.out.println("Erreur : jeton non reconnu !");
+			throw new Exception("Erreur : jeton non reconnu !");
 
 		// Verify message format from the websocket
 		if(messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null && messageWebsocketDto.getType() != null )
