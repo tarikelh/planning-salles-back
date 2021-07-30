@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -24,6 +25,7 @@ import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.HashTools;
 
 @Service
 @Transactional
@@ -96,6 +98,19 @@ public class UserServiceImpl implements UserService {
 		checkIntegrity(user);
 
 		User u = DtoTools.convert(user, User.class);
+		
+		try {
+			if(u.getId() == 0) {
+				u.setPassword(HashTools.hashSHA512(u.getPassword()));
+			} else {
+				UserDto userInDB = getById(u.getId());
+				if(!userInDB.getPassword().equals(u.getPassword())) {
+					u.setPassword(HashTools.hashSHA512(u.getPassword()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		Set<Skill> skillsList = new HashSet<Skill>();
 
@@ -151,8 +166,8 @@ public class UserServiceImpl implements UserService {
 			String message = "Email must be valid.";
 			errors.add(new APIError(303, instanceClass, "InvalidEmail", message, path));
 		}
-
-		if (u.getId() == 0 && userRepository.findByEmail(u.getEmail()) != null) {
+		
+		if(u.getId() == 0 && userRepository.findByEmail(u.getEmail()) != null) {
 			String message = "Email already used.";
 			errors.add(new APIError(304, instanceClass, "EmailNotUniq", message, path));
 		}

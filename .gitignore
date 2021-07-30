@@ -35,3 +35,6 @@ build/
 
 ### Da Calendar Log Files ###
 interventionMementoDates.csv
+
+## PKCS #12
+#*.p12
