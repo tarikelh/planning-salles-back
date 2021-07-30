@@ -32,19 +32,22 @@ public class LocationController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public LocationDto getById(@PathVariable("id") long id) {
-		return locationService.getById(id);
+	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+		LocationDto loc =locationService.getById(id);
+		if (loc != null)
+			return ResponseEntity.status(HttpStatus.OK).body(loc);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with " + id + "Not Found");
 	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
-			System.out.println("inside delete... ");
 			locationService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Location with id " + id + " Deleted");
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id " + id + " Not Found");
 		}
 	}
 
@@ -56,7 +59,12 @@ public class LocationController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public LocationDto update(@RequestBody LocationDto location) {
-		return locationService.saveOrUpdate(location);
+	public ResponseEntity<?> update(@RequestBody LocationDto location) {
+		LocationDto loc = locationService.saveOrUpdate(location);
+		if (loc != null)
+			return ResponseEntity.status(HttpStatus.OK).body(loc);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id " + location.getId() + " Not Found");
+	
 	}
 }

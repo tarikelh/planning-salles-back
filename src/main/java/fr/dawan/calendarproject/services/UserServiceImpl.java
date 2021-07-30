@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
 	private LocationRepository locationRepository;
 
 	@Autowired
+	private LocationService locationService;
+
+	@Autowired
 	private SkillRepository skillRepository;
 
 	@Override
@@ -51,10 +54,10 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
+
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
-		if (UserType.contains(type)){
+		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
@@ -93,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
 		checkIntegrity(user);
-		
+
 		User u = DtoTools.convert(user, User.class);
 		
 		try {
@@ -137,62 +140,55 @@ public class UserServiceImpl implements UserService {
 	public long count() {
 		return userRepository.count();
 	}
-	
+
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = u.getClass().toString();
 		String path = "/api/users";
-		//Location Must EXIST
+		// Location Must EXIST
 		if (!locationRepository.findById(u.getLocationId()).isPresent()) {
 			String message = "Location with id: " + u.getLocationId() + " does not exist.";
-			errors.add(new APIError(301, instanceClass, "LocationNotFound",
-					message, path));
+			errors.add(new APIError(301, instanceClass, "LocationNotFound", message, path));
 		}
-		
-		//IF Skill > Must EXIST
+
+		// IF Skill > Must EXIST
 		if (u.getSkillsId() != null) {
 			for (long skillId : u.getSkillsId()) {
-				if(!skillRepository.findById(skillId).isPresent()) {
+				if (!skillRepository.findById(skillId).isPresent()) {
 					String message = "Skill with id: " + skillId + " does not exist.";
-					errors.add(new APIError(302, instanceClass, "SkillNotFound",
-							message, path));
+					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}
 		}
-		
-		//Email > valid, uniq
+
+		// Email > valid, uniq
 		if (!User.emailIsValid(u.getEmail())) {
 			String message = "Email must be valid.";
-			errors.add(new APIError(303, instanceClass, "InvalidEmail",
-					message, path));
+			errors.add(new APIError(303, instanceClass, "InvalidEmail", message, path));
 		}
 		
 		if(u.getId() == 0 && userRepository.findByEmail(u.getEmail()) != null) {
 			String message = "Email already used.";
-			errors.add(new APIError(304, instanceClass, "EmailNotUniq",
-					message, path));
+			errors.add(new APIError(304, instanceClass, "EmailNotUniq", message, path));
 		}
-		
-		//password > 8 char min
-		if(u.getPassword().length() < 8) {
+
+		// password > 8 char min
+		if (u.getPassword().length() < 8) {
 			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(305, instanceClass, "PasswordTooShort",
-					message, path));
+			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
 		}
-		
+
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
 			String message = "Company: " + u.getCompany() + " is not valid.";
-			errors.add(new APIError(306, instanceClass, "UnknownUserCompany",
-					message, path));
+			errors.add(new APIError(306, instanceClass, "UnknownUserCompany", message, path));
 		}
-		
+
 		if (!UserType.contains(u.getType())) {
 			String message = "Type: " + u.getType() + " is not valid.";
-			errors.add(new APIError(307, instanceClass, "UnknownUserType",
-					message, path));
+			errors.add(new APIError(307, instanceClass, "UnknownUserType", message, path));
 		}
-		//If Image > must exist
+		// If Image > must exist
 		if (!errors.isEmpty()) {
 			throw new EntityFormatException(errors);
 		}

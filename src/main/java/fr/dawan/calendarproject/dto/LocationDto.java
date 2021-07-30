@@ -9,6 +9,16 @@ public class LocationDto {
 	
 	private int version;
 
+	public LocationDto() {
+	}
+
+	public LocationDto(long id, String city, String color, int version) {
+		this.id = id;
+		this.city = city;
+		this.color = color;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}
