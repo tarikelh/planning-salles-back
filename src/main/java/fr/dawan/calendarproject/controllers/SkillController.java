@@ -32,19 +32,23 @@ public class SkillController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public AdvancedSkillDto getById(@PathVariable("id") long id) {
-		return skillService.getById(id);
+	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+		AdvancedSkillDto skill = skillService.getById(id);
+		
+		if (skill != null)
+			return ResponseEntity.status(HttpStatus.OK).body(skill);
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with Id " + id + " Not Found");
 	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
-			System.out.println("inside delete... ");
 			skillService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Skill with Id " + id + " Deleted");
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with Id " + id + " Not Found");
 		}
 	}
 
@@ -56,7 +60,12 @@ public class SkillController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AdvancedSkillDto update(@RequestBody AdvancedSkillDto skill) {
-		return skillService.saveOrUpdate(skill);
+	public ResponseEntity<?> update(@RequestBody AdvancedSkillDto skill) {
+		AdvancedSkillDto updatedSkill = skillService.saveOrUpdate(skill);
+	
+		if(updatedSkill != null)
+			return ResponseEntity.status(HttpStatus.OK).body(updatedSkill);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with Id " + skill.getId() + " Not Found");
 	}
 }
