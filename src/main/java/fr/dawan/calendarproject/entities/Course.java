@@ -14,7 +14,7 @@ public class Course {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(nullable = false, length = 350)
+	@Column(nullable = false, length = 350, unique = true)
 	private String title;
 	
 	@Version

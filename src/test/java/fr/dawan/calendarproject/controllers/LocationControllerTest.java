@@ -143,16 +143,6 @@ public class LocationControllerTest {
 	}
 	
 	@Test
-	void shouldFailToCreateWhenCityNotUniq() {
-		fail("not yet implemented");
-	}
-	
-	@Test
-	void shouldFailToCreateWhenColorNotUniq() {
-		fail("not yet implemented");
-	}
-
-	@Test
 	public void shouldUpdateLocation() throws Exception {
 		LocationDto updatedLoc = new LocationDto(locs.get(0).getId(),
 				locs.get(0).getCity(),
@@ -196,13 +186,4 @@ public class LocationControllerTest {
 		assertEquals(res, "Location with id " + wrongIdLoc.getId() + " Not Found");
 	}
 	
-	@Test
-	void shouldFailToUpdateWhenCityNotUniq() {
-		fail("not yet implemented");
-	}
-	
-	@Test
-	void shouldFailToUpdateWhenColorNotUniq() {
-		fail("not yet implemented");
-	}
 }

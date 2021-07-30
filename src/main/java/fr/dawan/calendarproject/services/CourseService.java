@@ -12,5 +12,6 @@ public interface CourseService {
 	void deleteById(long id);
 	CourseDto saveOrUpdate(CourseDto course);
 	CourseDto count();
+	boolean checkUniqness(CourseDto course);
 	
 }

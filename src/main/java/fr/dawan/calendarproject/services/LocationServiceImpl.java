@@ -82,22 +82,18 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public boolean checkUniqness(LocationDto location) {
-		System.out.println("id ::: " + location.getId());
-		System.out.println("city ::: " + location.getCity());
-		System.out.println("color ::: " + location.getColor());
 		List<Location> duplicates = locationRepository.findDuplicates(location.getId(), location.getCity(), location.getColor());
-		
-		System.out.println("dup size ::: " + duplicates.size());
+
 		if (duplicates.size() > 0) {
 			Set<APIError> errors = new HashSet<APIError>();
-			String instanceClass = location.getClass().toString();
+			String instanceClass = duplicates.get(0).getClass().toString();
 			String path = "/api/locations";
 			
 			for (Location loc : duplicates) {
 				if (loc.getCity().equals(location.getCity()))
-					errors.add(new APIError(505, instanceClass, path, "Location with name " + location.getCity() + " already exists", path));
+					errors.add(new APIError(505, instanceClass, "City Name not Unique", "Location with name " + location.getCity() + " already exists", path));
 				if (loc.getColor().equals(location.getColor()))
-					errors.add(new APIError(505, instanceClass, path, "Location with color " + location.getColor() + " already exists", path));
+					errors.add(new APIError(505, instanceClass, "Color not Unique", "Location with color " + location.getColor() + " already exists", path));
 			}
 			
 			throw new EntityFormatException(errors);

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -136,11 +135,6 @@ class CourseControllerTest {
 	}
 	
 	@Test
-	void shouldFailToCreateWhenTitleNotUniq() {
-		fail("not yet implemented");
-	}
-
-	@Test
 	void shouldUpdateCourse() throws Exception {
 		
 		CourseDto updated = new CourseDto(courses.get(0).getId(), courses.get(0).getTitle(),
@@ -175,10 +169,5 @@ class CourseControllerTest {
 				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
 
 		assertEquals(res, "Course with id " + newCourse.getId() + " Not Found");
-	}
-	
-	@Test
-	void shouldFailToUpdateWhenTitleNotUniq() {
-		fail("not yet implemented");
 	}
 }

@@ -11,6 +11,6 @@ import fr.dawan.calendarproject.entities.Course;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 	
 	@Query("FROM Course c WHERE c.id IS NOT :id AND c.title = :title")
-	Course findByTitle(@Param("title") String title);
+	Course findByTitle(@Param("id") long id, @Param("title") String title);
 
 }
