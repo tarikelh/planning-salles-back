@@ -22,6 +22,23 @@ public class UserDto {
 	
 	private int version;
 
+	public UserDto() {
+	}
+
+	public UserDto(long id, String firstName, String lastName, long locationId, String email, String password,
+			String type, String company, String imagePath, int version) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.locationId = locationId;
+		this.email = email;
+		this.password = password;
+		this.type = type;
+		this.company = company;
+		this.imagePath = imagePath;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}
