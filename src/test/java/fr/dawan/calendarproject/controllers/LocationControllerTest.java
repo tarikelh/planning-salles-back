@@ -81,9 +81,9 @@ public class LocationControllerTest {
 		when(locationService.getById(locId)).thenReturn(locs.get(1));
 		
 		mockMvc.perform(get("/api/locations/{id}", locId).accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.city", is(locs.get(1).getCity())))
-		.andExpect(jsonPath("$.color", is(locs.get(1).getColor())));
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.city", is(locs.get(1).getCity())))
+				.andExpect(jsonPath("$.color", is(locs.get(1).getColor())));
 	}
 	
 	@Test

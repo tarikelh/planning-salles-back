@@ -15,7 +15,6 @@ public class WebsocketController {
 	// Sends the return value of this method to /topic/messages
 	@SendTo("/topic/messages")
 	public MessageWebsocketDto getMessages(MessageWebsocketDto messageWebsocketDto) {
-		System.out.println(messageWebsocketDto);
 		return messageWebsocketDto;
 	}
 

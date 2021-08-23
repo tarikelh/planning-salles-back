@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
@@ -43,9 +42,6 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
-
-	@Autowired
-	private InterventionCaretaker caretaker;
 
 	@Value("${app.storagefolder}")
 	private String storagefolder;

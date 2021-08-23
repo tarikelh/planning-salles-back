@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -97,23 +96,126 @@ class UserControllerTest {
 	}
 
 	@Test
-	void testGetById() {
-		fail("Not yet implemented");
+	void shouldFetchUserById() throws Exception {
+		final long userId = 3;
+		when(userService.getById(userId)).thenReturn(users.get(2));
+		
+		mockMvc.perform(get("/api/users/{id}", userId).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(3)))
+				.andExpect(jsonPath("$.firstName", is(users.get(2).getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(users.get(2).getLastName())));
+	}
+	
+	@Test
+	void shouldReturn404WhenGetById() throws Exception {
+		final long userId = 5;
+		when(userService.getById(userId)).thenReturn(null);
+		
+		String res = mockMvc.perform(get("/api/users/{id}", userId).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andReturn().getResponse().getContentAsString();
+
+		assertEquals(res, "User with id " + userId + " Not Found");
 	}
 
 	@Test
-	void testDeleteById() {
-		fail("Not yet implemented");
+	void shouldDeleteById() throws Exception {
+		final long userId = 1;
+		doNothing().when(userService).deleteById(userId);
+
+		String res = mockMvc.perform(delete("/api/users/{id}", userId).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isAccepted())
+				.andReturn().getResponse().getContentAsString();
+
+		assertEquals("User with id " + userId + " Deleted", res);
 	}
 
 	@Test
-	void testSave() {
-		fail("Not yet implemented");
+	void shouldReturn404WhenDeleteById() throws Exception {
+		final long userId = 42;
+		doThrow(IllegalArgumentException.class).when(userService).deleteById(userId);
+
+		String res = mockMvc.perform(delete("/api/users/{id}", userId)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andReturn().getResponse().getContentAsString();
+
+		assertEquals(res, "User with id " + userId + " Not Found");
+	}
+	
+	@Test
+	void shouldCreateNewUser() throws Exception {
+		AdvancedUserDto newUser = new AdvancedUserDto(0, "Françis", "Cabrel", 1,
+				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"FORMATEUR", "JEHANN", "", 0, null);
+		AdvancedUserDto resUser = new AdvancedUserDto(4, "Françis", "Cabrel", 1,
+				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"FORMATEUR", "JEHANN", "", 0, null);
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String newUserJson = objectMapper.writeValueAsString(newUser);
+		
+		when(userService.saveOrUpdate(any(AdvancedUserDto.class))).thenReturn(resUser);
+		
+		mockMvc.perform(post("/api/users")
+				.contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(newUserJson))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(4)))
+				.andExpect(jsonPath("$.firstName", is(newUser.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(newUser.getLastName())));
 	}
 
 	@Test
-	void testUpdate() {
-		fail("Not yet implemented");
+	void shouldUpdateUser() throws Exception {
+		AdvancedUserDto updatedUser = users.get(0);
+		
+		final String oldFirstName = updatedUser.getFirstName();
+		final String oldLastName = updatedUser.getLastName();
+		final String oldEmail = updatedUser.getEmail();
+		
+		updatedUser.setFirstName("Alain");
+		updatedUser.setLastName("Souchon");
+		updatedUser.setEmail("asouchon@dawan.fr");
+
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String updatedLocJson = objectMapper.writeValueAsString(updatedUser);
+		
+		when(userService.saveOrUpdate(any(AdvancedUserDto.class))).thenReturn(updatedUser);
+		
+		mockMvc.perform(put("/api/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(updatedLocJson))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.firstName", not(oldFirstName)))
+				.andExpect(jsonPath("$.lastName", not(oldLastName)))
+				.andExpect(jsonPath("$.email", not(oldEmail)))
+				.andExpect(jsonPath("$.firstName", is(updatedUser.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(updatedUser.getLastName())))
+				.andExpect(jsonPath("$.email", is(updatedUser.getEmail())));
 	}
 
+	@Test
+	public void shouldReturn404WhenUpdateWithWrongId() throws Exception {
+		
+		AdvancedUserDto wrongIdUser = new AdvancedUserDto(150, "Françis", "Cabrel", 1,
+				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"FORMATEUR", "JEHANN", "", 0, null);
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String wrongIdLocJson = objectMapper.writeValueAsString(wrongIdUser);
+		
+		when(userService.saveOrUpdate(wrongIdUser)).thenReturn(null);
+		
+		String res = mockMvc.perform(put("/api/users").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(wrongIdLocJson))
+				.andExpect(status().isNotFound())
+				.andReturn().getResponse().getContentAsString();
+		
+		assertEquals(res, "User with id " + wrongIdUser.getId() + " Not Found");
+	}
 }

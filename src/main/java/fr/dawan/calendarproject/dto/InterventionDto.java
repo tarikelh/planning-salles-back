@@ -28,6 +28,26 @@ public class InterventionDto implements Cloneable {
 	
 	private int version;
 
+	public InterventionDto() {
+	}
+
+	public InterventionDto(long id, String comment, long locationId, long courseId, long userId, String type,
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, long masterInterventionId, boolean isMaster,
+			int version) {
+		this.id = id;
+		this.comment = comment;
+		this.locationId = locationId;
+		this.courseId = courseId;
+		this.userId = userId;
+		this.type = type;
+		this.validated = validated;
+		this.dateStart = dateStart;
+		this.dateEnd = dateEnd;
+		this.masterInterventionId = masterInterventionId;
+		this.isMaster = isMaster;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}

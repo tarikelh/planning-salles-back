@@ -80,7 +80,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto getById(long id) {
 		Optional<User> user = userRepository.findById(id);
-		return DtoTools.convert(user.get(), AdvancedUserDto.class);
+		if (user.isPresent())
+			return DtoTools.convert(user.get(), AdvancedUserDto.class);
+		
+		return null;
 	}
 
 	@Override
@@ -91,6 +94,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
 		checkIntegrity(user);
+		
+		if (user.getId() > 0 && !userRepository.existsById(user.getId()))
+			return null;
 		
 		User u = DtoTools.convert(user, User.class);
 

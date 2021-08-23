@@ -33,11 +33,11 @@ public class LocationController {
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
 	public ResponseEntity<?> getById(@PathVariable("id") long id) {
-		LocationDto loc =locationService.getById(id);
+		LocationDto loc = locationService.getById(id);
 		if (loc != null)
 			return ResponseEntity.status(HttpStatus.OK).body(loc);
 		else
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with " + id + "Not Found");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id " + id + "Not Found");
 	}
 
 	// DELETE - supprimer
