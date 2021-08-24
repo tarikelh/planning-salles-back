@@ -38,22 +38,23 @@ public class ResetPasswordController {
 		UserDto uDto = userService.findByEmail(resetObj.getEmail());
 
 		if (uDto != null) {
-			Map<String, Object> claims = new HashMap<String, Object>();
-			claims.put("name", uDto.getFirstName()); // change for "getName()"
-			// ajouter les données que l'on souhaite
-			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
-			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
+			
+		Map<String, Object> claims = new HashMap<String, Object>();
+		claims.put("name", uDto.getFirstName()); // change for "getName()"
+		// ajouter les données que l'on souhaite
+		String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
+		TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
+		
+		//String link = "http://localhost:8080/fr/reset?token=" + token;
+		
+		SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(uDto.getEmail());
+        msg.setFrom("noreply@dawan.fr");
+        msg.setSubject("Testing from Spring Boot");
+        msg.setText("Hello World \n Spring Boot Email \n Pour réinitialiser votre mot de passe, veuillez entrer ce code : " + token);
 
-			String link = "http://localhost:8080/fr/reset?token=" + token + "&email=" + uDto.getEmail();
-
-			SimpleMailMessage msg = new SimpleMailMessage();
-			msg.setTo(uDto.getEmail());
-			msg.setFrom("noreply@dawan.fr");
-			msg.setSubject("Mot de passe oublier Dawan Calendar");
-			msg.setText("Bonjour " + uDto.getFullName()
-					+ ", \n Pour réinitialiser votre mot de passe, veuillez cliquer ici : " + link);
-
-			javaMailSender.send(msg);
+        javaMailSender.send(msg);
+        
 		} else
 			throw new Exception("Erreur : L'adresse mail est incorrecte ou n'existe pas.");
 	}
@@ -68,9 +69,9 @@ public class ResetPasswordController {
 		if (uDto != null && uDto.getPassword() != loginObj.getPassword()) {
 			// new password
 			uDto.setPassword(loginObj.getPassword());
-
+			System.out.println("test");
 			// save the new password in DB
-			userService.saveOrUpdate(uDto);
+			userService.saveOrUpdatePassword(uDto);
 
 			return ResponseEntity.ok(new ResetResponseDto("all good"));
 		} else
