@@ -78,5 +78,4 @@ public class ICalTools {
 		return new ByteArrayResource(Files.readAllBytes(path));
 	}
 	
-//	Tool To Send By Email
 }

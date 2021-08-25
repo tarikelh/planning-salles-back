@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,19 +38,23 @@ public class UserController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public AdvancedUserDto getById(@PathVariable("id") long id) {
-		return userService.getById(id);
+	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+		AdvancedUserDto user = userService.getById(id);
+		
+		if (user != null)
+			return ResponseEntity.status(HttpStatus.OK).body(user);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + id + " Not Found");
 	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
-			System.out.println("inside delete... ");
 			userService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id " + id + " Deleted");
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + id + " Not Found");
 		}
 	}
 
@@ -63,7 +66,12 @@ public class UserController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public AdvancedUserDto update(@RequestBody AdvancedUserDto user) {
-		return userService.saveOrUpdate(user);
+	public ResponseEntity<?> update(@RequestBody AdvancedUserDto user) {
+		AdvancedUserDto u = userService.saveOrUpdate(user);
+		
+		if (u != null)
+			return ResponseEntity.status(HttpStatus.OK).body(u);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + user.getId() + " Not Found");
 	}
 }

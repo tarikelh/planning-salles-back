@@ -7,6 +7,15 @@ public class SkillDto {
 
 	private int version;
 	
+	public SkillDto() {
+	}
+
+	public SkillDto(long id, String title, int version) {
+		this.id = id;
+		this.title = title;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}

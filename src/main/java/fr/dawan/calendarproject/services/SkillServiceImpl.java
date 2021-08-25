@@ -73,6 +73,10 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
 		checkIntegrity(skill);
+		
+		if (skill.getId() > 0 && !skillRepository.findById(skill.getId()).isPresent())
+			return null;
+		
 		Skill s = DtoTools.convert(skill, Skill.class);
 		
 		Set<User> usersList = new HashSet<User>();

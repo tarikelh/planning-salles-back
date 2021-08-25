@@ -8,12 +8,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
@@ -43,9 +40,6 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
-
-	@Autowired
-	private InterventionCaretaker caretaker;
 
 	@Value("${app.storagefolder}")
 	private String storagefolder;
@@ -85,14 +79,14 @@ public class InterventionController {
 			interventionService.getAllIntMementoCSV();
 
 			// Return CSV
-			// change "interventionMementoDates.csv" for a parameter (in .properties?) here
+			// change "interventionMemento.csv" for a parameter (in .properties?) here
 			// and in InterventionCaretaker
 			String filename = "interventionMemento.csv";
 			File file = new File(filename);
 			Path path = Paths.get(file.getAbsolutePath());
 
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + filename + "\"");
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 			headers.add("Pragma", "no-cache");
 			headers.add("Expires", "0");
@@ -100,7 +94,7 @@ public class InterventionController {
 			return ResponseEntity.ok().headers(headers).contentLength(file.length())
 					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("création non réalisée");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error could not create Memento");
 		}
 	}
 
@@ -121,7 +115,7 @@ public class InterventionController {
 			Path path = Paths.get(file.getAbsolutePath());
 
 			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + filename + "\"");
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 			headers.add("Pragma", "no-cache");
 			headers.add("Expires", "0");
@@ -130,7 +124,7 @@ public class InterventionController {
 					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
 
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("création csv non réalisée");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("création csv non réalisée");
 		}
 	}
 
@@ -138,11 +132,10 @@ public class InterventionController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
 		try {
-			System.out.println("inside delete... ");
 			interventionService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("suppression effectuée");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Intervention with id " + id + " Deleted");
 		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("suppression non réalisée");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + id + " Not Found");
 		}
 	}
 
@@ -154,54 +147,67 @@ public class InterventionController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto update(@Valid @RequestBody InterventionDto intervention, BindingResult br) throws Exception {
-		return interventionService.saveOrUpdate(intervention);
+	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention, BindingResult br) throws Exception {
+		InterventionDto i = interventionService.saveOrUpdate(intervention);
+		
+		if (i != null)
+			return ResponseEntity.ok(i);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Intervention with Id " + intervention.getId() + " Not Found");
 	}
 
-	// Search
-	@GetMapping(value = "/search", produces = "application/json")
-	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
-		if (!formation.isEmpty()) {
-			if (StringUtils.isNumeric(formation))
-				return interventionService.getByCourseId(Long.parseLong(formation));
-			else
-				return interventionService.getByCourseTitle(formation);
-		}
-		return null;
-	}
-	
-	@GetMapping(value = "/interval/{userId}", produces="application/json")
-	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
-			@RequestParam("start") String start, 
-			@RequestParam("end") String end) {
-		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
-	}
-	
-	@GetMapping(value = "/interval", produces="application/json")
-	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, @RequestParam("end") String end) {
-		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
-	}
+//	// Search
+//	@GetMapping(value = "/search", produces = "application/json")
+//	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
+//		if (!formation.isEmpty()) {
+//			if (StringUtils.isNumeric(formation))
+//				return interventionService.getByCourseId(Long.parseLong(formation));
+//			else
+//				return interventionService.getByCourseTitle(formation);
+//		}
+//		return null;
+//	}
+//	
+//	@GetMapping(value = "/interval/{userId}", produces="application/json")
+//	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
+//			@RequestParam("start") String start, 
+//			@RequestParam("end") String end) {
+//		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
+//	}
+//	
+//	@GetMapping(value = "/interval", produces="application/json")
+//	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, @RequestParam("end") String end) {
+//		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
+//	}
 	
 	@GetMapping(value = "/ical/{userId}")
-	public ResponseEntity<Resource> exportUserInteventions(@PathVariable("userId")long userId) throws Exception {
+	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId")long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
 		
 		String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
 		File f = new File(fileName);
-		ByteArrayResource resource = ICalTools.generateICSFile(calendar, fileName, f);
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"mycalendar.ics\"");
-		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-		headers.add("Pragma", "no-cache");
-		headers.add("Expires", "0");
+		ByteArrayResource resource;
+		try {
+			resource = ICalTools.generateICSFile(calendar, fileName, f);
 
-		return ResponseEntity.ok().headers(headers).contentLength(f.length())
-				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			headers.add("Pragma", "no-cache");
+			headers.add("Expires", "0");
+			
+			return ResponseEntity.ok().headers(headers).contentLength(f.length())
+					.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Creating Calendar");
+		}
+		
 	}
 
 	//Count
-	@GetMapping(value = "/count", produces = { "application/json", "application/xml" })
+	@GetMapping(value = "/count", produces =  "application/json")
 	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
 		return interventionService.count(type);
 	}
