@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -24,6 +25,7 @@ import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.HashTools;
 
 @Service
 @Transactional
@@ -34,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private LocationRepository locationRepository;
+
+	@Autowired
+	private LocationService locationService;
 
 	@Autowired
 	private SkillRepository skillRepository;
@@ -49,10 +54,10 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
+
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
-		if (UserType.contains(type)){
+		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
@@ -99,6 +104,19 @@ public class UserServiceImpl implements UserService {
 			return null;
 		
 		User u = DtoTools.convert(user, User.class);
+		
+		try {
+			if(u.getId() == 0) {
+				u.setPassword(HashTools.hashSHA512(u.getPassword()));
+			} else {
+				UserDto userInDB = getById(u.getId());
+				if(!userInDB.getPassword().equals(u.getPassword())) {
+					u.setPassword(HashTools.hashSHA512(u.getPassword()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		Set<Skill> skillsList = new HashSet<Skill>();
 
@@ -128,62 +146,55 @@ public class UserServiceImpl implements UserService {
 	public long count() {
 		return userRepository.count();
 	}
-	
+
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = u.getClass().toString();
 		String path = "/api/users";
-		//Location Must EXIST
+		// Location Must EXIST
 		if (!locationRepository.findById(u.getLocationId()).isPresent()) {
 			String message = "Location with id: " + u.getLocationId() + " does not exist.";
-			errors.add(new APIError(301, instanceClass, "LocationNotFound",
-					message, path));
+			errors.add(new APIError(301, instanceClass, "LocationNotFound", message, path));
 		}
-		
-		//IF Skill > Must EXIST
+
+		// IF Skill > Must EXIST
 		if (u.getSkillsId() != null) {
 			for (long skillId : u.getSkillsId()) {
-				if(!skillRepository.findById(skillId).isPresent()) {
+				if (!skillRepository.findById(skillId).isPresent()) {
 					String message = "Skill with id: " + skillId + " does not exist.";
-					errors.add(new APIError(302, instanceClass, "SkillNotFound",
-							message, path));
+					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}
 		}
-		
-		//Email > valid, uniq
+
+		// Email > valid, uniq
 		if (!User.emailIsValid(u.getEmail())) {
 			String message = "Email must be valid.";
-			errors.add(new APIError(303, instanceClass, "InvalidEmail",
-					message, path));
+			errors.add(new APIError(303, instanceClass, "InvalidEmail", message, path));
 		}
 		
-		if(userRepository.findByEmail(u.getEmail()) != null) {
+		if(u.getId() == 0 && userRepository.findByEmail(u.getEmail()) != null) {
 			String message = "Email already used.";
-			errors.add(new APIError(304, instanceClass, "EmailNotUniq",
-					message, path));
+			errors.add(new APIError(304, instanceClass, "EmailNotUniq", message, path));
 		}
-		
-		//password > 8 char min
-		if(u.getPassword().length() < 8) {
+
+		// password > 8 char min
+		if (u.getPassword().length() < 8) {
 			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(305, instanceClass, "PasswordTooShort",
-					message, path));
+			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
 		}
-		
+
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
 			String message = "Company: " + u.getCompany() + " is not valid.";
-			errors.add(new APIError(306, instanceClass, "UnknownUserCompany",
-					message, path));
+			errors.add(new APIError(306, instanceClass, "UnknownUserCompany", message, path));
 		}
-		
+
 		if (!UserType.contains(u.getType())) {
 			String message = "Type: " + u.getType() + " is not valid.";
-			errors.add(new APIError(307, instanceClass, "UnknownUserType",
-					message, path));
+			errors.add(new APIError(307, instanceClass, "UnknownUserType", message, path));
 		}
-		//If Image > must exist
+		// If Image > must exist
 		if (!errors.isEmpty()) {
 			throw new EntityFormatException(errors);
 		}

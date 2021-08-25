@@ -32,9 +32,9 @@ public class CalendarprojectApplication {
 			// CROSS ORIGIN
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				// registry.addMapping("/api/contacts").allowedMethods("GET").allowedOrigins("*");
-				// registry.addMapping("/api/contacts").allowedMethods("POST","PUT").allowedOrigins("jehann.fr");
-				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST","PUT", "DELETE");
+				registry.addMapping("/**")
+					.allowedMethods("GET", "POST","PUT", "DELETE")
+					.allowedOrigins("*");
 			}
 
 			// CONVERTERS

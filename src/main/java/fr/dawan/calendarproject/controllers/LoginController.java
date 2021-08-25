@@ -13,7 +13,9 @@ import fr.dawan.calendarproject.TokenSaver;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.LoginDto;
 import fr.dawan.calendarproject.dto.LoginResponseDto;
+import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.services.UserService;
+import fr.dawan.calendarproject.tools.HashTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @RestController
@@ -27,10 +29,12 @@ public class LoginController {
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) throws Exception {
-		AdvancedUserDto uDto = userService.findByEmail(loginObj.getEmail());
-		// String hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
-		String pwd = loginObj.getPassword();
-		if (uDto != null && uDto.getPassword().contentEquals(pwd)) {
+		
+		UserDto uDto = userService.findByEmail(loginObj.getEmail());
+		
+		String hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
+
+		if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
 
 			Map<String, Object> claims = new HashMap<String, Object>();
 			claims.put("name", uDto.getFullName());

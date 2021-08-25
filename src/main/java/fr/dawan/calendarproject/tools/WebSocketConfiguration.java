@@ -31,4 +31,16 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             // Enable SockJS fallback options
             .withSockJS();
     }
+    
+    // Configuration size of message buffer sizes
+    /*
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        container.setMaxTextMessageBufferSize(8192);
+        container.setMaxBinaryMessageBufferSize(8192);
+        return container;
+    }
+    */
+
 }
