@@ -114,6 +114,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
+		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
+			return null;
+		
 		checkIntegrity(intervention);
 		Intervention interv = DtoTools.convert(intervention, Intervention.class);
 
