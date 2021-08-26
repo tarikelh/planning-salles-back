@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.TokenSaver;
-import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.LoginDto;
 import fr.dawan.calendarproject.dto.LoginResponseDto;
 import fr.dawan.calendarproject.dto.UserDto;
+import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.services.UserService;
 import fr.dawan.calendarproject.tools.HashTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
