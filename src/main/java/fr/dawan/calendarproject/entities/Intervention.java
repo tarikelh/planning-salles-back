@@ -14,10 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.DiffBuilder;
+import org.apache.commons.lang3.builder.DiffResult;
+import org.apache.commons.lang3.builder.Diffable;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
-public class Intervention {
+public class Intervention implements Diffable<Intervention> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -210,5 +215,21 @@ public class Intervention {
 		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
+	}
+
+	@Override
+	public DiffResult<Intervention> diff(Intervention obj) {
+		return new DiffBuilder(this, obj, ToStringStyle.SHORT_PREFIX_STYLE)
+			       .append("comment", this.comment, obj.comment)
+			       .append("location", this.location.getId(), obj.location.getId())
+			       .append("course", this.course.getId(), obj.course.getId())
+			       .append("user", this.user.getId(), obj.user.getId())
+			       .append("type", this.type, obj.type)
+			       .append("validated", this.validated, obj.validated)
+			       .append("dateStart", this.dateStart, obj.dateStart)
+			       .append("dateEnd", this.dateEnd, obj.dateEnd)
+			       .append("masterIntervention", this.masterIntervention, obj.masterIntervention)
+			       .append("isMaster", this.isMaster, obj.isMaster)
+			       .build();
 	}
 }

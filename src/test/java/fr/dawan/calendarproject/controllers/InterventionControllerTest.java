@@ -225,7 +225,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(result);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(result);
 		
 		mockMvc.perform(post("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -249,7 +249,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(updatedInterv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(updatedInterv);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(updatedInterv);
 		
 		mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -268,7 +268,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(updatedInterv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(null);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(null);
 		
 		String res = mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
