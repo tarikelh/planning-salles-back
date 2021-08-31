@@ -23,4 +23,6 @@ public interface UserService {
 	long count();
 
 	boolean checkIntegrity(AdvancedUserDto u);
+
+	AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user);
 }

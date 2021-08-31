@@ -74,6 +74,7 @@ public class InterventionServiceImpl implements InterventionService {
 		for (Intervention intervention : interventions) {
 			interventionsDto.add(DtoTools.convert(intervention, InterventionDto.class));
 		}
+		
 		return interventionsDto;
 	}
 
@@ -209,6 +210,7 @@ public class InterventionServiceImpl implements InterventionService {
 			UserType userType = UserType.valueOf(type);
 			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
 		}
+		
 		return null; // Exception
 	}
 

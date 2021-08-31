@@ -5,6 +5,8 @@ import java.util.List;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.InterventionMemento;
 import net.fortuna.ical4j.model.Calendar;
 
 public interface InterventionService {
@@ -18,6 +20,8 @@ public interface InterventionService {
 	void deleteById(long id, String email);
 
 	InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception;
+	
+	InterventionMemento saveMemento(Intervention interv);
 	
 	List<InterventionDto> getByCourseId(long id);
 	
