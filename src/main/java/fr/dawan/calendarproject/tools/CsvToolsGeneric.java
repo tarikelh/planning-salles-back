@@ -13,7 +13,7 @@ public class CsvToolsGeneric {
 				Field[] fields = lp.get(0).getClass().getDeclaredFields();
 				for (int i = 0; i < fields.length; i++) {
 					fields[i].setAccessible(true);
-					// Entity that contains Object >> NEED TO IMPROVE ALGORITHM
+					// Entity that contains Object
 					if (fields[i].getType().getSimpleName().equalsIgnoreCase("int")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("long")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("double")

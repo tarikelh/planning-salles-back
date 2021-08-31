@@ -5,17 +5,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
+import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.tools.CompareGeneric;
 
 @Component
 public class InterventionCaretaker {
 	
 	@Autowired
 	private InterventionMementoRepository intMementoRepository;
+	
+	@Autowired
+	private InterventionRepository interventionRepository;
+	
+	private String messageAction = null;
+	
+	private String modificationsDone = null;
 	
 	//add comment with a String or remove it???
 	private Map<Long, Map<String, InterventionMemento>> interventionsHistory;
@@ -24,7 +35,8 @@ public class InterventionCaretaker {
 		interventionsHistory = new HashMap<Long, Map<String, InterventionMemento>>();
 	}
 	
-	public void addMemento(long interventionId, String mementoMessage, InterventionMemento memento) {
+	public void addMemento(String email, InterventionMemento mementoAfter) throws Exception {
+		/*
 		if(mementoMessage!=null && !mementoMessage.trim().isEmpty() && memento!=null) {
 			Map<String, InterventionMemento> mapForOfferId= interventionsHistory.get(interventionId);
 			if(mapForOfferId==null) {
@@ -33,6 +45,24 @@ public class InterventionCaretaker {
 			}
 			mapForOfferId.put(mementoMessage, memento);
 		}
+		*/
+		
+		if(intMementoRepository.countByInterventionId(mementoAfter.getState().getInterventionId()) != 0) {
+			if(interventionRepository.existsById(mementoAfter.getState().getInterventionId())) {
+				messageAction = " has been changed by ";
+				
+				// Obtain difference between two interventions
+				InterventionMemento mementoBefore = intMementoRepository.getLastInterventionMemento(mementoAfter.getState().getInterventionId());
+				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(),mementoAfter.getState());
+			} else 
+				messageAction = " has been deleted by ";
+		}
+		else
+			messageAction = " has been created by ";
+		
+		mementoAfter.setMementoMessage(new MementoMessageDto(mementoAfter.getState().getInterventionId(), messageAction, email, modificationsDone));
+		
+		intMementoRepository.saveAndFlush(mementoAfter);
 	}
 	
 	public Map<String,InterventionMemento> getMemento(long offerId) {

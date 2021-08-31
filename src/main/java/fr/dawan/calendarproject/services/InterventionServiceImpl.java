@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.builder.Diff;
-import org.apache.commons.lang3.builder.DiffResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
-import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.InterventionMemento;
@@ -68,9 +65,6 @@ public class InterventionServiceImpl implements InterventionService {
 	@Autowired
 	private InterventionMementoRepository interventionMementoRepository;
 	
-	private String messageAction = null;
-	
-	private String modificationsDone = null;
 
 	@Override
 	public List<InterventionDto> getAllInterventions() {
@@ -119,10 +113,10 @@ public class InterventionServiceImpl implements InterventionService {
 		// Memento creation and save
 		InterventionDto intDtoToDelete = getById(id);
 		Intervention intToDelete = DtoTools.convert(intDtoToDelete, Intervention.class);
-		messageAction = " deleted by ";
-		saveMemento(intToDelete, messageAction, email, modificationsDone);
 		
 		interventionRepository.deleteById(id);
+		
+		saveMemento(email, intToDelete);
 	}
 
 	@Override
@@ -146,44 +140,27 @@ public class InterventionServiceImpl implements InterventionService {
 		if (intervention.getMasterInterventionId() > 0) 
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 		
-		if(interventionRepository.existsById(interv.getId())) {
-			messageAction = " has been changed by ";
-			
-			InterventionDto intervBeforeDto = getById(interv.getId());
-			Intervention intervBefore = DtoTools.convert(intervBeforeDto, Intervention.class);
-			DiffResult diff = intervBefore.diff(interv);
-			
-			for(Diff<?> d: diff.getDiffs()) {
-				System.out.println(d.getFieldName() 
-	                            + "= FROM[" + d.getLeft() + "] TO [" + d.getRight() + "]");
-			}
-		}
-		else
-			messageAction = " has been created by ";
-		
 		interv = interventionRepository.saveAndFlush(interv);
 
 		// Memento creation and save
-		saveMemento(interv, messageAction, email, modificationsDone);
+		saveMemento(email, interv); //interventionBefore &&&&& interventionAfter
 		
 		return DtoTools.convert(interv, InterventionDto.class);
 	}
 	
-	public InterventionMemento saveMemento(Intervention interv, String messageAction, String email, String modificationsDone) {
+	public void saveMemento(String email, Intervention interv) {
 		// Memento creation
 		// Build interventionMemento object
 		InterventionMemento intMemento = new InterventionMemento();
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		intMemento.setMementoMessage(new MementoMessageDto(interv.getId(), messageAction, email, modificationsDone));
+		
 		// Save memento
 		try {
-			caretaker.addMemento(interv.getId(), "test", intMemento.createMemento()); // CARETAKER TO DELETE ?
+			caretaker.addMemento(email, intMemento.createMemento());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return interventionMementoRepository.saveAndFlush(intMemento);
 	}
 	
 	// Search
