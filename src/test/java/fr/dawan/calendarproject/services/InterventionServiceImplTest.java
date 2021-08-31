@@ -309,7 +309,7 @@ class InterventionServiceImplTest {
 		CountDto result = interventionService.count(userType);
 		
 		assertThat(result).isNotNull();
-		assertEquals(expectedCount, result);
+		assertEquals(expectedCount.getNb(), result.getNb());
 	}
 	
 	@Test
@@ -320,12 +320,42 @@ class InterventionServiceImplTest {
 
 	@Test
 	void shouldGetMasterIntervention() {
+		when(interventionRepository.getMasterIntervention())
+				.thenReturn(interventions.subList(1, 2));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class))
+				.thenReturn(iDtos.get(1));
 		
+		List<InterventionDto> result = interventionService.getMasterIntervention();
+		
+		assertThat(result).isNotNull();
+		assertEquals(iDtos.subList(1, 2), result);
+		assertEquals(1, result.size());
 	}
 
 	@Test
-	void testGetSubInterventions() {
-		fail("Not yet implemented");
+	void shouldGetSubInterventions() {
+		
+		when(interventionRepository.getAllChildrenByUserTypeAndDates(
+				any(UserType.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(2, 3));
+		
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class))
+			.thenReturn(iDtos.get(2));
+		
+		List<InterventionDto> result = interventionService.getSubInterventions("FORMATEUR", Mockito.mock(LocalDate.class), Mockito.mock(LocalDate.class));
+		
+		assertThat(result).isNotNull();
+		assertEquals(iDtos.subList(2, 3), result);
+		assertEquals(1, result.size());
+	}
+	
+	@Test
+	void shouldReturnNullWhenGetSubInterventionsWithWrongUserType() {
+		assertThat(interventionService.getSubInterventions(
+				"BAD_USER_TYPE",
+				Mockito.mock(LocalDate.class),
+				Mockito.mock(LocalDate.class))
+		).isNull();
 	}
 
 	@Test
