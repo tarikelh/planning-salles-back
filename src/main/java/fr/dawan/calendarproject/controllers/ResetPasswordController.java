@@ -71,7 +71,7 @@ public class ResetPasswordController {
 		}
 	}
 
-	@PostMapping(value = "/api/check-token", consumes = "application/json")
+	@PostMapping(value = "/check-token", consumes = "application/json")
 	public ResponseEntity<?> checkToken(@RequestBody TokenDto tokenObj) throws Exception {
 		
 			String token = tokenObj.getToken();
@@ -84,7 +84,7 @@ public class ResetPasswordController {
 		
 	}
 
-	@PostMapping(value = "/api/reset-password", consumes = "application/json")
+	@PostMapping(value = "/reset-password", consumes = "application/json")
 	public ResponseEntity<?> resetPassword(@RequestBody ResetResponse reset) throws Exception {
 
 		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());
