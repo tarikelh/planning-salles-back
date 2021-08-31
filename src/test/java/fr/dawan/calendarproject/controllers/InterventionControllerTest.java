@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,11 +72,11 @@ class InterventionControllerTest {
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		intervs.add(new InterventionDto(1, "commentaire id 1", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), 0, false, 0));
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
 		intervs.add(new InterventionDto(2, "commentaire id 2", 2, 2, 2, "INTERN", true, LocalDate.now(),
-				LocalDate.now().plusDays(2), 0, true, 0));
+				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0));
 		intervs.add(new InterventionDto(3, "commentaire id 3", 3, 3, 3, "INTERN", true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), 2, false, 0));
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2, false, 0));
 	}
 
 	@Test
@@ -218,9 +219,9 @@ class InterventionControllerTest {
 	@Test
 	void shouldCreateNewIntervention() throws Exception {
 		InterventionDto interv = new InterventionDto(0, "commentaire id 4", 4, 4, 4, "INTERN", true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), 0, false, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 		InterventionDto result = new InterventionDto(4, "commentaire id 4", 4, 4, 4, "INTERN", true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), 0, false, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
