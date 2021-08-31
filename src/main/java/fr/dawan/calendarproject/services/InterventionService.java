@@ -21,7 +21,7 @@ public interface InterventionService {
 
 	InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception;
 	
-	InterventionMemento saveMemento(Intervention interv);
+	void saveMemento(String email, Intervention interv);
 	
 	List<InterventionDto> getByCourseId(long id);
 	
