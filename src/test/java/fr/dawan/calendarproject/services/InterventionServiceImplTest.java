@@ -2,8 +2,10 @@ package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -34,6 +36,7 @@ import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -287,7 +290,7 @@ class InterventionServiceImplTest {
 
 	@Test
 	void testGetFromUserByDateRange() {
-		when(interventionService.getFromUserByDateRange(0, null, null));
+		fail("Not yet implemented");
 	}
 
 	@Test
@@ -316,8 +319,8 @@ class InterventionServiceImplTest {
 	}
 
 	@Test
-	void testGetMasterIntervention() {
-		fail("Not yet implemented");
+	void shouldGetMasterIntervention() {
+		
 	}
 
 	@Test
@@ -331,8 +334,53 @@ class InterventionServiceImplTest {
 	}
 
 	@Test
-	void testCheckIntegrity() {
-		fail("Not yet implemented");
+	void shouldReturnTrueWhenInterventionHasNoError() {
+		Optional<User> optUser = Optional.of(Mockito.mock(User.class));
+		when(userRepository.findById(any(Long.class))).thenReturn(optUser);
+		
+		Optional<Course> optCourse = Optional.of(Mockito.mock(Course.class));
+		when(courseRepository.findById(any(Long.class))).thenReturn(optCourse);
+		
+		Optional<Location> optLoc = Optional.of(Mockito.mock(Location.class));
+		when(locationRepository.findById(any(Long.class))).thenReturn(optLoc);
+
+		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(new ArrayList<Intervention>());
+		
+		assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
+	}
+	
+	@Test
+	void shouldThrowWhenInterventionHasError() {
+		when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(1, 3));
+
+		assertThrows(EntityFormatException.class, () -> {
+			InterventionDto i = iDtos.get(0);
+			i.setDateEnd(LocalDate.now().minusDays(5));
+			i.setType("BAD_TYPE");
+			
+			interventionService.checkIntegrity(i);
+		});
+	}
+	
+	@Test
+	void shouldThrowWhenMasterInterventionHasError() {
+		when(interventionRepository.findFromUserByDateRange(
+				any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(1, 3));
+
+		assertThrows(EntityFormatException.class, () -> {
+			InterventionDto i = iDtos.get(1);
+			i.setDateEnd(LocalDate.now().minusDays(5));
+			i.setMaster(true);
+			i.setMasterInterventionId(1);
+			
+			interventionService.checkIntegrity(i);
+		});
 	}
 
 }
