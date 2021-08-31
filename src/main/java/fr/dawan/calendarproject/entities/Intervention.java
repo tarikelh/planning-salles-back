@@ -56,10 +56,10 @@ public class Intervention {
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
 
-	@Column(nullable = false, columnDefinition = "TIME")
+	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeStart;
 	
-	@Column(nullable = false, columnDefinition = "TIME")
+	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeEnd;
 	
 	@ManyToOne
