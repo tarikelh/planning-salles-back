@@ -196,7 +196,7 @@ class InterventionControllerTest {
 	@Test
 	void shouldDeleteById() throws Exception {
 		final long intId = 1;
-		doNothing().when(interventionService).deleteById(any(Long.class));
+		doNothing().when(interventionService).deleteById(any(Long.class), any(String.class));
 		
 		String res = mockMvc.perform(delete("/api/interventions/{id}", intId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
@@ -207,7 +207,7 @@ class InterventionControllerTest {
 	
 	void shouldReturn404DeleteWithWrongId() throws Exception {
 		final long intId = 105;
-		doThrow(IllegalArgumentException.class).when(interventionService).deleteById(any(Long.class));
+		doThrow(IllegalArgumentException.class).when(interventionService).deleteById(any(Long.class), any(String.class));
 		
 		String res = mockMvc.perform(delete("/api/interventions/{id}", intId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
@@ -226,7 +226,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(result);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(result);
 		
 		mockMvc.perform(post("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -250,7 +250,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(updatedInterv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(updatedInterv);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(updatedInterv);
 		
 		mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -269,7 +269,7 @@ class InterventionControllerTest {
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(updatedInterv);
 		
-		when(interventionService.saveOrUpdate(any(InterventionDto.class))).thenReturn(null);
+		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(null);
 		
 		String res = mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)

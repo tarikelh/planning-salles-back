@@ -64,6 +64,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionMementoRepository interventionMementoRepository;
+	
 
 	@Override
 	public List<InterventionDto> getAllInterventions() {
@@ -109,12 +110,18 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
-	public void deleteById(long id) {
+	public void deleteById(long id, String email) {
+		// Memento creation and save
+		InterventionDto intDtoToDelete = getById(id);
+		Intervention intToDelete = DtoTools.convert(intDtoToDelete, Intervention.class);
+		
 		interventionRepository.deleteById(id);
+		
+		saveMemento(email, intToDelete);
 	}
 
 	@Override
-	public InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception {
+	public InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception {
 		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
 			return null;
 		
@@ -135,27 +142,28 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 		
 		interv = interventionRepository.saveAndFlush(interv);
-		saveMemento(interv);
+
+		// Memento creation and save
+		saveMemento(email, interv); //interventionBefore &&&&& interventionAfter
 		
 		return DtoTools.convert(interv, InterventionDto.class);
 	}
 	
-	public InterventionMemento saveMemento(Intervention interv) {
+	public void saveMemento(String email, Intervention interv) {
 		// Memento creation
 		// Build interventionMemento object
 		InterventionMemento intMemento = new InterventionMemento();
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
+		
 		// Save memento
 		try {
-			caretaker.addMemento(interv.getId(), "test", intMemento.createMemento());
+			caretaker.addMemento(email, intMemento.createMemento());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return interventionMementoRepository.saveAndFlush(intMemento);
 	}
-
+	
 	// Search
 	@Override
 	public List<InterventionDto> getByCourseId(long id) {

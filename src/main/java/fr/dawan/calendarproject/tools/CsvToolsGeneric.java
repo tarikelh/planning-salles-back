@@ -13,7 +13,7 @@ public class CsvToolsGeneric {
 				Field[] fields = lp.get(0).getClass().getDeclaredFields();
 				for (int i = 0; i < fields.length; i++) {
 					fields[i].setAccessible(true);
-					// Entity that contains Object >> NEED TO IMPROVE ALGORITHM
+					// Entity that contains Object
 					if (fields[i].getType().getSimpleName().equalsIgnoreCase("int")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("long")
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("double")
@@ -22,7 +22,7 @@ public class CsvToolsGeneric {
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("LocalDateTime")) {
 						bw.write(fields[i].getName());
 						if (i < fields.length - 1) {
-							bw.write(separator);
+							bw.write(separator);							
 						}
 					} else {
 						Class<?> cls = Class.forName(fields[i].getType().getName());
@@ -30,9 +30,7 @@ public class CsvToolsGeneric {
 						Field[] subFields = clsInstance.getClass().getDeclaredFields();
 						for (int j = 0; j < subFields.length; j++) {
 							bw.write(subFields[j].getName());
-							if (i < subFields.length - 1) {
-								bw.write(separator);
-							}
+							bw.write(separator);
 						}
 					}
 				}
