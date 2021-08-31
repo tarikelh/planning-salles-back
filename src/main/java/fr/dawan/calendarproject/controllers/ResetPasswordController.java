@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.dawan.calendarproject.dto.LoginDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
 import fr.dawan.calendarproject.dto.TokenDto;
-import fr.dawan.calendarproject.TokenSaver;
+import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.LoginResponseDto;
 import fr.dawan.calendarproject.dto.ResetPasswordDto;
