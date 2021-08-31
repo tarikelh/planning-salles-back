@@ -18,6 +18,6 @@ public class HashTools {
 		//conversion du messageDigestArray en une réprésentation numérique signée
 		BigInteger bi = new BigInteger(1, messageDigestArray);
 		
-		return String.format("%0128x", bi);		
+		return String.format("%0128x", bi);
 	}
 }

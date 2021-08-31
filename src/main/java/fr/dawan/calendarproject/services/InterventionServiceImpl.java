@@ -202,6 +202,7 @@ public class InterventionServiceImpl implements InterventionService {
 			UserType userType = UserType.valueOf(type);
 			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
 		}
+		
 		return null; // Exception
 	}
 
