@@ -195,7 +195,7 @@ class InterventionControllerTest {
 	@Test
 	void shouldDeleteById() throws Exception {
 		final long intId = 1;
-		doNothing().when(interventionService).deleteById(any(Long.class));
+		doNothing().when(interventionService).deleteById(any(Long.class), any(String.class));
 		
 		String res = mockMvc.perform(delete("/api/interventions/{id}", intId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
@@ -206,7 +206,7 @@ class InterventionControllerTest {
 	
 	void shouldReturn404DeleteWithWrongId() throws Exception {
 		final long intId = 105;
-		doThrow(IllegalArgumentException.class).when(interventionService).deleteById(any(Long.class));
+		doThrow(IllegalArgumentException.class).when(interventionService).deleteById(any(Long.class), any(String.class));
 		
 		String res = mockMvc.perform(delete("/api/interventions/{id}", intId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.MementoMessageDto;
@@ -35,6 +36,7 @@ public class InterventionCaretaker {
 		interventionsHistory = new HashMap<Long, Map<String, InterventionMemento>>();
 	}
 	
+	@Async("taskExecutor")
 	public void addMemento(String email, InterventionMemento mementoAfter) throws Exception {
 		/*
 		if(mementoMessage!=null && !mementoMessage.trim().isEmpty() && memento!=null) {
@@ -54,12 +56,16 @@ public class InterventionCaretaker {
 				// Obtain difference between two interventions
 				InterventionMemento mementoBefore = intMementoRepository.getLastInterventionMemento(mementoAfter.getState().getInterventionId());
 				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(),mementoAfter.getState());
-			} else 
+			} else {
 				messageAction = " has been deleted by ";
+			    modificationsDone = "";
+			}
 		}
-		else
+		else {
 			messageAction = " has been created by ";
-		
+			modificationsDone = "";
+		}
+			
 		mementoAfter.setMementoMessage(new MementoMessageDto(mementoAfter.getState().getInterventionId(), messageAction, email, modificationsDone));
 		
 		intMementoRepository.saveAndFlush(mementoAfter);

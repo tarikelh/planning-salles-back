@@ -14,13 +14,9 @@ public class CompareGeneric {
 			fieldsBefore[i].setAccessible(true);
 			
 			if (fieldsAfter[i].get(objAfter) != null && fieldsBefore[i].get(objBefore) != null) {
-				if(!fieldsAfter[i].get(objAfter).equals(fieldsBefore[i].get(objBefore))) {
-					System.out.println(fieldsAfter[i].getName());
-					System.out.println(fieldsAfter[i].get(objAfter).toString());
-					System.out.println(fieldsBefore[i].get(objBefore).toString());
-					
+				if(!fieldsAfter[i].get(objAfter).equals(fieldsBefore[i].get(objBefore))) {			
 					builder.append(fieldsAfter[i].getName());
-					builder.append("/");
+					builder.append(" / ");
 				}
 			}
 		}
