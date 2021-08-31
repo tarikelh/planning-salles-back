@@ -73,6 +73,7 @@ public class InterventionServiceImpl implements InterventionService {
 		for (Intervention intervention : interventions) {
 			interventionsDto.add(DtoTools.convert(intervention, InterventionDto.class));
 		}
+		
 		return interventionsDto;
 	}
 
@@ -134,20 +135,25 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 		
 		interv = interventionRepository.saveAndFlush(interv);
-
+		saveMemento(interv);
+		
+		return DtoTools.convert(interv, InterventionDto.class);
+	}
+	
+	public InterventionMemento saveMemento(Intervention interv) {
 		// Memento creation
 		// Build interventionMemento object
 		InterventionMemento intMemento = new InterventionMemento();
 		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
 		// Save memento
 		try {
-			caretaker.addMemento(intervention.getId(), "test", intMemento.createMemento());
+			caretaker.addMemento(interv.getId(), "test", intMemento.createMemento());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		interventionMementoRepository.saveAndFlush(intMemento);
-		return DtoTools.convert(interv, InterventionDto.class);
+		
+		return interventionMementoRepository.saveAndFlush(intMemento);
 	}
 
 	// Search
@@ -196,6 +202,7 @@ public class InterventionServiceImpl implements InterventionService {
 			UserType userType = UserType.valueOf(type);
 			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
 		}
+		
 		return null; // Exception
 	}
 

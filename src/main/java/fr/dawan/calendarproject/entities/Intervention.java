@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -50,6 +51,12 @@ public class Intervention {
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
 
+	@Column(nullable = false, columnDefinition = "TIME")
+	private LocalTime timeStart;
+	
+	@Column(nullable = false, columnDefinition = "TIME")
+	private LocalTime timeEnd;
+	
 	@ManyToOne
 	private Intervention masterIntervention;
 
@@ -58,12 +65,11 @@ public class Intervention {
 	@Version
 	private int version;
 
-	// Constructor important pour la sérialization (exemple Jackson)
 	public Intervention() throws Exception {
 	}
 
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, boolean isMaster,
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime startTime, LocalTime endTime, boolean isMaster,
 			Intervention masterIntervention, int version) throws Exception {
 		setId(id);
 		setComment(comment);
@@ -74,6 +80,8 @@ public class Intervention {
 		setValidated(validated);
 		setDateStart(dateStart);
 		setDateEnd(dateEnd);
+		setTimeStart(timeStart);
+		setTimeEnd(timeEnd);
 		setMasterIntervention(masterIntervention);
 		setMaster(isMaster);
 		setVersion(version);
@@ -149,6 +157,22 @@ public class Intervention {
 
 	public void setDateEnd(LocalDate dateEnd) throws IllegalArgumentException {
 		this.dateEnd = dateEnd;
+	}
+
+	public LocalTime getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(LocalTime timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	public LocalTime getTimeEnd() {
+		return timeEnd;
+	}
+
+	public void setTimeEnd(LocalTime timeEnd) {
+		this.timeEnd = timeEnd;
 	}
 
 	public Intervention getMasterIntervention() {

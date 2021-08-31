@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class InterventionDto implements Cloneable {
 
@@ -21,6 +22,10 @@ public class InterventionDto implements Cloneable {
 	private LocalDate dateStart;
 
 	private LocalDate dateEnd;
+	
+	private LocalTime timeStart;
+	
+	private LocalTime timeEnd;
 
 	private long masterInterventionId;
 
@@ -32,7 +37,7 @@ public class InterventionDto implements Cloneable {
 	}
 
 	public InterventionDto(long id, String comment, long locationId, long courseId, long userId, String type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, long masterInterventionId, boolean isMaster,
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster,
 			int version) {
 		this.id = id;
 		this.comment = comment;
@@ -43,6 +48,8 @@ public class InterventionDto implements Cloneable {
 		this.validated = validated;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
 		this.masterInterventionId = masterInterventionId;
 		this.isMaster = isMaster;
 		this.version = version;
@@ -70,6 +77,22 @@ public class InterventionDto implements Cloneable {
 
 	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
+	}
+
+	public LocalTime getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(LocalTime timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	public LocalTime getTimeEnd() {
+		return timeEnd;
+	}
+
+	public void setTimeEnd(LocalTime timeEnd) {
+		this.timeEnd = timeEnd;
 	}
 
 	public String getComment() {
