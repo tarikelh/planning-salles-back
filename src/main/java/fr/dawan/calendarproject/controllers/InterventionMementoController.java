@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
-import fr.dawan.calendarproject.entities.InterventionCaretaker;
+import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.services.InterventionCaretaker;
 
 @RestController
 @RequestMapping("/api/intervention-memento/")
@@ -19,7 +19,7 @@ public class InterventionMementoController {
 	private InterventionCaretaker caretaker;
 	
 	@GetMapping(value = "/{page}/{size}", produces="application/json")
-	public List<InterventionMementoDto> getAll(@PathVariable("page") int page, @PathVariable("size") int size) {
+	public List<InterventionMemento> getAll(@PathVariable("page") int page, @PathVariable("size") int size) {
 		return caretaker.getAllMemento(page, size);
 	}
 }

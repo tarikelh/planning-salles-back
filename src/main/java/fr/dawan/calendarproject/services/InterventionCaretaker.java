@@ -1,22 +1,19 @@
-package fr.dawan.calendarproject.entities;
+package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import fr.dawan.calendarproject.dto.DtoTools;
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
+import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.tools.CompareGeneric;
@@ -89,16 +86,9 @@ public class InterventionCaretaker {
 		return intMementoRepository.findAll();
 	}
 	
-	public List<InterventionMementoDto> getAllMemento(int page, int size) {
-		List<InterventionMemento> iMemList = intMementoRepository.findAll(PageRequest.of(page, size))
+	public List<InterventionMemento> getAllMemento(int page, int size) {
+		return intMementoRepository.findAll(PageRequest.of(page, size))
 				.get().collect(Collectors.toList());
-		List<InterventionMementoDto> iMemDtoList = new ArrayList<InterventionMementoDto>();
-		
-		for (InterventionMemento interventionMemento : iMemList) {
-			iMemDtoList.add(DtoTools.convert(interventionMemento, InterventionMementoDto.class));
-		}
-		
-		return iMemDtoList;
 	}
 	
 	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
