@@ -33,7 +33,6 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.InterventionCaretaker;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.InterventionStatus;
