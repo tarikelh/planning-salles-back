@@ -39,8 +39,11 @@ public class WebsocketController {
 			throw new Exception("Erreur : jeton non reconnu !");
 
 		// Verify message format from the websocket
-		if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null
-				&& messageWebsocketDto.getType() != null)
+		if(messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null && messageWebsocketDto.getType().equals("DELETE")) {
+			return messageWebsocketDto;
+		}
+		else if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null
+				&& (messageWebsocketDto.getType().equals("ADD") || messageWebsocketDto.getType().equals("EDIT")))
 			return messageWebsocketDto;
 		else {
 			throw new Exception("Erreur : websocket message incorrect !");
