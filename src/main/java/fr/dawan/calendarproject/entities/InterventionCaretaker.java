@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -58,7 +63,7 @@ public class InterventionCaretaker {
 				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(),mementoAfter.getState());
 			} else {
 				messageAction = " has been deleted by ";
-			    modificationsDone = "";
+				modificationsDone = "";
 			}
 		}
 		else {
@@ -82,6 +87,18 @@ public class InterventionCaretaker {
 	
 	public List<InterventionMemento> getAllMemento() {
 		return intMementoRepository.findAll();
+	}
+	
+	public List<InterventionMementoDto> getAllMemento(int page, int size) {
+		List<InterventionMemento> iMemList = intMementoRepository.findAll(PageRequest.of(page, size))
+				.get().collect(Collectors.toList());
+		List<InterventionMementoDto> iMemDtoList = new ArrayList<InterventionMementoDto>();
+		
+		for (InterventionMemento interventionMemento : iMemList) {
+			iMemDtoList.add(DtoTools.convert(interventionMemento, InterventionMementoDto.class));
+		}
+		
+		return iMemDtoList;
 	}
 	
 	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
