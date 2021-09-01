@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,7 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 import net.fortuna.ical4j.model.Calendar;
 
 @RestController
@@ -40,6 +43,9 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
 	@Value("${app.storagefolder}")
 	private String storagefolder;
@@ -130,9 +136,10 @@ public class InterventionController {
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
+	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id, @RequestHeader(value = "Authorization") String token) {
+		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		try {
-			interventionService.deleteById(id);
+			interventionService.deleteById(id, email);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Intervention with id " + id + " Deleted");
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + id + " Not Found");
@@ -141,14 +148,18 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@Valid @RequestBody InterventionDto intervention) throws Exception {
-		return interventionService.saveOrUpdate(intervention);
+	public InterventionDto save(@Valid @RequestBody InterventionDto intervention, @RequestHeader(value = "Authorization") String token) throws Exception {
+		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
+		return interventionService.saveOrUpdate(intervention, email);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention, BindingResult br) throws Exception {
-		InterventionDto i = interventionService.saveOrUpdate(intervention);
+	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention, @RequestHeader(value = "Authorization") String token) throws Exception {
+	
+		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
+
+		InterventionDto i = interventionService.saveOrUpdate(intervention, email);
 		
 		if (i != null)
 			return ResponseEntity.ok(i);

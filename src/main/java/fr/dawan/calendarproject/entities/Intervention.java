@@ -15,6 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.DiffBuilder;
+import org.apache.commons.lang3.builder.DiffResult;
+import org.apache.commons.lang3.builder.Diffable;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
@@ -51,10 +56,10 @@ public class Intervention {
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
 
-	@Column(nullable = false, columnDefinition = "TIME")
+	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeStart;
 	
-	@Column(nullable = false, columnDefinition = "TIME")
+	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeEnd;
 	
 	@ManyToOne

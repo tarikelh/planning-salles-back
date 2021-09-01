@@ -17,11 +17,11 @@ public interface InterventionService {
 
 	InterventionDto getById(long id);
 
-	void deleteById(long id);
+	void deleteById(long id, String email);
 
-	InterventionDto saveOrUpdate(InterventionDto intervention) throws Exception;
+	InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception;
 	
-	InterventionMemento saveMemento(Intervention interv);
+	void saveMemento(String email, Intervention interv);
 	
 	List<InterventionDto> getByCourseId(long id);
 	

@@ -54,5 +54,10 @@ public class Course {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", title=" + title + ", version=" + version + "]";
+	}
 	
 }

@@ -9,12 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
+import fr.dawan.calendarproject.dto.MementoMessageDto;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 //Memento Class  >>  Previously OperationModif
 @Entity
 public class InterventionMemento implements Cloneable {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -31,6 +35,9 @@ public class InterventionMemento implements Cloneable {
 	*/
 	
 	private LocalDateTime dateCreatedState;
+	
+	@Embedded
+	private MementoMessageDto mementoMessage;
 
 	//Do we really need version here?
 	@Version
@@ -71,6 +78,14 @@ public class InterventionMemento implements Cloneable {
 	public void setDateCreatedState(LocalDateTime dateCreatedState) {
 		this.dateCreatedState = dateCreatedState;
 	}
+	
+	public MementoMessageDto getMementoMessage() {
+		return mementoMessage;
+	}
+
+	public void setMementoMessage(MementoMessageDto mementoMessage) {
+		this.mementoMessage = mementoMessage;
+	}
 
 	public int getVersion() {
 		return version;
@@ -86,12 +101,18 @@ public class InterventionMemento implements Cloneable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("InterventionMemento [id=");
 		builder.append(id);
-		builder.append(", state=");
+		builder.append(";");
+		builder.append("state=");
 		builder.append(state);
-		builder.append(", dateCreatedState=");
+		builder.append(";");
+		builder.append("dateCreatedState=");
 		builder.append(dateCreatedState);
-		builder.append(", version=");
+		builder.append(";");
+		builder.append("version=");
 		builder.append(version);
+		builder.append(";");
+		builder.append("mementoMessage=");
+		builder.append(mementoMessage);
 		builder.append("]");
 		return builder.toString();
 	}

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -235,9 +236,9 @@ class InterventionServiceImplTest {
 
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
-		when(interventionService.saveMemento(newInterv)).thenReturn(null);
-
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto);
+		//when(interventionService.saveMemento(any(String.class), newInterv)).thenReturn(null);
+		doNothing().when(interventionService).saveMemento(any(String.class), newInterv);
+		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();
 		assertEquals(result, newIntervDto);
@@ -273,11 +274,11 @@ class InterventionServiceImplTest {
 
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
-		when(interventionService.saveMemento(newInterv)).thenReturn(null);
+		doNothing().when(interventionService).saveMemento(any(String.class), newInterv);
 
 		mDtoTools.when(() -> DtoTools.convert(savedInterv, InterventionDto.class)).thenReturn(savedIntervDto);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto);
+		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();
 		assertEquals(result, savedIntervDto);
@@ -295,7 +296,7 @@ class InterventionServiceImplTest {
 
 		when(interventionRepository.existsById(4L)).thenReturn(false);
 
-		assertThat(interventionService.saveOrUpdate(interv)).isNull();
+		assertThat(interventionService.saveOrUpdate(interv, "admin@dawan.fr")).isNull();
 	}
 
 	@Test
