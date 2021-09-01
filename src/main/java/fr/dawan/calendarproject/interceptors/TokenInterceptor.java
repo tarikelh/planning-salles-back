@@ -22,7 +22,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 			throws Exception {
 
 		//System.out.println(">>>>>> inside Token Interceptor...");
-		System.out.println("URI =" + request.getRequestURI());
+		//System.out.println("URI =" + request.getRequestURI());
 		//System.out.println("Header (authorization) :" + request.getHeader("Authorization"));
 
 		if (!request.getRequestURI().equals("/authenticate") && !request.getRequestURI().equals("/forgot") 
