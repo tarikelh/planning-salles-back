@@ -62,10 +62,6 @@ public class InterventionServiceImpl implements InterventionService {
 	@Autowired
 	private InterventionCaretaker caretaker;
 
-	@Autowired
-	private InterventionMementoRepository interventionMementoRepository;
-	
-
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();

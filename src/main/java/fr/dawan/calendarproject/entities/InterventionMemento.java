@@ -9,11 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
-import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 //Memento Class  >>  Previously OperationModif
 @Entity
