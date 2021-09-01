@@ -2,12 +2,14 @@ package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -36,11 +38,16 @@ import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.ICalTools;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
 
 @SpringBootTest
 class InterventionServiceImplTest {
@@ -70,10 +77,12 @@ class InterventionServiceImplTest {
 	private List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 
 	private MockedStatic<DtoTools> mDtoTools;
+	private MockedStatic<ICalTools> mICalTools;
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		mDtoTools = Mockito.mockStatic(DtoTools.class);
+		mICalTools = Mockito.mockStatic(ICalTools.class);
 
 		Location mockedLoc = Mockito.mock(Location.class);
 		Course mockedCourse = Mockito.mock(Course.class);
@@ -105,6 +114,9 @@ class InterventionServiceImplTest {
 	public void afterEach() throws Exception {
 		if (!mDtoTools.isClosed())
 			mDtoTools.close();
+		
+		if (!mICalTools.isClosed())
+			mICalTools.close();
 	}
 
 	@Test
@@ -289,7 +301,7 @@ class InterventionServiceImplTest {
 
 	@Test
 	void testGetFromUserByDateRange() {
-		when(interventionService.getFromUserByDateRange(0, null, null));
+		fail("Not yet implemented");
 	}
 
 	@Test
@@ -308,7 +320,7 @@ class InterventionServiceImplTest {
 		CountDto result = interventionService.count(userType);
 		
 		assertThat(result).isNotNull();
-		assertEquals(expectedCount, result);
+		assertEquals(expectedCount.getNb(), result.getNb());
 	}
 	
 	@Test
@@ -318,23 +330,118 @@ class InterventionServiceImplTest {
 	}
 
 	@Test
-	void testGetMasterIntervention() {
-		fail("Not yet implemented");
+	void shouldGetMasterIntervention() {
+		when(interventionRepository.getMasterIntervention())
+				.thenReturn(interventions.subList(1, 2));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class))
+				.thenReturn(iDtos.get(1));
+		
+		List<InterventionDto> result = interventionService.getMasterIntervention();
+		
+		assertThat(result).isNotNull();
+		assertEquals(iDtos.subList(1, 2), result);
+		assertEquals(1, result.size());
 	}
 
 	@Test
-	void testGetSubInterventions() {
-		fail("Not yet implemented");
+	void shouldGetSubInterventions() {
+		
+		when(interventionRepository.getAllChildrenByUserTypeAndDates(
+				any(UserType.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(2, 3));
+		
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class))
+			.thenReturn(iDtos.get(2));
+		
+		List<InterventionDto> result = interventionService.getSubInterventions("FORMATEUR", Mockito.mock(LocalDate.class), Mockito.mock(LocalDate.class));
+		
+		assertThat(result).isNotNull();
+		assertEquals(iDtos.subList(2, 3), result);
+		assertEquals(1, result.size());
+	}
+	
+	@Test
+	void shouldReturnNullWhenGetSubInterventionsWithWrongUserType() {
+		assertThat(interventionService.getSubInterventions(
+				"BAD_USER_TYPE",
+				Mockito.mock(LocalDate.class),
+				Mockito.mock(LocalDate.class))
+		).isNull();
+	}
+	
+	@Test 
+	void shouldReturnCalendarFromUser() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		long userId = 1;
+		
+		when(interventionRepository.findByUserId(userId)).thenReturn(interventions);
+		mICalTools.when(() -> ICalTools.createVEvent(any(Intervention.class), any(VTimeZone.class)))
+				.thenReturn(new VEvent());
+		
+		
+		Calendar calendar = interventionService.exportCalendarAsICal(userId);
+		
+		assertThat(calendar).isNotNull();
+		assertEquals("-//Dawan Calendar//iCal4j 1.0//FR", calendar.getProductId().getValue());
+		assertEquals("nullnull", calendar.getProperty("X-CALNAME").getValue());
+		assertEquals(3, calendar.getComponents("VEVENT").size());
+
 	}
 
 	@Test
-	void testExportCalendarAsICal() {
-		fail("Not yet implemented");
+	void shouldReturnNullWhenUserIdDoesNotExistOrHasNoIntervention() {
+		long badUserId = 15454;
+		when(interventionRepository.findByUserId(badUserId)).thenReturn(null);
+		
+		assertThat(interventionService.exportCalendarAsICal(badUserId)).isNull();
 	}
 
 	@Test
-	void testCheckIntegrity() {
-		fail("Not yet implemented");
-	}
+	void shouldReturnTrueWhenInterventionHasNoError() {
+		Optional<User> optUser = Optional.of(Mockito.mock(User.class));
+		when(userRepository.findById(any(Long.class))).thenReturn(optUser);
+		
+		Optional<Course> optCourse = Optional.of(Mockito.mock(Course.class));
+		when(courseRepository.findById(any(Long.class))).thenReturn(optCourse);
+		
+		Optional<Location> optLoc = Optional.of(Mockito.mock(Location.class));
+		when(locationRepository.findById(any(Long.class))).thenReturn(optLoc);
 
+		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(new ArrayList<Intervention>());
+		
+		assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
+	}
+	
+	@Test
+	void shouldThrowWhenInterventionHasError() {
+		when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(1, 3));
+
+		assertThrows(EntityFormatException.class, () -> {
+			InterventionDto i = iDtos.get(0);
+			i.setDateEnd(LocalDate.now().minusDays(5));
+			i.setType("BAD_TYPE");
+			
+			interventionService.checkIntegrity(i);
+		});
+	}
+	
+	@Test
+	void shouldThrowWhenMasterInterventionHasError() {
+		when(interventionRepository.findFromUserByDateRange(
+				any(Long.class), any(LocalDate.class), any(LocalDate.class)))
+				.thenReturn(interventions.subList(1, 3));
+
+		assertThrows(EntityFormatException.class, () -> {
+			InterventionDto i = iDtos.get(1);
+			i.setDateEnd(LocalDate.now().minusDays(5));
+			i.setMaster(true);
+			i.setMasterInterventionId(1);
+			
+			interventionService.checkIntegrity(i);
+		});
+	}
 }

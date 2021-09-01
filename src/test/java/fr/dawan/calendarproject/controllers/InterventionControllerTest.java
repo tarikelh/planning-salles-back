@@ -331,7 +331,18 @@ class InterventionControllerTest {
 		if(!calTools.isClosed())
 			calTools.close();
 	}
- 
+	
+	@Test
+	void shouldReturn404WhenUserIsNotFoundOrHasNoIntervention() throws Exception {
+		final long userId = 1;
+		
+		when(interventionService.exportCalendarAsICal(userId)).thenReturn(null);
+		
+		mockMvc.perform(get("/api/interventions/ical/{userId}", userId)
+				.contentType(MediaType.MULTIPART_FORM_DATA))
+				.andExpect(status().isNotFound());
+	}
+	
 	@Test
 	void shouldReturnInterventionCountByUserType() throws Exception {
 		
