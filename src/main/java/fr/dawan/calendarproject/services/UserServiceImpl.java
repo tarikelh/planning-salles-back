@@ -110,6 +110,20 @@ public class UserServiceImpl implements UserService {
 		u.setSkills(skillsList);
 
 		u.setLocation(locationRepository.getOne(user.getLocationId()));
+		
+		// Hash Password
+		try {
+			if (u.getId() == 0) {
+					u.setPassword(HashTools.hashSHA512(u.getPassword()));
+				} else {
+					AdvancedUserDto userInDB = getById(u.getId());
+					if (!userInDB.getPassword().equals(u.getPassword())) {
+						u.setPassword(HashTools.hashSHA512(u.getPassword()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		u = userRepository.saveAndFlush(u);
 		return DtoTools.convert(u, AdvancedUserDto.class);
@@ -191,7 +205,7 @@ public class UserServiceImpl implements UserService {
 					message, path));
 		}
 		
-		if(userRepository.findByEmail(u.getEmail()) != null) {
+		if(userRepository.findDuplicateEmail(u.getEmail(), u.getId()) != null) {
 			String message = "Email already used.";
 			errors.add(new APIError(304, instanceClass, "EmailNotUniq",
 					message, path));
