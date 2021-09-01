@@ -18,6 +18,8 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
+import fr.dawan.calendarproject.mapper.DtoMapper;
+import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 
 @Service
@@ -27,13 +29,15 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private LocationRepository locationRepository;
 
+	private DtoMapper mapper = new DtoMapperImpl();
+
 	@Override
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
-			result.add(DtoTools.convert(l, LocationDto.class));
+			result.add(mapper.LocationToLocationDto(l));
 		}
 		return result;
 	}
@@ -44,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
 				.collect(Collectors.toList());
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
-			result.add(DtoTools.convert(l, LocationDto.class));
+			result.add(mapper.LocationToLocationDto(l));
 		}
 		return result;
 	}
@@ -53,7 +57,7 @@ public class LocationServiceImpl implements LocationService {
 	public LocationDto getById(long id) {
 		Optional<Location> l = locationRepository.findById(id);
 		if (l.isPresent())
-			return DtoTools.convert(l.get(), LocationDto.class);
+			return mapper.LocationToLocationDto(l.get());
 		return null;
 	}
 
@@ -65,13 +69,13 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public LocationDto saveOrUpdate(LocationDto locationDto) {
 		checkUniqness(locationDto);
-		
+
 		if (locationDto.getId() > 0 && !locationRepository.existsById(locationDto.getId()))
 			return null;
 		Location l = DtoTools.convert(locationDto, Location.class);
 
 		l = locationRepository.saveAndFlush(l);
-		return DtoTools.convert(l, LocationDto.class);
+		return mapper.LocationToLocationDto(l);
 	}
 
 	@Override
@@ -82,23 +86,26 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public boolean checkUniqness(LocationDto location) {
-		List<Location> duplicates = locationRepository.findDuplicates(location.getId(), location.getCity(), location.getColor());
+		List<Location> duplicates = locationRepository.findDuplicates(location.getId(), location.getCity(),
+				location.getColor());
 
 		if (duplicates.size() > 0) {
 			Set<APIError> errors = new HashSet<APIError>();
 			String instanceClass = duplicates.get(0).getClass().toString();
 			String path = "/api/locations";
-			
+
 			for (Location loc : duplicates) {
 				if (loc.getCity().equals(location.getCity()))
-					errors.add(new APIError(505, instanceClass, "City Name not Unique", "Location with name " + location.getCity() + " already exists", path));
+					errors.add(new APIError(505, instanceClass, "City Name not Unique",
+							"Location with name " + location.getCity() + " already exists", path));
 				if (loc.getColor().equals(location.getColor()))
-					errors.add(new APIError(505, instanceClass, "Color not Unique", "Location with color " + location.getColor() + " already exists", path));
+					errors.add(new APIError(505, instanceClass, "Color not Unique",
+							"Location with color " + location.getColor() + " already exists", path));
 			}
-			
+
 			throw new EntityFormatException(errors);
 		}
-		
+
 		return true;
 	}
 
