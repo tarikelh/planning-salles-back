@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -42,6 +43,10 @@ import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.ICalTools;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
 
 @SpringBootTest
 class InterventionServiceImplTest {
@@ -71,10 +76,12 @@ class InterventionServiceImplTest {
 	private List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 
 	private MockedStatic<DtoTools> mDtoTools;
+	private MockedStatic<ICalTools> mICalTools;
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		mDtoTools = Mockito.mockStatic(DtoTools.class);
+		mICalTools = Mockito.mockStatic(ICalTools.class);
 
 		Location mockedLoc = Mockito.mock(Location.class);
 		Course mockedCourse = Mockito.mock(Course.class);
@@ -106,6 +113,9 @@ class InterventionServiceImplTest {
 	public void afterEach() throws Exception {
 		if (!mDtoTools.isClosed())
 			mDtoTools.close();
+		
+		if (!mICalTools.isClosed())
+			mICalTools.close();
 	}
 
 	@Test
@@ -357,10 +367,31 @@ class InterventionServiceImplTest {
 				Mockito.mock(LocalDate.class))
 		).isNull();
 	}
+	
+	@Test 
+	void shouldReturnCalendarFromUser() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		long userId = 1;
+		
+		when(interventionRepository.findByUserId(userId)).thenReturn(interventions);
+		mICalTools.when(() -> ICalTools.createVEvent(any(Intervention.class), any(VTimeZone.class)))
+				.thenReturn(new VEvent());
+		
+		
+		Calendar calendar = interventionService.exportCalendarAsICal(userId);
+		
+		assertThat(calendar).isNotNull();
+		assertEquals("-//Dawan Calendar//iCal4j 1.0//FR", calendar.getProductId().getValue());
+		assertEquals("nullnull", calendar.getProperty("X-CALNAME").getValue());
+		assertEquals(3, calendar.getComponents("VEVENT").size());
+
+	}
 
 	@Test
-	void testExportCalendarAsICal() {
-		fail("Not yet implemented");
+	void shouldReturnNullWhenUserIdDoesNotExistOrHasNoIntervention() {
+		long badUserId = 15454;
+		when(interventionRepository.findByUserId(badUserId)).thenReturn(null);
+		
+		assertThat(interventionService.exportCalendarAsICal(badUserId)).isNull();
 	}
 
 	@Test
@@ -412,5 +443,4 @@ class InterventionServiceImplTest {
 			interventionService.checkIntegrity(i);
 		});
 	}
-
 }

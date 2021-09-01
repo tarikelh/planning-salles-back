@@ -235,7 +235,10 @@ public class InterventionServiceImpl implements InterventionService {
 
 	public Calendar exportCalendarAsICal(long userId) {
 
-		List<Intervention> lst = interventionRepository.findByUserId(userId) ;
+		List<Intervention> lst = interventionRepository.findByUserId(userId);
+		
+		if(lst == null || lst.isEmpty())
+			return null;
 		
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(new ProdId("-//Dawan Calendar//iCal4j 1.0//FR"));
@@ -248,11 +251,9 @@ public class InterventionServiceImpl implements InterventionService {
 		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
 		VTimeZone tz = timeZone.getVTimeZone();
 		
-		if (lst != null) {
-			for (Intervention intervention : lst) {
-				VEvent event = ICalTools.createVEvent(intervention, tz);
-				calendar.getComponents().add(event);
-			}
+		for (Intervention intervention : lst) {
+			VEvent event = ICalTools.createVEvent(intervention, tz);
+			calendar.getComponents().add(event);
 		}
 
 		return calendar;

@@ -184,25 +184,27 @@ public class InterventionController {
 	@GetMapping(value = "/ical/{userId}")
 	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId")long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
-		
-		String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
-		File f = new File(fileName);
-		ByteArrayResource resource;
-		try {
-			resource = ICalTools.generateICSFile(calendar, fileName, f);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-			headers.add("Pragma", "no-cache");
-			headers.add("Expires", "0");
-			
-			return ResponseEntity.ok().headers(headers).contentLength(f.length())
-					.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Creating Calendar");
+		if (calendar != null) {
+			String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
+			File f = new File(fileName);
+			ByteArrayResource resource;
+			try {
+				resource = ICalTools.generateICSFile(calendar, fileName, f);
+				
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+				headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+				headers.add("Pragma", "no-cache");
+				headers.add("Expires", "0");
+				
+				return ResponseEntity.ok().headers(headers).contentLength(f.length())
+						.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Creating Calendar");
+			}
 		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Calendar For user ID " + userId + " is empty or the user ID does not exist");
 		
 	}
 
