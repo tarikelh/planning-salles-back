@@ -3,26 +3,21 @@ package fr.dawan.calendarproject.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.aspectj.bridge.AbortException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.LoginDto;
+import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.ResetPasswordDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
 import fr.dawan.calendarproject.dto.TokenDto;
-import fr.dawan.calendarproject.interceptors.TokenSaver;
-import fr.dawan.calendarproject.dto.AdvancedUserDto;
-import fr.dawan.calendarproject.dto.LoginResponseDto;
-import fr.dawan.calendarproject.dto.ResetPasswordDto;
 import fr.dawan.calendarproject.dto.UserDto;
+import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.services.UserService;
 import fr.dawan.calendarproject.tools.HashTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
@@ -57,8 +52,8 @@ public class ResetPasswordController {
 
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
-			//Voir avec Mohammed pour une adresse mail générique 
-			//msg.setFrom("noreply@dawan.fr");
+			// Voir avec Mohammed pour une adresse mail générique
+			// msg.setFrom("noreply@dawan.fr");
 			msg.setSubject("Réinitialisation du mot de passe DaCalendar");
 			msg.setText("Pour réinitialiser votre mot de passe, veuillez entrer ce code : " + token);
 
@@ -73,15 +68,15 @@ public class ResetPasswordController {
 
 	@PostMapping(value = "/check-token", consumes = "application/json")
 	public ResponseEntity<?> checkToken(@RequestBody TokenDto tokenObj) throws Exception {
-		
-			String token = tokenObj.getToken();
-			String checktoken = TokenSaver.tokensByEmail.get(tokenObj.getEmail());
-			
-			if(token.equals(checktoken))
-				return ResponseEntity.status(HttpStatus.OK).body("Code valide");
-			else
-				throw new Exception("Erreur : Code incorrect ou expiré !");
-		
+
+		String token = tokenObj.getToken();
+		String checktoken = TokenSaver.tokensByEmail.get(tokenObj.getEmail());
+
+		if (token.equals(checktoken))
+			return ResponseEntity.status(HttpStatus.OK).body("Code valide");
+		else
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : Code incorrect !");
+
 	}
 
 	@PostMapping(value = "/reset-password", consumes = "application/json")
@@ -90,27 +85,23 @@ public class ResetPasswordController {
 		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());
 		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
 
-		// uDto != null && uDto.getPassword() != loginObj.getPassword()
-
 		if (token) {
-			TokenSaver.tokensByEmail.forEach((k, v) -> {
-				if (v.equals(reset.getToken())) {
-					email = k;
-					AdvancedUserDto uDto = userService.findByEmail(email);
-					if (uDto != null && !uDto.getPassword().equals(hashedPwd)) {
-						// new password
-						uDto.setPassword(reset.getPassword());
-						// save the new password in DB
-						userService.saveOrUpdatePassword(uDto);
-					} else
-						throw new AbortException("Mot de passe identique à l'ancien !");
-				}
+			String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
 
-			});
+			AdvancedUserDto uDto = userService.findByEmail(email);
+			if (uDto != null && !uDto.getPassword().equals(hashedPwd)) {
+				// new password
+				uDto.setPassword(reset.getPassword());
+				// save the new password in DB
+				userService.saveOrUpdatePassword(uDto);
 
-			return ResponseEntity.status(HttpStatus.OK).body("Mot de passe modifié");
-		} else
-			throw new Exception("Erreur : Code incorrect !");
+				return ResponseEntity.status(HttpStatus.OK).body("Mot de passe modifié");
+			} else if (uDto.getPassword().equals(hashedPwd))
+				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Mot de passe identique à l'ancien !");
+
+		}
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : Code incorrect !");
 
 	}
 }
