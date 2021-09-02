@@ -18,14 +18,11 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
-import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -107,12 +104,16 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public void deleteById(long id, String email) {
 		// Memento creation and save
-		InterventionDto intDtoToDelete = getById(id);
-		Intervention intToDelete = DtoTools.convert(intDtoToDelete, Intervention.class);
+		Intervention intToDelete = interventionRepository.findById(id).get();
 		
 		interventionRepository.deleteById(id);
 		
-		saveMemento(email, intToDelete);
+		try {
+			caretaker.addMemento(email, intToDelete);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -138,25 +139,9 @@ public class InterventionServiceImpl implements InterventionService {
 		
 		interv = interventionRepository.saveAndFlush(interv);
 
-		// Memento creation and save
-		saveMemento(email, interv); //interventionBefore &&&&& interventionAfter
+		caretaker.addMemento(email, interv);
 		
 		return DtoTools.convert(interv, InterventionDto.class);
-	}
-	
-	public void saveMemento(String email, Intervention interv) {
-		// Memento creation
-		// Build interventionMemento object
-		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		
-		// Save memento
-		try {
-			caretaker.addMemento(email, intMemento.createMemento());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	// Search

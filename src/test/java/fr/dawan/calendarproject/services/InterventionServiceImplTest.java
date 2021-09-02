@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -224,8 +223,8 @@ class InterventionServiceImplTest {
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0);
 
-		when(interventionService.checkIntegrity(newIntervDto)).thenReturn(true);
-//		Mockito.doReturn(true).when(interventionService).checkIntegrity(newIntervDto);
+		when(interventionService.checkIntegrity(any(InterventionDto.class))).thenReturn(true);
+//		Mockito.doReturn(true).when(interventionService).checkIntegrity(any(InterventionDto.class));
 
 		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
 
@@ -235,8 +234,7 @@ class InterventionServiceImplTest {
 
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
-		//when(interventionService.saveMemento(any(String.class), newInterv)).thenReturn(null);
-		doNothing().when(interventionService).saveMemento(any(String.class), newInterv);
+		doNothing().when(caretaker).addMemento(any(String.class), any(Intervention.class));
 		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();
@@ -267,13 +265,13 @@ class InterventionServiceImplTest {
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0);
 
-		when(interventionService.checkIntegrity(newIntervDto)).thenReturn(true);
+		when(interventionService.checkIntegrity(any(InterventionDto.class))).thenReturn(true);
 
 		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
 
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
-		doNothing().when(interventionService).saveMemento(any(String.class), newInterv);
+		doNothing().when(caretaker).addMemento(any(String.class), any(Intervention.class));
 
 		mDtoTools.when(() -> DtoTools.convert(savedInterv, InterventionDto.class)).thenReturn(savedIntervDto);
 
