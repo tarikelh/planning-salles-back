@@ -15,10 +15,15 @@ import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.CompareGeneric;
 
 @Component
@@ -29,6 +34,15 @@ public class InterventionCaretaker {
 	
 	@Autowired
 	private InterventionRepository interventionRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private LocationRepository locationRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
 	
 	private String messageAction = null;
 	
@@ -87,10 +101,24 @@ public class InterventionCaretaker {
 	
 	public InterventionMemento getMementoById(long id) {
 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
+		InterventionMementoDto iMemDto = i.get().getState();
 		
-		if (i.isPresent())
+		if (i.isPresent()) {
+			if(iMemDto.getCourseId() > 0)
+				iMemDto.setCourseTitle(courseRepository.findById(iMemDto.getCourseId()).get().getTitle());
+			
+			if(iMemDto.getUserId() > 0) {
+				User u = userRepository.findById(iMemDto.getUserId()).get();
+				iMemDto.setUserEmail(u.getEmail());
+				iMemDto.setUserFullName(u.getFullname());
+			}
+			
+			if(iMemDto.getLocationId() > 0)
+				iMemDto.setLocationCity(locationRepository.findById(iMemDto.getLocationId()).get().getCity());
+			
 			return i.get();
-		
+		}
+	
 		return null;
 	}
 	
