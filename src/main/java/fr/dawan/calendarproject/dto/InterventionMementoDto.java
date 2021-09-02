@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
@@ -14,14 +15,26 @@ public class InterventionMementoDto implements Cloneable {
 	private String comment;
 	
 	private long locationId;
+
+	@Transient
+	private String locationCity;
 	
 	private long courseId;
 	
+	@Transient
+	private String courseTitle;
+	
 	private long userId;
+
+	@Transient
+	private String userEmail;
+
+	@Transient
+	private String userFullName;
 	
 	private InterventionStatus type; 
 	
-	private boolean validated; //change to confirmStatus name
+	private boolean validated;
 
 	private LocalDate dateStart;
 
@@ -30,6 +43,30 @@ public class InterventionMementoDto implements Cloneable {
 	private long masterInterventionId;
 	
 	private boolean isMaster;
+
+	public InterventionMementoDto() {
+	}
+
+	public InterventionMementoDto(long interventionId, String comment, long locationId, String locationCity,
+			long courseId, String courseTitle, long userId, String userEmail, String userFullName,
+			InterventionStatus type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
+			long masterInterventionId, boolean isMaster) {
+		this.interventionId = interventionId;
+		this.comment = comment;
+		this.locationId = locationId;
+		this.locationCity = locationCity;
+		this.courseId = courseId;
+		this.courseTitle = courseTitle;
+		this.userId = userId;
+		this.userEmail = userEmail;
+		this.userFullName = userFullName;
+		this.type = type;
+		this.validated = validated;
+		this.dateStart = dateStart;
+		this.dateEnd = dateEnd;
+		this.masterInterventionId = masterInterventionId;
+		this.isMaster = isMaster;
+	}
 
 	public long getInterventionId() {
 		return interventionId;
@@ -69,6 +106,38 @@ public class InterventionMementoDto implements Cloneable {
 		this.userId = userId;
 	}
 
+
+	public String getLocationCity() {
+		return locationCity;
+	}
+
+	public void setLocationCity(String locationCity) {
+		this.locationCity = locationCity;
+	}
+
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public String getUserFullName() {
+		return userFullName;
+	}
+
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
+	}
 
 	public LocalDate getDateStart() {
 		return dateStart;

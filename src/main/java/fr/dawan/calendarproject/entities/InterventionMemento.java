@@ -22,21 +22,12 @@ public class InterventionMemento implements Cloneable {
 
 	@Embedded
 	private InterventionMementoDto state;
-
-	//Verify with the group to set up the time >> change for TIMESTAMP in order to have date + time because can update the same day so we need to have the time
-	//Question : do they prefer to seperate the date and the time?
-	//Need to fix the time for FR
-	/*
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCreatedState;
-	*/
 	
 	private LocalDateTime dateCreatedState;
 	
 	@Embedded
 	private MementoMessageDto mementoMessage;
 
-	//Do we really need version here?
 	@Version
 	private int version;
 
@@ -44,8 +35,6 @@ public class InterventionMemento implements Cloneable {
 		this.dateCreatedState = LocalDateTime.now();
 	}
 
-	// rôle sauvegarde de l'état
-	// vérifier pour la date
 	public InterventionMemento(InterventionMementoDto state) {
 		this.state = state;
 		this.dateCreatedState = LocalDateTime.now();
