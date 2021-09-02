@@ -46,7 +46,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(mapper.AdvancedSkillToSkillDto(s));
+			result.add(mapper.SkillToAdvancedSkillDto(s));
 		}
 
 		return result;
@@ -58,7 +58,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(mapper.AdvancedSkillToSkillDto(s));
+			result.add(mapper.SkillToAdvancedSkillDto(s));
 		}
 		return result;
 	}
@@ -66,7 +66,7 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		return mapper.AdvancedSkillToSkillDto(skill.get());
+		return mapper.SkillToAdvancedSkillDto(skill.get());
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class SkillServiceImpl implements SkillService {
 		s.setUsers(usersList);
 
 		s = skillRepository.saveAndFlush(s);
-		return mapper.AdvancedSkillToSkillDto(s);
+		return mapper.SkillToAdvancedSkillDto(s);
 	}
 
 	@Override
