@@ -77,12 +77,12 @@ public class InterventionCaretaker {
 				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(),mementoAfter.getState());
 			} else {
 				messageAction = " has been deleted by ";
-				modificationsDone = "";
+				modificationsDone = "n/a";
 			}
 		}
 		else {
 			messageAction = " has been created by ";
-			modificationsDone = "";
+			modificationsDone = "n/a";
 		}
 			
 		mementoAfter.setMementoMessage(new MementoMessageDto(mementoAfter.getState().getInterventionId(), messageAction, email, modificationsDone));
