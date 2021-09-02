@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,21 +20,26 @@ import fr.dawan.calendarproject.entities.User;
 @Mapper
 public interface DtoMapper {
 
+	default List<Long> SetSkillsToListLong(Set<Skill> skills) {
+		List<Long> skillsIds = new ArrayList<>();
+		for (Skill skill : skills) {
+			skillsIds.add(skill.getId());
+		}
+		return skillsIds;
+	}
+
 	@Mapping(source = "location.id", target = "locationId")
 	default AdvancedUserDto UserToAdvancedUserDto(User user) {
-		List<Long> skills = new ArrayList<>();
-		for (Skill skill : user.getSkills()) {
-			skills.add(skill.getId());
-		}
 
 		AdvancedUserDto advUser = new AdvancedUserDto(user.getId(), user.getFirstName(), user.getLastName(),
 				user.getLocation().getId(), user.getEmail(), user.getPassword(), user.getType().toString(),
-				user.getCompany().toString(), user.getImagePath(), user.getVersion(), skills);
+				user.getCompany().toString(), user.getImagePath(), user.getVersion(),
+				this.SetSkillsToListLong(user.getSkills()));
 
 		return advUser;
 	}
 
-	default AdvancedSkillDto AdvancedSkillToSkillDto(Skill skill) {
+	default AdvancedSkillDto SkillToAdvancedSkillDto(Skill skill) {
 		List<Long> users = new ArrayList<>();
 		for (User user : skill.getUsers()) {
 			users.add(user.getId());
