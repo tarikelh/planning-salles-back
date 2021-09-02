@@ -3,6 +3,8 @@ package fr.dawan.calendarproject.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,5 +23,16 @@ public class InterventionMementoController {
 	@GetMapping(value = "/{page}/{size}", produces="application/json")
 	public List<InterventionMemento> getAll(@PathVariable("page") int page, @PathVariable("size") int size) {
 		return caretaker.getAllMemento(page, size);
+	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<?> GetById(@PathVariable("id") long id) {
+		InterventionMemento iMem = caretaker.getMementoById(id);
+		
+		if (iMem == null) 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Intervention Memento with id " + id + " Not Found");
+			
+		return ResponseEntity.ok(iMem);
 	}
 }
