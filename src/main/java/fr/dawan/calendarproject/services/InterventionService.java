@@ -5,8 +5,6 @@ import java.util.List;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.InterventionMemento;
 import net.fortuna.ical4j.model.Calendar;
 
 public interface InterventionService {

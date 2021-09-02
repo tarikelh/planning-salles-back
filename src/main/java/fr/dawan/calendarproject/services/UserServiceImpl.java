@@ -39,9 +39,6 @@ public class UserServiceImpl implements UserService {
 	private LocationRepository locationRepository;
 
 	@Autowired
-	private LocationService locationService;
-
-	@Autowired
 	private SkillRepository skillRepository;
 
 	private DtoMapper mapper = new DtoMapperImpl();
