@@ -48,8 +48,6 @@ public class ResetPasswordController {
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
 
-			// String link = "http://localhost:8080/fr/reset?token=" + token;
-
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
 			// Voir avec Mohammed pour une adresse mail générique
@@ -59,10 +57,9 @@ public class ResetPasswordController {
 
 			javaMailSender.send(msg);
 
-			return ResponseEntity.status(HttpStatus.OK).body("Mail envoyé !");
+			return ResponseEntity.status(HttpStatus.OK).build();
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("Erreur : L'adresse mail est incorrecte ou n'existe pas.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
@@ -73,9 +70,9 @@ public class ResetPasswordController {
 		String checktoken = TokenSaver.tokensByEmail.get(tokenObj.getEmail());
 
 		if (token.equals(checktoken))
-			return ResponseEntity.status(HttpStatus.OK).body("Code valide");
+			return ResponseEntity.status(HttpStatus.OK).build();
 		else
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : Code incorrect !");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
 	}
 
@@ -95,13 +92,13 @@ public class ResetPasswordController {
 				// save the new password in DB
 				userService.saveOrUpdatePassword(uDto);
 
-				return ResponseEntity.status(HttpStatus.OK).body("Mot de passe modifié");
+				return ResponseEntity.status(HttpStatus.OK).build();
 			} else if (uDto.getPassword().equals(hashedPwd))
-				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Mot de passe identique à l'ancien !");
+				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 
 		}
 
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : Code incorrect !");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
 	}
 }
