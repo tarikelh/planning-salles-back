@@ -104,20 +104,7 @@ public class InterventionMemento implements Cloneable {
 	}
 	
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
-
-	//Memento Methods
-	public InterventionMemento createMemento() throws Exception {
-		//InterventionMemento temp = new InterventionMemento((InterventionMementoDto)this.clone());
-		InterventionMemento temp = new InterventionMemento();
-		temp = (InterventionMemento) this.clone();
-		return temp;
-	}
-	
-	public void restore(InterventionMemento memento) throws Exception {	
-		//InterventionMementoDto myIntervention = memento.getState();
-		this.state = memento.getState();
-	} 
 }

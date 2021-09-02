@@ -15,15 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.builder.DiffBuilder;
-import org.apache.commons.lang3.builder.DiffResult;
-import org.apache.commons.lang3.builder.Diffable;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
-public class Intervention {
+public class Intervention implements Cloneable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -239,5 +234,10 @@ public class Intervention {
 		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }
