@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
@@ -116,6 +118,9 @@ public class InterventionCaretaker {
 		return lstMemDates;
 	}
 	
+	public CountDto count() {
+		return new CountDto(intMementoRepository.count());
+	}
 	
 	//Be Careful => special To String because of the MAP
 	@Override

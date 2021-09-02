@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.services.InterventionCaretaker;
 
 @RestController
-@RequestMapping("/api/intervention-memento/")
+@RequestMapping("/api/intervention-memento")
 public class InterventionMementoController {
 	
 	@Autowired
@@ -35,4 +36,14 @@ public class InterventionMementoController {
 			
 		return ResponseEntity.ok(iMem);
 	}
+
+	@GetMapping(value="/count")
+	public CountDto count() {
+		return caretaker.count();
+	}
+//	@GetMapping(value = "/search")
+//	public ResponseEntity<?> searchMemento(@PathParam("id") long interventionId, @PathParam("dateStart") LocalDate dStart, @PathParam("dateEnd") LocalDate dEnd) {
+//		List<InterventionMemento> iMemList = caretaker.getMemento(interventionId, dStart, dEnd);
+//		return ResponseEntity.ok(null);
+//	}
 }
