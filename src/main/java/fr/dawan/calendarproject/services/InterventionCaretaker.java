@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,15 @@ public class InterventionCaretaker {
 
 	public InterventionMemento getMemento(long offerId, String mementoMessage) {
 		return getMemento(offerId).get(mementoMessage);
+	}
+	
+	public InterventionMemento getMementoById(long id) {
+		Optional<InterventionMemento> i = intMementoRepository.findById(id);
+		
+		if (i.isPresent())
+			return i.get();
+		
+		return null;
 	}
 	
 	public List<InterventionMemento> getAllMemento() {
