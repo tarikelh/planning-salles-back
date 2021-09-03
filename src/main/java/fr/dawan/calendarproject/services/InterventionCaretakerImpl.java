@@ -18,6 +18,8 @@ import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.mapper.DtoMapper;
+import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -27,6 +29,9 @@ import fr.dawan.calendarproject.tools.CompareGeneric;
 
 @Component
 public class InterventionCaretakerImpl implements InterventionCaretaker {
+	
+	@Autowired
+	private InterventionService interventionService;
 	
 	@Autowired
 	private InterventionMementoRepository intMementoRepository;
@@ -42,6 +47,8 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	
 	@Autowired
 	private CourseRepository courseRepository;
+	
+	private DtoMapper mapper = new DtoMapperImpl();
 	
 	private String messageAction = null;
 	
@@ -83,14 +90,29 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public void restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
-		Intervention intToRestore = DtoTools.convert(iMem.getState(), Intervention.class);
+//		Intervention intToRestore = DtoTools.convert(iMem.getState(), Intervention.class);
+		Intervention intToRestore = mapper.interventionMementoDtoToIntervention(iMem.getState());
 
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
 		newIMem.setId(0);
 		
+		
+		intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).get());
+		intToRestore.setLocation(locationRepository.findById(iMem.getState().getLocationId()).get());
+		intToRestore.setUser(userRepository.findById(iMem.getState().getUserId()).get());
+		
+		if (iMem.getState().getMasterInterventionId() > 0)
+			intToRestore.setMasterIntervention(interventionRepository.findById(iMem.getState().getMasterInterventionId()).get());
+		else
+			intToRestore.setMasterIntervention(null);
+		
+		interventionService.checkIntegrity(mapper.interventionToInterventionDto(intToRestore));
+		
 		interventionRepository.saveAndFlush(intToRestore);
 		
 		newIMem.setMementoMessage(new MementoMessageDto(newIMem.getState().getInterventionId(), " Has been restored ", email, ""));
+		
+		intMementoRepository.saveAndFlush(newIMem);
 	}
 	
 	@Override

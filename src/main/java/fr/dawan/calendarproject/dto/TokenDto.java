@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.dto;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class TokenDto implements Serializable{
 	
 	private String email;

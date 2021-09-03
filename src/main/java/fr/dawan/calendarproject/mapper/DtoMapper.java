@@ -6,18 +6,24 @@ import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CourseDto;
+import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.entities.Course;
+import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 
 @Mapper
+@Component
 public interface DtoMapper {
 
 	default List<Long> SetSkillsToListLong(Set<Skill> skills) {
@@ -49,6 +55,17 @@ public interface DtoMapper {
 
 		return advSkill;
 	}
+	
+	@Mappings({
+		@Mapping(target = "id", source = "interventionId"),
+		@Mapping(target = "course.id", source = "courseId"),
+		@Mapping(target = "location.id", source = "locationId"),
+		@Mapping(target = "user.id", source = "userId"),
+		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
+		@Mapping(target = "enumType", source = "type"),
+		@Mapping(target = "version", ignore = true)
+	})
+	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 
 	@Mapping(source = ".", target = ".")
 	LocationDto LocationToLocationDto(Location location);
@@ -58,5 +75,13 @@ public interface DtoMapper {
 
 	@Mapping(source = ".", target = ".")
 	SkillDto SkillToSkillDto(Skill skill);
+
+	@Mappings({
+		@Mapping(target = "courseId", source = "course.id"),
+		@Mapping(target = "locationId", source = "location.id"),
+		@Mapping(target = "userId", source = "user.id"),
+		@Mapping(target = "masterInterventionId", source = "masterIntervention.id"),
+	})
+	InterventionDto interventionToInterventionDto(Intervention intToRestore);
 
 }
