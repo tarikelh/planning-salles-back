@@ -65,12 +65,12 @@ public class Intervention implements Cloneable {
 	@Version
 	private int version;
 
-	public Intervention() throws Exception {
+	public Intervention() {
 	}
 
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
 			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime startTime, LocalTime endTime, boolean isMaster,
-			Intervention masterIntervention, int version) throws Exception {
+			Intervention masterIntervention, int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);

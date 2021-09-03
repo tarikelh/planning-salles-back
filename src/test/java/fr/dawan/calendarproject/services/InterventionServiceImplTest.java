@@ -18,8 +18,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -48,9 +52,11 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 
 @SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class InterventionServiceImplTest {
 
-	@SpyBean
+	@Autowired
+	@Spy
 	private InterventionService interventionService;
 
 	@MockBean
@@ -222,9 +228,11 @@ class InterventionServiceImplTest {
 				5, "I am a New Intervention", mockedLoc, mockedCourse, mockedUser,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0);
-
-		when(interventionService.checkIntegrity(any(InterventionDto.class))).thenReturn(true);
+		
+//		when(interventionService.checkIntegrity(any(InterventionDto.class))).thenReturn(true);
+//		when(interventionService.checkIntegrity(newIntervDto)).thenReturn(true);
 //		Mockito.doReturn(true).when(interventionService).checkIntegrity(any(InterventionDto.class));
+		Mockito.doReturn(true).when(interventionService).checkIntegrity(newIntervDto);
 
 		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
 
@@ -235,6 +243,7 @@ class InterventionServiceImplTest {
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
 		doNothing().when(caretaker).addMemento(any(String.class), any(Intervention.class));
+
 		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();

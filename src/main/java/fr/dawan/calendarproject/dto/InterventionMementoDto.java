@@ -1,11 +1,10 @@
 package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
-
-import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Embeddable
 public class InterventionMementoDto implements Cloneable {
@@ -32,13 +31,17 @@ public class InterventionMementoDto implements Cloneable {
 	@Transient
 	private String userFullName;
 	
-	private InterventionStatus type; 
+	private String type; 
 	
 	private boolean validated;
 
 	private LocalDate dateStart;
 
 	private LocalDate dateEnd;
+	
+	private LocalTime timeStart;
+	
+	private LocalTime timeEnd;
 	
 	private long masterInterventionId;
 	
@@ -49,8 +52,8 @@ public class InterventionMementoDto implements Cloneable {
 
 	public InterventionMementoDto(long interventionId, String comment, long locationId, String locationCity,
 			long courseId, String courseTitle, long userId, String userEmail, String userFullName,
-			InterventionStatus type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
-			long masterInterventionId, boolean isMaster) {
+			String type, boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart,
+			LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
 		this.interventionId = interventionId;
 		this.comment = comment;
 		this.locationId = locationId;
@@ -64,6 +67,8 @@ public class InterventionMementoDto implements Cloneable {
 		this.validated = validated;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
 		this.masterInterventionId = masterInterventionId;
 		this.isMaster = isMaster;
 	}
@@ -169,12 +174,12 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 
-	public InterventionStatus getType() {
+	public String getType() {
 		return type;
 	}
 
 
-	public void setType(InterventionStatus type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -204,6 +209,22 @@ public class InterventionMementoDto implements Cloneable {
 
 	public void setMaster(boolean isMaster) {
 		this.isMaster = isMaster;
+	}
+
+	public LocalTime getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(LocalTime timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	public LocalTime getTimeEnd() {
+		return timeEnd;
+	}
+
+	public void setTimeEnd(LocalTime timeEnd) {
+		this.timeEnd = timeEnd;
 	}
 
 	@Override

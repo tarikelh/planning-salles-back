@@ -19,6 +19,8 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
+import fr.dawan.calendarproject.mapper.DtoMapper;
+import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -29,12 +31,14 @@ public class SkillServiceImpl implements SkillService {
 
 	@Autowired
 	SkillRepository skillRepository;
-	
+
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	LocationRepository locationRepository;
+
+	private DtoMapper mapper = new DtoMapperImpl();
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills() {
@@ -42,7 +46,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(DtoTools.convert(s, AdvancedSkillDto.class));
+			result.add(mapper.SkillToAdvancedSkillDto(s));
 		}
 
 		return result;
@@ -54,7 +58,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(DtoTools.convert(s, AdvancedSkillDto.class));
+			result.add(mapper.SkillToAdvancedSkillDto(s));
 		}
 		return result;
 	}
@@ -62,7 +66,7 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		return DtoTools.convert(skill.get(), AdvancedSkillDto.class);
+		return mapper.SkillToAdvancedSkillDto(skill.get());
 	}
 
 	@Override
@@ -73,12 +77,12 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
 		checkIntegrity(skill);
-		
+
 		if (skill.getId() > 0 && !skillRepository.findById(skill.getId()).isPresent())
 			return null;
-		
+
 		Skill s = DtoTools.convert(skill, Skill.class);
-		
+
 		Set<User> usersList = new HashSet<User>();
 		if (skill.getUsersId() != null) {
 			skill.getUsersId().forEach(id -> {
@@ -88,31 +92,30 @@ public class SkillServiceImpl implements SkillService {
 		s.setUsers(usersList);
 
 		s = skillRepository.saveAndFlush(s);
-		return DtoTools.convert(s, AdvancedSkillDto.class);
+		return mapper.SkillToAdvancedSkillDto(s);
 	}
 
 	@Override
 	public long count() {
 		return skillRepository.count();
 	}
-	
+
 	public boolean checkIntegrity(AdvancedSkillDto s) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = s.getClass().toString();
 		String path = "/api/skills";
-		
+
 		for (long userId : s.getUsersId()) {
-			if(!userRepository.findById(userId).isPresent()) {
+			if (!userRepository.findById(userId).isPresent()) {
 				String message = "User with id: " + userId + " does not exist.";
-				errors.add(new APIError(404, instanceClass, "UserNotFound",
-						message, path));
+				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 			}
 		}
-		
+
 		if (!errors.isEmpty()) {
 			throw new EntityFormatException(errors);
 		}
-		
+
 		return true;
 	}
 }

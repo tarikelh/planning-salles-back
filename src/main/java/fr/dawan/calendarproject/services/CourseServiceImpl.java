@@ -17,8 +17,9 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Course;
-import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
+import fr.dawan.calendarproject.mapper.DtoMapper;
+import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 
 @Service
@@ -28,6 +29,8 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	CourseRepository courseRepository;
 
+	private DtoMapper mapper = new DtoMapperImpl();
+
 	@Override
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
@@ -35,7 +38,7 @@ public class CourseServiceImpl implements CourseService {
 		// Solution 1 à la mano - conversion vers Dto
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
-			result.add(DtoTools.convert(c, CourseDto.class));
+			result.add(mapper.CourseToCourseDto(c));
 		}
 
 		return result;
@@ -46,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
 		List<Course> courses = courseRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
-			result.add(DtoTools.convert(c, CourseDto.class));
+			result.add(mapper.CourseToCourseDto(c));
 		}
 		return result;
 	}
@@ -55,8 +58,7 @@ public class CourseServiceImpl implements CourseService {
 	public CourseDto getById(long id) {
 		Optional<Course> c = courseRepository.findById(id);
 		if (c.isPresent())
-			return DtoTools.convert(c.get(), CourseDto.class);
-
+			return mapper.CourseToCourseDto(c.get());
 		return null;
 	}
 
@@ -68,14 +70,14 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public CourseDto saveOrUpdate(CourseDto courseDto) {
 		checkUniqness(courseDto);
-		
+
 		if (courseDto.getId() > 0 && !courseRepository.findById(courseDto.getId()).isPresent())
 			return null;
-		
+
 		Course c = DtoTools.convert(courseDto, Course.class);
 
 		c = courseRepository.saveAndFlush(c);
-		return DtoTools.convert(c, CourseDto.class);
+		return mapper.CourseToCourseDto(c);
 	}
 
 	@Override
@@ -92,11 +94,12 @@ public class CourseServiceImpl implements CourseService {
 			Set<APIError> errors = new HashSet<APIError>();
 			String instanceClass = duplicate.getClass().toString();
 			String path = "/api/courses";
-			errors.add(new APIError(505, instanceClass, "Title Not Unique", "Course with title " + course.getTitle() + " already exists", path));
-			
+			errors.add(new APIError(505, instanceClass, "Title Not Unique",
+					"Course with title " + course.getTitle() + " already exists", path));
+
 			throw new EntityFormatException(errors);
 		}
-		
+
 		return true;
 	}
 
