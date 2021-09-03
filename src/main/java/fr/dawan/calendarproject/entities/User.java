@@ -53,7 +53,7 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UserCompany company;
 
-	@Column(nullable = true)
+	@Column(nullable = true, columnDefinition = "TEXT")
 	private String imagePath;
 
 	@Version
