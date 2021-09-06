@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
+import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.Intervention;
@@ -89,7 +90,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 	
 	@Override
-	public void restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
+	public InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
 		Intervention intToRestore = mapper.interventionMementoDtoToIntervention(iMem.getState());
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
@@ -107,11 +108,17 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		
 		interventionService.checkIntegrity(mapper.interventionToInterventionDto(intToRestore));
 		
+		//récupérer intToRestore
+		intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
 		interventionRepository.saveAndFlush(intToRestore);
 		
 		newIMem.setMementoMessage(new MementoMessageDto(newIMem.getState().getInterventionId(), " Has been restored ", email, ""));
 		
 		intMementoRepository.saveAndFlush(newIMem);
+		
+		InterventionDto intDto = DtoTools.convert(intToRestore, InterventionDto.class);
+		
+		return intDto;
 	}
 	
 	@Override
