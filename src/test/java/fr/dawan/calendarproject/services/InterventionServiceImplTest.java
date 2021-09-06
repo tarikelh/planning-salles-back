@@ -19,7 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-//import org.mockito.MockedStatic;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
@@ -44,7 +45,10 @@ import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -75,13 +79,13 @@ class InterventionServiceImplTest {
 	private List<Intervention> interventions = new ArrayList<Intervention>();
 	private List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 
-//	private MockedStatic<DtoTools> mDtoTools;
-//	private MockedStatic<ICalTools> mICalTools;
+	private MockedStatic<DtoTools> mDtoTools;
+	private MockedStatic<ICalTools> mICalTools;
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-//		mDtoTools = Mockito.mockStatic(DtoTools.class);
-//		mICalTools = Mockito.mockStatic(ICalTools.class);
+		mDtoTools = Mockito.mockStatic(DtoTools.class);
+		mICalTools = Mockito.mockStatic(ICalTools.class);
 
 		Location mockedLoc = Mockito.mock(Location.class);
 		Course mockedCourse = Mockito.mock(Course.class);
@@ -111,11 +115,11 @@ class InterventionServiceImplTest {
 
 	@AfterEach
 	public void afterEach() throws Exception {
-//		if (!mDtoTools.isClosed())
-//			mDtoTools.close();
-//		
-//		if (!mICalTools.isClosed())
-//			mICalTools.close();
+		if (!mDtoTools.isClosed())
+			mDtoTools.close();
+		
+		if (!mICalTools.isClosed())
+			mICalTools.close();
 	}
 
 	@Test
@@ -127,9 +131,9 @@ class InterventionServiceImplTest {
 	void shouldGetInterventionsAndReturnDtos() {
 		when(interventionRepository.findAll()).thenReturn(interventions);
 
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(0), InterventionDto.class)).thenReturn(iDtos.get(0));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class)).thenReturn(iDtos.get(2));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(0), InterventionDto.class)).thenReturn(iDtos.get(0));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class)).thenReturn(iDtos.get(2));
 
 		List<InterventionDto> result = interventionService.getAllInterventions();
 
@@ -150,9 +154,9 @@ class InterventionServiceImplTest {
 		when(interventionRepository.findAll(PageRequest.of(page, size))).thenReturn(p1);
 		when(interventionRepository.findAll(PageRequest.of(page + 1, size))).thenReturn(p2);
 
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(0), InterventionDto.class)).thenReturn(iDtos.get(0));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class)).thenReturn(iDtos.get(2));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(0), InterventionDto.class)).thenReturn(iDtos.get(0));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class)).thenReturn(iDtos.get(2));
 
 		List<InterventionDto> page1 = interventionService.getAllInterventions(page, size);
 		List<InterventionDto> page2 = interventionService.getAllInterventions(page + 1, size);
@@ -185,7 +189,7 @@ class InterventionServiceImplTest {
 		InterventionDto expected = iDtos.get(1);
 
 		when(interventionRepository.findById(intervId)).thenReturn(Optional.of(interventions.get(1)));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class)).thenReturn(iDtos.get(1));
 
 		InterventionDto result = interventionService.getById(intervId);
 
@@ -223,13 +227,8 @@ class InterventionServiceImplTest {
 				5, "I am a New Intervention", mockedLoc, mockedCourse, mockedUser,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0);
-		
-//		when(interventionService.checkIntegrity(any(InterventionDto.class))).thenReturn(true);
-//		when(interventionService.checkIntegrity(newIntervDto)).thenReturn(true);
-//		Mockito.doReturn(true).when(interventionService).checkIntegrity(any(InterventionDto.class));
-		Mockito.doReturn(true).when(interventionService).checkIntegrity(newIntervDto);
 
-//		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
+		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
 
 		when(locationRepository.getOne(3L)).thenReturn(mockedLoc);
 		when(courseRepository.getOne(3L)).thenReturn(mockedCourse);
@@ -268,16 +267,15 @@ class InterventionServiceImplTest {
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0);
 
-//		InterventionServiceImpl intervService = Mockito.spy((InterventionServiceImpl)interventionService);
 		when(interventionService.checkIntegrity(newIntervDto)).thenReturn(true);
 
-//		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
+		mDtoTools.when(() -> DtoTools.convert(newIntervDto, Intervention.class)).thenReturn(newInterv);
 
 		when(interventionRepository.saveAndFlush(newInterv)).thenReturn(savedInterv);
 
 		doNothing().when(caretaker).addMemento(any(String.class), any(Intervention.class));
 
-//		mDtoTools.when(() -> DtoTools.convert(savedInterv, InterventionDto.class)).thenReturn(savedIntervDto);
+		mDtoTools.when(() -> DtoTools.convert(savedInterv, InterventionDto.class)).thenReturn(savedIntervDto);
 
 		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
@@ -334,8 +332,8 @@ class InterventionServiceImplTest {
 	void shouldGetMasterIntervention() {
 		when(interventionRepository.getMasterIntervention())
 				.thenReturn(interventions.subList(1, 2));
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class))
-//				.thenReturn(iDtos.get(1));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(1), InterventionDto.class))
+				.thenReturn(iDtos.get(1));
 		
 		List<InterventionDto> result = interventionService.getMasterIntervention();
 		
@@ -351,8 +349,8 @@ class InterventionServiceImplTest {
 				any(UserType.class), any(LocalDate.class), any(LocalDate.class)))
 				.thenReturn(interventions.subList(2, 3));
 		
-//		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class))
-//			.thenReturn(iDtos.get(2));
+		mDtoTools.when(() -> DtoTools.convert(interventions.get(2), InterventionDto.class))
+			.thenReturn(iDtos.get(2));
 		
 		List<InterventionDto> result = interventionService.getSubInterventions("FORMATEUR", Mockito.mock(LocalDate.class), Mockito.mock(LocalDate.class));
 		
@@ -375,8 +373,8 @@ class InterventionServiceImplTest {
 		long userId = 1;
 		
 		when(interventionRepository.findByUserId(userId)).thenReturn(interventions);
-//		mICalTools.when(() -> ICalTools.createVEvent(any(Intervention.class), any(VTimeZone.class)))
-//				.thenReturn(new VEvent());
+		mICalTools.when(() -> ICalTools.createVEvent(any(Intervention.class), any(VTimeZone.class)))
+				.thenReturn(new VEvent());
 		
 		
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);

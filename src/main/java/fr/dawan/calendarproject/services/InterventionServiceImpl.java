@@ -26,7 +26,6 @@ import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
-import fr.dawan.calendarproject.tools.CsvToolsGeneric;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.TimeZone;
