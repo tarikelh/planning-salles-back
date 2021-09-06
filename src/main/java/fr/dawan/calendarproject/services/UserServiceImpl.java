@@ -232,4 +232,15 @@ public class UserServiceImpl implements UserService {
 
 		return true;
 	}
+
+	@Override
+	public User findById(long id) {
+		Optional<User> user = userRepository.findById(id);
+		return user.get();
+	}
+
+	@Override
+	public Long getEntityById(User user) {
+		return user.getId();
+	}
 }

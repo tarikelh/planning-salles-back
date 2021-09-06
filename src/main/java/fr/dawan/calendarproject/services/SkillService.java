@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.services;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
+import fr.dawan.calendarproject.entities.Skill;
 
 public interface SkillService {
 
@@ -19,4 +20,8 @@ public interface SkillService {
 	long count();
 
 	boolean checkIntegrity(AdvancedSkillDto s);
+
+	Skill findById(long id);
+
+	Long getEntityById(Skill skill);
 }

@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.services;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.entities.User;
 
 public interface UserService {
 
@@ -25,4 +26,8 @@ public interface UserService {
 	boolean checkIntegrity(AdvancedUserDto u);
 
 	AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user);
+
+	User findById(long id);
+
+	Long getEntityById(User user);
 }
