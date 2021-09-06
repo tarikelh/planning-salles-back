@@ -13,12 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.InterventionMailingListDto;
+import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
@@ -43,6 +43,10 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
+	
+
+	@Autowired
+	private EmailService emailService;
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -224,5 +228,11 @@ public class InterventionController {
 	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
 		return interventionService.count(type);
 	}
+	
+	@GetMapping(value = "/email/attendees", produces = "application/json")
+	public void sendCalendar(@RequestBody InterventionMailingListDto mailingList) {
+		emailService.sendCalendarToAttendees(mailingList);
+	}
+
 	
 }

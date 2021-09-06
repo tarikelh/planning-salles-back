@@ -240,4 +240,9 @@ public class Intervention {
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
+	
+	public String toContentString() {
+		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString() + " avec " + user.getFullname();
+	}
+
 }

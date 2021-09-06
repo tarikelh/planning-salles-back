@@ -16,6 +16,9 @@ import fr.dawan.calendarproject.entities.Intervention;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
@@ -76,6 +79,12 @@ public class ICalTools {
 		outputter.output(calendar, stream);
 		
 		return new ByteArrayResource(Files.readAllBytes(path));
+	}
+	
+	public static VTimeZone getTimeZone(String timezone) {
+		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+		TimeZone timeZone = registry.getTimeZone(timezone);
+		return timeZone.getVTimeZone();
 	}
 	
 }
