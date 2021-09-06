@@ -29,12 +29,6 @@ public interface InterventionService {
 
 	List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
 
-	// Method created for the test - to delete from here after?
-	void getAllIntMementoCSV() throws Exception;
-
-	// Method created for the test - to delete from here after?
-	void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
-
 	Calendar exportCalendarAsICal(long userId);
 
 	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end);

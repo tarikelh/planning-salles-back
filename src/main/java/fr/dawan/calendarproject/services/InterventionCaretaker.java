@@ -21,6 +21,10 @@ public interface InterventionCaretaker {
 	
 	void restoreMemento(long mementoId, String email) throws CloneNotSupportedException;
 
+	void serializeInterventionMementosAsCSV() throws Exception;
+	
+	void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
+	
 	CountDto count();
 
 }

@@ -26,6 +26,7 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.CompareGeneric;
+import fr.dawan.calendarproject.tools.CsvToolsGeneric;
 
 @Component
 public class InterventionCaretakerImpl implements InterventionCaretaker {
@@ -115,7 +116,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	
 	@Override
 	public InterventionMemento getMementoById(long id) {
-		Optional<InterventionMemento> i = intMementoRepository.findById(id);
+ 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
 		InterventionMementoDto iMemDto = i.get().getState();
 		
 		if (i.isPresent()) {
@@ -162,6 +163,14 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 			}
 		}
 		return lstMemDates;
+	}
+	
+	public void serializeInterventionMementosAsCSV() throws Exception {
+		CsvToolsGeneric.toCsv("interventionMemento.csv", getAllMemento(), ";");
+	}
+
+	public void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
+		CsvToolsGeneric.toCsv("interventionMementoDates.csv", getAllMementoDates(dateStart, dateEnd), ";");
 	}
 	
 	@Override

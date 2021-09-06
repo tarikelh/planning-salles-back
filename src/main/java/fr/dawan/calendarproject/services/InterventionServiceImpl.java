@@ -81,18 +81,6 @@ public class InterventionServiceImpl implements InterventionService {
 		return interventionsDto;
 	}
 
-	// For InterventionMemento CSV - to move in InterventionMementoServiceImpl ?
-	@Override
-	public void getAllIntMementoCSV() throws Exception {
-		CsvToolsGeneric.toCsv("interventionMemento.csv", caretaker.getAllMemento(), ";");
-	}
-
-	// For InterventionMemento CSV between two dates - to move in
-	// InterventionMementoServiceImpl ?
-	public void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
-		CsvToolsGeneric.toCsv("interventionMementoDates.csv", caretaker.getAllMementoDates(dateStart, dateEnd), ";");
-	}
-
 	@Override
 	public InterventionDto getById(long id) {
 		Optional<Intervention> intervention = interventionRepository.findById(id);
