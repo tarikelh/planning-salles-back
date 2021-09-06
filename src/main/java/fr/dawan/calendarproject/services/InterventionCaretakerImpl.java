@@ -90,10 +90,9 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public void restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
-
 		Intervention intToRestore = mapper.interventionMementoDtoToIntervention(iMem.getState());
-
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
+		
 		newIMem.setId(0);
 		
 		intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).get());

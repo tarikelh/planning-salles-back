@@ -31,7 +31,7 @@ public class InterventionMementoDto implements Cloneable {
 	@Transient
 	private String userFullName;
 	
-	private String type; 
+	private String type;
 	
 	private boolean validated;
 

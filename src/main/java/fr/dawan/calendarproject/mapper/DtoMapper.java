@@ -55,17 +55,6 @@ public interface DtoMapper {
 
 		return advSkill;
 	}
-	
-	@Mappings({
-		@Mapping(target = "id", source = "interventionId"),
-		@Mapping(target = "course.id", source = "courseId"),
-		@Mapping(target = "location.id", source = "locationId"),
-		@Mapping(target = "user.id", source = "userId"),
-		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-		@Mapping(target = "enumType", source = "type"),
-		@Mapping(target = "version", ignore = true)
-	})
-	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 
 	@Mapping(source = ".", target = ".")
 	LocationDto LocationToLocationDto(Location location);
@@ -82,6 +71,25 @@ public interface DtoMapper {
 		@Mapping(target = "userId", source = "user.id"),
 		@Mapping(target = "masterInterventionId", source = "masterIntervention.id"),
 	})
-	InterventionDto interventionToInterventionDto(Intervention intToRestore);
-
+	InterventionDto interventionToInterventionDto(Intervention intervention);
+	
+	@Mappings({
+		@Mapping(target = "course.id", source = "courseId"),
+		@Mapping(target = "location.id", source = "locationId"),
+		@Mapping(target = "user.id", source = "userId"),
+		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
+		@Mapping(target = "enumType", source = "type")
+	})
+	Intervention interventionDtoToIntervention(InterventionDto intervention);
+	
+	@Mappings({
+		@Mapping(target = "id", source = "interventionId"),
+		@Mapping(target = "course.id", source = "courseId"),
+		@Mapping(target = "location.id", source = "locationId"),
+		@Mapping(target = "user.id", source = "userId"),
+		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
+		@Mapping(target = "enumType", source = "type"),
+		@Mapping(target = "version", ignore = true)
+	})
+	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 }

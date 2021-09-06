@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
+//import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -293,8 +293,8 @@ class InterventionControllerTest {
 		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes( Paths.get(f.getAbsolutePath())));
 	
 		when(interventionService.exportCalendarAsICal(userId)).thenReturn(cal);
-		MockedStatic<ICalTools> calTools = Mockito.mockStatic(ICalTools.class);
-		calTools.when(() -> ICalTools.generateICSFile(any(Calendar.class), any(String.class), any(File.class))).thenReturn(resource);
+//		MockedStatic<ICalTools> calTools = Mockito.mockStatic(ICalTools.class);
+//		calTools.when(() -> ICalTools.generateICSFile(any(Calendar.class), any(String.class), any(File.class))).thenReturn(resource);
 	
 		MockHttpServletResponse response = mockMvc.perform(get("/api/interventions/ical/{userId}", userId)
 				.contentType(MediaType.MULTIPART_FORM_DATA))
@@ -308,8 +308,8 @@ class InterventionControllerTest {
 		assertEquals(response.getHeader("Expires"), "0");
 		
 		f.delete();
-		if(!calTools.isClosed())
-			calTools.close();
+//		if(!calTools.isClosed())
+//			calTools.close();
 	}
 	
 	@Test
@@ -321,15 +321,15 @@ class InterventionControllerTest {
 		when(interventionService.exportCalendarAsICal(userId)).thenReturn(cal);
 		when(f.getAbsolutePath()).thenReturn("test.ics");
 		
-		MockedStatic<ICalTools> calTools = Mockito.mockStatic(ICalTools.class);
-		calTools.when(() -> ICalTools.generateICSFile(any(Calendar.class), any(String.class), any(File.class))).thenThrow(IOException.class);
+//		MockedStatic<ICalTools> calTools = Mockito.mockStatic(ICalTools.class);
+//		calTools.when(() -> ICalTools.generateICSFile(any(Calendar.class), any(String.class), any(File.class))).thenThrow(IOException.class);
 
 		mockMvc.perform(get("/api/interventions/ical/{userId}", userId)
 				.contentType(MediaType.MULTIPART_FORM_DATA))
 				.andExpect(status().isInternalServerError());
 		
-		if(!calTools.isClosed())
-			calTools.close();
+//		if(!calTools.isClosed())
+//			calTools.close();
 	}
 	
 	@Test
