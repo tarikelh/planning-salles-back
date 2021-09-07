@@ -79,12 +79,6 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public LocationDto count() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean checkUniqness(LocationDto location) {
 		List<Location> duplicates = locationRepository.findDuplicates(location.getId(), location.getCity(),
 				location.getColor());
@@ -107,6 +101,19 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public Location findById(long id) {
+		Optional<Location> l = locationRepository.findById(id);
+		if (l.isPresent())
+			return l.get();
+		return null;
+	}
+
+	@Override
+	public Long getEntityById(Location location) {
+		return location.getId();
 	}
 
 }

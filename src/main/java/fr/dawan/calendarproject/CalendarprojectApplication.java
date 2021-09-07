@@ -13,7 +13,6 @@ import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.mapper.DtoMapper;
 import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 
-
 //Classe de démarrage >> Spring scannera fr.dawan.calendarproject et tout ces sous packages
 
 @SpringBootApplication
@@ -25,7 +24,7 @@ public class CalendarprojectApplication {
 
 	@Autowired
 	private TokenInterceptor tokenInterceptor;
-	
+
 	@Bean
 	public DtoMapper dtoMapper() {
 		return new DtoMapperImpl();
@@ -39,9 +38,7 @@ public class CalendarprojectApplication {
 			// CROSS ORIGIN
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-					.allowedMethods("GET", "POST","PUT", "DELETE")
-					.allowedOrigins("*");
+				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*");
 			}
 
 			// CONVERTERS
@@ -49,7 +46,7 @@ public class CalendarprojectApplication {
 			public void addFormatters(FormatterRegistry registry) {
 				registry.addConverter(new fr.dawan.calendarproject.dto.StringToUserDtoConverter());
 			}
-			
+
 			// Intercepteurs
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {

@@ -1,69 +1,21 @@
 package fr.dawan.calendarproject.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.springframework.stereotype.Component;
 
-import fr.dawan.calendarproject.dto.AdvancedSkillDto;
-import fr.dawan.calendarproject.dto.AdvancedUserDto;
-import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
-import fr.dawan.calendarproject.dto.LocationDto;
-import fr.dawan.calendarproject.dto.SkillDto;
-import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.Skill;
-import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.services.CourseServiceImpl;
+import fr.dawan.calendarproject.services.InterventionServiceImpl;
+import fr.dawan.calendarproject.services.LocationServiceImpl;
+import fr.dawan.calendarproject.services.UserServiceImpl;
 
-@Mapper(componentModel = "spring")
-public interface DtoMapper {
-
-	default List<Long> SetSkillsToListLong(Set<Skill> skills) {
-		List<Long> skillsIds = new ArrayList<>();
-		for (Skill skill : skills) {
-			skillsIds.add(skill.getId());
-		}
-		return skillsIds;
-	}
-
-	@Mapping(source = "location.id", target = "locationId")
-	default AdvancedUserDto UserToAdvancedUserDto(User user) {
-
-		AdvancedUserDto advUser = new AdvancedUserDto(user.getId(), user.getFirstName(), user.getLastName(),
-				user.getLocation().getId(), user.getEmail(), user.getPassword(), user.getType().toString(),
-				user.getCompany().toString(), user.getImagePath(), user.getVersion(),
-				this.SetSkillsToListLong(user.getSkills()));
-
-		return advUser;
-	}
-
-	default AdvancedSkillDto SkillToAdvancedSkillDto(Skill skill) {
-		List<Long> users = new ArrayList<>();
-		for (User user : skill.getUsers()) {
-			users.add(user.getId());
-		}
-
-		AdvancedSkillDto advSkill = new AdvancedSkillDto(skill.getId(), skill.getTitle(), skill.getVersion(), users);
-
-		return advSkill;
-	}
-
-	@Mapping(source = ".", target = ".")
-	LocationDto LocationToLocationDto(Location location);
-
-	@Mapping(source = ".", target = ".")
-	CourseDto CourseToCourseDto(Course course);
-
-	@Mapping(source = ".", target = ".")
-	SkillDto SkillToSkillDto(Skill skill);
-
+@Mapper(componentModel = "spring", uses = { InterventionServiceImpl.class,
+		LocationServiceImpl.class , CourseServiceImpl.class, UserServiceImpl.class})
+public interface InterventionMapper {
+	
 	@Mappings({
 		@Mapping(target = "courseId", source = "course.id"),
 		@Mapping(target = "locationId", source = "location.id"),
@@ -105,4 +57,24 @@ public interface DtoMapper {
 		@Mapping(target = "type", source = "type")
 	})
 	InterventionMementoDto interventionToInterventionMementoDto(Intervention intervention);
+
+//	@Mapping(source="course.id", target="courseId")
+//	@Mapping(source="location.id", target="locationId")
+//	@Mapping(source="masterIntervention.id", target="masterInterventionId")
+//	@Mapping(source="user.id", target="userId")
+//	InterventionDto interventionToInterventionDto(Intervention interv);
+//	
+//	@Mapping(source="courseId", target="course")
+//	@Mapping(source="locationId", target="location")
+//	@Mapping(source="masterInterventionId", target="masterIntervention")
+//	@Mapping(source="userId", target="user")
+//	@Mapping(source = "type", target = "enumType")
+//	Intervention interventionDtoToIntervention(InterventionDto intervDto);
+//	
+//	@Mapping(source="course.id", target="courseId")
+//	@Mapping(source="location.id", target="locationId")
+//	@Mapping(source="masterIntervention.id", target="masterInterventionId")
+//	@Mapping(source="user.id", target="userId")
+//	@Mapping(source="id", target ="interventionId")
+//	InterventionMementoDto InterventionMementoDtoToIntervention(Intervention interv);
 }
