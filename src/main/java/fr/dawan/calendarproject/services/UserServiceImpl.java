@@ -227,6 +227,7 @@ public class UserServiceImpl implements UserService {
 			throw new EntityFormatException(errors);
 		}
 
+		
 		return true;
 	}
 }
