@@ -12,6 +12,8 @@ import fr.dawan.calendarproject.services.SkillServiceImpl;
 public interface SkillMapper {
 
 	List<Long> setSkillsToListLong(Set<Skill> skills);
+	
+	Long skillToLong(Skill skill);
 
 	Set<Skill> listLongToSetSkills(List<Long> ids);
 }

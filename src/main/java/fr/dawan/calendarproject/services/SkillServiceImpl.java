@@ -118,4 +118,10 @@ public class SkillServiceImpl implements SkillService {
 
 		return true;
 	}
+
+	@Override
+	public Skill getEntityById(long id) {
+		Optional<Skill> skill = skillRepository.findById(id);
+		return skill.get();
+	}
 }
