@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.dto;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class CountDto implements Serializable {
 
 	private long nb;

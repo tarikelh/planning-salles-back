@@ -1,10 +1,10 @@
 package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.Embeddable;
-
-import fr.dawan.calendarproject.enums.InterventionStatus;
+import javax.persistence.Transient;
 
 @Embeddable
 public class InterventionMementoDto implements Cloneable {
@@ -14,22 +14,64 @@ public class InterventionMementoDto implements Cloneable {
 	private String comment;
 	
 	private long locationId;
+
+	@Transient
+	private String locationCity;
 	
 	private long courseId;
 	
+	@Transient
+	private String courseTitle;
+	
 	private long userId;
+
+	@Transient
+	private String userEmail;
+
+	@Transient
+	private String userFullName;
 	
-	private InterventionStatus type; 
+	private String type;
 	
-	private boolean validated; //change to confirmStatus name
+	private boolean validated;
 
 	private LocalDate dateStart;
 
 	private LocalDate dateEnd;
 	
+	private LocalTime timeStart;
+	
+	private LocalTime timeEnd;
+	
 	private long masterInterventionId;
 	
 	private boolean isMaster;
+
+	public InterventionMementoDto() {
+	}
+
+	public InterventionMementoDto(long interventionId, String comment, long locationId, String locationCity,
+			long courseId, String courseTitle, long userId, String userEmail, String userFullName,
+			String type, boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart,
+			LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
+		this.interventionId = interventionId;
+		this.comment = comment;
+		this.locationId = locationId;
+		this.locationCity = locationCity;
+		this.courseId = courseId;
+		this.courseTitle = courseTitle;
+		this.userId = userId;
+		this.userEmail = userEmail;
+		this.userFullName = userFullName;
+		this.type = type;
+		this.validated = validated;
+		this.dateStart = dateStart;
+		this.dateEnd = dateEnd;
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
+		this.masterInterventionId = masterInterventionId;
+		this.isMaster = isMaster;
+	}
 
 	public long getInterventionId() {
 		return interventionId;
@@ -70,6 +112,38 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 
+	public String getLocationCity() {
+		return locationCity;
+	}
+
+	public void setLocationCity(String locationCity) {
+		this.locationCity = locationCity;
+	}
+
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public String getUserFullName() {
+		return userFullName;
+	}
+
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
+	}
+
 	public LocalDate getDateStart() {
 		return dateStart;
 	}
@@ -100,12 +174,12 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 
-	public InterventionStatus getType() {
+	public String getType() {
 		return type;
 	}
 
 
-	public void setType(InterventionStatus type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -135,6 +209,22 @@ public class InterventionMementoDto implements Cloneable {
 
 	public void setMaster(boolean isMaster) {
 		this.isMaster = isMaster;
+	}
+
+	public LocalTime getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(LocalTime timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	public LocalTime getTimeEnd() {
+		return timeEnd;
+	}
+
+	public void setTimeEnd(LocalTime timeEnd) {
+		this.timeEnd = timeEnd;
 	}
 
 	@Override

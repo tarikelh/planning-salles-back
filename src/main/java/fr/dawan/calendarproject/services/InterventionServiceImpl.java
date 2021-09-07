@@ -18,19 +18,14 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.InterventionCaretaker;
-import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.repositories.CourseRepository;
-import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
-import fr.dawan.calendarproject.tools.CsvToolsGeneric;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.TimeZone;
@@ -62,10 +57,6 @@ public class InterventionServiceImpl implements InterventionService {
 	@Autowired
 	private InterventionCaretaker caretaker;
 
-	@Autowired
-	private InterventionMementoRepository interventionMementoRepository;
-	
-
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
@@ -89,18 +80,6 @@ public class InterventionServiceImpl implements InterventionService {
 		return interventionsDto;
 	}
 
-	// For InterventionMemento CSV - to move in InterventionMementoServiceImpl ?
-	@Override
-	public void getAllIntMementoCSV() throws Exception {
-		CsvToolsGeneric.toCsv("interventionMemento.csv", caretaker.getAllMemento(), ";");
-	}
-
-	// For InterventionMemento CSV between two dates - to move in
-	// InterventionMementoServiceImpl ?
-	public void getAllIntMementoCSVDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
-		CsvToolsGeneric.toCsv("interventionMementoDates.csv", caretaker.getAllMementoDates(dateStart, dateEnd), ";");
-	}
-
 	@Override
 	public InterventionDto getById(long id) {
 		Optional<Intervention> intervention = interventionRepository.findById(id);
@@ -112,12 +91,16 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public void deleteById(long id, String email) {
 		// Memento creation and save
-		InterventionDto intDtoToDelete = getById(id);
-		Intervention intToDelete = DtoTools.convert(intDtoToDelete, Intervention.class);
+		Intervention intToDelete = interventionRepository.findById(id).get();
 		
 		interventionRepository.deleteById(id);
 		
-		saveMemento(email, intToDelete);
+		try {
+			caretaker.addMemento(email, intToDelete);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -143,25 +126,9 @@ public class InterventionServiceImpl implements InterventionService {
 		
 		interv = interventionRepository.saveAndFlush(interv);
 
-		// Memento creation and save
-		saveMemento(email, interv); //interventionBefore &&&&& interventionAfter
+		caretaker.addMemento(email, interv);
 		
 		return DtoTools.convert(interv, InterventionDto.class);
-	}
-	
-	public void saveMemento(String email, Intervention interv) {
-		// Memento creation
-		// Build interventionMemento object
-		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(DtoTools.convert(interv, InterventionMementoDto.class));
-		
-		// Save memento
-		try {
-			caretaker.addMemento(email, intMemento.createMemento());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	// Search

@@ -1,8 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,14 +9,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,65 +67,6 @@ public class InterventionController {
 	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
 			@RequestParam("end") String end) {
 		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
-	}
-	
-
-	// GET Memento >> Implemented for the CSV test
-	// Need to create a InterventionMemento controller (for now only this method)??
-	@GetMapping(value = "/memento", produces = "text/csv")
-	public ResponseEntity<?> getAllMementoCSV() {
-		try {
-			// Create CSV
-			interventionService.getAllIntMementoCSV();
-
-			// Return CSV
-			// change "interventionMemento.csv" for a parameter (in .properties?) here
-			// and in InterventionCaretaker
-			String filename = "interventionMemento.csv";
-			File file = new File(filename);
-			Path path = Paths.get(file.getAbsolutePath());
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-			headers.add("Pragma", "no-cache");
-			headers.add("Expires", "0");
-
-			return ResponseEntity.ok().headers(headers).contentLength(file.length())
-					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error could not create Memento");
-		}
-	}
-
-	// GET Memento between 2 dates >> Implemented for the CSV test
-	// Need to create a InterventionMemento controller (for now only this method)??
-	@GetMapping(value = "/memento-dates", produces = "text/csv")
-	public ResponseEntity<?> getAllMementoCSVDates(
-			@RequestParam("dateStart") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateStart,
-			@RequestParam("dateEnd") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateEnd) {
-		try {
-			// Create CSV
-			interventionService.getAllIntMementoCSVDates(dateStart, dateEnd);
-			// Return CSV
-			// change "interventionMementoDates.csv" for a parameter (in .properties?) here
-			// and in InterventionCaretaker
-			String filename = "interventionMementoDates.csv";
-			File file = new File(filename);
-			Path path = Paths.get(file.getAbsolutePath());
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
-			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-			headers.add("Pragma", "no-cache");
-			headers.add("Expires", "0");
-
-			return ResponseEntity.ok().headers(headers).contentLength(file.length())
-					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
-
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("création csv non réalisée");
-		}
 	}
 
 	// DELETE - supprimer

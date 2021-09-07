@@ -143,57 +143,6 @@ class InterventionControllerTest {
 	}
 
 	@Test
-	void shouldExportMementoCSV() throws Exception {
-		doNothing().when(interventionService).getAllIntMementoCSV();
-		
-		MockHttpServletResponse response = mockMvc.perform(get("/api/interventions/memento")
-				.accept("text/csv"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/csv"))
-				.andReturn().getResponse();
-		
-		assertEquals(response.getHeader("content-disposition"), "attachment; filename=\"interventionMemento.csv\"");
-		assertEquals(response.getHeader("Cache-Control"), "no-cache, no-store, must-revalidate");
-		assertEquals(response.getHeader("pragma"), "no-cache");
-		assertEquals(response.getHeader("Expires"), "0");
-	}
-	
-	@Test
-	void shouldReturnErrorWhenCSVCreationFails() throws Exception {
-		doThrow(Exception.class).when(interventionService).getAllIntMementoCSV();
-		
-		mockMvc.perform(get("/api/interventions/memento")
-				.accept("text/csv"))
-				.andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	void shouldExportMementoCSVByDates() throws Exception {
-		doNothing().when(interventionService).getAllIntMementoCSVDates(any(LocalDate.class), any(LocalDate.class));
-		
-		MockHttpServletResponse response = mockMvc.perform(get("/api/interventions/memento-dates?dateStart=2021-08-10&dateEnd=2021-08-12")
-				.accept("text/csv"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/csv"))
-				.andReturn().getResponse();
-		
-		assertEquals(response.getHeader("content-disposition"), "attachment; filename=\"interventionMementoDates.csv\"");
-		assertEquals(response.getHeader("Cache-Control"), "no-cache, no-store, must-revalidate");
-		assertEquals(response.getHeader("pragma"), "no-cache");
-		assertEquals(response.getHeader("Expires"), "0");
-	}
-	
-	@Test
-	void shouldReturnErrorWhenCSVCreationByDatesFails() throws Exception {
-		doThrow(Exception.class).when(interventionService).getAllIntMementoCSVDates(any(LocalDate.class), any(LocalDate.class));
-		
-		mockMvc.perform(get("/api/interventions/memento-dates?dateStart=2021-08-10&dateEnd=2021-08-12")
-				.accept("text/csv"))
-				.andExpect(status().isInternalServerError());
-		
-	}
-
-	@Test
 	void shouldDeleteById() throws Exception {
 		final long intId = 1;
 		doNothing().when(interventionService).deleteById(any(Long.class), any(String.class));

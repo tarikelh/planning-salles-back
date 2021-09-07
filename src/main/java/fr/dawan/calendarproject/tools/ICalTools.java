@@ -30,7 +30,6 @@ import net.fortuna.ical4j.util.UidGenerator;
 public class ICalTools {
 
 //	Tool To Generate Event
-
 	public static VEvent createVEvent(Intervention i, VTimeZone tz) {
 		Date start = ICalTools.formatLocalDate(i.getDateStart());
 		Date end = ICalTools.formatLocalDate(i.getDateEnd().plusDays(1));
