@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMailingListDto;
+import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
@@ -229,10 +231,29 @@ public class InterventionController {
 		return interventionService.count(type);
 	}
 	
+	//@RequestBody int[] usersId,
+	@PostMapping(value = "/email/employees", produces = "application/json")
+	public void sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
+		System.out.println("inside sendCalendar");
+		try {
+			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(), LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 	@GetMapping(value = "/email/attendees", produces = "application/json")
 	public void sendCalendar(@RequestBody InterventionMailingListDto mailingList) {
 		emailService.sendCalendarToAttendees(mailingList);
 	}
+	
+	@GetMapping(value = "/email/trainer/{tainerId}", produces = "application/json")
+	public void sendCalendarToTrainer(@PathVariable("trainerId") long trainerId) {
+		emailService.sendCalendarToTrainer(trainerId);
+	}
+
 
 	
 }

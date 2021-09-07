@@ -22,6 +22,9 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.user WHERE i.user.id = :userId")
 	List<Intervention> findByUserId(@Param("userId") long userId);
+	
+	@Query("FROM Intervention i LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId AND ((i.dateStart BETWEEN :start AND :end) AND (i.dateEnd BETWEEN :start AND :end))")
+	List<Intervention> findByUserIdAndDates(@Param("userId") long userId, @Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :id AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
 	List<Intervention> findFromUserByDateRange(@Param("id") long userId, @Param("start") LocalDate dateStart,
