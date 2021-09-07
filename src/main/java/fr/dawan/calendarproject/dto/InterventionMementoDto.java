@@ -258,5 +258,4 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(isMaster);
 		return builder.toString();
 	}
-	
 }

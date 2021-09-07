@@ -56,7 +56,10 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionCaretaker caretaker;
-
+	
+	@Autowired
+	private InterventionMapper interventionMapper;
+	
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
@@ -128,7 +131,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 		caretaker.addMemento(email, interv);
 		
-		return DtoTools.convert(interv, InterventionDto.class);
+		return interventionMapper.interventionToInterventionDto(interv);
 	}
 	
 	// Search
