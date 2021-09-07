@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
-import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
@@ -57,20 +57,13 @@ public class InterventionServiceImpl implements InterventionService {
 	@Autowired
 	private InterventionCaretaker caretaker;
 
-	@Autowired
-	private InterventionMementoRepository interventionMementoRepository;
-	
-	@Autowired
-	InterventionMapper interventionMapper;
-	
-
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
 		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
 
 		for (Intervention intervention : interventions) {
-			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
+			interventionsDto.add(DtoTools.convert(intervention, InterventionDto.class));
 		}
 		
 		return interventionsDto;
@@ -82,7 +75,7 @@ public class InterventionServiceImpl implements InterventionService {
 				.collect(Collectors.toList());
 		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
 		for (Intervention intervention : interventions) {
-			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
+			interventionsDto.add(DtoTools.convert(intervention, InterventionDto.class));
 		}
 		return interventionsDto;
 	}
@@ -91,7 +84,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public InterventionDto getById(long id) {
 		Optional<Intervention> intervention = interventionRepository.findById(id);
 		if (intervention.isPresent())
-			return interventionMapper.interventionToInterventionDto(intervention.get());
+			return DtoTools.convert(intervention.get(), InterventionDto.class);
 		return null;
 	}
 
@@ -99,8 +92,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public void deleteById(long id, String email) {
 		// Memento creation and save
 		Intervention intToDelete = interventionRepository.findById(id).get();
-		Intervention intToDelete = interventionMapper.interventionDtoToIntervention(intDtoToDelete);
-
+		
 		interventionRepository.deleteById(id);
 		
 		try {
@@ -117,7 +109,7 @@ public class InterventionServiceImpl implements InterventionService {
 			return null;
 		
 		checkIntegrity(intervention);
-		Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
+		Intervention interv = DtoTools.convert(intervention, Intervention.class);
 
 		if (!intervention.isMaster()) {
 			interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
@@ -136,22 +128,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 		caretaker.addMemento(email, interv);
 		
-		return interventionMapper.interventionToInterventionDto(interv);
-	}
-	
-	public void saveMemento(String email, Intervention interv) {
-		// Memento creation
-		// Build interventionMemento object
-		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(interventionMapper.InterventionMementoDtoToIntervention(interv));
-		
-		// Save memento
-		try {
-			caretaker.addMemento(email, intMemento.createMemento());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return DtoTools.convert(interv, InterventionDto.class);
 	}
 	
 	// Search
@@ -161,7 +138,7 @@ public class InterventionServiceImpl implements InterventionService {
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 
 		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
 	}
@@ -172,7 +149,7 @@ public class InterventionServiceImpl implements InterventionService {
 		List<Intervention> interventions = interventionRepository.findByCourseTitle(title);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
 	}
@@ -182,7 +159,7 @@ public class InterventionServiceImpl implements InterventionService {
 		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 		return iDtos;
 	}
 	
@@ -190,7 +167,7 @@ public class InterventionServiceImpl implements InterventionService {
 		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 		return iDtos;
 	}
 
@@ -210,7 +187,7 @@ public class InterventionServiceImpl implements InterventionService {
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 		
 		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
+			iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 		return iDtos;
 	}
@@ -222,7 +199,7 @@ public class InterventionServiceImpl implements InterventionService {
 			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType, dateStart, dateEnd);
 			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 			for (Intervention i : interventions)
-				iDtos.add(interventionMapper.interventionToInterventionDto(i));
+				iDtos.add(DtoTools.convert(i, InterventionDto.class));
 
 			return iDtos;
 		} else {
@@ -320,13 +297,5 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		return true;
-	}
-
-	@Override
-	public Intervention getEntityById(long id) {
-		Optional<Intervention> intervention = interventionRepository.findById(id);
-		if (intervention.isPresent())
-			return intervention.get();
-		return null;
 	}
 }

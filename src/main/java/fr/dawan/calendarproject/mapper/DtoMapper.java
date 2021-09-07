@@ -22,7 +22,8 @@ import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 
-@Mapper(componentModel = "spring")
+@Mapper
+@Component
 public interface DtoMapper {
 
 	default List<Long> SetSkillsToListLong(Set<Skill> skills) {

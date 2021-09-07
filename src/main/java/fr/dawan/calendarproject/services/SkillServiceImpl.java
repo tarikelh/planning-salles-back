@@ -118,17 +118,4 @@ public class SkillServiceImpl implements SkillService {
 
 		return true;
 	}
-
-	@Override
-	public Skill findById(long id) {
-		Optional<Skill> l = skillRepository.findById(id);
-		if (l.isPresent())
-			return l.get();
-		return null;
-	}
-
-	@Override
-	public Long getEntityById(Skill skill) {
-		return skill.getId();
-	}
 }
