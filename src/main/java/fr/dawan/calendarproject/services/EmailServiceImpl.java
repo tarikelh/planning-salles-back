@@ -3,7 +3,6 @@ package fr.dawan.calendarproject.services;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +29,7 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.parameter.Cn;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.Method;
-import net.fortuna.ical4j.model.property.Organizer;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
 
 @Service
 @Transactional
@@ -121,18 +113,6 @@ public class EmailServiceImpl implements EmailService {
 			
 			Calendar calendar = ICalTools.createCalendar("-//Google Inc//Google Calendar 70.9054//EN");
 			
-			/*
-			calendar.getProperties().add(new Organizer());
-			calendar.getProperties().getProperty(Property.ORGANIZER).setValue("MAILTO:valentin.dawan@gmail.com");
-			calendar.getProperties().getProperty(Property.ORGANIZER).getParameters().add(new Cn("Val val"));
-			*/
-			
-			/*
-			Organizer organizer = new Organizer(URI.create("mailto:" + trainer.get().getEmail()));
-			organizer.getParameters().add(new Cn(trainer.get().getFullname()));
-			calendar.getProperties().add(organizer);
-			*/
-			
 			if(interventions.size() > 0) {
 				for (Intervention intervention : interventions) {
 					calendar.getComponents().add(ICalTools.createVEvent(intervention, tz));
@@ -152,7 +132,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	private MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
-			throws MessagingException, IOException, ValidationException {
+			throws MessagingException, IOException {
 
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -177,7 +157,7 @@ public class EmailServiceImpl implements EmailService {
 
 
 	private MimeMessage setMailingListMessage(String[] recipients, String subject, String content, Calendar calendar)
-			throws MessagingException, IOException, ValidationException {
+			throws MessagingException, IOException {
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 		Multipart multipart = new MimeMultipart("mixed");
@@ -201,7 +181,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	private MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename)
-			throws IOException, ValidationException, MessagingException {
+			throws IOException, MessagingException {
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		CalendarOutputter outputter = new CalendarOutputter();
