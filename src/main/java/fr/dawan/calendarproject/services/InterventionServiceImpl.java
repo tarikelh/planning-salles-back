@@ -65,7 +65,7 @@ public class InterventionServiceImpl implements InterventionService {
 	private InterventionMementoRepository interventionMementoRepository;
 	
 	@Autowired
-	InterventionMapper interventionMapper;
+	private InterventionMapper interventionMapper;
 	
 
 	@Override
@@ -155,7 +155,7 @@ public class InterventionServiceImpl implements InterventionService {
 		// Memento creation
 		// Build interventionMemento object
 		InterventionMemento intMemento = new InterventionMemento();
-		intMemento.setState(interventionMapper.InterventionMementoDtoToIntervention(interv));
+		intMemento.setState(interventionMapper.interventionToInterventionMementoDto(interv));
 		
 		// Save memento
 		try {
