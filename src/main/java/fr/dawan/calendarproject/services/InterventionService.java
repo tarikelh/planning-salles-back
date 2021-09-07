@@ -47,4 +47,6 @@ public interface InterventionService {
 
 	boolean checkIntegrity(InterventionDto i);
 	
+	Intervention getEntityById(long id);
+	
 }
