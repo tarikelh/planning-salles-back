@@ -3,7 +3,6 @@ package fr.dawan.calendarproject.services;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.LocationDto;
-import fr.dawan.calendarproject.entities.Location;
 
 public interface LocationService {
 
@@ -17,9 +16,8 @@ public interface LocationService {
 
 	LocationDto saveOrUpdate(LocationDto location);
 
+	LocationDto count();
+	
 	boolean checkUniqness(LocationDto location);
 
-	Location findById(long id);
-
-	Long getEntityById(Location location);
 }

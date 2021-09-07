@@ -36,7 +36,5 @@ public interface InterventionService {
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end);
 
 	boolean checkIntegrity(InterventionDto i);
-	
-	Intervention getEntityById(long id);
-	
+
 }
