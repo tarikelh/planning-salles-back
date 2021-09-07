@@ -22,7 +22,6 @@ import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.DtoMapper;
-import fr.dawan.calendarproject.mapper.DtoMapperImpl;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -39,12 +38,10 @@ public class UserServiceImpl implements UserService {
 	private LocationRepository locationRepository;
 
 	@Autowired
-	private LocationService locationService;
-
-	@Autowired
 	private SkillRepository skillRepository;
 
-	private DtoMapper mapper = new DtoMapperImpl();
+	@Autowired
+	private DtoMapper dtoMapper;
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
@@ -52,7 +49,7 @@ public class UserServiceImpl implements UserService {
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 		for (User u : users) {
-			result.add(mapper.UserToAdvancedUserDto(u));
+			result.add(dtoMapper.UserToAdvancedUserDto(u));
 		}
 
 		return result;
@@ -65,7 +62,7 @@ public class UserServiceImpl implements UserService {
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 			for (User u : users) {
-				result.add(mapper.UserToAdvancedUserDto(u));
+				result.add(dtoMapper.UserToAdvancedUserDto(u));
 			}
 			return result;
 		} else {
@@ -80,7 +77,7 @@ public class UserServiceImpl implements UserService {
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 		for (User u : users) {
-			result.add(mapper.UserToAdvancedUserDto(u));
+			result.add(dtoMapper.UserToAdvancedUserDto(u));
 		}
 		return result;
 	}
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto getById(long id) {
 		Optional<User> user = userRepository.findById(id);
-		return mapper.UserToAdvancedUserDto(user.get());
+		return dtoMapper.UserToAdvancedUserDto(user.get());
 	}
 
 	@Override
@@ -128,7 +125,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		u = userRepository.saveAndFlush(u);
-		return mapper.UserToAdvancedUserDto(u);
+		return dtoMapper.UserToAdvancedUserDto(u);
 	}
 
 	@Override
@@ -160,7 +157,7 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		u = userRepository.saveAndFlush(u);
-		return mapper.UserToAdvancedUserDto(u);
+		return dtoMapper.UserToAdvancedUserDto(u);
 
 	}
 
@@ -168,7 +165,7 @@ public class UserServiceImpl implements UserService {
 	public AdvancedUserDto findByEmail(String email) {
 		User u = userRepository.findByEmail(email);
 		if (u != null)
-			return mapper.UserToAdvancedUserDto(u);
+			return dtoMapper.UserToAdvancedUserDto(u);
 
 		return null;
 	}
@@ -230,17 +227,7 @@ public class UserServiceImpl implements UserService {
 			throw new EntityFormatException(errors);
 		}
 
+		
 		return true;
-	}
-
-	@Override
-	public User findById(long id) {
-		Optional<User> user = userRepository.findById(id);
-		return user.get();
-	}
-
-	@Override
-	public Long getEntityById(User user) {
-		return user.getId();
 	}
 }

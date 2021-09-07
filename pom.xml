@@ -21,10 +21,10 @@
 
 	<dependencies>
 		<dependency>
-	        <groupId>org.mapstruct</groupId>
-	        <artifactId>mapstruct</artifactId>
-	        <version>${org.mapstruct.version}</version>
-	    </dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${org.mapstruct.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -52,9 +52,9 @@
 			<version>2.6.1</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
-<!--============================================================= -->
-<!-- Tests -->
-<!--============================================================= -->
+		<!--============================================================= -->
+		<!-- Tests -->
+		<!--============================================================= -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -125,8 +125,8 @@
 			<version>1.11.3</version>
 			<scope>test</scope>
 		</dependency>
-<!--============================================================= -->
-<!--============================================================= -->
+		<!--============================================================= -->
+		<!--============================================================= -->
 
 		<dependency>
 			<groupId>org.modelmapper</groupId>
@@ -162,12 +162,12 @@
 			<artifactId>ical4j</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-mail</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -176,22 +176,22 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-compiler-plugin</artifactId>
-	            <configuration>
-	                <source>1.8</source>
-	                <target>1.8</target>
-	                <annotationProcessorPaths>
-	                    <path>
-	                        <groupId>org.mapstruct</groupId>
-	                        <artifactId>mapstruct-processor</artifactId>
-	                        <version>${org.mapstruct.version}</version>
-	                    </path>
-	                </annotationProcessorPaths>
-	            </configuration>
-	        </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.jacoco</groupId>
