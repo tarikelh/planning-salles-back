@@ -19,8 +19,7 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
-import fr.dawan.calendarproject.mapper.DtoMapper;
-import fr.dawan.calendarproject.mapper.DtoMapperImpl;
+import fr.dawan.calendarproject.mapper.SkillMapper;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -38,7 +37,8 @@ public class SkillServiceImpl implements SkillService {
 	@Autowired
 	LocationRepository locationRepository;
 
-	private DtoMapper mapper = new DtoMapperImpl();
+	@Autowired
+	private SkillMapper skillMapper;
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills() {
@@ -46,7 +46,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(mapper.SkillToAdvancedSkillDto(s));
+			result.add(skillMapper.skillToAdvancedSkillDto(s));
 		}
 
 		return result;
@@ -58,7 +58,7 @@ public class SkillServiceImpl implements SkillService {
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
-			result.add(mapper.SkillToAdvancedSkillDto(s));
+			result.add(skillMapper.skillToAdvancedSkillDto(s));
 		}
 		return result;
 	}
@@ -66,7 +66,7 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		return mapper.SkillToAdvancedSkillDto(skill.get());
+		return skillMapper.skillToAdvancedSkillDto(skill.get());
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class SkillServiceImpl implements SkillService {
 		s.setUsers(usersList);
 
 		s = skillRepository.saveAndFlush(s);
-		return mapper.SkillToAdvancedSkillDto(s);
+		return skillMapper.skillToAdvancedSkillDto(s);
 	}
 
 	@Override
@@ -117,5 +117,11 @@ public class SkillServiceImpl implements SkillService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public Skill getEntityById(long id) {
+		Optional<Skill> skill = skillRepository.findById(id);
+		return skill.get();
 	}
 }

@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CourseDto;
-import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
-import fr.dawan.calendarproject.mapper.DtoMapper;
-import fr.dawan.calendarproject.mapper.DtoMapperImpl;
+import fr.dawan.calendarproject.mapper.CourseMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 
 @Service
@@ -29,7 +27,8 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	CourseRepository courseRepository;
 
-	private DtoMapper mapper = new DtoMapperImpl();
+	@Autowired
+	private CourseMapper courseMapper;
 
 	@Override
 	public List<CourseDto> getAllCourses() {
@@ -38,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
 		// Solution 1 à la mano - conversion vers Dto
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
-			result.add(mapper.CourseToCourseDto(c));
+			result.add(courseMapper.courseToCourseDto(c));
 		}
 
 		return result;
@@ -49,7 +48,7 @@ public class CourseServiceImpl implements CourseService {
 		List<Course> courses = courseRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
-			result.add(mapper.CourseToCourseDto(c));
+			result.add(courseMapper.courseToCourseDto(c));
 		}
 		return result;
 	}
@@ -58,7 +57,7 @@ public class CourseServiceImpl implements CourseService {
 	public CourseDto getById(long id) {
 		Optional<Course> c = courseRepository.findById(id);
 		if (c.isPresent())
-			return mapper.CourseToCourseDto(c.get());
+			return courseMapper.courseToCourseDto(c.get());
 		return null;
 	}
 
@@ -74,10 +73,10 @@ public class CourseServiceImpl implements CourseService {
 		if (courseDto.getId() > 0 && !courseRepository.findById(courseDto.getId()).isPresent())
 			return null;
 
-		Course c = DtoTools.convert(courseDto, Course.class);
+		Course c = courseMapper.courseDtoToCouse(courseDto);
 
 		c = courseRepository.saveAndFlush(c);
-		return mapper.CourseToCourseDto(c);
+		return courseMapper.courseToCourseDto(c);
 	}
 
 	@Override

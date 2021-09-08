@@ -4,11 +4,10 @@ import org.mapstruct.Mapper;
 
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
-import fr.dawan.calendarproject.services.CourseServiceImpl;
 
-@Mapper(componentModel = "spring", uses = { CourseServiceImpl.class })
+@Mapper(componentModel = "spring")
 public interface CourseMapper {
 	CourseDto courseToCourseDto(Course course);
-	
+
 	Course courseDtoToCouse(CourseDto courseDto);
 }
