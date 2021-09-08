@@ -19,6 +19,7 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
+import fr.dawan.calendarproject.mapper.InterventionMementoMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionMementoRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -48,7 +49,11 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Autowired
 	private CourseRepository courseRepository;
 
+	@Autowired
 	private InterventionMapper InterventionMapper;
+
+	@Autowired
+	private InterventionMementoMapper InterventionMementoMapper;
 
 	private String messageAction = null;
 
@@ -63,7 +68,8 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	public void addMemento(String email, Intervention intervention) throws Exception {
 
 		InterventionMemento memento = new InterventionMemento();
-		memento.setState(InterventionMapper.interventionToInterventionMementoDto(intervention));
+		InterventionMementoDto state = InterventionMementoMapper.interventionToInterventionMementoDto(intervention);
+		memento.setState(state);
 
 		if (intMementoRepository.countByInterventionId(memento.getState().getInterventionId()) != 0) {
 			if (interventionRepository.existsById(memento.getState().getInterventionId())) {
@@ -91,7 +97,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
-		Intervention intToRestore = InterventionMapper.interventionMementoDtoToIntervention(iMem.getState());
+		Intervention intToRestore = InterventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
 
 		newIMem.setId(0);

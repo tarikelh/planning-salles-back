@@ -19,13 +19,13 @@ public interface InterventionCaretaker {
 	List<InterventionMemento> getAllMemento(int page, int size);
 
 	List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd);
-	
+
 	InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException;
 
 	void serializeInterventionMementosAsCSV() throws Exception;
-	
+
 	void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
-	
+
 	CountDto count();
 
 }
