@@ -7,8 +7,6 @@ import fr.dawan.calendarproject.dto.InterventionMailingListDto;
 
 public interface EmailService {
 
-	void sendCalendarToAttendees(InterventionMailingListDto mailingList);
-	void sendCalendarToTrainer(long userId);
 	void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd) throws Exception;
 }
 

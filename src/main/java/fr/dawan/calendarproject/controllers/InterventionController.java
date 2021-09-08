@@ -174,30 +174,6 @@ public class InterventionController {
 					.body("Intervention with Id " + intervention.getId() + " Not Found");
 	}
 
-//	// Search
-//	@GetMapping(value = "/search", produces = "application/json")
-//	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
-//		if (!formation.isEmpty()) {
-//			if (StringUtils.isNumeric(formation))
-//				return interventionService.getByCourseId(Long.parseLong(formation));
-//			else
-//				return interventionService.getByCourseTitle(formation);
-//		}
-//		return null;
-//	}
-//	
-//	@GetMapping(value = "/interval/{userId}", produces="application/json")
-//	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
-//			@RequestParam("start") String start, 
-//			@RequestParam("end") String end) {
-//		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
-//	}
-//	
-//	@GetMapping(value = "/interval", produces="application/json")
-//	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, @RequestParam("end") String end) {
-//		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
-//	}
-	
 	@GetMapping(value = "/ical/{userId}")
 	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId")long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
@@ -233,27 +209,14 @@ public class InterventionController {
 	
 	//@RequestBody int[] usersId,
 	@PostMapping(value = "/email/employees", produces = "application/json")
-	public void sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
-		System.out.println("inside sendCalendar");
+	public ResponseEntity<?> sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
 		try {
 			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(), LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
 		}
 	}
-
-	
-	@GetMapping(value = "/email/attendees", produces = "application/json")
-	public void sendCalendar(@RequestBody InterventionMailingListDto mailingList) {
-		emailService.sendCalendarToAttendees(mailingList);
-	}
-	
-	@GetMapping(value = "/email/trainer/{tainerId}", produces = "application/json")
-	public void sendCalendarToTrainer(@PathVariable("trainerId") long trainerId) {
-		emailService.sendCalendarToTrainer(trainerId);
-	}
-
 
 	
 }
