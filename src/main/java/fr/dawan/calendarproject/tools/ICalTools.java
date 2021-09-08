@@ -22,6 +22,7 @@ import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.Cn;
@@ -38,7 +39,6 @@ import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.FixedUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 
 
@@ -72,7 +72,7 @@ public class ICalTools {
 		event.getProperties().add(tz.getTimeZoneId());
 
 		try {
-			event.getProperties().add(generateUID("uidGen"));
+			event.getProperties().add(generateUID());
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -101,13 +101,13 @@ public class ICalTools {
 		return new Date(calDate.getTime());
 	}
 
-	public static Uid generateUID(String pid) throws SocketException {
-		UidGenerator ug = new FixedUidGenerator(pid);
+	public static Uid generateUID() throws SocketException {
+		UidGenerator ug = new UidGenerator("uidGen");
 		return ug.generateUid();
 	}
 
 	public static ByteArrayResource generateICSFile(Calendar calendar, String fileName, File f)
-			throws IOException {
+			throws IOException, ValidationException {
 		FileOutputStream stream = new FileOutputStream(fileName);
 		Path path = Paths.get(f.getAbsolutePath());
 
@@ -122,5 +122,4 @@ public class ICalTools {
 		TimeZone timeZone = registry.getTimeZone(timezone);
 		return timeZone.getVTimeZone();
 	}
-	
 }

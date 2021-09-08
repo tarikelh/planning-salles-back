@@ -28,6 +28,7 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VTimeZone;
 
 @Service
@@ -78,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	private MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
-			throws MessagingException, IOException {
+			throws Exception {
 
 		MimeMessage message = emailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -102,7 +103,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	private MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename)
-			throws IOException, MessagingException {
+			throws Exception {
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		CalendarOutputter outputter = new CalendarOutputter();
