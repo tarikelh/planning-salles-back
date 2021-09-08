@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.tools;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -11,6 +12,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
+	
+	@Value("${vue.baseurl}")
+	private String vueUrl;
     
 	@Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -27,20 +31,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     	//registry.addEndpoint("/ws");
         registry.addEndpoint("/ws")
             // Allow the origin http://localhost:8080 to send messages to us. (Base URL of the client)
-            .setAllowedOrigins("http://localhost:8080")
+            .setAllowedOrigins(vueUrl)
             // Enable SockJS fallback options
             .withSockJS();
     }
-    
-    // Configuration size of message buffer sizes
-    /*
-    @Bean
-    public ServletServerContainerFactoryBean createWebSocketContainer() {
-        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(8192);
-        container.setMaxBinaryMessageBufferSize(8192);
-        return container;
-    }
-    */
 
 }

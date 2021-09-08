@@ -236,8 +236,8 @@ public class Intervention implements Cloneable {
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
 	
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public String toContentString() {
+		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString() + " avec " + user.getFullname();
 	}
+
 }

@@ -1,6 +1,9 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,6 +12,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.InterventionMailingListDto;
+import fr.dawan.calendarproject.dto.MailingListDto;
+import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
@@ -37,6 +45,10 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
+	
+
+	@Autowired
+	private EmailService emailService;
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -103,30 +115,6 @@ public class InterventionController {
 					.body("Intervention with Id " + intervention.getId() + " Not Found");
 	}
 
-//	// Search
-//	@GetMapping(value = "/search", produces = "application/json")
-//	public List<InterventionDto> searchByCourse(@RequestParam("formation") String formation) {
-//		if (!formation.isEmpty()) {
-//			if (StringUtils.isNumeric(formation))
-//				return interventionService.getByCourseId(Long.parseLong(formation));
-//			else
-//				return interventionService.getByCourseTitle(formation);
-//		}
-//		return null;
-//	}
-//	
-//	@GetMapping(value = "/interval/{userId}", produces="application/json")
-//	public List<InterventionDto> getFromUserByDateRange(@PathVariable("userId") long userId, 
-//			@RequestParam("start") String start, 
-//			@RequestParam("end") String end) {
-//		return interventionService.getFromUserByDateRange(userId, LocalDate.parse(start), LocalDate.parse(end));
-//	}
-//	
-//	@GetMapping(value = "/interval", produces="application/json")
-//	public List<InterventionDto> getAllByDateRange(@RequestParam("start") String start, @RequestParam("end") String end) {
-//		return interventionService.getAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
-//	}
-	
 	@GetMapping(value = "/ical/{userId}")
 	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId")long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
@@ -159,5 +147,17 @@ public class InterventionController {
 	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
 		return interventionService.count(type);
 	}
+	
+	//@RequestBody int[] usersId,
+	@PostMapping(value = "/email/employees", produces = "application/json")
+	public ResponseEntity<?> sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
+		try {
+			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(), LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
+		}
+	}
+
 	
 }
