@@ -11,14 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.mapper.CourseMapper;
-import fr.dawan.calendarproject.services.CourseService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class CourseMapperTest {
-
-	@Autowired
-	CourseService courseService;
 
 	@Autowired
 	CourseMapper courseMapper;

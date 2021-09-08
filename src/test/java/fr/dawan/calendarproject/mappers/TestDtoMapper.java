@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
@@ -26,6 +27,7 @@ import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.DtoMapper;
 import fr.dawan.calendarproject.mapper.DtoMapperImpl;
+import fr.dawan.calendarproject.services.UserService;
 
 /**
  * @author Mokhtari Ahmed-Reda
@@ -42,6 +44,9 @@ class TestDtoMapper {
 	private Set<User> users = new HashSet<>();
 	private User user = new User();
 	private DtoMapper mapper = new DtoMapperImpl();
+
+	@MockBean
+	private UserService userService;
 
 	@BeforeEach
 	public void before() throws Exception {
@@ -82,6 +87,9 @@ class TestDtoMapper {
 
 	@Test
 	void shouldMap_UserEntity_To_AdvancedUserDto() {
+
+//		when(userService.getById(any(Long.class))).thenReturn(users);
+
 		// Prépa
 		List<Long> skillsIds = new ArrayList<Long>();
 		for (Skill skill : user.getSkills()) {
