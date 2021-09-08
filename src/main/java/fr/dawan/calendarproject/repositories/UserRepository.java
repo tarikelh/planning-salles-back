@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query(value = "FROM User u LEFT JOIN FETCH u.location WHERE u.type = :type")
 	List<User> findAllByType(@Param("type") UserType type);
+	
 }

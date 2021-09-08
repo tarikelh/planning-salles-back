@@ -17,5 +17,4 @@ public interface InterventionMementoRepository extends JpaRepository<Interventio
 	// get the last intervention memento
 	@Query(nativeQuery = true, value = "SELECT * FROM Intervention_Memento i WHERE i.intervention_id = :interventionId ORDER BY i.date_created_state DESC LIMIT 1")
 	InterventionMemento getLastInterventionMemento(@Param("interventionId") long interventionId);
-	
 }
