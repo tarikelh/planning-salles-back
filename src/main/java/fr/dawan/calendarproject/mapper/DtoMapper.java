@@ -56,54 +56,35 @@ public interface DtoMapper {
 		return advSkill;
 	}
 
-	@Mapping(source = ".", target = ".")
 	LocationDto LocationToLocationDto(Location location);
 
-	@Mapping(source = ".", target = ".")
 	CourseDto CourseToCourseDto(Course course);
 
-	@Mapping(source = ".", target = ".")
 	SkillDto SkillToSkillDto(Skill skill);
 
-	@Mappings({
-		@Mapping(target = "courseId", source = "course.id"),
-		@Mapping(target = "locationId", source = "location.id"),
-		@Mapping(target = "userId", source = "user.id"),
-		@Mapping(target = "masterInterventionId", source = "masterIntervention.id"),
-	})
+	@Mappings({ @Mapping(target = "courseId", source = "course.id"),
+			@Mapping(target = "locationId", source = "location.id"), @Mapping(target = "userId", source = "user.id"),
+			@Mapping(target = "masterInterventionId", source = "masterIntervention.id"), })
 	InterventionDto interventionToInterventionDto(Intervention intervention);
-	
-	@Mappings({
-		@Mapping(target = "course.id", source = "courseId"),
-		@Mapping(target = "location.id", source = "locationId"),
-		@Mapping(target = "user.id", source = "userId"),
-		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-		@Mapping(target = "enumType", source = "type")
-	})
+
+	@Mappings({ @Mapping(target = "course.id", source = "courseId"),
+			@Mapping(target = "location.id", source = "locationId"), @Mapping(target = "user.id", source = "userId"),
+			@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
+			@Mapping(target = "enumType", source = "type") })
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
-	
-	@Mappings({
-		@Mapping(target = "id", source = "interventionId"),
-		@Mapping(target = "course.id", source = "courseId"),
-		@Mapping(target = "location.id", source = "locationId"),
-		@Mapping(target = "user.id", source = "userId"),
-		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-		@Mapping(target = "enumType", source = "type"),
-		@Mapping(target = "version", ignore = true)
-	})
+
+	@Mappings({ @Mapping(target = "id", source = "interventionId"), @Mapping(target = "course.id", source = "courseId"),
+			@Mapping(target = "location.id", source = "locationId"), @Mapping(target = "user.id", source = "userId"),
+			@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
+			@Mapping(target = "enumType", source = "type"), @Mapping(target = "version", ignore = true) })
 	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
-	
-	@Mappings({
-		@Mapping(target = "interventionId", source = "id"),
-		@Mapping(target = "courseId", source = "course.id"),
-		@Mapping(target = "locationId", source = "location.id"),
-		@Mapping(target = "userId", source = "user.id"),
-		@Mapping(target = "masterInterventionId", source = "masterIntervention.id"),
-		@Mapping(target = "locationCity", source = "location.city"),
-		@Mapping(target = "courseTitle", source = "course.title"),
-		@Mapping(target = "userFullName", source = "user.fullname"),
-		@Mapping(target = "userEmail", source = "user.email"),
-		@Mapping(target = "type", source = "type")
-	})
+
+	@Mappings({ @Mapping(target = "interventionId", source = "id"), @Mapping(target = "courseId", source = "course.id"),
+			@Mapping(target = "locationId", source = "location.id"), @Mapping(target = "userId", source = "user.id"),
+			@Mapping(target = "masterInterventionId", source = "masterIntervention.id"),
+			@Mapping(target = "locationCity", source = "location.city"),
+			@Mapping(target = "courseTitle", source = "course.title"),
+			@Mapping(target = "userFullName", source = "user.fullname"),
+			@Mapping(target = "userEmail", source = "user.email"), @Mapping(target = "type", source = "type") })
 	InterventionMementoDto interventionToInterventionMementoDto(Intervention intervention);
 }

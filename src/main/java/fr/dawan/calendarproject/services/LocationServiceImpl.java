@@ -18,8 +18,7 @@ import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
-import fr.dawan.calendarproject.mapper.DtoMapper;
-import fr.dawan.calendarproject.mapper.DtoMapperImpl;
+import fr.dawan.calendarproject.mapper.LocationMapper;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 
 @Service
@@ -29,7 +28,8 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private LocationRepository locationRepository;
 
-	private DtoMapper mapper = new DtoMapperImpl();
+	@Autowired
+	private LocationMapper locationMapper;
 
 	@Override
 	public List<LocationDto> getAllLocations() {
@@ -37,7 +37,7 @@ public class LocationServiceImpl implements LocationService {
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
-			result.add(mapper.LocationToLocationDto(l));
+			result.add(locationMapper.locationToLocationDto(l));
 		}
 		return result;
 	}
@@ -48,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
 				.collect(Collectors.toList());
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
-			result.add(mapper.LocationToLocationDto(l));
+			result.add(locationMapper.locationToLocationDto(l));
 		}
 		return result;
 	}
@@ -57,7 +57,7 @@ public class LocationServiceImpl implements LocationService {
 	public LocationDto getById(long id) {
 		Optional<Location> l = locationRepository.findById(id);
 		if (l.isPresent())
-			return mapper.LocationToLocationDto(l.get());
+			return locationMapper.locationToLocationDto(l.get());
 		return null;
 	}
 
@@ -75,7 +75,7 @@ public class LocationServiceImpl implements LocationService {
 		Location l = DtoTools.convert(locationDto, Location.class);
 
 		l = locationRepository.saveAndFlush(l);
-		return mapper.LocationToLocationDto(l);
+		return locationMapper.locationToLocationDto(l);
 	}
 
 	@Override

@@ -4,9 +4,8 @@ import org.mapstruct.Mapper;
 
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.services.LocationServiceImpl;
 
-@Mapper(componentModel = "spring", uses = { LocationServiceImpl.class })
+@Mapper(componentModel = "spring")
 public interface LocationMapper {
 
 	Location locationDtoToLocation(LocationDto location);
