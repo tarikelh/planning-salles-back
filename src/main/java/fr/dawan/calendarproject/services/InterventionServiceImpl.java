@@ -56,10 +56,10 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionCaretaker caretaker;
-	
+
 	@Autowired
 	private InterventionMapper interventionMapper;
-	
+
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
@@ -68,7 +68,7 @@ public class InterventionServiceImpl implements InterventionService {
 		for (Intervention intervention : interventions) {
 			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
 		}
-		
+
 		return interventionsDto;
 	}
 
@@ -95,9 +95,9 @@ public class InterventionServiceImpl implements InterventionService {
 	public void deleteById(long id, String email) {
 		// Memento creation and save
 		Intervention intToDelete = interventionRepository.findById(id).get();
-		
+
 		interventionRepository.deleteById(id);
-		
+
 		try {
 			caretaker.addMemento(email, intToDelete);
 		} catch (Exception e) {
@@ -110,7 +110,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception {
 		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
 			return null;
-		
+
 		checkIntegrity(intervention);
 		Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
 
@@ -123,17 +123,19 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setCourse(null);
 			interv.setUser(null);
 		}
-		
-		if (intervention.getMasterInterventionId() > 0) 
+
+		if (intervention.getMasterInterventionId() > 0)
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
-		
+		else
+			interv.setMasterIntervention(null);
+
 		interv = interventionRepository.saveAndFlush(interv);
 
 		caretaker.addMemento(email, interv);
-		
+
 		return interventionMapper.interventionToInterventionDto(interv);
 	}
-	
+
 	// Search
 	@Override
 	public List<InterventionDto> getByCourseId(long id) {
@@ -165,7 +167,7 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 		return iDtos;
 	}
-	
+
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
 		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
@@ -176,11 +178,11 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public CountDto count(String type) {
-		if(UserType.contains(type)) {
+		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
 		}
-		
+
 		return null; // Exception
 	}
 
@@ -188,7 +190,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getMasterIntervention() {
 		List<Intervention> interventions = interventionRepository.getMasterIntervention();
 		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
-		
+
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 
@@ -197,9 +199,10 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
-		if(UserType.contains(type)) {
+		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
-			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType, dateStart, dateEnd);
+			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
+					dateStart, dateEnd);
 			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 			for (Intervention i : interventions)
 				iDtos.add(interventionMapper.interventionToInterventionDto(i));
@@ -214,21 +217,21 @@ public class InterventionServiceImpl implements InterventionService {
 	public Calendar exportCalendarAsICal(long userId) {
 
 		List<Intervention> lst = interventionRepository.findByUserId(userId);
-		
-		if(lst == null || lst.isEmpty())
+
+		if (lst == null || lst.isEmpty())
 			return null;
-		
+
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(new ProdId("-//Dawan Calendar//iCal4j 1.0//FR"));
 		calendar.getProperties().add(Version.VERSION_2_0);
 		calendar.getProperties().add(CalScale.GREGORIAN);
 		String calName = lst.get(0).getUser().getLastName() + lst.get(0).getUser().getFirstName();
 		calendar.getProperties().add(new XProperty("X-CALNAME", calName));
-		
+
 		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
 		VTimeZone tz = timeZone.getVTimeZone();
-		
+
 		for (Intervention intervention : lst) {
 			VEvent event = ICalTools.createVEvent(intervention, tz);
 			calendar.getComponents().add(event);
@@ -254,19 +257,19 @@ public class InterventionServiceImpl implements InterventionService {
 			String message = "Type: " + i.getType().toString() + " is not a valid type.";
 			errors.add(new APIError(403, instanceClass, "UnknownInterventionType", message, path));
 		}
-		
+
 		if (i.isMaster()) {
-			if(i.getLocationId() != 0) {
+			if (i.getLocationId() != 0) {
 				String message = "Location id should be 0 for a master event.";
 				errors.add(new APIError(407, instanceClass, "MasterEventLocation", message, path));
 			}
-			
-			if(i.getCourseId() != 0) {
+
+			if (i.getCourseId() != 0) {
 				String message = "Course id should be 0 for a master event.";
 				errors.add(new APIError(407, instanceClass, "MasterEventCourse", message, path));
 			}
-			
-			if(i.getUserId() != 0) {
+
+			if (i.getUserId() != 0) {
 				String message = "User id should be 0 for a master event.";
 				errors.add(new APIError(407, instanceClass, "MasterEventUser", message, path));
 			}
@@ -275,23 +278,23 @@ public class InterventionServiceImpl implements InterventionService {
 				String message = "Location with id: " + i.getLocationId() + " does not exist.";
 				errors.add(new APIError(404, instanceClass, "LocationNotFound", message, path));
 			}
-			
+
 			if (!courseRepository.findById(i.getCourseId()).isPresent()) {
 				String message = "Course with id: " + i.getCourseId() + " does not exist.";
 				errors.add(new APIError(404, instanceClass, "CourseNotFound", message, path));
 			}
-			
+
 			if (!userRepository.findById(i.getUserId()).isPresent()) {
 				String message = "User with id: " + i.getUserId() + " does not exist.";
 				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 			}
 		}
 
-		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(), i.getDateEnd())) {
+		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(),
+				i.getDateEnd())) {
 			if (interv.getId() != i.getId()) {
-				String message = "Intervention dates overlap the intervention with id: "+ interv.getId() + ".";
-				errors.add(new APIError(404, instanceClass, "DateOverlap",
-						message, path));
+				String message = "Intervention dates overlap the intervention with id: " + interv.getId() + ".";
+				errors.add(new APIError(404, instanceClass, "DateOverlap", message, path));
 			}
 		}
 
