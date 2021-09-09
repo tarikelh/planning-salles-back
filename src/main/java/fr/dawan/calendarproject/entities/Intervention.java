@@ -53,10 +53,10 @@ public class Intervention implements Cloneable {
 
 	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeStart;
-	
+
 	@Column(nullable = true, columnDefinition = "TIME")
 	private LocalTime timeEnd;
-	
+
 	@ManyToOne
 	private Intervention masterIntervention;
 
@@ -69,8 +69,8 @@ public class Intervention implements Cloneable {
 	}
 
 	public Intervention(long id, String comment, Location location, Course course, User user, InterventionStatus type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime startTime, LocalTime endTime, boolean isMaster,
-			Intervention masterIntervention, int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd,
+			boolean isMaster, Intervention masterIntervention, int version) {
 		setId(id);
 		setComment(comment);
 		setLocation(location);
@@ -198,15 +198,15 @@ public class Intervention implements Cloneable {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+
 	public void setEnumType(String type) {
 		this.type = InterventionStatus.valueOf(type);
 	}
-	
+
 	public String getEnumType() {
 		return this.type.toString();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -235,9 +235,10 @@ public class Intervention implements Cloneable {
 				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
 				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
 	}
-	
+
 	public String toContentString() {
-		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString() + " avec " + user.getFullname();
+		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString()
+				+ " avec " + user.getFullname();
 	}
 
 }
