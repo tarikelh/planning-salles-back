@@ -223,9 +223,17 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(";");
 		builder.append(locationId);
 		builder.append(";");
+		builder.append(locationCity); 
+		builder.append(";");
 		builder.append(courseId);
 		builder.append(";");
+		builder.append(courseTitle);
+		builder.append(";");
 		builder.append(userId);
+		builder.append(";");
+		builder.append(userEmail);
+		builder.append(";");
+		builder.append(userFullName);
 		builder.append(";");
 		builder.append(type);
 		builder.append(";");
@@ -235,9 +243,14 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(";");
 		builder.append(dateEnd);
 		builder.append(";");
+		builder.append(timeStart);
+		builder.append(";");
+		builder.append(timeEnd);
+		builder.append(";");
 		builder.append(masterInterventionId);
 		builder.append(";");
 		builder.append(isMaster);
 		return builder.toString();
 	}
+
 }

@@ -85,21 +85,15 @@ public class InterventionMemento implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InterventionMemento [id=");
 		builder.append(id);
 		builder.append(";");
-		builder.append("state=");
 		builder.append(state);
 		builder.append(";");
-		builder.append("dateCreatedState=");
 		builder.append(dateCreatedState);
 		builder.append(";");
-		builder.append("version=");
 		builder.append(version);
 		builder.append(";");
-		builder.append("mementoMessage=");
 		builder.append(mementoMessage);
-		builder.append("]");
 		return builder.toString();
 	}
 	
