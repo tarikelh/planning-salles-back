@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -72,7 +71,7 @@ public class LocationServiceImpl implements LocationService {
 
 		if (locationDto.getId() > 0 && !locationRepository.existsById(locationDto.getId()))
 			return null;
-		Location l = DtoTools.convert(locationDto, Location.class);
+		Location l = locationMapper.locationDtoToLocation(locationDto);
 
 		l = locationRepository.saveAndFlush(l);
 		return locationMapper.locationToLocationDto(l);

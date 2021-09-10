@@ -21,4 +21,7 @@ public interface SkillMapper {
 
 	@Mapping(source="users", target ="usersId")
 	AdvancedSkillDto skillToAdvancedSkillDto(Skill skill);
+	
+	@Mapping(source="usersId", target ="users")
+	Skill AdvancedSkillDtoToSkill(AdvancedSkillDto advSkill);
 }
