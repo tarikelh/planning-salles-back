@@ -21,11 +21,11 @@ public interface UserService {
 
 	AdvancedUserDto findByEmail(String email);
 
-	long count();
-
 	boolean checkIntegrity(AdvancedUserDto u);
 
 	AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user);
 	
 	User getEntityById(long id);
+	
+	Long getLongId(User user);
 }

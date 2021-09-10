@@ -17,10 +17,9 @@ public interface SkillService {
 
 	AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill);
 
-	long count();
-
 	boolean checkIntegrity(AdvancedSkillDto s);
 	
 	Skill getEntityById(long id);
 	
+	Long getLongId(Skill skill);
 }

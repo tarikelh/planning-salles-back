@@ -15,8 +15,6 @@ public interface SkillMapper {
 
 	List<Long> setSkillsToListLong(Set<Skill> skills);
 
-	Long skillToLong(Skill skill);
-
 	Set<Skill> listLongToSetSkills(List<Long> ids);
 
 	@Mapping(source="users", target ="usersId")

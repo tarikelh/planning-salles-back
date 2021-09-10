@@ -19,8 +19,6 @@ public interface UserMapper {
 
 	List<Long> setUsersToListLong(Set<User> users);
 
-	Long userToLong(User user);
-
 	Set<User> listLongToSetUsers(List<Long> ids);
 
 	@Mapping(source = "skills", target = "skillsId")

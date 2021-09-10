@@ -169,11 +169,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	@Override
-	public long count() {
-		return userRepository.count();
-	}
-
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = u.getClass().toString();
@@ -234,5 +229,10 @@ public class UserServiceImpl implements UserService {
 		Optional<User> user = userRepository.findById(id);
 		return user.get();
 
+	}
+
+	@Override
+	public Long getLongId(User user) {
+		return user.getId();
 	}
 }

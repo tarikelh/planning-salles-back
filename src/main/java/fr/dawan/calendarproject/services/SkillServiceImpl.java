@@ -94,11 +94,6 @@ public class SkillServiceImpl implements SkillService {
 		return skillMapper.skillToAdvancedSkillDto(s);
 	}
 
-	@Override
-	public long count() {
-		return skillRepository.count();
-	}
-
 	public boolean checkIntegrity(AdvancedSkillDto s) {
 		Set<APIError> errors = new HashSet<APIError>();
 		String instanceClass = s.getClass().toString();
@@ -122,5 +117,10 @@ public class SkillServiceImpl implements SkillService {
 	public Skill getEntityById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
 		return skill.get();
+	}
+
+	@Override
+	public Long getLongId(Skill skill) {
+		return skill.getId();	
 	}
 }
