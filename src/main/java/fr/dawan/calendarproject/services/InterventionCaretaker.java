@@ -29,6 +29,8 @@ public interface InterventionCaretaker {
 
 	CountDto count();
 	
-	List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd);
+	List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size);
+	
+	CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd);
 
 }

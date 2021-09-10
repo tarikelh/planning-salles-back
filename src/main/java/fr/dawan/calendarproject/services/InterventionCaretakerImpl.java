@@ -193,8 +193,12 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 	
 	@Override
-	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd) {
-		return intMementoRepository.filterByIntIdAndDates(interventionId, dateStart, dateEnd);
+	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size) {
+		return intMementoRepository.filterByIntIdAndDates(interventionId, dateStart, dateEnd, PageRequest.of(page, size));
 	}
 
+	@Override
+	public CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd) {
+		return new CountDto(intMementoRepository.countFilter(interventionId, dateStart, dateEnd));
+	}
 }
