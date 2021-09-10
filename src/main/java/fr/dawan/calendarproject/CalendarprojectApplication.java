@@ -26,10 +26,10 @@ public class CalendarprojectApplication {
 	@Autowired
 	private TokenInterceptor tokenInterceptor;
 	
-	@Bean
-	public DtoMapper dtoMapper() {
-		return new DtoMapperImpl();
-	}
+//	@Bean
+//	public DtoMapper dtoMapper() {
+//		return new DtoMapperImpl();
+//	}
 	
 	@Bean
 	public WebMvcConfigurer myMvcConfigurer() {
