@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.CountDto;
@@ -27,5 +28,9 @@ public interface InterventionCaretaker {
 	void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception;
 
 	CountDto count();
+	
+	List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size);
+	
+	CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd);
 
 }

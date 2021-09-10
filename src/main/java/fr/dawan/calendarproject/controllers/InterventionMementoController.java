@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -56,6 +57,31 @@ public class InterventionMementoController {
 	@GetMapping(value="/count")
 	public CountDto count() {
 		return caretaker.count();
+	}
+	
+	@GetMapping(value = "filter/{interventionId}")
+	public ResponseEntity<?> filterMemento(@PathVariable("interventionId") long interventionId, @RequestParam("start") String start, 
+			@RequestParam("end") String end, @RequestParam("page") int page, @RequestParam("size") int size) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		LocalDateTime dateTimeStart = LocalDateTime.parse(start, formatter);
+		LocalDateTime dateTimeEnd = LocalDateTime.parse(end, formatter);
+		List<InterventionMemento> iMem = caretaker.filterMemento(interventionId, dateTimeStart, dateTimeEnd, page, size);
+		
+		if (iMem.size() == 0) 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Intervention Memento Dto with id " + interventionId + " Not Found");
+			
+		return ResponseEntity.ok(iMem);
+	}
+	
+	@GetMapping(value="/count-filter")
+	public CountDto countFilter(@RequestParam("interventionId") long interventionId, @RequestParam("start") String start, 
+			@RequestParam("end") String end) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		LocalDateTime dateTimeStart = LocalDateTime.parse(start, formatter);
+		LocalDateTime dateTimeEnd = LocalDateTime.parse(end, formatter);
+		return caretaker.countFilter(interventionId, dateTimeStart, dateTimeEnd);
 	}
 	
 	@GetMapping(value="/restore/{id}")
