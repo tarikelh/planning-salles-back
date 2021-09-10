@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -189,6 +190,11 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public CountDto count() {
 		return new CountDto(intMementoRepository.count());
+	}
+	
+	@Override
+	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd) {
+		return intMementoRepository.filterByIntIdAndDates(interventionId, dateStart, dateEnd);
 	}
 
 }
