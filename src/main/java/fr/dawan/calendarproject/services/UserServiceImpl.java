@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
-import fr.dawan.calendarproject.dto.DtoTools;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -97,7 +96,7 @@ public class UserServiceImpl implements UserService {
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
 		checkIntegrity(user);
 
-		User u = DtoTools.convert(user, User.class);
+		User u = userMapper.advancedUserDtoToUser(user);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
 
@@ -130,7 +129,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user) {
-		User u = DtoTools.convert(user, User.class);
+		User u = userMapper.advancedUserDtoToUser(user);
 
 		Set<Skill> skillsList = new HashSet<Skill>();
 
