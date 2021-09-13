@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.services.EmailService;
@@ -150,6 +151,17 @@ public class InterventionController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
+		}
+	}
+	
+	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId ,@RequestBody List<DateRangeDto> dates) {
+		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
+		
+		if (iDtoList != null) {
+			return ResponseEntity.ok(iDtoList);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + interventionId + " Not Found");
 		}
 	}
 

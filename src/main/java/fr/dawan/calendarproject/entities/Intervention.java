@@ -233,4 +233,13 @@ public class Intervention implements Cloneable {
 				+ " avec " + user.getFullname();
 	}
 
+	@Override
+	public Intervention clone() {
+		try {
+			return (Intervention)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

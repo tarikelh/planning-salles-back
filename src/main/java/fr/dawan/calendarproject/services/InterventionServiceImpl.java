@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.enums.InterventionStatus;
@@ -304,5 +305,80 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates) {
+		Optional<Intervention> toSplit = interventionRepository.findById(interventionId);
+		List<Intervention> iList;
+		List<InterventionDto> iListDto;
+		Intervention masterIntervention;
+		
+		if (toSplit.isPresent()) {
+			iList = new ArrayList<Intervention>();
+			
+			for (DateRangeDto range : dates) {
+				 for (DateRangeDto rangeToCheck : dates) {
+					if(range != rangeToCheck && range.isOverlapping(rangeToCheck)) {
+						
+						Set<APIError> err = new HashSet<APIError>();
+						err.add(new APIError(400,
+								range.getClass().toString(),
+								"Dates Ovelaps",
+								"Intervention Splits Must Not Overlap.",
+								"/api/interventions"));
+						
+						throw new EntityFormatException(err);
+					}
+				}
+
+				Intervention newSplit = (Intervention) toSplit.get().clone();
+
+				if (dates.indexOf(range) != 0) {
+					newSplit.setId(0L);
+				}
+
+				newSplit.setDateStart(range.getStart());
+				newSplit.setDateEnd(range.getEnd());
+				
+				iList.add(newSplit);
+			}
+			
+			if (toSplit.get().getMasterIntervention() == null) {
+				masterIntervention = new Intervention();
+				masterIntervention.setMaster(true);
+				masterIntervention.setValidated(toSplit.get().isValidated());
+				masterIntervention.setComment(toSplit.get().getCourse().getTitle() + " - " + iList.size() + " Interventions.");
+				masterIntervention.setDateStart(dates.get(0).getStart());
+				masterIntervention.setDateEnd(dates.get(dates.size() - 1).getEnd());
+				
+				masterIntervention = interventionRepository.saveAndFlush(masterIntervention);
+			} else {
+				masterIntervention = toSplit.get().getMasterIntervention();				
+			}
+			
+			iList = interventionRepository.saveAll(iList);
+			
+			iList.add(0, masterIntervention);
+
+			iListDto = new ArrayList<InterventionDto>();
+
+			for (Intervention intervention : iList) {
+				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
+			}
+
+			return iListDto;
+		} else {
+			return null;
+		}
+		// TODO CHECK IF INTERVENTION EXISTS										===> OK
+		// TODO CHECK IF NO DATES OVERLAPS ELSE THROW								===> OK
+		// TODO CLONE INTERV dates.size() TIMES AND SET DATES FROM LIST TO INTERVS	===> OK
+		// TODO IF HAS MASTER INTERV DO NOTHING										===> OK
+		// TODO IS HAS NOT MASTER INTERV THEN CREATE IT								===> OK
+		// TODO ORDER DATE RANGES
+		// TODO ADD IDS IN DATERANGE DTO 
+		// TODO CHECK EVERY IDS
+		// TODO SET GOOD NAMES WITH COMMENT FOR MASTER INTERVENTION
 	}
 }
