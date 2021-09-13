@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -313,6 +314,14 @@ public class InterventionServiceImpl implements InterventionService {
 		List<InterventionDto> iListDto;
 		Intervention masterIntervention;
 		
+		dates.sort(new Comparator<DateRangeDto>() {
+
+			@Override
+			public int compare(DateRangeDto d1, DateRangeDto d2) {
+				return d1.getStart().compareTo(d2.getStart());
+			}
+		});
+		
 		if (toSplit.isPresent()) {
 			iList = new ArrayList<Intervention>();
 			
@@ -357,6 +366,7 @@ public class InterventionServiceImpl implements InterventionService {
 			}
 			
 			iList = interventionRepository.saveAll(iList);
+			interventionRepository.flush();
 			
 			iList.add(0, masterIntervention);
 
@@ -375,8 +385,8 @@ public class InterventionServiceImpl implements InterventionService {
 		// TODO CLONE INTERV dates.size() TIMES AND SET DATES FROM LIST TO INTERVS	===> OK
 		// TODO IF HAS MASTER INTERV DO NOTHING										===> OK
 		// TODO IS HAS NOT MASTER INTERV THEN CREATE IT								===> OK
-		// TODO ORDER DATE RANGES
-		// TODO ADD IDS IN DATERANGE DTO 
+		// TODO ORDER DATE RANGES													===> OK
+		// TODO ADD IDS IN DATERANGE DTO
 		// TODO CHECK EVERY IDS
 		// TODO SET GOOD NAMES WITH COMMENT FOR MASTER INTERVENTION
 	}
