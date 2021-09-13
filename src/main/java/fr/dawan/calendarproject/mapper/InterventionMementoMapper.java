@@ -16,7 +16,7 @@ public interface InterventionMementoMapper {
 			@Mapping(target = "locationCity", source = "location.city"),
 			@Mapping(target = "courseTitle", source = "course.title"),
 			@Mapping(target = "userFullName", source = "user.fullname"),
-			@Mapping(target = "userEmail", source = "user.email"), @Mapping(target = "type", source = "type") })
+			@Mapping(target = "type", source = "type") })
 	InterventionMementoDto interventionToInterventionMementoDto(Intervention intervention);
 
 	@Mappings({ @Mapping(target = "id", source = "interventionId"), @Mapping(target = "course.id", source = "courseId"),

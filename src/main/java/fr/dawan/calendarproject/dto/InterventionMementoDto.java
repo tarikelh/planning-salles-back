@@ -15,20 +15,14 @@ public class InterventionMementoDto implements Cloneable {
 
 	private long locationId;
 
-	@Transient
 	private String locationCity;
 
 	private long courseId;
 
-	@Transient
 	private String courseTitle;
 
 	private long userId;
 
-	@Transient
-	private String userEmail;
-
-	@Transient
 	private String userFullName;
 
 	private String type;
@@ -51,9 +45,10 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 	public InterventionMementoDto(long interventionId, String comment, long locationId, String locationCity,
-			long courseId, String courseTitle, long userId, String userEmail, String userFullName, String type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd,
-			long masterInterventionId, boolean isMaster) {
+			long courseId, String courseTitle, long userId, String userFullName, String type, boolean validated,
+			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId,
+			boolean isMaster) {
+		super();
 		this.interventionId = interventionId;
 		this.comment = comment;
 		this.locationId = locationId;
@@ -61,7 +56,6 @@ public class InterventionMementoDto implements Cloneable {
 		this.courseId = courseId;
 		this.courseTitle = courseTitle;
 		this.userId = userId;
-		this.userEmail = userEmail;
 		this.userFullName = userFullName;
 		this.type = type;
 		this.validated = validated;
@@ -119,14 +113,6 @@ public class InterventionMementoDto implements Cloneable {
 
 	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
-	}
-
-	public String getUserEmail() {
-		return userEmail;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
 	}
 
 	public String getUserFullName() {
@@ -230,8 +216,6 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(courseTitle);
 		builder.append(";");
 		builder.append(userId);
-		builder.append(";");
-		builder.append(userEmail);
 		builder.append(";");
 		builder.append(userFullName);
 		builder.append(";");

@@ -140,7 +140,6 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 			if (iMemDto.getUserId() > 0) {
 				User u = userRepository.findById(iMemDto.getUserId()).get();
-				iMemDto.setUserEmail(u.getEmail());
 				iMemDto.setUserFullName(u.getFullname());
 			}
 
@@ -200,5 +199,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd) {
 		return new CountDto(intMementoRepository.countFilter(interventionId, dateStart, dateEnd));
+	}
+
+	@Override
+	public InterventionMemento getLastBeforeMemento(long interventionId, long interventionMementoId) {
+		return intMementoRepository.getLastBeforeIntMemento(interventionId, interventionMementoId);
 	}
 }

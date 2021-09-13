@@ -32,5 +32,7 @@ public interface InterventionCaretaker {
 	List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size);
 	
 	CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd);
+	
+	InterventionMemento getLastBeforeMemento(long interventionId, long interventionMementoId);
 
 }
