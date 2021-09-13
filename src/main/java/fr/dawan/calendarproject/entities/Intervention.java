@@ -240,4 +240,13 @@ public class Intervention implements Cloneable {
 		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString() + " avec " + user.getFullname();
 	}
 
+	@Override
+	public Intervention clone() {
+		try {
+			return (Intervention)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

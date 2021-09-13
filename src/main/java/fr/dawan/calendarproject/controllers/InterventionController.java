@@ -1,9 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,8 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMailingListDto;
 import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
@@ -156,6 +151,17 @@ public class InterventionController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
+		}
+	}
+	
+	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId ,@RequestBody List<DateRangeDto> dates) {
+		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
+		
+		if (iDtoList != null) {
+			return ResponseEntity.ok(iDtoList);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + interventionId + " Not Found");
 		}
 	}
 
