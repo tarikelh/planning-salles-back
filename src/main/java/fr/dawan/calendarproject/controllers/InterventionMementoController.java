@@ -95,14 +95,21 @@ public class InterventionMementoController {
 		} catch (CloneNotSupportedException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured while restoring the memento!");
 		}
-		
 	}
 	
-//	@GetMapping(value = "/search")
-//	public ResponseEntity<?> searchMemento(@PathParam("id") long interventionId, @PathParam("dateStart") LocalDate dStart, @PathParam("dateEnd") LocalDate dEnd) {
-//		List<InterventionMemento> iMemList = caretaker.getMemento(interventionId, dStart, dEnd);
-//		return ResponseEntity.ok(null);
-//	}
+	// get the "last before" intervention memento to visualize modifications that were done
+	@GetMapping(value="/last-before")
+	public ResponseEntity<?> lastBeforeMemento(@RequestParam("interventionId") long interventionId, @RequestParam("interventionMementoId") long interventionMementoId) {
+		
+		InterventionMemento iMem = caretaker.getLastBeforeMemento(interventionId, interventionMementoId);
+		
+		if (iMem == null) 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Intervention Memento with id " + interventionId + " Not Found");
+			
+		return ResponseEntity.ok(iMem);
+	}
+	
 	
 	// Export Intervention Mementos as CSV
 	@GetMapping(value = "/export-csv", produces = "text/csv")
