@@ -14,6 +14,8 @@ import fr.dawan.calendarproject.entities.InterventionMemento;
 
 @Repository
 public interface InterventionMementoRepository extends JpaRepository<InterventionMemento, Long>{
+	
+	List<InterventionMemento> findAllByOrderByIdDesc(Pageable pageable);
 
 	@Query("SELECT COUNT(*) FROM InterventionMemento i WHERE i.state.interventionId = :interventionId")
 	long countByInterventionId(@Param("interventionId") long interventionId);

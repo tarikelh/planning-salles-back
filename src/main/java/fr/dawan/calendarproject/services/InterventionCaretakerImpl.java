@@ -101,8 +101,6 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		Intervention intToRestore = InterventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
 
-		newIMem.setId(0);
-
 		intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).get());
 		intToRestore.setLocation(locationRepository.findById(iMem.getState().getLocationId()).get());
 		intToRestore.setUser(userRepository.findById(iMem.getState().getUserId()).get());
@@ -114,11 +112,12 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 			intToRestore.setMasterIntervention(null);
 
 		interventionService.checkIntegrity(InterventionMapper.interventionToInterventionDto(intToRestore));
-
-		// récupérer intToRestore
+		
 		intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
 		interventionRepository.saveAndFlush(intToRestore);
 
+		newIMem.setId(0);
+		newIMem.setDateCreatedState(LocalDateTime.now());
 		newIMem.setMementoMessage(
 				new MementoMessageDto(newIMem.getState().getInterventionId(), " Has been restored ", email, ""));
 
@@ -159,7 +158,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 	@Override
 	public List<InterventionMemento> getAllMemento(int page, int size) {
-		return intMementoRepository.findAll(PageRequest.of(page, size)).get().collect(Collectors.toList());
+		return intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(page, size));
 	}
 
 	@Override
