@@ -32,12 +32,14 @@ public interface InterventionService {
 
 	Calendar exportCalendarAsICal(long userId);
 
-	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end);
+	List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end);
 
-	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end);
+	List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end);
 
 	boolean checkIntegrity(InterventionDto i);
 
 	List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates);
+
+	List<InterventionDto> getSubByMasterId(long id);
 
 }

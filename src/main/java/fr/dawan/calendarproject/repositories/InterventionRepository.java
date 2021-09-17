@@ -47,4 +47,6 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("SELECT COUNT(*) FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type")
 	long countByUserTypeNoMaster(@Param("type") UserType type);
 
+	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
+
 }

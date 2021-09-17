@@ -64,18 +64,29 @@ public class InterventionController {
 	}
 	
 	// GET - Masters Interventions
-	@GetMapping(value = "/masters",produces = "application/json")
+	@GetMapping(value = "/masters", produces = "application/json")
 	public List<InterventionDto> getMasterIntervention() {
 		return interventionService.getMasterIntervention();
 	}
 	
 	// GET - NO Masters Interventions && verify UserType && between two dates
-	@GetMapping(value = "/sub",produces = "application/json")
+	@GetMapping(value = "/sub", produces = "application/json")
 	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
 			@RequestParam("end") String end) {
 		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 
+	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
+	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
+	public ResponseEntity<?> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
+		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
+		
+		if (iList != null)
+			return ResponseEntity.ok(iList);
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no sub Intervention for master intervention id " + id + " or it does not exists.");
+	}
+	
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id, @RequestHeader(value = "Authorization") String token) {
