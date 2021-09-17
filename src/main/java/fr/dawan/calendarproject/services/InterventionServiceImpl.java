@@ -362,7 +362,7 @@ public class InterventionServiceImpl implements InterventionService {
 				
 				masterIntervention = interventionRepository.saveAndFlush(masterIntervention);
 			} else {
-				masterIntervention = toSplit.get().getMasterIntervention();				
+				masterIntervention = toSplit.get().getMasterIntervention();
 			}
 			
 			iList = interventionRepository.saveAll(iList);
@@ -389,5 +389,20 @@ public class InterventionServiceImpl implements InterventionService {
 		// TODO ADD IDS IN DATERANGE DTO
 		// TODO CHECK EVERY IDS
 		// TODO SET GOOD NAMES WITH COMMENT FOR MASTER INTERVENTION
+	}
+
+	@Override
+	public List<InterventionDto> getSubByMasterId(long id) {
+		List<Intervention> iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(id);
+		List<InterventionDto> iListDto = new ArrayList<InterventionDto>();
+		
+		for (Intervention intervention : iList) {
+			iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
+		}
+		
+		if(iListDto.isEmpty())
+			return null;
+		else
+			return iListDto;
 	}
 }
