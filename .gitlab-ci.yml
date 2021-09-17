@@ -1,0 +1,33 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  tags:
+    # - dind
+    - runner-java
+  script:
+    - echo "UP TO YOU"
+
+.archive:
+  image: lgatica/openssh-client
+  stage: deploy
+  tags:
+    # - dind
+    - runner-java
+  script:
+    - echo "$ARCHIVE_PKEY" > archive_pkey
+    - chmod 400 archive_pkey
+    - chmod 700 .
+    - echo "put -rp $ARCHIVE_PATH/$ARCHIVE_NAME $ARCHIVE_NAME" > archive_batch
+    - >
+      sftp
+      -i archive_pkey
+      -o UserKnownHostsFile=/dev/null
+      -o StrictHostKeyChecking=no
+      -b archive_batch
+      $ARCHIVE_USER@$ARCHIVE_HOST
+  only:
+    - dev
