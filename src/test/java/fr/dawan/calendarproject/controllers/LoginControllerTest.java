@@ -54,7 +54,7 @@ public class LoginControllerTest {
 				"dbalavoine@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);
 
-		login = new LoginDto("dbalavoine@dawan.fr", "testPassword");
+		login = new LoginDto("dbalavoine@dawan.fr", "testPassword", "token");
 
 	}
 	
