@@ -1,10 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.client.RestTemplate;
 
 import fr.dawan.calendarproject.dto.CaptchaResponse;
 import fr.dawan.calendarproject.dto.LoginDto;
@@ -36,36 +32,45 @@ public class LoginController {
 	private JwtTokenUtil jwtTokenUtil;
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
-	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) throws Exception {
+	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
 		
 		if(loginObj.getCaptchaToken() == "default") {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant ou non valide");
 		} else if (loginObj.getCaptchaToken() != ""){
-			HttpClient client = HttpClient.newHttpClient();
+			
+			RestTemplate restTemplate = new RestTemplate();
 			
 			String secret = "6Leav28cAAAAAGDXtovG7YrZIqgsAdddiZ9Lze4k";
 			String uri = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret 
 						 + "&response=" + loginObj.getCaptchaToken();
+			ResponseEntity<CaptchaResponse> res = null;
 			
-			HttpRequest request = HttpRequest.newBuilder()
-			          .uri(URI.create(uri))
-			          .build();
+			URI url;
 			
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			try {
+				url = new URI(uri);
+				res = restTemplate.getForEntity(url, CaptchaResponse.class);
 
-			CaptchaResponse res = new CaptchaResponse();
-			
-			if(response.body() != null) {
-				ObjectMapper mapper = new ObjectMapper();
-				res = mapper.readValue(response.body(), CaptchaResponse.class);
+				if(res.getStatusCode()==HttpStatus.OK) {
+					CaptchaResponse nbStr = res.getBody();
+				}
+				if(res != null) {
+					System.out.println(res);
+				}
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
 			}
-			
-			System.out.println(res);
 		}
 		
 		UserDto uDto = userService.findByEmail(loginObj.getEmail());
 		
-		String hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
+		String hashedPwd = null;
+		
+		try {
+			hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
 
