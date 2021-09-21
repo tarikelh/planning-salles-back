@@ -16,12 +16,14 @@ import fr.dawan.calendarproject.services.UserService;
 public interface InterventionMapper {
 
 	@Mappings({ @Mapping(target = "courseId", source = "course.id"),
-			@Mapping(target = "locationId", source = "location.id"), @Mapping(target = "userId", source = "user.id"),
+			@Mapping(target = "locationId", source = "location.id"), 
+			@Mapping(target = "userId", source = "user.id"),
 			@Mapping(target = "masterInterventionId", source = "masterIntervention.id"), })
 	InterventionDto interventionToInterventionDto(Intervention intervention);
 
 	@Mappings({ @Mapping(target = "course.id", source = "courseId"),
-			@Mapping(target = "location.id", source = "locationId"), @Mapping(target = "user.id", source = "userId"),
+			@Mapping(target = "location.id", source = "locationId"), 
+			@Mapping(target = "user.id", source = "userId"),
 			@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
 			@Mapping(target = "enumType", source = "type") })
 	Intervention interventionDtoToIntervention(InterventionDto intervention);

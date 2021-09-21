@@ -191,20 +191,20 @@ public class Intervention implements Cloneable {
 		this.isMaster = isMaster;
 	}
 
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
 	public void setEnumType(String type) {
 		this.type = InterventionStatus.valueOf(type);
 	}
 
 	public String getEnumType() {
 		return this.type.toString();
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	@Override
@@ -231,9 +231,37 @@ public class Intervention implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
-				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
-				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Intervention [id=");
+		builder.append(id);
+		builder.append(", comment=");
+		builder.append(comment);
+		builder.append(", location=");
+		builder.append(location);
+		builder.append(", course=");
+		builder.append(course);
+		builder.append(", user=");
+		builder.append(user);
+		builder.append(", type=");
+		builder.append(type);
+		builder.append(", validated=");
+		builder.append(validated);
+		builder.append(", dateStart=");
+		builder.append(dateStart);
+		builder.append(", dateEnd=");
+		builder.append(dateEnd);
+		builder.append(", timeStart=");
+		builder.append(timeStart);
+		builder.append(", timeEnd=");
+		builder.append(timeEnd);
+		builder.append(", masterIntervention=");
+		builder.append(masterIntervention);
+		builder.append(", isMaster=");
+		builder.append(isMaster);
+		builder.append(", version=");
+		builder.append(version);
+		builder.append("]");
+		return builder.toString();
 	}
 
 	public String toContentString() {

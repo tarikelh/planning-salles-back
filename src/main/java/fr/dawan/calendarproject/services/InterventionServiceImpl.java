@@ -289,10 +289,11 @@ public class InterventionServiceImpl implements InterventionService {
 				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 			}
 		}
-
+		
+		// Verify if an intervention from the same user and not a sibling (course different) is not overlapping with the new intervention
 		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(),
 				i.getDateEnd())) {
-			if (interv.getId() != i.getId()) {
+			if (interv.getId() != i.getId() && interv.getCourse().getId() != i.getCourseId()) {
 				String message = "Intervention dates overlap the intervention with id: " + interv.getId() + ".";
 				errors.add(new APIError(404, instanceClass, "DateOverlap", message, path));
 			}

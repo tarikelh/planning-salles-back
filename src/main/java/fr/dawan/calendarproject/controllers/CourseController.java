@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CourseDto;
+import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.services.CourseService;
 
 @RestController
@@ -28,6 +29,12 @@ public class CourseController {
 	@GetMapping(produces = "application/json")
 	public List<CourseDto> getAll() {
 		return courseService.getAllCourses();
+	}
+	
+	//GET all with pagination
+	@GetMapping(value = "/{page}/{size}", produces="application/json")
+	public List<CourseDto> getAllPagination(@PathVariable("page") int page, @PathVariable("size") int size) {
+		return courseService.getAllCourses(page, size);
 	}
 	
 	//GET - id

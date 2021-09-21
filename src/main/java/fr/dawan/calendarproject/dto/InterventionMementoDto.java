@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 
 @Embeddable
 public class InterventionMementoDto implements Cloneable {
@@ -48,7 +47,6 @@ public class InterventionMementoDto implements Cloneable {
 			long courseId, String courseTitle, long userId, String userFullName, String type, boolean validated,
 			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId,
 			boolean isMaster) {
-		super();
 		this.interventionId = interventionId;
 		this.comment = comment;
 		this.locationId = locationId;

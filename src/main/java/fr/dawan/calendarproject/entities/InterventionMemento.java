@@ -12,7 +12,7 @@ import javax.persistence.Version;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
 
-//Memento Class  >>  Previously OperationModif
+
 @Entity
 public class InterventionMemento implements Cloneable {
 	
