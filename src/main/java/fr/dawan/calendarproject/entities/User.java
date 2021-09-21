@@ -61,6 +61,7 @@ public class User {
 
 	// Constructor important pour la sérialization (exemple Jackson)
 	public User() {
+		setSkills(new HashSet<Skill>());
 	}
 
 	public User(long id, String firstName, String lastName, Location location, String email, String password,
@@ -169,19 +170,19 @@ public class User {
 	public String getEnumCompany() {
 		return this.company.toString();
 	}
-	
+
 	public void setEnumCompany(String company) {
 		this.company = UserCompany.valueOf(company);
 	}
-	
+
 	public String getEnumType() {
 		return this.type.toString();
 	}
-	
+
 	public void setEnumType(String type) {
 		this.type = UserType.valueOf(type);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
