@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.services.CourseService;
@@ -74,5 +75,16 @@ public class CourseController {
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		else
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course with id "+ course.getId() +" Not Found");
+	}
+	
+	//FETCH Dawan webservice
+	@GetMapping(value = "/dg2", produces="application/json")
+	public ResponseEntity<?> fetchAllDG2() {
+		try {
+			List<CourseDto> response = courseService.fetchAllDG2Courses();
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
+		}
 	}
 }
