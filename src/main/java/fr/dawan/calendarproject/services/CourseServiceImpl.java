@@ -24,6 +24,7 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
+import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.CourseMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
@@ -128,9 +129,14 @@ public class CourseServiceImpl implements CourseService {
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course c = courseMapper.courseDG2DtoToCourse(cDG2);
+				Course foundC = courseRepository.findByTitleAndDuration(c.getTitle(), c.getDuration());
+				if(foundC != null) {
+					c.setId(foundC.getId());
+				}
 				courseRepository.saveAndFlush(c);
 			}
 		}
+		// To improve with Pagination
 		return getAllCourses();
 	}
 

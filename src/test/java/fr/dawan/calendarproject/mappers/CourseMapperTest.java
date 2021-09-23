@@ -24,8 +24,8 @@ class CourseMapperTest {
 
 	@BeforeEach
 	void before() {
-		courseDto = new CourseDto(1, "title", 3);
-		course = new Course(3, "eltit", 1);
+		courseDto = new CourseDto(1, "title", "5", 3);
+		course = new Course(3, "eltit", "5", 1);
 	}
 
 	@Test

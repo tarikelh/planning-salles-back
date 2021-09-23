@@ -14,8 +14,9 @@ public interface CourseMapper {
 
 	Course courseDtoToCouse(CourseDto courseDto);
 	
-	@Mappings({ @Mapping(target = "title", source = "title"), 
-				@Mapping(target = "id", ignore = true),
+	@Mappings({ @Mapping(target = "id", ignore = true),
+				@Mapping(target = "title", source = "title"), 
+				@Mapping(target = "duration", source = "duration"),
 				@Mapping(target = "version", ignore = true)})
 	Course courseDG2DtoToCourse(CourseDG2Dto courseDG2Dto);
 }

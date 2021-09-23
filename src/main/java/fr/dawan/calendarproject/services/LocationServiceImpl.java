@@ -137,10 +137,15 @@ public class LocationServiceImpl implements LocationService {
 			lResJson = Arrays.asList(resArray);
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location l = locationMapper.locationDG2DtoToLocation(lDG2);
+				Location foundL = locationRepository.findByCity(l.getCity());
+				if(foundL != null) {
+					l.setId(foundL.getId());
+					l.setColor(foundL.getColor());
+				}
 				locationRepository.saveAndFlush(l);
 			}
 		}
-		
+		// To improve with Pagination
 		return getAllLocations();
 	}
 
