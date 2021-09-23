@@ -14,4 +14,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
 	@Query("FROM Location l WHERE l.id IS NOT :id AND (l.color = :color OR l.city = :city)")
 	List<Location> findDuplicates(@Param("id") long id, @Param("city") String city, @Param("color") String color);
+	
+	Location findByCity(String city);
 }

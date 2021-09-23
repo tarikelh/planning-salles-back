@@ -30,6 +30,9 @@ public class LoginController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
@@ -37,8 +40,6 @@ public class LoginController {
 		if(loginObj.getCaptchaToken() == "default") {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant ou non valide");
 		} else if (loginObj.getCaptchaToken() != ""){
-			
-			RestTemplate restTemplate = new RestTemplate();
 			
 			String secret = "6Leav28cAAAAAGDXtovG7YrZIqgsAdddiZ9Lze4k";
 			String uri = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret 

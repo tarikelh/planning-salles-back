@@ -1,6 +1,9 @@
 package fr.dawan.calendarproject.services;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +14,16 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.LocationDG2Dto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -29,6 +39,12 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public List<LocationDto> getAllLocations() {
@@ -106,6 +122,31 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public List<LocationDto> fetchAllDG2Locations() throws Exception {
+		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
+		
+		URI url = new URI("https://dawan.org/public/location/");
+		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
+		
+		if(repWs.getStatusCode()==HttpStatus.OK) {
+			String json = repWs.getBody();
+			LocationDG2Dto[] resArray = objectMapper.readValue(json, LocationDG2Dto[].class);
+			lResJson = Arrays.asList(resArray);
+			for (LocationDG2Dto lDG2 : lResJson) {
+				Location l = locationMapper.locationDG2DtoToLocation(lDG2);
+				Location foundL = locationRepository.findByCity(l.getCity());
+				if(foundL != null) {
+					l.setId(foundL.getId());
+					l.setColor(foundL.getColor());
+				}
+				locationRepository.saveAndFlush(l);
+			}
+		}
+		// To improve with Pagination
+		return getAllLocations();
 	}
 
 }

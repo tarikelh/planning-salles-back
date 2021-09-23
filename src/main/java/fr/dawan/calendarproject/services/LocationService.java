@@ -19,5 +19,7 @@ public interface LocationService {
 	LocationDto count();
 	
 	boolean checkUniqness(LocationDto location);
+	
+	List<LocationDto> fetchAllDG2Locations() throws Exception;
 
 }

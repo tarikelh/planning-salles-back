@@ -56,7 +56,7 @@ class TestDtoMapper {
 		skill2 = new Skill(2, "c#", null, 0);
 		skill3 = new Skill(3, "java", null, 0);
 
-		course = new Course(1, "Java Init", 0);
+		course = new Course(1, "Java Init", "5", 0);
 
 		skills.add(skill1);
 		skills.add(skill2);

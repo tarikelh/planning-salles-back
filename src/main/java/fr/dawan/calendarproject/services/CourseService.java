@@ -13,5 +13,5 @@ public interface CourseService {
 	CourseDto saveOrUpdate(CourseDto course);
 	CourseDto count();
 	boolean checkUniqness(CourseDto course);
-	
+	List<CourseDto> fetchAllDG2Courses() throws Exception;
 }
