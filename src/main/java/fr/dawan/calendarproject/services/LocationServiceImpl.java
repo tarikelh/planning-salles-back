@@ -38,12 +38,6 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
-	
-	@Autowired
-	private RestTemplate restTemplate;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
@@ -128,6 +122,8 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public void fetchAllDG2Locations() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
 		
 		URI url = new URI("https://dawan.org/public/location/");

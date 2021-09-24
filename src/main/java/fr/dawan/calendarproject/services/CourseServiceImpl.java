@@ -24,7 +24,6 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
-import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.CourseMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
@@ -38,12 +37,6 @@ public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	private CourseMapper courseMapper;
-	
-	@Autowired
-	private RestTemplate restTemplate;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Override
 	public List<CourseDto> getAllCourses() {
@@ -118,6 +111,8 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public List<CourseDto> fetchAllDG2Courses() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		RestTemplate restTemplate = new RestTemplate();
 		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
 		
 		URI url = new URI("https://dawan.org/public/training/");
