@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,12 +29,11 @@ public class LocationController {
 	private LocationService locationService;
 
 	// GET
-	@GetMapping(value = {"/{page}/{size}", "/{page}/{size}/{search}"}, produces = "application/json")
-	public @ResponseBody List<LocationDto> getAll(@PathVariable("page") int page, @PathVariable("size") int size, @PathVariable(value = "search", required = false) Optional<String> search) {
-		if(search.isPresent())
-			return locationService.getAllLocations(page, size, search.get());
-		else
-			return locationService.getAllLocations(page, size, "");	
+	@GetMapping(produces = "application/json")
+	public List<LocationDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+									@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
+									@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return locationService.getAllLocations(page, size, search);
 	}
 	
 	// COUNT
