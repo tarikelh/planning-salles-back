@@ -62,15 +62,19 @@ public class LoginController {
 							e.printStackTrace();
 						}
 
-						if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
+						if (uDto != null) {
+							if (uDto.getPassword().contentEquals(hashedPwd)) {
+								Map<String, Object> claims = new HashMap<String, Object>();
+								claims.put("name", uDto.getFullName());
 
-							Map<String, Object> claims = new HashMap<String, Object>();
-							claims.put("name", uDto.getFullName());
+								String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
+								TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
 
-							String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
-							TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
+								return ResponseEntity.ok(new LoginResponseDto(uDto, token));
+							} else {
 
-							return ResponseEntity.ok(new LoginResponseDto(uDto, token));
+							}
+
 						} else {
 							return ResponseEntity.status(HttpStatus.NOT_FOUND)
 									.body("Erreur : identifiants incorrects !");
