@@ -1,9 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,8 +9,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMailingListDto;
 import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;

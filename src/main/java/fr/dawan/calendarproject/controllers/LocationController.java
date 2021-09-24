@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.CourseDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.services.LocationService;
 
@@ -26,9 +28,22 @@ public class LocationController {
 	private LocationService locationService;
 
 	// GET
-	@GetMapping(produces = "application/json")
-	public List<LocationDto> getAll() {
-		return locationService.getAllLocations();
+	@GetMapping(value = {"/{page}/{size}", "/{page}/{size}/{search}"}, produces = "application/json")
+	public @ResponseBody List<LocationDto> getAll(@PathVariable("page") int page, @PathVariable("size") int size, @PathVariable(value = "search", required = false) Optional<String> search) {
+		if(search.isPresent())
+			return locationService.getAllLocations(page, size, search.get());
+		else
+			return locationService.getAllLocations(page, size, "");	
+	}
+	
+	// COUNT
+	@GetMapping(value = {"/count", "/count/{search}"}, produces = "application/json")
+	public @ResponseBody CountDto countFilter(@PathVariable(value = "search") Optional<String> search) {
+		if(search.isPresent())
+			return locationService.count(search.get());
+		else
+			return locationService.count("");
+
 	}
 
 	// GET - id
@@ -73,10 +88,10 @@ public class LocationController {
 	@GetMapping(value = "/dg2", produces="application/json")
 	public ResponseEntity<?> fetchAllDG2() {
 		try {
-			List<LocationDto> response = locationService.fetchAllDG2Locations();
-			return ResponseEntity.status(HttpStatus.OK).body(response);
+			locationService.fetchAllDG2Locations();
+			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice DG2");
 		}
 	}
 }

@@ -72,13 +72,13 @@ public interface DtoMapper {
 	@Mappings({ @Mapping(target = "course.id", source = "courseId"),
 			@Mapping(target = "location.id", source = "locationId"), @Mapping(target = "user.id", source = "userId"),
 			@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-			@Mapping(target = "enumType", source = "type") })
+			@Mapping(target = "type", source = "type") })
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
 
 	@Mappings({ @Mapping(target = "id", source = "interventionId"), @Mapping(target = "course.id", source = "courseId"),
 			@Mapping(target = "location.id", source = "locationId"), @Mapping(target = "user.id", source = "userId"),
 			@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-			@Mapping(target = "enumType", source = "type"), 
+			@Mapping(target = "type", source = "type"), 
 			@Mapping(target = "version", ignore = true) })
 	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 

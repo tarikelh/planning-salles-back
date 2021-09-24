@@ -26,7 +26,7 @@ public interface InterventionMementoMapper {
 		@Mapping(target = "location.id", source = "locationId"), 
 		@Mapping(target = "user.id", source = "userId"),
 		@Mapping(target = "masterIntervention.id", source = "masterInterventionId"),
-		@Mapping(target = "enumType", source = "type"),
+		@Mapping(target = "type", source = "type"),
 		@Mapping(target = "version", ignore = true) })
 	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 
