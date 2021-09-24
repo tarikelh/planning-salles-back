@@ -33,55 +33,57 @@ public class LoginController {
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
-		
-		if(loginObj.getCaptchaToken() == "default") {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant ou non valide");
-		} else if (loginObj.getCaptchaToken() != ""){
-			
+
+		if (loginObj.getCaptchaToken() != null) {
+
 			String secret = "6Leav28cAAAAAGDXtovG7YrZIqgsAdddiZ9Lze4k";
-			String uri = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret 
-						 + "&response=" + loginObj.getCaptchaToken();
+			String uri = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret + "&response="
+					+ loginObj.getCaptchaToken();
 			ResponseEntity<CaptchaResponse> res = null;
-			
+
 			URI url;
-			
+
 			try {
 				RestTemplate restTemplate = new RestTemplate();
 				url = new URI(uri);
 				res = restTemplate.getForEntity(url, CaptchaResponse.class);
 
-				if(res.getStatusCode()==HttpStatus.OK) {
-					CaptchaResponse nbStr = res.getBody();
-				}
-				if(res != null) {
-					System.out.println(res);
+				if (res.getStatusCode() == HttpStatus.OK) {
+					CaptchaResponse cr = res.getBody();
+
+					if (cr.getSuccess()) {
+						UserDto uDto = userService.findByEmail(loginObj.getEmail());
+
+						String hashedPwd = null;
+
+						try {
+							hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
+
+							Map<String, Object> claims = new HashMap<String, Object>();
+							claims.put("name", uDto.getFullName());
+
+							String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
+							TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
+
+							return ResponseEntity.ok(new LoginResponseDto(uDto, token));
+						} else {
+							return ResponseEntity.status(HttpStatus.NOT_FOUND)
+									.body("Erreur : identifiants incorrects !");
+						}
+					} else {
+						return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+								.body("Erreur : Captcha invalide ou expiré !");
+					}
 				}
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		UserDto uDto = userService.findByEmail(loginObj.getEmail());
-		
-		String hashedPwd = null;
-		
-		try {
-			hashedPwd = HashTools.hashSHA512(loginObj.getPassword());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
-
-			Map<String, Object> claims = new HashMap<String, Object>();
-			claims.put("name", uDto.getFullName());
-
-			String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
-			TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
-
-			return ResponseEntity.ok(new LoginResponseDto(uDto, token));
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : identifiants incorrects !");
-		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant !");
 	}
 }
