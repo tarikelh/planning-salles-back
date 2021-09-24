@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,22 +29,17 @@ public class CourseController {
 	private CourseService courseService;
 	
 	//GET
-	@GetMapping(value = {"/{page}/{size}", "/{page}/{size}/{search}"},produces = "application/json")
-	public @ResponseBody List<CourseDto> getAll(@PathVariable("page") int page, @PathVariable("size") int size, @PathVariable(value = "search", required = false) Optional<String> search) {
-		if(search.isPresent())
-			return courseService.getAllCourses(page, size, search.get());
-		else
-			return courseService.getAllCourses(page, size, "");	
+	@GetMapping(produces = "application/json")
+	public List<CourseDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+									@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
+									@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return courseService.getAllCourses(page, size, search);
 	}
 	
 	// COUNT
-	@GetMapping(value = {"/count", "/count/{search}"}, produces = "application/json")
-	public @ResponseBody CountDto countFilter(@PathVariable(value = "search") Optional<String> search) {
-		if(search.isPresent())
-			return courseService.count(search.get());
-		else
-			return courseService.count("");
-
+	@GetMapping(value = {"/count"}, produces = "application/json")
+	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return courseService.count(search);
 	}
 	
 	//GET - id

@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
@@ -37,13 +35,9 @@ public class LocationController {
 	}
 	
 	// COUNT
-	@GetMapping(value = {"/count", "/count/{search}"}, produces = "application/json")
-	public @ResponseBody CountDto countFilter(@PathVariable(value = "search") Optional<String> search) {
-		if(search.isPresent())
-			return locationService.count(search.get());
-		else
-			return locationService.count("");
-
+	@GetMapping(value = "/count", produces = "application/json")
+	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return locationService.count(search);
 	}
 
 	// GET - id

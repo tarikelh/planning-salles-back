@@ -42,7 +42,6 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
-		List<Location> locations = null;
 		Pageable pagination = null;
 		
 		if(page != -1 & size != -1) 
@@ -50,7 +49,7 @@ public class LocationServiceImpl implements LocationService {
 		else
 			pagination = Pageable.unpaged();
 		
-		locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
+		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
