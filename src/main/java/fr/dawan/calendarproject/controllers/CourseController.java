@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.CourseDG2Dto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.CourseDto;
-import fr.dawan.calendarproject.entities.InterventionMemento;
 import fr.dawan.calendarproject.services.CourseService;
 
 @RestController
@@ -27,15 +28,22 @@ public class CourseController {
 	private CourseService courseService;
 	
 	//GET
-	@GetMapping(produces = "application/json")
-	public List<CourseDto> getAll() {
-		return courseService.getAllCourses();
+	@GetMapping(value = {"/{page}/{size}", "/{page}/{size}/{search}"},produces = "application/json")
+	public @ResponseBody List<CourseDto> getAll(@PathVariable("page") int page, @PathVariable("size") int size, @PathVariable(value = "search", required = false) Optional<String> search) {
+		if(search.isPresent())
+			return courseService.getAllCourses(page, size, search.get());
+		else
+			return courseService.getAllCourses(page, size, "");	
 	}
 	
-	//GET all with pagination
-	@GetMapping(value = "/{page}/{size}", produces="application/json")
-	public List<CourseDto> getAllPagination(@PathVariable("page") int page, @PathVariable("size") int size) {
-		return courseService.getAllCourses(page, size);
+	// COUNT
+	@GetMapping(value = {"/count", "/count/{search}"}, produces = "application/json")
+	public @ResponseBody CountDto countFilter(@PathVariable(value = "search") Optional<String> search) {
+		if(search.isPresent())
+			return courseService.count(search.get());
+		else
+			return courseService.count("");
+
 	}
 	
 	//GET - id
@@ -81,8 +89,8 @@ public class CourseController {
 	@GetMapping(value = "/dg2", produces="application/json")
 	public ResponseEntity<?> fetchAllDG2() {
 		try {
-			List<CourseDto> response = courseService.fetchAllDG2Courses();
-			return ResponseEntity.status(HttpStatus.OK).body(response);
+			courseService.fetchAllDG2Courses();
+			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
 		}
