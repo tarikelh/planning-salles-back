@@ -11,10 +11,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -43,8 +45,15 @@ public class UserServiceImpl implements UserService {
 	private UserMapper userMapper;
 
 	@Override
-	public List<AdvancedUserDto> getAllUsers() {
-		List<User> users = userRepository.findAll();
+	public List<AdvancedUserDto> getAllUsers(int page, int size, String search) {
+		Pageable pagination = null;
+		
+		if(page != -1 & size != -1) 
+			pagination = PageRequest.of(page, size);
+		else
+			pagination = Pageable.unpaged();
+		
+		List<User> users = userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pagination).get().collect(Collectors.toList());
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 		for (User u : users) {
@@ -52,6 +61,11 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return result;
+	}
+	
+	@Override
+	public CountDto count(String search) {
+		return new CountDto(userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search));
 	}
 
 	@Override
@@ -68,17 +82,6 @@ public class UserServiceImpl implements UserService {
 			// HANDLE ERROR
 			return null;
 		}
-	}
-
-	@Override
-	public List<AdvancedUserDto> getAllUsers(int page, int max) {
-		List<User> users = userRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
-
-		for (User u : users) {
-			result.add(userMapper.userToAdvancedUserDto(u));
-		}
-		return result;
 	}
 
 	@Override

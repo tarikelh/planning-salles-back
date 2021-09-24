@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.services.UserService;
 
 @RestController
@@ -26,8 +28,16 @@ public class UserController {
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AdvancedUserDto> getAll() {
-		return userService.getAllUsers();
+	public List<AdvancedUserDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+										@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
+										@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return userService.getAllUsers(page, size, search);
+	}
+	
+	// COUNT
+	@GetMapping(value = "/count", produces = "application/json")
+	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return userService.count(search);
 	}
 	
 	// GET by Type
