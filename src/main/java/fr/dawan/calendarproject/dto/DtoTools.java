@@ -59,11 +59,11 @@ public class DtoTools {
 		});
 
 		myMapper.typeMap(InterventionDto.class, Intervention.class).addMappings(mapper -> {
-			mapper.map(src -> src.getType(), Intervention::setEnumType);
+			mapper.map(src -> src.getType(), Intervention::setType);
 		});
 		
 		myMapper.typeMap(Intervention.class, InterventionDto.class).addMappings(mapper -> {
-			mapper.map(src -> src.getEnumType(), InterventionDto::setType);
+			mapper.map(src -> src.getType(), InterventionDto::setType);
 		});
 		
 		return myMapper.map(obj, clazz);

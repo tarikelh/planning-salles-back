@@ -37,8 +37,8 @@ public class InterventionDto implements Cloneable {
 	}
 
 	public InterventionDto(long id, String comment, long locationId, long courseId, long userId, String type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd,
-			long masterInterventionId, boolean isMaster, int version) {
+			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster,
+			int version) {
 		this.id = id;
 		this.comment = comment;
 		this.locationId = locationId;
@@ -172,3 +172,4 @@ public class InterventionDto implements Cloneable {
 		return super.clone();
 	}
 }
+

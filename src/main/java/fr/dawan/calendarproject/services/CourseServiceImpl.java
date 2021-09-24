@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
@@ -39,8 +40,15 @@ public class CourseServiceImpl implements CourseService {
 	private CourseMapper courseMapper;
 
 	@Override
-	public List<CourseDto> getAllCourses() {
-		List<Course> courses = courseRepository.findAll();
+	public List<CourseDto> getAllCourses(int page, int size, String search) {
+		List<Course> courses = null;
+		
+		if(page != -1 & size != -1) {
+			courses = courseRepository.findAllByTitleContaining(search, PageRequest.of(page, size)).get().collect(Collectors.toList());
+		}
+		else {
+			courses = courseRepository.findAll();
+		}
 
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
@@ -49,15 +57,10 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
-
+	
 	@Override
-	public List<CourseDto> getAllCourses(int page, int max) {
-		List<Course> courses = courseRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
-		List<CourseDto> result = new ArrayList<CourseDto>();
-		for (Course c : courses) {
-			result.add(courseMapper.courseToCourseDto(c));
-		}
-		return result;
+	public CountDto count(String search) {
+		return new CountDto(courseRepository.countByTitleContaining(search));
 	}
 
 	@Override
@@ -87,12 +90,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public CourseDto count() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean checkUniqness(CourseDto course) {
 		Course duplicate = courseRepository.findByTitle(course.getId(), course.getTitle());
 
@@ -110,7 +107,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public List<CourseDto> fetchAllDG2Courses() throws Exception {
+	public void fetchAllDG2Courses() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
@@ -131,8 +128,6 @@ public class CourseServiceImpl implements CourseService {
 				courseRepository.saveAndFlush(c);
 			}
 		}
-		// To improve with Pagination
-		return getAllCourses();
 	}
 
 }

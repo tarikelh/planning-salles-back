@@ -10,3 +10,4 @@ public class InterventionDG2Dto {
 	private String location_name;
 
 }
+

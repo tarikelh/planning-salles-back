@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LocationDG2Dto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
@@ -39,8 +40,15 @@ public class LocationServiceImpl implements LocationService {
 	private LocationMapper locationMapper;
 
 	@Override
-	public List<LocationDto> getAllLocations() {
-		List<Location> locations = locationRepository.findAll();
+	public List<LocationDto> getAllLocations(int page, int size, String search) {
+		List<Location> locations = null;
+		
+		if(page != -1 & size != -1) {
+			locations = locationRepository.findAllByCityContaining(search, PageRequest.of(page, size)).get().collect(Collectors.toList());
+		}
+		else {
+			locations = locationRepository.findAll();
+		}
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
@@ -48,18 +56,14 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
+	
 
 	@Override
-	public List<LocationDto> getAllLocations(int page, int max) {
-		List<Location> locations = locationRepository.findAll(PageRequest.of(page, max)).get()
-				.collect(Collectors.toList());
-		List<LocationDto> result = new ArrayList<LocationDto>();
-		for (Location l : locations) {
-			result.add(locationMapper.locationToLocationDto(l));
-		}
-		return result;
+	public CountDto count(String search) {
+		return new CountDto(locationRepository.countByCityContaining(search));
 	}
 
+	
 	@Override
 	public LocationDto getById(long id) {
 		Optional<Location> l = locationRepository.findById(id);
@@ -117,7 +121,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
-	public List<LocationDto> fetchAllDG2Locations() throws Exception {
+	public void fetchAllDG2Locations() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
@@ -139,8 +143,6 @@ public class LocationServiceImpl implements LocationService {
 				locationRepository.saveAndFlush(l);
 			}
 		}
-		// To improve with Pagination
-		return getAllLocations();
 	}
 
 }
