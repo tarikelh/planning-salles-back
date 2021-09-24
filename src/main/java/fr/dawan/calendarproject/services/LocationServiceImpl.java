@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.services;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
@@ -39,12 +37,6 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
-	
-	@Autowired
-	private RestTemplate restTemplate;
-	
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Override
 	public List<LocationDto> getAllLocations() {
@@ -126,6 +118,8 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public List<LocationDto> fetchAllDG2Locations() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
 		
 		URI url = new URI("https://dawan.org/public/location/");

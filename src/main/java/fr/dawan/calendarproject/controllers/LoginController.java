@@ -30,9 +30,6 @@ public class LoginController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-	@Autowired
-	private RestTemplate restTemplate;
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
@@ -49,6 +46,7 @@ public class LoginController {
 			URI url;
 			
 			try {
+				RestTemplate restTemplate = new RestTemplate();
 				url = new URI(uri);
 				res = restTemplate.getForEntity(url, CaptchaResponse.class);
 

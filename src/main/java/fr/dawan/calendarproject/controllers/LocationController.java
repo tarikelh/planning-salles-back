@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.services.LocationService;
 

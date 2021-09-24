@@ -10,8 +10,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.mapper.DtoMapper;
 import fr.dawan.calendarproject.mapper.DtoMapperImpl;
@@ -32,16 +30,6 @@ public class CalendarprojectApplication {
 	@Bean
 	public DtoMapper dtoMapper() {
 		return new DtoMapperImpl();
-	}
-	
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-	
-	@Bean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
 	}
 	
 	@Bean
@@ -66,7 +54,7 @@ public class CalendarprojectApplication {
 			// Intercepteurs
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {
-				//registry.addInterceptor(tokenInterceptor);
+				registry.addInterceptor(tokenInterceptor);
 			}
 
 			// MATRIX
