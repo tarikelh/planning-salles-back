@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.services.EmailService;
@@ -63,18 +64,29 @@ public class InterventionController {
 	}
 	
 	// GET - Masters Interventions
-	@GetMapping(value = "/masters",produces = "application/json")
+	@GetMapping(value = "/masters", produces = "application/json")
 	public List<InterventionDto> getMasterIntervention() {
 		return interventionService.getMasterIntervention();
 	}
 	
 	// GET - NO Masters Interventions && verify UserType && between two dates
-	@GetMapping(value = "/sub",produces = "application/json")
+	@GetMapping(value = "/sub", produces = "application/json")
 	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
 			@RequestParam("end") String end) {
 		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 
+	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
+	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
+	public ResponseEntity<?> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
+		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
+		
+		if (iList != null)
+			return ResponseEntity.ok(iList);
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no sub Intervention for master intervention id " + id + " or it does not exists.");
+	}
+	
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id, @RequestHeader(value = "Authorization") String token) {
@@ -150,6 +162,17 @@ public class InterventionController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
+		}
+	}
+	
+	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId ,@RequestBody List<DateRangeDto> dates) {
+		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
+		
+		if (iDtoList != null) {
+			return ResponseEntity.ok(iDtoList);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + interventionId + " Not Found");
 		}
 	}
 
