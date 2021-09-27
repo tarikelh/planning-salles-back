@@ -3,15 +3,16 @@ package fr.dawan.calendarproject.services;
 import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.User;
 
 public interface UserService {
 
-	List<AdvancedUserDto> getAllUsers();
+	List<AdvancedUserDto> getAllUsers(int page, int size, String search);
+	
+	CountDto count(String search);
 
 	List<AdvancedUserDto> getAllUsersByType(String type);
-
-	List<AdvancedUserDto> getAllUsers(int page, int max);
 
 	AdvancedUserDto getById(long id);
 

@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,14 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public List<CourseDto> getAllCourses(int page, int size, String search) {
-		List<Course> courses = null;
+		Pageable pagination = null;
 		
-		if(page != -1 & size != -1) {
-			courses = courseRepository.findAllByTitleContaining(search, PageRequest.of(page, size)).get().collect(Collectors.toList());
-		}
-		else {
-			courses = courseRepository.findAll();
-		}
+		if(page != -1 & size != -1) 
+			pagination = PageRequest.of(page, size);
+		else
+			pagination = Pageable.unpaged();
+		
+		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
 
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {

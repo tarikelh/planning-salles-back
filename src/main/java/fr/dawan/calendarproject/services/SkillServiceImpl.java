@@ -11,10 +11,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -40,26 +42,26 @@ public class SkillServiceImpl implements SkillService {
 	private SkillMapper skillMapper;
 
 	@Override
-	public List<AdvancedSkillDto> getAllSkills() {
-		List<Skill> skills = skillRepository.findAll();
+	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
+		Pageable pagination = null;
+		
+		if(page != -1 & size != -1) 
+			pagination = PageRequest.of(page, size);
+		else
+			pagination = Pageable.unpaged();
+		
+		List<Skill> skills = skillRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
 		}
-
 		return result;
 	}
-
+	
 	@Override
-	public List<AdvancedSkillDto> getAllSkills(int page, int max) {
-		List<Skill> skills = skillRepository.findAll(PageRequest.of(page, max)).get().collect(Collectors.toList());
-		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
-
-		for (Skill s : skills) {
-			result.add(skillMapper.skillToAdvancedSkillDto(s));
-		}
-		return result;
+	public CountDto count(String search) {
+		return new CountDto(skillRepository.countByTitleContaining(search));
 	}
 
 	@Override

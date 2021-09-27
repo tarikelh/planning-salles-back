@@ -14,8 +14,6 @@ public interface LocationService {
 	void deleteById(long id);
 
 	LocationDto saveOrUpdate(LocationDto location);
-
-	LocationDto count();
 	
 	boolean checkUniqness(LocationDto location);
 	

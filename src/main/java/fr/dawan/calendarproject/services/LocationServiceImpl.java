@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,14 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
-		List<Location> locations = null;
+		Pageable pagination = null;
 		
-		if(page != -1 & size != -1) {
-			locations = locationRepository.findAllByCityContaining(search, PageRequest.of(page, size)).get().collect(Collectors.toList());
-		}
-		else {
-			locations = locationRepository.findAll();
-		}
+		if(page != -1 & size != -1) 
+			pagination = PageRequest.of(page, size);
+		else
+			pagination = Pageable.unpaged();
+		
+		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
@@ -87,12 +88,6 @@ public class LocationServiceImpl implements LocationService {
 
 		l = locationRepository.saveAndFlush(l);
 		return locationMapper.locationToLocationDto(l);
-	}
-
-	@Override
-	public LocationDto count() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
