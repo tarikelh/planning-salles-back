@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.services.SkillService;
 
 @RestController
@@ -26,8 +28,16 @@ public class SkillController {
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AdvancedSkillDto> getAll() {
-		return skillService.getAllSkills();
+	public List<AdvancedSkillDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+										@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
+										@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return skillService.getAllSkills(page, size, search);
+	}
+	
+	// COUNT
+	@GetMapping(value = {"/count"}, produces = "application/json")
+	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+		return skillService.count(search);
 	}
 
 	// GET - id
