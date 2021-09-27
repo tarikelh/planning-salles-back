@@ -69,6 +69,17 @@ public class InterventionController {
 		return interventionService.getMasterIntervention();
 	}
 	
+	@GetMapping(value = "/masters/{id}", produces = "application/json")
+	public ResponseEntity<?> getMasterInterventionById(@PathVariable("id") long id) {
+		InterventionDto master = interventionService.getById(id);
+		
+		if (master.isMaster())
+			return ResponseEntity.ok(master);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Master Intervention with id " + id + " does not exists or is not a master intervention.");
+	}
+	
 	// GET - NO Masters Interventions && verify UserType && between two dates
 	@GetMapping(value = "/sub", produces = "application/json")
 	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
