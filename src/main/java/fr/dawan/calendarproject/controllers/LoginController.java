@@ -63,7 +63,6 @@ public class LoginController {
 						}
 
 						if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
-
 							Map<String, Object> claims = new HashMap<String, Object>();
 							claims.put("name", uDto.getFullName());
 
@@ -72,8 +71,8 @@ public class LoginController {
 
 							return ResponseEntity.ok(new LoginResponseDto(uDto, token));
 						} else {
-							return ResponseEntity.status(HttpStatus.NOT_FOUND)
-									.body("Erreur : identifiants incorrects !");
+							return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+									.body("Erreur : identifiants ou mot de passe incorrects !");
 						}
 					} else {
 						return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -84,6 +83,6 @@ public class LoginController {
 				e.printStackTrace();
 			}
 		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant !");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : captchat absant !");
 	}
 }
