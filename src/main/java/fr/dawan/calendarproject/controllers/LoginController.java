@@ -62,22 +62,17 @@ public class LoginController {
 							e.printStackTrace();
 						}
 
-						if (uDto != null) {
-							if (uDto.getPassword().contentEquals(hashedPwd)) {
-								Map<String, Object> claims = new HashMap<String, Object>();
-								claims.put("name", uDto.getFullName());
+						if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
+							Map<String, Object> claims = new HashMap<String, Object>();
+							claims.put("name", uDto.getFullName());
 
-								String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
-								TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
+							String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
+							TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
 
-								return ResponseEntity.ok(new LoginResponseDto(uDto, token));
-							} else {
-
-							}
-
+							return ResponseEntity.ok(new LoginResponseDto(uDto, token));
 						} else {
-							return ResponseEntity.status(HttpStatus.NOT_FOUND)
-									.body("Erreur : identifiants incorrects !");
+							return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+									.body("Erreur : identifiants ou mot de passe incorrects !");
 						}
 					} else {
 						return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -88,6 +83,6 @@ public class LoginController {
 				e.printStackTrace();
 			}
 		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : captchat absant !");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : captchat absant !");
 	}
 }
