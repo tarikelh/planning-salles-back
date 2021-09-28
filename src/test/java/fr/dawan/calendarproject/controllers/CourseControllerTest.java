@@ -65,7 +65,7 @@ class CourseControllerTest {
 
 	@Test
 	void shouldFetchAllCourses() throws Exception {
-		when(courseService.getAllCourses()).thenReturn(courses);
+		when(courseService.getAllCourses(-1, -1, "")).thenReturn(courses);
 
 		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

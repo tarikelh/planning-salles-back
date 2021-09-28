@@ -66,7 +66,7 @@ public class LocationControllerTest {
 	@Test
 	public void shouldFetchAllLocations() throws Exception {
 		
-		when(locationService.getAllLocations()).thenReturn(locs);
+		when(locationService.getAllLocations(-1, -1, "")).thenReturn(locs);
 		
 		mockMvc.perform(get("/api/locations").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

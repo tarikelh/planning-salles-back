@@ -67,7 +67,7 @@ public class SkillControllerTest {
 	
 	@Test
 	public void shouldFetchAllSkills() throws Exception {
-		when(skillService.getAllSkills()).thenReturn(skills);
+		when(skillService.getAllSkills(-1, -1, "")).thenReturn(skills);
 		
 		mockMvc.perform(get("/api/skills").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

@@ -73,7 +73,7 @@ class UserControllerTest {
 	
 	@Test
 	void shouldFetchAllUsers() throws Exception {
-		when(userService.getAllUsers()).thenReturn(users);
+		when(userService.getAllUsers(-1, -1, "")).thenReturn(users);
 		
 		mockMvc.perform(get("/api/users").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
