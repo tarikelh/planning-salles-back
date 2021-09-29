@@ -30,6 +30,12 @@ public class CourseController {
 	
 	//GET
 	@GetMapping(produces = "application/json")
+	public List<CourseDto> getAll() {
+		return courseService.getAllCourses();
+	}
+	
+	//GET
+	@GetMapping(produces = "application/json")
 	public List<CourseDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
 									@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
 									@RequestParam(value = "search", defaultValue = "", required = false) String search) {

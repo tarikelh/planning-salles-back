@@ -25,6 +25,12 @@ public class SkillController {
 
 	@Autowired
 	private SkillService skillService;
+	
+	// GET
+	@GetMapping(produces = "application/json")
+	public List<AdvancedSkillDto> getAll() {
+		return skillService.getAllSkills();
+	}
 
 	// GET
 	@GetMapping(produces = "application/json")

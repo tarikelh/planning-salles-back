@@ -7,6 +7,7 @@ import fr.dawan.calendarproject.dto.CourseDto;
 
 public interface CourseService {
 
+	List<CourseDto> getAllCourses();
 	List<CourseDto> getAllCourses(int page, int max, String search);
 	CountDto count(String search);
 	CourseDto getById(long id);

@@ -40,6 +40,17 @@ public class SkillServiceImpl implements SkillService {
 
 	@Autowired
 	private SkillMapper skillMapper;
+	
+	@Override
+	public List<AdvancedSkillDto> getAllSkills() {	
+		List<Skill> skills = skillRepository.findAll();
+		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
+
+		for (Skill s : skills) {
+			result.add(skillMapper.skillToAdvancedSkillDto(s));
+		}
+		return result;
+	}
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {

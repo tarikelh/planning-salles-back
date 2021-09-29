@@ -25,6 +25,12 @@ public class LocationController {
 
 	@Autowired
 	private LocationService locationService;
+	
+	// GET
+	@GetMapping(produces = "application/json")
+	public List<LocationDto> getAll() {
+		return locationService.getAllLocations();
+	}
 
 	// GET
 	@GetMapping(produces = "application/json")

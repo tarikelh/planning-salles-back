@@ -6,6 +6,8 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LocationDto;
 
 public interface LocationService {
+	
+	List<LocationDto> getAllLocations();
 
 	List<LocationDto> getAllLocations(int page, int size, String search);
 

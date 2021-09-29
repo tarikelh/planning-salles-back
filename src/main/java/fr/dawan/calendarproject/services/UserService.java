@@ -8,6 +8,8 @@ import fr.dawan.calendarproject.entities.User;
 
 public interface UserService {
 
+	List<AdvancedUserDto> getAllUsers();
+	
 	List<AdvancedUserDto> getAllUsers(int page, int size, String search);
 	
 	CountDto count(String search);

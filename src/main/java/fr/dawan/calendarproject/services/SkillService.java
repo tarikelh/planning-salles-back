@@ -7,6 +7,8 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.Skill;
 
 public interface SkillService {
+	
+	List<AdvancedSkillDto> getAllSkills();
 
 	List<AdvancedSkillDto> getAllSkills(int page, int size, String search);
 	

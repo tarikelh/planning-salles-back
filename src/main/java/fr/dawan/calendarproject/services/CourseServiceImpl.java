@@ -39,6 +39,19 @@ public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	private CourseMapper courseMapper;
+	
+	@Override
+	public List<CourseDto> getAllCourses() {
+			
+		List<Course> courses = courseRepository.findAll();
+
+		List<CourseDto> result = new ArrayList<CourseDto>();
+		for (Course c : courses) {
+			result.add(courseMapper.courseToCourseDto(c));
+		}
+
+		return result;
+	}
 
 	@Override
 	public List<CourseDto> getAllCourses(int page, int size, String search) {

@@ -25,6 +25,12 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	// GET
+	@GetMapping(produces = "application/json")
+	public List<AdvancedUserDto> getAll() {
+		return userService.getAllUsers();
+	}
 
 	// GET
 	@GetMapping(produces = "application/json")
