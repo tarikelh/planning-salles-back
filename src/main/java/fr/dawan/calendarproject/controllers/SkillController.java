@@ -33,8 +33,8 @@ public class SkillController {
 	}
 
 	// GET
-	@GetMapping(produces = "application/json")
-	public List<AdvancedSkillDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+	@GetMapping(value = {"/pagination"}, produces = "application/json")
+	public List<AdvancedSkillDto> getAllPagination(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
 										@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
 										@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return skillService.getAllSkills(page, size, search);
