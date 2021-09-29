@@ -43,6 +43,18 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Override
+	public List<AdvancedUserDto> getAllUsers() {
+		List<User> users = userRepository.findAll();
+		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+
+		for (User u : users) {
+			result.add(userMapper.userToAdvancedUserDto(u));
+		}
+
+		return result;
+	}
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers(int page, int size, String search) {

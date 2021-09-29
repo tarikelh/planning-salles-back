@@ -74,6 +74,18 @@ public class LocationControllerTest {
 				.andExpect(jsonPath("$[0].city", is(locs.get(0).getCity())))
 				.andExpect(jsonPath("$[0].color", is(locs.get(0).getColor())));
 	}
+	
+	@Test
+	public void shouldFetchAllLocationsPagination() throws Exception {
+		
+		when(locationService.getAllLocations(-1, -1, "")).thenReturn(locs);
+		
+		mockMvc.perform(get("/api/locations").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(locs.size())))
+				.andExpect(jsonPath("$[0].city", is(locs.get(0).getCity())))
+				.andExpect(jsonPath("$[0].color", is(locs.get(0).getColor())));
+	}
 
 	@Test
 	public void shouldFetchLocationById() throws Exception {

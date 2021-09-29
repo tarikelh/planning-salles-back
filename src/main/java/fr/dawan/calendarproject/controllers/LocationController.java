@@ -25,10 +25,16 @@ public class LocationController {
 
 	@Autowired
 	private LocationService locationService;
-
+	
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<LocationDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+	public List<LocationDto> getAll() {
+		return locationService.getAllLocations();
+	}
+
+	// GET
+	@GetMapping(value = {"/pagination"}, produces = "application/json")
+	public List<LocationDto> getAllPagination(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
 									@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
 									@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return locationService.getAllLocations(page, size, search);

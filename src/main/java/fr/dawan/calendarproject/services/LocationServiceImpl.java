@@ -39,6 +39,17 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
+	
+	@Override
+	public List<LocationDto> getAllLocations() {
+		List<Location> locations = locationRepository.findAll();
+
+		List<LocationDto> result = new ArrayList<LocationDto>();
+		for (Location l : locations) {
+			result.add(locationMapper.locationToLocationDto(l));
+		}
+		return result;
+	}
 
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {

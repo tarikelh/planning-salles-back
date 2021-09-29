@@ -25,10 +25,16 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-
+	
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AdvancedUserDto> getAll(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
+	public List<AdvancedUserDto> getAll() {
+		return userService.getAllUsers();
+	}
+
+	// GET
+	@GetMapping(value = {"/pagination"}, produces = "application/json")
+	public List<AdvancedUserDto> getAllPagination(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
 										@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
 										@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return userService.getAllUsers(page, size, search);

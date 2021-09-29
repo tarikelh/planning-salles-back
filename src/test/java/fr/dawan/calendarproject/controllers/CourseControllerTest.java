@@ -62,10 +62,20 @@ class CourseControllerTest {
 	void contextLoads() {
 		assertThat(courseController).isNotNull();
 	}
-
+	
 	@Test
 	void shouldFetchAllCourses() throws Exception {
 		when(courseService.getAllCourses()).thenReturn(courses);
+
+		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(courses.size())))
+				.andExpect(jsonPath("$[0].title", is("Java")));
+	}
+
+	@Test
+	void shouldFetchAllCoursesPagination() throws Exception {
+		when(courseService.getAllCourses(-1, -1, "")).thenReturn(courses);
 
 		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
