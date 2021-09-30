@@ -21,8 +21,8 @@ build:
     - tar xz "$ARCHIVE_NAME.tar.xz" $ARCHIVE_NAME 
   artifacts:
     expire_in: 1 hour
-  paths:
-    - "$ARCHIVE_NAME.tar.xz"
+    paths:
+      - "$ARCHIVE_NAME.tar.xz"
 
 archive:
   image: lgatica/openssh-client
