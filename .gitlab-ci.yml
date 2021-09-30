@@ -10,7 +10,7 @@ variables:
   MAVEN_OPTS: >
     -Dmaven.test.skip=true
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
-    -Djar.finalName=$ARCHIVE_NAME
+  ARCHIVE_NAME: planning-jar
 
 
 build:
