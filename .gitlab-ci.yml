@@ -21,7 +21,7 @@ build:
   script: 
     - mvn $MAVEN_OPTS clean package
     - ls target
-    - tar cfJ "$ARCHIVE_NAME.tar.xz" target/$ARCHIVE_NAME.jar 
+    - tar cfJ "$ARCHIVE_NAME.tar.xz" target/calendarproject-1.0.jar 
   artifacts:
     expire_in: 1 hour
     paths:
