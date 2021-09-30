@@ -20,7 +20,8 @@ build:
     - runner-java
   script: 
     - mvn $MAVEN_OPTS clean package
-    - tar cfJ "$ARCHIVE_NAME.tar.xz" $ARCHIVE_NAME 
+    - ls
+    - tar cfJ "$ARCHIVE_NAME.tar.xz" $ARCHIVE_NAME.jar 
   artifacts:
     expire_in: 1 hour
     paths:
