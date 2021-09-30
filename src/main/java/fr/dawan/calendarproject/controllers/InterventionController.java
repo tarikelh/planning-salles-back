@@ -177,7 +177,7 @@ public class InterventionController {
 	}
 	
 	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId ,@RequestBody List<DateRangeDto> dates) {
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId, @RequestBody List<DateRangeDto> dates) {
 		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
 		
 		if (iDtoList != null) {

@@ -291,8 +291,9 @@ public class InterventionServiceImpl implements InterventionService {
 				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 			}
 		}
-		
-		// Verify if an intervention from the same user and not a sibling (course different) is not overlapping with the new intervention
+
+		// Verify if an intervention from the same user and not a sibling (course
+		// different) is not overlapping with the new intervention
 		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(),
 				i.getDateEnd())) {
 			if (interv.getId() != i.getId() && interv.getCourse().getId() != i.getCourseId()) {
@@ -314,61 +315,73 @@ public class InterventionServiceImpl implements InterventionService {
 		List<Intervention> iList;
 		List<InterventionDto> iListDto;
 		Intervention masterIntervention;
-		
+		Intervention newSplit;
+
 		dates.sort(new Comparator<DateRangeDto>() {
 
 			@Override
 			public int compare(DateRangeDto d1, DateRangeDto d2) {
-				return d1.getStart().compareTo(d2.getStart());
+				return d1.getDateStart().compareTo(d2.getDateStart());
 			}
 		});
-		
+
 		if (toSplit.isPresent()) {
 			iList = new ArrayList<Intervention>();
-			
+
 			for (DateRangeDto range : dates) {
-				 for (DateRangeDto rangeToCheck : dates) {
-					if(range != rangeToCheck && range.isOverlapping(rangeToCheck)) {
-						
+				for (DateRangeDto rangeToCheck : dates) {
+					if (range != rangeToCheck && range.isOverlapping(rangeToCheck)) {
+
 						Set<APIError> err = new HashSet<APIError>();
-						err.add(new APIError(400,
-								range.getClass().toString(),
-								"Dates Ovelaps",
-								"Intervention Splits Must Not Overlap.",
-								"/api/interventions"));
-						
+						err.add(new APIError(400, range.getClass().toString(), "Dates Ovelaps",
+								"Intervention Splits Must Not Overlap.", "/api/interventions"));
+
 						throw new EntityFormatException(err);
 					}
 				}
 
-				Intervention newSplit = (Intervention) toSplit.get().clone();
+				if (range.getInterventionId() == interventionId || range.getInterventionId() == 0)
+					newSplit = (Intervention) toSplit.get().clone();
+				else
+					newSplit = interventionRepository.findById(range.getInterventionId()).get();
 
-				if (dates.indexOf(range) != 0) {
-					newSplit.setId(0L);
+				if (newSplit == null) {
+					Set<APIError> err = new HashSet<APIError>();
+					err.add(new APIError(404, Intervention.class.toString(), "IdDoesNotExists",
+							"Intervention with id " + range.getInterventionId() + " Not found.", "/api/interventions"));
+
+					throw new EntityFormatException(err);
 				}
 
-				newSplit.setDateStart(range.getStart());
-				newSplit.setDateEnd(range.getEnd());
-				
+				newSplit.setId(range.getInterventionId());
+				newSplit.setDateStart(range.getDateStart());
+				newSplit.setDateEnd(range.getDateEnd());
+				newSplit.setTimeStart(range.getTimeStart());
+				newSplit.setTimeEnd(range.getTimeEnd());
 				iList.add(newSplit);
 			}
-			
+
 			if (toSplit.get().getMasterIntervention() == null) {
 				masterIntervention = new Intervention();
 				masterIntervention.setMaster(true);
 				masterIntervention.setValidated(toSplit.get().isValidated());
-				masterIntervention.setComment(toSplit.get().getCourse().getTitle() + " - " + iList.size() + " Interventions.");
-				masterIntervention.setDateStart(dates.get(0).getStart());
-				masterIntervention.setDateEnd(dates.get(dates.size() - 1).getEnd());
-				
+				masterIntervention
+						.setComment(toSplit.get().getCourse().getTitle() + " - " + iList.size() + " Interventions.");
+				masterIntervention.setDateStart(dates.get(0).getDateStart());
+				masterIntervention.setDateEnd(dates.get(dates.size() - 1).getDateEnd());
+				masterIntervention.setType(toSplit.get().getType());
+
 				masterIntervention = interventionRepository.saveAndFlush(masterIntervention);
 			} else {
 				masterIntervention = toSplit.get().getMasterIntervention();
 			}
-			
+
+			final Intervention finalMasterIntervention = masterIntervention;
+
+			iList.forEach(i -> i.setMasterIntervention(finalMasterIntervention));
 			iList = interventionRepository.saveAll(iList);
 			interventionRepository.flush();
-			
+
 			iList.add(0, masterIntervention);
 
 			iListDto = new ArrayList<InterventionDto>();
@@ -381,15 +394,6 @@ public class InterventionServiceImpl implements InterventionService {
 		} else {
 			return null;
 		}
-		// TODO CHECK IF INTERVENTION EXISTS										===> OK
-		// TODO CHECK IF NO DATES OVERLAPS ELSE THROW								===> OK
-		// TODO CLONE INTERV dates.size() TIMES AND SET DATES FROM LIST TO INTERVS	===> OK
-		// TODO IF HAS MASTER INTERV DO NOTHING										===> OK
-		// TODO IS HAS NOT MASTER INTERV THEN CREATE IT								===> OK
-		// TODO ORDER DATE RANGES													===> OK
-		// TODO ADD IDS IN DATERANGE DTO
-		// TODO CHECK EVERY IDS
-		// TODO SET GOOD NAMES WITH COMMENT FOR MASTER INTERVENTION
 	}
 
 	@Override
@@ -397,18 +401,18 @@ public class InterventionServiceImpl implements InterventionService {
 		Intervention master = interventionRepository.findById(id).get();
 		List<Intervention> iList;
 		List<InterventionDto> iListDto;
-		
+
 		if (master != null && master.isMaster()) {
 			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(id);
 			iListDto = new ArrayList<InterventionDto>();
-					
+
 			for (Intervention intervention : iList) {
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
 			}
-			
+
 			return iListDto;
 		}
-		
+
 		return null;
 	}
 }

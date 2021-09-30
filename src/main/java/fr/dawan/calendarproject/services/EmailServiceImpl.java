@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,6 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VTimeZone;
 
 @Service

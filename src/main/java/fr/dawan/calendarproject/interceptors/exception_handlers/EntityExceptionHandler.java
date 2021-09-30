@@ -19,7 +19,6 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = { EntityFormatException.class })
 	protected ResponseEntity<Object> handleConflict(EntityFormatException ex, WebRequest request) {
-		System.out.println("coucou " + request);
 
 		HttpHeaders headers = new HttpHeaders();
 		StringWriter sw = new StringWriter();
