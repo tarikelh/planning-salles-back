@@ -37,7 +37,10 @@ archive:
     - echo "$ARCHIVE_PKEY" > archive_pkey
     - chmod 400 archive_pkey
     - chmod 700 .
-    - echo "put -rp $ARCHIVE_PATH/$ARCHIVE_NAME.tar.xz $ARCHIVE_NAME.tar.xz" > archive_batch
+    - >
+      echo
+      "put -rp $ARCHIVE_PATH/$ARCHIVE_NAME.tar.xz $ARCHIVE_NAME.tar.xz"
+      > archive_batch
     - >
       sftp
       -i archive_pkey
