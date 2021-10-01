@@ -20,8 +20,6 @@ public class TokenInterceptor implements HandlerInterceptor {
 	@Autowired
 	private UserService userService;
 
-	// A commenter si nous avons besoin d'insérer nouveau contact sans token
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {

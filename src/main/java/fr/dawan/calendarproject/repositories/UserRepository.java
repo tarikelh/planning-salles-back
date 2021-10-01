@@ -30,6 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("FROM User u WHERE u.email = :email AND u.id <> :id")
 	User findDuplicateEmail(@Param("email") String email, @Param("id") long id);
 
+	// Verifier si le le group by id pose PB ?
 	@Query("FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type GROUP BY u.id")
 	List<User> findAllByType(@Param("type") UserType type);
 

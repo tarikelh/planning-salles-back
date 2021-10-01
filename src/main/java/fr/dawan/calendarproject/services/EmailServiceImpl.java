@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,6 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VTimeZone;
 
 @Service
@@ -37,45 +35,46 @@ public class EmailServiceImpl implements EmailService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private InterventionRepository interventionRepository;
-	
+
 	@Autowired
 	private JavaMailSender emailSender;
 
-	
 	@Override
-	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd) throws Exception {
+	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd)
+			throws Exception {
+
 		// add asyncrhone method
-		
 		for (long uId : userId) {
 			List<Intervention> interventions = interventionRepository.findByUserIdAndDates(uId, dateStart, dateEnd);
 			Optional<User> trainer = userRepository.findById(uId);
-			
+
 			String subject = "Planning Intervention " + trainer.get().getFullname();
-			String content = "Bonjour" + trainer.get().getFullname() +".\n" + "Veuillez trouvez ci-joint le planning complet de vos interventions.";
+			String content = "Bonjour" + trainer.get().getFullname() + ".\n"
+					+ "Veuillez trouvez ci-joint le planning complet de vos interventions.";
 
 			VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
-			
+
 			Calendar calendar = ICalTools.createCalendar("-//Google Inc//Google Calendar 70.9054//EN");
-			
-			if(interventions.size() > 0) {
+
+			if (interventions.size() > 0) {
 				for (Intervention intervention : interventions) {
 					calendar.getComponents().add(ICalTools.createVEvent(intervention, tz));
 				}
-				
+
 				try {
 					MimeMessage message = setCalendarMessage(trainer.get().getEmail(), subject, content, calendar);
 					emailSender.send(message);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
 
 	private MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
@@ -102,8 +101,7 @@ public class EmailServiceImpl implements EmailService {
 		return message;
 	}
 
-	private MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename)
-			throws Exception {
+	private MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception {
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		CalendarOutputter outputter = new CalendarOutputter();
