@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.UserService;
 
 @SpringBootTest
@@ -48,11 +49,16 @@ class UserControllerTest {
 	
 	@MockBean
 	UserService userService;
-	
+
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+
 	private List<AdvancedUserDto> users = new ArrayList<AdvancedUserDto>();
 	
 	@BeforeEach
 	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+
 		users.add(new AdvancedUserDto(1, "Daniel", "Balavoine", 1,
 				"dbalavoine@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null));

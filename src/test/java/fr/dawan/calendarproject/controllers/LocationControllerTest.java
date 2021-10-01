@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.LocationDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.LocationService;
 
 @SpringBootTest
@@ -49,10 +50,15 @@ public class LocationControllerTest {
 	@MockBean
 	LocationService locationService;
 	
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+
 	private List<LocationDto> locs = new ArrayList<LocationDto>();
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+
 		locs.add(new LocationDto(1, "Paris", "#40A497", 0));
 		locs.add(new LocationDto(2, "Nantes", "#9859C6", 0));
 		locs.add(new LocationDto(3, "Nogent-Le-Rotrou", "#59C674", 0));
