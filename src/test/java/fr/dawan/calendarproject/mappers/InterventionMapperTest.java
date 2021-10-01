@@ -1,8 +1,5 @@
 package fr.dawan.calendarproject.mappers;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.services.InterventionService;
@@ -30,7 +26,7 @@ class InterventionMapperTest {
 	Location location = new Location();
 	Course course = new Course();
 	User user = new User();
-	private Set<Skill> skills = new HashSet<>();
+//	private Set<Skill> skills = new HashSet<>();
 
 //	@BeforeEach
 //	void before() {
