@@ -40,6 +40,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 			}
 
 			String token = headerAuth.substring(7);
+
 			// validation le token et extraire les infos
 			if (jwtTokenUtil.isTokenExpired(token))
 				throw new Exception("Erreur : jeton expiré !");

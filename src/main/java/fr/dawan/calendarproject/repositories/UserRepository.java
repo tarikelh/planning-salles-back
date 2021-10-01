@@ -15,19 +15,14 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query("FROM User u LEFT JOIN FETCH u.skills us LEFT JOIN FETCH u.location GROUP BY u.id")
+	@Query("FROM User u LEFT JOIN FETCH u.skills LEFT JOIN FETCH u.location")
 	List<User> findAll();
-	
-	long countByFirstNameContainingOrLastNameContainingOrEmailContaining(
-			String firstName, 
-			String lastName,
+
+	long countByFirstNameContainingOrLastNameContainingOrEmailContaining(String firstName, String lastName,
 			String email);
-	
-	Page<User> findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(
-			String firstName, 
-			String lastName,
-			String email, 
-			Pageable pageable);
+
+	Page<User> findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(String firstName, String lastName,
+			String email, Pageable pageable);
 
 	@Query("FROM User u WHERE u.email = :email")
 	User findByEmail(@Param("email") String email);

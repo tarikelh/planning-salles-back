@@ -15,8 +15,8 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
 
 	@Query("FROM Skill s LEFT JOIN FETCH s.users")
 	List<Skill> findAll();
-	
+
 	Page<Skill> findAllByTitleContaining(String title, Pageable pageable);
-	
+
 	long countByTitleContaining(String title);
 }

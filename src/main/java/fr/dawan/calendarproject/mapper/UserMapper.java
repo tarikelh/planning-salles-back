@@ -9,15 +9,20 @@ import org.mapstruct.Mapping;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.services.LocationService;
-import fr.dawan.calendarproject.services.UserService;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { UserService.class, SkillMapper.class, LocationMapper.class,
-		LocationService.class })
+@Mapper(componentModel = "spring", uses = { UserRepository.class, SkillMapper.class, LocationRepository.class })
 
 public interface UserMapper {
 
 	List<Long> setUsersToListLong(Set<User> users);
+
+	default Long getUserId(User user) {
+		return user.getId();
+	}
+
+	Set<User> listUserToSetUser(List<User> users);
 
 	Set<User> listLongToSetUsers(List<Long> ids);
 

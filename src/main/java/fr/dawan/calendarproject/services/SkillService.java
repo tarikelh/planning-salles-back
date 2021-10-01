@@ -4,14 +4,13 @@ import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.CountDto;
-import fr.dawan.calendarproject.entities.Skill;
 
 public interface SkillService {
-	
+
 	List<AdvancedSkillDto> getAllSkills();
 
 	List<AdvancedSkillDto> getAllSkills(int page, int size, String search);
-	
+
 	CountDto count(String search);
 
 	AdvancedSkillDto getById(long id);
@@ -21,8 +20,4 @@ public interface SkillService {
 	AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill);
 
 	boolean checkIntegrity(AdvancedSkillDto s);
-	
-	Skill getEntityById(long id);
-	
-	Long getLongId(Skill skill);
 }
