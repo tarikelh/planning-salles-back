@@ -103,7 +103,6 @@ public class InterventionServiceImpl implements InterventionService {
 		try {
 			caretaker.addMemento(email, intToDelete);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

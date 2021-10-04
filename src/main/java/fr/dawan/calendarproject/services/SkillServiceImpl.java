@@ -40,10 +40,11 @@ public class SkillServiceImpl implements SkillService {
 
 	@Autowired
 	private SkillMapper skillMapper;
-	
+
 	@Override
-	public List<AdvancedSkillDto> getAllSkills() {	
+	public List<AdvancedSkillDto> getAllSkills() {
 		List<Skill> skills = skillRepository.findAll();
+
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
@@ -55,13 +56,14 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
 		Pageable pagination = null;
-		
-		if(page != -1 & size != -1) 
+
+		if (page != -1 & size != -1)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
-		
-		List<Skill> skills = skillRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
+
+		List<Skill> skills = skillRepository.findAllByTitleContaining(search, pagination).get()
+				.collect(Collectors.toList());
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {
@@ -69,7 +71,7 @@ public class SkillServiceImpl implements SkillService {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(skillRepository.countByTitleContaining(search));
@@ -124,16 +126,5 @@ public class SkillServiceImpl implements SkillService {
 		}
 
 		return true;
-	}
-
-	@Override
-	public Skill getEntityById(long id) {
-		Optional<Skill> skill = skillRepository.findById(id);
-		return skill.get();
-	}
-
-	@Override
-	public Long getLongId(Skill skill) {
-		return skill.getId();	
 	}
 }

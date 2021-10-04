@@ -1,7 +1,5 @@
 package fr.dawan.calendarproject.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,8 +12,6 @@ import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Controller
 public class WebsocketController {
-
-	private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -39,10 +35,10 @@ public class WebsocketController {
 			throw new Exception("Erreur : jeton non reconnu !");
 
 		// Verify message format from the websocket
-		if(messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null && messageWebsocketDto.getType().equals("DELETE")) {
+		if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null
+				&& messageWebsocketDto.getType().equals("DELETE")) {
 			return messageWebsocketDto;
-		}
-		else if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null
+		} else if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() != null
 				&& (messageWebsocketDto.getType().equals("ADD") || messageWebsocketDto.getType().equals("EDIT")))
 			return messageWebsocketDto;
 		else {

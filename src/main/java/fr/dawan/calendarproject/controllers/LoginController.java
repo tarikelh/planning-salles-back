@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,14 +32,22 @@ public class LoginController {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
+	@Value("${app.google.captcha.secrets.prod}")
+	private String _secret;
+
+	@Value("${app.google.captcha.secrets.test}")
+	private String _secretTest;
+
+	@Value("${app.google.captcha.secrets.url}")
+	private String captchaUrl;
+
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
 
 		if (loginObj.getCaptchaToken() != null) {
 
-			String secret = "6Leav28cAAAAAGDXtovG7YrZIqgsAdddiZ9Lze4k";
-			String uri = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret + "&response="
-					+ loginObj.getCaptchaToken();
+			String secret = _secret;
+			String uri = captchaUrl + "?secret=" + secret + "&response=" + loginObj.getCaptchaToken();
 			ResponseEntity<CaptchaResponse> res = null;
 
 			URI url;

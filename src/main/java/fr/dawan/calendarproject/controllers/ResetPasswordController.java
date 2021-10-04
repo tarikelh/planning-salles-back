@@ -31,8 +31,6 @@ public class ResetPasswordController {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
-	String email = "";
-
 	@Autowired
 	private JavaMailSender javaMailSender;
 
@@ -43,14 +41,14 @@ public class ResetPasswordController {
 
 		if (uDto != null) {
 			Map<String, Object> claims = new HashMap<String, Object>();
-			claims.put("name", uDto.getFirstName()); // change for "getName()"
+			claims.put("name", uDto.getFullName());
+
 			// ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
 
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
-			// Voir avec Mohammed pour une adresse mail générique
 			// msg.setFrom("noreply@dawan.fr");
 			msg.setSubject("Réinitialisation du mot de passe DaCalendar");
 			msg.setText("Pour réinitialiser votre mot de passe, veuillez entrer ce code : " + token);
@@ -89,6 +87,7 @@ public class ResetPasswordController {
 			if (uDto != null && !uDto.getPassword().equals(hashedPwd)) {
 				// new password
 				uDto.setPassword(reset.getPassword());
+
 				// save the new password in DB
 				userService.saveOrUpdatePassword(uDto);
 

@@ -19,7 +19,6 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = { EntityFormatException.class })
 	protected ResponseEntity<Object> handleConflict(EntityFormatException ex, WebRequest request) {
-		System.out.println("coucou " + request);
 
 		HttpHeaders headers = new HttpHeaders();
 		StringWriter sw = new StringWriter();
@@ -29,11 +28,10 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 			sw.append(" :: :: ");
 			sw.append("Message :" + e.getMessage());
 			sw.append("\r\n");
-			
+
 		});
 
 		Logger.getAnonymousLogger().log(Level.SEVERE, sw.toString());
-		
 
 		return handleExceptionInternal(ex, ex.getErrors(), headers, HttpStatus.BAD_REQUEST, request);
 	}

@@ -43,10 +43,11 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
-	
+
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
 		List<User> users = userRepository.findAll();
+
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 		for (User u : users) {
@@ -59,13 +60,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<AdvancedUserDto> getAllUsers(int page, int size, String search) {
 		Pageable pagination = null;
-		
-		if(page != -1 & size != -1) 
+
+		if (page != -1 & size != -1)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
-		
-		List<User> users = userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pagination).get().collect(Collectors.toList());
+
+		List<User> users = userRepository
+				.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pagination)
+				.get().collect(Collectors.toList());
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 		for (User u : users) {
@@ -74,10 +77,11 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
+
 	@Override
 	public CountDto count(String search) {
-		return new CountDto(userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search));
+		return new CountDto(
+				userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search));
 	}
 
 	@Override
@@ -139,7 +143,8 @@ public class UserServiceImpl implements UserService {
 		}
 
 		u = userRepository.saveAndFlush(u);
-		return userMapper.userToAdvancedUserDto(u);
+		AdvancedUserDto advUser = userMapper.userToAdvancedUserDto(u);
+		return advUser;
 	}
 
 	@Override
@@ -237,17 +242,5 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return true;
-	}
-
-	@Override
-	public User getEntityById(long id) {
-		Optional<User> user = userRepository.findById(id);
-		return user.get();
-
-	}
-
-	@Override
-	public Long getLongId(User user) {
-		return user.getId();
 	}
 }
