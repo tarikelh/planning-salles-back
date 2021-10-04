@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
@@ -67,10 +68,15 @@ class InterventionControllerTest {
 	@MockBean
 	private InterventionService interventionService;
 
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+	
 	private List<InterventionDto> intervs = new ArrayList<InterventionDto>();
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+		
 		intervs.add(new InterventionDto(1, "commentaire id 1", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
 		intervs.add(new InterventionDto(2, "commentaire id 2", 2, 2, 2, "INTERN", true, LocalDate.now(),

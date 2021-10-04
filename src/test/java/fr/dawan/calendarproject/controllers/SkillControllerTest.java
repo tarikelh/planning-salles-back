@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.SkillService;
 
 
@@ -50,11 +51,16 @@ public class SkillControllerTest {
 	
 	@MockBean
 	SkillService skillService;
-	
+
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+
 	private List<AdvancedSkillDto> skills = new ArrayList<AdvancedSkillDto>();
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+
 		skills.add(new AdvancedSkillDto(1, "DevOps", 0, null));
 		skills.add(new AdvancedSkillDto(2, "POO", 0, null));
 		skills.add(new AdvancedSkillDto(3, "SQL", 0, null));

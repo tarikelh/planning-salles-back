@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.LoginDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.UserService;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
@@ -45,11 +46,16 @@ public class LoginControllerTest {
 	@MockBean
 	JwtTokenUtil jwtTokenUtil;
 	
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+
 	private AdvancedUserDto user;
 	private LoginDto login;
 	
 	@BeforeEach
-	public void beforeEach() {
+	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+		
 		user = new AdvancedUserDto(1, "Daniel", "Balavoine", 1,
 				"dbalavoine@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);

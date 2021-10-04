@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.CourseDto;
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.CourseService;
 
 @SpringBootTest
@@ -44,15 +45,20 @@ class CourseControllerTest {
 	private MockMvc mockMvc;
 
 	@Autowired
-	CourseController courseController;
+	private CourseController courseController;
 
 	@MockBean
-	CourseService courseService;
+	private CourseService courseService;
+
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
 
 	private List<CourseDto> courses = new ArrayList<CourseDto>();
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+		
 		courses.add(new CourseDto(1, "Java", "5", 0));
 		courses.add(new CourseDto(2, ".Net", "5", 0));
 		courses.add(new CourseDto(3, "Android", "5", 0));

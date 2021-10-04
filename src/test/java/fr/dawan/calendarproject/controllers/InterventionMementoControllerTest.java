@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
+import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.InterventionCaretaker;
 
 @SpringBootTest
@@ -28,6 +31,14 @@ public class InterventionMementoControllerTest {
 	@MockBean
 	private InterventionCaretaker caretaker;
 	
+	@MockBean
+	private TokenInterceptor tokenInterceptor;
+
+	@BeforeEach
+	void beforeEach() throws Exception {
+		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+	}
+
 	@Test
 	void shouldExportMementoCSV() throws Exception {
 		doNothing().when(caretaker).serializeInterventionMementosAsCSV();
@@ -43,7 +54,7 @@ public class InterventionMementoControllerTest {
 		assertEquals(response.getHeader("pragma"), "no-cache");
 		assertEquals(response.getHeader("Expires"), "0");
 	}
-	
+
 	@Test
 	void shouldReturnErrorWhenCSVCreationFails() throws Exception {
 		doThrow(Exception.class).when(caretaker).serializeInterventionMementosAsCSV();
