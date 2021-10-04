@@ -15,7 +15,7 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query("FROM User u LEFT JOIN FETCH u.skills LEFT JOIN FETCH u.location")
+	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.skills LEFT JOIN FETCH u.location")
 	List<User> findAll();
 
 	long countByFirstNameContainingOrLastNameContainingOrEmailContaining(String firstName, String lastName,
@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	User findDuplicateEmail(@Param("email") String email, @Param("id") long id);
 
 	// Verifier si le le group by id pose PB ?
-	@Query("FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type GROUP BY u.id")
+	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type")
 	List<User> findAllByType(@Param("type") UserType type);
 
 }

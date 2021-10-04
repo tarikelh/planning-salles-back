@@ -43,7 +43,8 @@ public class SkillServiceImpl implements SkillService {
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills() {
-		Set<Skill> skills = skillMapper.listSkillToSetSkill(skillRepository.findAll());
+		List<Skill> skills = skillRepository.findAll();
+
 		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
 
 		for (Skill s : skills) {

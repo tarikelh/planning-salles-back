@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
-		Set<User> users = userMapper.listUserToSetUser(userRepository.findAll());
+		List<User> users = userRepository.findAll();
 
 		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
