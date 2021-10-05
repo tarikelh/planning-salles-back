@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -325,20 +326,12 @@ public class InterventionServiceImpl implements InterventionService {
 			}
 		});
 
+		checkDatesIntegrity(dates);
+
 		if (toSplit.isPresent()) {
 			iList = new ArrayList<Intervention>();
 
 			for (DateRangeDto range : dates) {
-				for (DateRangeDto rangeToCheck : dates) {
-					if (range != rangeToCheck && range.isOverlapping(rangeToCheck)) {
-
-						Set<APIError> err = new HashSet<APIError>();
-						err.add(new APIError(400, range.getClass().toString(), "Dates Ovelaps",
-								"Intervention Splits Must Not Overlap.", "/api/interventions"));
-
-						throw new EntityFormatException(err);
-					}
-				}
 
 				if (range.getInterventionId() == interventionId || range.getInterventionId() == 0)
 					newSplit = (Intervention) toSplit.get().clone();
@@ -386,14 +379,63 @@ public class InterventionServiceImpl implements InterventionService {
 
 			iListDto = new ArrayList<InterventionDto>();
 
-			for (Intervention intervention : iList) {
+			for (Intervention intervention : iList)
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
-			}
 
 			return iListDto;
 		} else {
 			return null;
 		}
+	}
+
+	private void checkDatesIntegrity(List<DateRangeDto> dates) {
+		Set<APIError> errs = new HashSet<APIError>();
+		LocalDate dateStart;
+		LocalDate dateEnd;
+		LocalTime timeStart;
+		LocalTime timeEnd;
+		String message;
+		
+		for (DateRangeDto dateRange : dates) {
+			dateStart = dateRange.getDateStart();
+			dateEnd = dateRange.getDateEnd();
+			timeStart = dateRange.getTimeStart();
+			timeEnd = dateRange.getTimeEnd();
+			
+			if (dateStart.isAfter(dateEnd)) {
+				if (dateRange.getInterventionId() > 0)
+					message = "Date Start must be prior to End for Intervention #" + dateRange.getInterventionId();
+				else
+					message = "Date Start must be prior to End for New Intervention Split";
+
+				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd",
+						message, "/api/interventions"));
+			}
+			
+			if (timeStart.isAfter(timeEnd)) {
+				if (dateRange.getInterventionId() > 0)
+					message = "Time Start must be prior to End for Intervention #" + dateRange.getInterventionId();
+				else
+					message = "Time Start must be prior to End for New Intervention Split";
+
+				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd",
+						message, "/api/interventions"));
+			}
+
+			for (DateRangeDto rangeToCheck : dates) {
+				if (dateRange != rangeToCheck && dateRange.isOverlapping(rangeToCheck)) {
+
+					Set<APIError> err = new HashSet<APIError>();
+					err.add(new APIError(400, dateRange.getClass().toString(), "DatesOvelaps",
+							"Intervention Splits Must Not Overlap.", "/api/interventions"));
+
+					throw new EntityFormatException(err);
+				}
+			}
+		}
+		
+		if (!errs.isEmpty())
+			throw new EntityFormatException(errs);
 	}
 
 	@Override
