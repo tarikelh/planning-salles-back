@@ -95,7 +95,7 @@ public class InterventionController {
 		if (iList != null)
 			return ResponseEntity.ok(iList);
 		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no sub Intervention for master intervention id " + id + " or it does not exists.");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Master intervention  with id " + id + " does not exists.");
 	}
 	
 	// DELETE - supprimer
@@ -177,7 +177,7 @@ public class InterventionController {
 	}
 	
 	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId ,@RequestBody List<DateRangeDto> dates) {
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId, @RequestBody List<DateRangeDto> dates) {
 		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
 		
 		if (iDtoList != null) {
