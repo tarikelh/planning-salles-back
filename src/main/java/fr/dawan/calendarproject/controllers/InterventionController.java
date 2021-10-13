@@ -40,7 +40,6 @@ public class InterventionController {
 
 	@Autowired
 	private InterventionService interventionService;
-	
 
 	@Autowired
 	private EmailService emailService;
@@ -57,6 +56,12 @@ public class InterventionController {
 		return interventionService.getAllInterventions();
 	}
 
+	// GET - user - id
+	@GetMapping(value = "/user/{userId}", produces = "application/json")
+	public List<InterventionDto> getAllByUserId(@PathVariable("userId") long userId) {
+		return interventionService.getAllByUserId(userId);
+	}
+	
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
 	public InterventionDto getById(@PathVariable("id") long id) {

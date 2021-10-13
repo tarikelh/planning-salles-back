@@ -49,4 +49,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
 
+	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.user.id = :userId")
+	List<Intervention> getAllByUserId(@Param("userId") long userId);
+
 }
