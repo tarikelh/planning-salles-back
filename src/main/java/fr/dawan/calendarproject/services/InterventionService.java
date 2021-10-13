@@ -14,6 +14,8 @@ public interface InterventionService {
 
 	List<InterventionDto> getAllInterventions(int page, int max);
 
+	List<InterventionDto> getAllByUserId(long userId);
+
 	InterventionDto getById(long id);
 
 	void deleteById(long id, String email);
@@ -41,5 +43,4 @@ public interface InterventionService {
 	List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates);
 
 	List<InterventionDto> getSubByMasterId(long id);
-
 }

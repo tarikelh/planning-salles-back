@@ -87,6 +87,11 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	@Override
+	public List<InterventionDto> getAllByUserId(long userId) {
+		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
+	}
+
+	@Override
 	public InterventionDto getById(long id) {
 		Optional<Intervention> intervention = interventionRepository.findById(id);
 		if (intervention.isPresent())

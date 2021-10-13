@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -22,4 +24,7 @@ public interface InterventionMapper {
 	@Mapping(target = "type", source = "type")
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
 
+	List<InterventionDto> listInterventionToListInterventionDto(List<Intervention> interventions);
+	
+	List<Intervention> listInterventionDtoToListIntervention(List<InterventionDto> interventionDtos);
 }
