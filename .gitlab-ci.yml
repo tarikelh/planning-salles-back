@@ -1,11 +1,5 @@
 image: maven:3-jdk-8
 
-stages:
-  - build
-  - test
-  - deploy
-
-
 variables:
   MAVEN_OPTS: >
     -Dmaven.test.skip=true
@@ -13,6 +7,10 @@ variables:
   ARCHIVE_NAME: planning-jar
   BUILD_OUTPUT: target/planning.jar
 
+stages:
+  - build
+  - test
+  - deploy
 
 build:
   stage: build
