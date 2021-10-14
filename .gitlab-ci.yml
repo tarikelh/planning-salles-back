@@ -23,7 +23,7 @@ build:
     - mvn $MAVEN_OPTS clean package
     - ls -l
     - echo "--------------------------------------------------------------------"
-    - ls -l /target
+    - ls -l ./target
     - tar cfJ "$ARCHIVE_NAME.tar.xz" $BUILD_OUTPUT
   artifacts:
     expire_in: 1 hour
