@@ -11,7 +11,7 @@ variables:
     -Dmaven.test.skip=true
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
   ARCHIVE_NAME: planning-jar
-  BUILD_OUTPUT: target/calendarproject-1.0.jar
+  BUILD_OUTPUT: target/planning.jar
 
 
 build:
