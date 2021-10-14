@@ -190,6 +190,7 @@
 							<version>${org.mapstruct.version}</version>
 						</path>
 					</annotationProcessorPaths>
+					<finalName>planning</finalName>
 				</configuration>
 			</plugin>
 
