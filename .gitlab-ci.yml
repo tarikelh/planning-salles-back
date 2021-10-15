@@ -5,6 +5,7 @@ variables:
     -Dmaven.test.skip=true
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
   ARCHIVE_NAME: planning-jar
+  BUILD_NAME: planning-java
   BUILD_OUTPUT: target/planning-java.jar
 
 stages:
@@ -15,11 +16,11 @@ stages:
 build:
   stage: build
   tags:
-    # - dind
     - runner-java
   script: 
     - mvn $MAVEN_OPTS clean package
-    - tar cfJ "$ARCHIVE_NAME.tar.xz" $BUILD_OUTPUT
+    - mv $BUILD_OUTPUT .
+    - tar cfJ "$ARCHIVE_NAME.tar.xz" "$BUILD_NAME.jar"
   artifacts:
     expire_in: 1 hour
     paths:
@@ -29,7 +30,6 @@ archive:
   image: lgatica/openssh-client
   stage: deploy
   tags:
-    # - dind
     - runner-java
   script:
     - echo "$ARCHIVE_PKEY" > archive_pkey
