@@ -28,15 +28,6 @@ public class LoginController {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
-	@Value("${app.google.captcha.secrets.prod}")
-	private String _secret;
-
-	@Value("${app.google.captcha.secrets.test}")
-	private String _secretTest;
-
-	@Value("${app.google.captcha.secrets.url}")
-	private String captchaUrl;
-
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
 
