@@ -4,9 +4,9 @@ variables:
   MAVEN_OPTS: >
     -Dmaven.test.skip=true
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
-  ARCHIVE_NAME: planning-jar
-  BUILD_NAME: planning-java
-  BUILD_OUTPUT: target/planning-java.jar
+  ARCHIVE_NAME: cv-jar
+  BUILD_NAME: cv-java
+  BUILD_OUTPUT: target/cv-java.jar
 
 stages:
   - build
