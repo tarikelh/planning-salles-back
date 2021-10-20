@@ -33,7 +33,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 				&& !request.getRequestURI().equals("/check-token")
 				&& !request.getRequestURI().equals("/reset-password")
 				&& !request.getRequestURI().contains("/actuator")
-				&& !request.getRequestURI().contains("/users") {
+				&& !request.getRequestURI().contains("/api/users") {
 			String headerAuth = request.getHeader("Authorization");
 			if (headerAuth == null || headerAuth.trim().equals("") || headerAuth.length() < 7) {
 				throw new Exception("Erreur : jeton absent ou invalide !");
