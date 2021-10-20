@@ -27,6 +27,7 @@ public class LocationController {
 	private LocationService locationService;
 	
 	// GET
+	@CrossOrigin(origins = "https://planning.dawan.fr")
 	@GetMapping(produces = "application/json")
 	public List<LocationDto> getAll() {
 		return locationService.getAllLocations();
