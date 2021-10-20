@@ -31,7 +31,7 @@ public class CalendarprojectApplication {
 			// CROSS ORIGIN
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowCredentials(false).allowedHeaders("*").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*");
+				registry.addMapping("/**").allowCredentials(true).allowedHeaders("*").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*");
 			}
 
 			// CONVERTERS
