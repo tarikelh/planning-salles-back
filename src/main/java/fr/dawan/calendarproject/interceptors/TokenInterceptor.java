@@ -28,36 +28,39 @@ public class TokenInterceptor implements HandlerInterceptor {
 		// System.out.println("URI =" + request.getRequestURI());
 		// System.out.println("Header (authorization) :" +
 		// request.getHeader("Authorization"));
-
-		if (!request.getRequestURI().equals("/authenticate") && !request.getRequestURI().equals("/forgot")
-				&& !request.getRequestURI().equals("/check-token")
-				&& !request.getRequestURI().equals("/reset-password")
-				&& !request.getRequestURI().contains("/actuator")) {
-			String headerAuth = request.getHeader("Authorization");
-			if (headerAuth == null || headerAuth.trim().equals("") || headerAuth.length() < 7) {
-				throw new Exception("Erreur : jeton absent ou invalide !");
-			}
-
-			String token = headerAuth.substring(7);
-
-			// validation le token et extraire les infos
-			if (jwtTokenUtil.isTokenExpired(token))
-				throw new Exception("Erreur : jeton expiré !");
-
-			String email = jwtTokenUtil.getUsernameFromToken(token);
-			if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(token))
-				throw new Exception("Erreur : jeton non reconnu !");
-
-			// Vérification du role d'un utilisateur
-			String typeRequest = request.getMethod();
-			if (!typeRequest.equals("GET")) {
-				String userType = userService.findByEmail(email).getType();
-				if (!userType.equals(UserType.ADMINISTRATIF.toString())) {
-					throw new Exception("Erreur : Action non autorisée !");
+		if(!request.getMethod().equalsIgnoreCase("OPTIONS")){
+		
+			if (!request.getRequestURI().equals("/authenticate") && !request.getRequestURI().equals("/forgot")
+					&& !request.getRequestURI().equals("/check-token")
+					&& !request.getRequestURI().equals("/reset-password")
+					&& !request.getRequestURI().contains("/actuator")) {
+				String headerAuth = request.getHeader("Authorization");
+				if (headerAuth == null || headerAuth.trim().equals("") || headerAuth.length() < 7) {
+					throw new Exception("Erreur : jeton absent ou invalide !");
 				}
+	
+				String token = headerAuth.substring(7);
+	
+				// validation le token et extraire les infos
+				if (jwtTokenUtil.isTokenExpired(token))
+					throw new Exception("Erreur : jeton expiré !");
+	
+				String email = jwtTokenUtil.getUsernameFromToken(token);
+				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(token))
+					throw new Exception("Erreur : jeton non reconnu !");
+	
+				// Vérification du role d'un utilisateur
+				String typeRequest = request.getMethod();
+				if (!typeRequest.equals("GET")) {
+					String userType = userService.findByEmail(email).getType();
+					if (!userType.equals(UserType.ADMINISTRATIF.toString())) {
+						throw new Exception("Erreur : Action non autorisée !");
+					}
+				}
+				// TODO autres extractions du jeton ou autres traitements
 			}
-			// TODO autres extractions du jeton ou autres traitements
 		}
+		
 		return true;
 	}
 
