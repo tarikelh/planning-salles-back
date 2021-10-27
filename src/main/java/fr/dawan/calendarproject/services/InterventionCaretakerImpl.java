@@ -64,7 +64,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	@Override
-	@Async("taskExecutor")
+	//@Async("taskExecutor")
 	public void addMemento(String email, Intervention intervention) throws Exception {
 		InterventionMemento memento = new InterventionMemento();
 		InterventionMementoDto state = InterventionMementoMapper.interventionToInterventionMementoDto(intervention);
