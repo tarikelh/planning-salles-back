@@ -38,3 +38,7 @@ interventionMementoDates.csv
 
 ## PKCS #12
 #*.p12
+
+## DevSettings #12
+applicationsDevelopment.txt
+applicationsProduction.txt
