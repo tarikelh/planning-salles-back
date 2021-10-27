@@ -31,6 +31,6 @@ public interface InterventionMementoRepository extends JpaRepository<Interventio
 	long countFilter(@Param("interventionId") long interventionId, @Param("start") LocalDateTime dateStart, @Param("end") LocalDateTime dateEnd);
 	
 	// get the "last before" intervention memento to visualize modifications that were done
-	@Query(nativeQuery = true, value = "SELECT * FROM Intervention_Memento i WHERE i.intervention_id = :interventionId AND i.id < :interventionMementoId ORDER BY i.id DESC LIMIT 1")
+	@Query(nativeQuery = true, value = "SELECT * FROM intervention_memento i WHERE i.intervention_id = :interventionId AND i.id < :interventionMementoId ORDER BY i.id DESC LIMIT 1")
 	InterventionMemento getLastBeforeIntMemento(@Param("interventionId") long interventionId, @Param("interventionMementoId") long interventionMementoId);
 }
