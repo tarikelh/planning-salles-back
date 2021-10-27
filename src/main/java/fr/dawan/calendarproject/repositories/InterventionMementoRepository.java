@@ -21,7 +21,7 @@ public interface InterventionMementoRepository extends JpaRepository<Interventio
 	long countByInterventionId(@Param("interventionId") long interventionId);
 	
 	// get the last intervention memento to compare with
-	@Query(nativeQuery = true, value = "SELECT * FROM Intervention_Memento i WHERE i.intervention_id = :interventionId ORDER BY i.date_created_state DESC LIMIT 1")
+	@Query(nativeQuery = true, value = "SELECT * FROM intervention_memento i WHERE i.intervention_id = :interventionId ORDER BY i.date_created_state DESC LIMIT 1")
 	InterventionMemento getLastInterventionMemento(@Param("interventionId") long interventionId);
 	
 	@Query("FROM InterventionMemento i WHERE i.state.interventionId = :interventionId AND (i.dateCreatedState BETWEEN :start AND :end)")
