@@ -43,13 +43,12 @@ public class ResetPasswordController {
 			Map<String, Object> claims = new HashMap<String, Object>();
 			claims.put("name", uDto.getFullName());
 
-			// ajouter les données que l'on souhaite
+			// Ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
 
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
-			// msg.setFrom("noreply@dawan.fr");
 			msg.setSubject("Réinitialisation du mot de passe DaCalendar");
 			msg.setText("Pour réinitialiser votre mot de passe, veuillez entrer ce code : " + token);
 
