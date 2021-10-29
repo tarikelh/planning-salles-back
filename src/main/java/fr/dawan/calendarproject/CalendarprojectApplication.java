@@ -35,7 +35,6 @@ public class CalendarprojectApplication {
 						.exposedHeaders("Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Access-Control-Allow-Credentials",
 								"Origin", "Authorization", "X-Requested-With", "requestId", "Correlation-Id")
 						.allowCredentials(true);
-
 			}
 
 			// CONVERTERS

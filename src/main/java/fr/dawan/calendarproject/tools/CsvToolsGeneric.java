@@ -22,7 +22,7 @@ public class CsvToolsGeneric {
 							|| fields[i].getType().getSimpleName().equalsIgnoreCase("LocalDateTime")) {
 						bw.write(fields[i].getName());
 						if (i < fields.length - 1) {
-							bw.write(separator);							
+							bw.write(separator);
 						}
 					} else {
 						Class<?> cls = Class.forName(fields[i].getType().getName());
@@ -49,6 +49,8 @@ public class CsvToolsGeneric {
 					bw.newLine();
 				}
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 

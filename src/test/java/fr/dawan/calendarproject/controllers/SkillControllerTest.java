@@ -34,8 +34,6 @@ import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.SkillService;
 
-
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SkillControllerTest {

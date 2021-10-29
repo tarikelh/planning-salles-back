@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -54,6 +55,9 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 	@Autowired
 	private InterventionMementoMapper InterventionMementoMapper;
+
+	@Value("${app.storagefolder}")
+	private String storageFolder;
 
 	private String messageAction = null;
 
@@ -161,26 +165,19 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 	@Override
 	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
-		List<InterventionMemento> lstMem = intMementoRepository.findAll();
-		List<InterventionMemento> lstMemDates = new ArrayList<InterventionMemento>();
-
-		LocalDate dateStartInclusive = dateStart.minusDays(1);
-		LocalDate dateEndInclusive = dateEnd.plusDays(1);
-		for (InterventionMemento interventionMemento : lstMem) {
-			LocalDate mementoDate = interventionMemento.getDateCreatedState().toLocalDate();
-			if (mementoDate.isAfter(dateStartInclusive) && mementoDate.isBefore(dateEndInclusive)) {
-				lstMemDates.add(interventionMemento);
-			}
-		}
-		return lstMemDates;
+		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(), dateEnd.plusDays(1).atStartOfDay());
 	}
 
 	public void serializeInterventionMementosAsCSV() throws Exception {
-		CsvToolsGeneric.toCsv("interventionMemento.csv", getAllMemento(), ";");
+		String fileName = "interventionMementoDates.csv";
+		String path = storageFolder + "/" + fileName;
+		CsvToolsGeneric.toCsv(path, getAllMemento(), ";");
 	}
 
 	public void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
-		CsvToolsGeneric.toCsv("interventionMementoDates.csv", getAllMementoDates(dateStart, dateEnd), ";");
+		String fileName = "interventionMementoDates.csv";
+		String path = storageFolder + "/" + fileName;
+		CsvToolsGeneric.toCsv(path, getAllMementoDates(dateStart, dateEnd), ";");
 	}
 
 	@Override

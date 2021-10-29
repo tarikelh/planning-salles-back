@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,9 @@ public class InterventionMementoController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+
+	@Value("${app.storagefolder}")
+	private String storageFolder;
 
 	@GetMapping(value = "/{page}/{size}", produces = "application/json")
 	public List<InterventionMemento> getAll(@PathVariable("page") int page, @PathVariable("size") int size) {
@@ -122,7 +126,8 @@ public class InterventionMementoController {
 			caretaker.serializeInterventionMementosAsCSV();
 
 			String filename = "interventionMemento.csv";
-			File file = new File(filename);
+			String filePath = storageFolder + "/" + filename;
+			File file = new File(filePath);
 			Path path = Paths.get(file.getAbsolutePath());
 
 			HttpHeaders headers = new HttpHeaders();
@@ -148,7 +153,8 @@ public class InterventionMementoController {
 			caretaker.serializeInterventionMementosAsCSVByDates(dateStart, dateEnd);
 
 			String filename = "interventionMementoDates.csv";
-			File file = new File(filename);
+			String filePath = storageFolder + "/" + filename;
+			File file = new File(filePath);
 			Path path = Paths.get(file.getAbsolutePath());
 
 			HttpHeaders headers = new HttpHeaders();
@@ -161,6 +167,7 @@ public class InterventionMementoController {
 					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
 
 		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("création csv non réalisée");
 		}
 	}
