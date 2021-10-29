@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.CountDto;
@@ -64,7 +63,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	@Override
-	//@Async("taskExecutor")
+	// @Async("taskExecutor")
 	public void addMemento(String email, Intervention intervention) throws Exception {
 		InterventionMemento memento = new InterventionMemento();
 		InterventionMementoDto state = InterventionMementoMapper.interventionToInterventionMementoDto(intervention);
@@ -110,7 +109,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 			intToRestore.setMasterIntervention(null);
 
 		interventionService.checkIntegrity(InterventionMapper.interventionToInterventionDto(intToRestore));
-		
+
 		intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
 		interventionRepository.saveAndFlush(intToRestore);
 
@@ -187,10 +186,12 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	public CountDto count() {
 		return new CountDto(intMementoRepository.count());
 	}
-	
+
 	@Override
-	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd, int page, int size) {
-		return intMementoRepository.filterByIntIdAndDates(interventionId, dateStart, dateEnd, PageRequest.of(page, size));
+	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd,
+			int page, int size) {
+		return intMementoRepository.filterByIntIdAndDates(interventionId, dateStart, dateEnd,
+				PageRequest.of(page, size));
 	}
 
 	@Override
