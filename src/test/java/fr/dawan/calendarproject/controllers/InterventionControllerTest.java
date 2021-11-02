@@ -46,6 +46,7 @@ import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.XProperty;
 
@@ -70,12 +71,16 @@ class InterventionControllerTest {
 
 	@MockBean
 	private TokenInterceptor tokenInterceptor;
-	
+
+	@MockBean
+	private JwtTokenUtil jwtTokenUtil;
+
 	private List<InterventionDto> intervs = new ArrayList<InterventionDto>();
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
+		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn("test@testEmail.com");
 		
 		intervs.add(new InterventionDto(1, "commentaire id 1", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
@@ -153,7 +158,9 @@ class InterventionControllerTest {
 		final long intId = 1;
 		doNothing().when(interventionService).deleteById(any(Long.class), any(String.class));
 		
-		String res = mockMvc.perform(delete("/api/interventions/{id}", intId).accept(MediaType.APPLICATION_JSON))
+		String res = mockMvc.perform(delete("/api/interventions/{id}", intId)
+				.accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose"))
 				.andExpect(status().isAccepted())
 				.andReturn().getResponse().getContentAsString();
 		
@@ -180,11 +187,12 @@ class InterventionControllerTest {
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
-		
+
 		when(interventionService.saveOrUpdate(any(InterventionDto.class), any(String.class))).thenReturn(result);
-		
+
 		mockMvc.perform(post("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose")
 				.content(intervJson))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(4)))
@@ -209,6 +217,7 @@ class InterventionControllerTest {
 		
 		mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose")
 				.content(intervJson))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.comment", is(newComment)))
@@ -228,6 +237,7 @@ class InterventionControllerTest {
 		
 		String res = mockMvc.perform(put("/api/interventions").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose")
 				.content(intervJson))
 				.andExpect(status().isNotFound())
 				.andReturn().getResponse().getContentAsString();

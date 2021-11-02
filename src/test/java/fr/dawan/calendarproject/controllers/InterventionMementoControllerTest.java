@@ -29,10 +29,10 @@ public class InterventionMementoControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@MockBean
 	private InterventionCaretaker caretaker;
-	
+
 	@MockBean
 	private TokenInterceptor tokenInterceptor;
 
@@ -89,7 +89,6 @@ public class InterventionMementoControllerTest {
 		mockMvc.perform(get("/api/intervention-memento/export-csv-dates?dateStart=2021-08-10&dateEnd=2021-08-12")
 				.accept("text/csv"))
 				.andExpect(status().isInternalServerError());
-		
 	}
 
 }

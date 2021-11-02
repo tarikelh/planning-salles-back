@@ -81,9 +81,9 @@ public class SkillControllerTest {
 	
 	@Test
 	public void shouldFetchAllSkillsPagination() throws Exception {
-		when(skillService.getAllSkills(-1, -1, "")).thenReturn(skills);
+		when(skillService.getAllSkills(any(int.class), any(int.class), any(String.class))).thenReturn(skills);
 		
-		mockMvc.perform(get("/api/skills").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/skills/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(skills.size())))
 				.andExpect(jsonPath("$[2].title", is(skills.get(2).getTitle())));

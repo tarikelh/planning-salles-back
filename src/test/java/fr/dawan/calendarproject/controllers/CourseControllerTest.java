@@ -81,9 +81,10 @@ class CourseControllerTest {
 
 	@Test
 	void shouldFetchAllCoursesPagination() throws Exception {
-		when(courseService.getAllCourses(-1, -1, "")).thenReturn(courses);
+		when(courseService.getAllCourses(any(int.class), any(int.class), any(String.class)))
+				.thenReturn(courses);
 
-		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/courses/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(courses.size())))
 				.andExpect(jsonPath("$[0].title", is("Java")));

@@ -86,12 +86,12 @@ class UserControllerTest {
 				.andExpect(jsonPath("$.size()", is(users.size())))
 				.andExpect(jsonPath("$[2].lastName", is(users.get(2).getLastName())));
 	}
-	
+
 	@Test
 	void shouldFetchAllUsersPagination() throws Exception {
-		when(userService.getAllUsers(-1, -1, "")).thenReturn(users);
+		when(userService.getAllUsers(any(int.class), any(int.class), any(String.class))).thenReturn(users);
 		
-		mockMvc.perform(get("/api/users").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/users/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(users.size())))
 				.andExpect(jsonPath("$[2].lastName", is(users.get(2).getLastName())));
