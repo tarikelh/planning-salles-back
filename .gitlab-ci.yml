@@ -34,10 +34,6 @@ test:
     - mvn verify
   artifacts:
     expire_in: 1 hour
-    reports:
-      junit:
-        - target/surefire-reports/TEST-*.xml
-        - target/failsafe-reports/TEST-*.xml
 
 archive:
   image: lgatica/openssh-client
