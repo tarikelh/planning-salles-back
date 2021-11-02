@@ -4,6 +4,8 @@ variables:
   MAVEN_OPTS: >
     -Dmaven.test.skip=true
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+  MAVEN_TEST_OPTS: >
+    -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
   ARCHIVE_NAME: planning-jar
   BUILD_NAME: planning-java
   BUILD_OUTPUT: target/planning-java.jar
@@ -31,8 +33,8 @@ test:
   tags:
     - runner-java
   script:
-    - mvn verify
-    - mvn -Dtest InterventionServiceImplTest test
+    - mvn $MAVEN_TEST_OPTS clean package
+    - mvn test
   artifacts:
     expire_in: 1 hour
 
