@@ -1,4 +1,4 @@
-package fr.dawan.calendarproject.tools;
+package fr.dawan.calendarproject.websocket;
 
 import java.util.Map;
 

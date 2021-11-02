@@ -1,4 +1,4 @@
-package fr.dawan.calendarproject.tools;
+package fr.dawan.calendarproject.websocket;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.exceptions.TokenException;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -59,38 +60,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 				// Enable SockJS fallback options
 				.withSockJS()
 				.setInterceptors(handshakeInterceptor);
-	}
-
-	// Token verification when client try to connect to the websocket
-	@Override
-	public void configureClientInboundChannel(ChannelRegistration registration) {
-		registration.interceptors(new ChannelInterceptor() {
-
-			@Override
-			public Message<?> preSend(Message<?> message, MessageChannel channel) {
-				StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-					List<String> authorization = accessor.getNativeHeader("X-Authorization");
-					logger.debug("X-Authorization: {}", authorization);
-
-					String accessToken = authorization.get(0).split(" ")[1];
-
-					if (jwtTokenUtil.isTokenExpired(accessToken)) {
-						error = new APIError(999, "websocket", "TokenExpired", "Error : token expired !", "websocket");
-						throw new TokenException(error);
-					}
-
-					String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-					if (!TokenSaver.tokensByEmail.containsKey(email)
-							|| !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
-						error = new APIError(999, "websocket", "TokenError", "Error : token not known !", "websocket");
-						throw new TokenException(error);
-					}
-
-				}
-				return message;
-			}
-		});
 	}
 
 }
