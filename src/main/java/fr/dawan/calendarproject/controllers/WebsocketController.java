@@ -28,11 +28,11 @@ public class WebsocketController {
 		String accessToken = header.split(" ")[1];
 
 		if (jwtTokenUtil.isTokenExpired(accessToken))
-			throw new Exception("Erreur : jeton expiré !");
+			throw new Exception("Error : token expired ! - WebSocket");
 
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
 		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
-			throw new Exception("Erreur : jeton non reconnu !");
+			throw new Exception("Error : token not known ! - WebSocket");
 
 		// Verify message format from the websocket
 		if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null
@@ -42,7 +42,7 @@ public class WebsocketController {
 				&& (messageWebsocketDto.getType().equals("ADD") || messageWebsocketDto.getType().equals("EDIT")))
 			return messageWebsocketDto;
 		else {
-			throw new Exception("Erreur : websocket message incorrect !");
+			throw new Exception("Error : incorrect message ! - WebSocket");
 		}
 
 	}

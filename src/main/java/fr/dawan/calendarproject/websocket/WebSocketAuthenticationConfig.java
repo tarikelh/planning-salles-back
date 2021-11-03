@@ -1,4 +1,4 @@
-package fr.dawan.calendarproject.tools;
+package fr.dawan.calendarproject.websocket;
 
 import java.util.List;
 
@@ -19,10 +19,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.exceptions.TokenException;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Configuration
 @EnableWebSocketMessageBroker
-//@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConfigurer {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebSocketAuthenticationConfig.class);
