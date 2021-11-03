@@ -84,9 +84,9 @@ public class LocationControllerTest {
 	@Test
 	public void shouldFetchAllLocationsPagination() throws Exception {
 		
-		when(locationService.getAllLocations(-1, -1, "")).thenReturn(locs);
+		when(locationService.getAllLocations(any(int.class), any(int.class), any(String.class))).thenReturn(locs);
 		
-		mockMvc.perform(get("/api/locations").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/api/locations/pagination?page=0&size=3&search=test").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(locs.size())))
 				.andExpect(jsonPath("$[0].city", is(locs.get(0).getCity())))

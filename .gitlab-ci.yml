@@ -26,6 +26,15 @@ build:
     paths:
       - "$ARCHIVE_NAME.tar.xz"
 
+.test:
+  stage: test
+  tags:
+    - runner-java
+  script:
+    - mvn -Dmaven.test.skip=false verify
+  artifacts:
+    expire_in: 1 hour
+
 archive:
   image: lgatica/openssh-client
   stage: deploy

@@ -30,24 +30,6 @@ public class LoginController {
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
 
-//		if (loginObj.getCaptchaToken() != null) {
-//
-//			String secret = _secret;
-//			String uri = captchaUrl + "?secret=" + secret + "&response=" + loginObj.getCaptchaToken();
-//			ResponseEntity<CaptchaResponse> res = null;
-//
-//			URI url;
-//
-//			try {
-//				RestTemplate restTemplate = new RestTemplate();
-//				url = new URI(uri);
-//				res = restTemplate.getForEntity(url, CaptchaResponse.class);
-//
-//				if (res.getStatusCode() == HttpStatus.OK) {
-//					CaptchaResponse cr = res.getBody();
-//
-//					if (cr.getSuccess()) {
-
 		UserDto uDto = userService.findByEmail(loginObj.getEmail());
 
 		String hashedPwd = null;
@@ -70,15 +52,5 @@ public class LoginController {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
 					.body("Erreur : identifiants ou mot de passe incorrects !");
 		}
-//					} else {
-//						return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//								.body("Erreur : Captcha invalide ou expiré !");
-//					}
-//				}
-//			} catch (URISyntaxException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : captchat absant !");
 	}
 }
