@@ -33,6 +33,7 @@ test:
   tags:
     - runner-java
   script:
+    - ls
     - mvn -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository clean test
   artifacts:
     expire_in: 1 hour
