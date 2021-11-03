@@ -93,20 +93,20 @@ class InterventionServiceImplTest {
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0));
 
 		Intervention masterDummy = new Intervention(2, "I am a master Intervention", mockedLoc, mockedCourse,
-				mockedUser, InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				mockedUser, InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(2),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), true, null, 0);
 		interventions.add(masterDummy);
 
 		Intervention slaveDummy = new Intervention(3, "I am a slave Intervention", mockedLoc, mockedCourse, mockedUser,
-				InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, masterDummy, 0);
 		interventions.add(slaveDummy);
 
-		iDtos.add(new InterventionDto(1, "I am lambda Intervention", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
+		iDtos.add(new InterventionDto(1, "I am lambda Intervention", 0, 0, 0, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
-		iDtos.add(new InterventionDto(2, "I am a master Intervention", 2, 2, 2, "INTERN", true, LocalDate.now(),
+		iDtos.add(new InterventionDto(2, "I am a master Intervention", 0, 0, 0, "INTERN", true, LocalDate.now(),
 				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0));
-		iDtos.add(new InterventionDto(3, "I am a slave Intervention", 3, 3, 3, "INTERN", true,
+		iDtos.add(new InterventionDto(3, "I am a slave Intervention", 0, 0, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2, false, 0));
 	}
 
@@ -211,7 +211,7 @@ class InterventionServiceImplTest {
 		User mockedUser = Mockito.mock(User.class);
 
 		InterventionDto newIntervDto = new InterventionDto(
-				0, "I am a New Intervention", 3, 3, 3, "INTERN", true,
+				0, "I am a New Intervention", 0, 0, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 
@@ -226,7 +226,7 @@ class InterventionServiceImplTest {
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0);
 		
 		InterventionDto expectedInterv = new InterventionDto(
-				5, "I am a New Intervention", 3, 3, 3, "INTERN", true,
+				5, "I am a New Intervention", 0, 0, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 		
@@ -304,22 +304,22 @@ class InterventionServiceImplTest {
 		User mockedUser = Mockito.mock(User.class);
 		
 		InterventionDto newIntervDto = new InterventionDto(
-				0, "I am a New Intervention", 3, 3, 3, "INTERN", true,
+				0, "I am a New Intervention", 0, 0, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 2, false, 0);
 
 		Intervention newInterv = new Intervention(
 				0, "I am a New Intervention", null, null, null,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), true, interventions.get(1), 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), false, interventions.get(1), 0);
 
 		Intervention savedInterv = new Intervention(
 				5, "I am a New Intervention", mockedLoc, mockedCourse, mockedUser,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), true, interventions.get(1), 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), false, interventions.get(1), 0);
 
 		InterventionDto expectedInterv = new InterventionDto(
-				5, "I am a New Intervention", 3, 3, 3, "INTERN", true,
+				5, "I am a New Intervention", 0, 0, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), 2, false, 0);
 

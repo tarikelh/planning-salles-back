@@ -11,8 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 
-//Classe de démarrage >> Spring scannera fr.dawan.calendarproject et tout ces sous packages
-
 @SpringBootApplication
 public class CalendarprojectApplication {
 
@@ -43,7 +41,7 @@ public class CalendarprojectApplication {
 				registry.addConverter(new fr.dawan.calendarproject.dto.StringToUserDtoConverter());
 			}
 
-			// Intercepteurs
+			// INTERCEPTORS
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {
 				registry.addInterceptor(tokenInterceptor);

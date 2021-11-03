@@ -171,5 +171,86 @@ public class InterventionDto implements Cloneable {
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + (int) (courseId ^ (courseId >>> 32));
+		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
+		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (isMaster ? 1231 : 1237);
+		result = prime * result + (int) (locationId ^ (locationId >>> 32));
+		result = prime * result + (int) (masterInterventionId ^ (masterInterventionId >>> 32));
+		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
+		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + (int) (userId ^ (userId >>> 32));
+		result = prime * result + (validated ? 1231 : 1237);
+		result = prime * result + version;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InterventionDto other = (InterventionDto) obj;
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		} else if (!comment.equals(other.comment))
+			return false;
+		if (courseId != other.courseId)
+			return false;
+		if (dateEnd == null) {
+			if (other.dateEnd != null)
+				return false;
+		} else if (!dateEnd.equals(other.dateEnd))
+			return false;
+		if (dateStart == null) {
+			if (other.dateStart != null)
+				return false;
+		} else if (!dateStart.equals(other.dateStart))
+			return false;
+		if (id != other.id)
+			return false;
+		if (isMaster != other.isMaster)
+			return false;
+		if (locationId != other.locationId)
+			return false;
+		if (masterInterventionId != other.masterInterventionId)
+			return false;
+		if (timeEnd == null) {
+			if (other.timeEnd != null)
+				return false;
+		} else if (!timeEnd.equals(other.timeEnd))
+			return false;
+		if (timeStart == null) {
+			if (other.timeStart != null)
+				return false;
+		} else if (!timeStart.equals(other.timeStart))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (userId != other.userId)
+			return false;
+		if (validated != other.validated)
+			return false;
+		if (version != other.version)
+			return false;
+		return true;
+	}
+
+	
 }
 
