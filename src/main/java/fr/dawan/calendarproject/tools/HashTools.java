@@ -5,6 +5,17 @@ import java.security.MessageDigest;
 
 public class HashTools {
 
+	/**
+	 * Hash a password with SHA-512. 
+	 * 
+	 * <p>
+	 * SHA-512 is a hashing algorithm used in cryptography.
+	 * </p>
+	 * 
+	 * @param input Password that needs to be encrypted
+	 * @return Password encrypted
+	 * @throws Exception Manage 'NoSuchAlgorithmException' for the getInstance() and 'UnsupportedEncodingException' for the getBytes()
+	 */
 	public static String hashSHA512(String input) throws Exception{
 		//getInstance récupère le singleton MessageDigest
 		MessageDigest md = MessageDigest.getInstance("SHA-512");

@@ -4,6 +4,17 @@ import java.lang.reflect.Field;
 
 public class CompareGeneric {
 	
+	/**
+	 * Generic method to compare two objects to know which modifications were done. 
+	 * <p>
+	 * This method is used for interventionMemento to know which modifications are applied to an intervention.
+	 * </p>
+	 * 
+	 * @param objAfter updated object
+	 * @param objBefore same object but with the state before the modification
+	 * @return String return a String with all fields that were modified between objBefore and objAfter. For instance "dateStart / dateEnd / location /"
+	 * @throws Exception handle exception 'IllegalAccessException' when get value of fields
+	 */
 	public static <T> String compareObjects(T objAfter, T objBefore) throws Exception {
 		Field[] fieldsAfter = objAfter.getClass().getDeclaredFields();
 		Field[] fieldsBefore = objBefore.getClass().getDeclaredFields();
