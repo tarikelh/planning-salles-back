@@ -55,9 +55,9 @@ public class LocationServiceImpl implements LocationService {
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
 		Pageable pagination = null;
 		
-		if(page != -1 & size != -1) 
+		if(page != -1 && size != -1) 
 			pagination = PageRequest.of(page, size);
-		else
+		else if(page == -1 && size == -1)
 			pagination = Pageable.unpaged();
 		
 		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
