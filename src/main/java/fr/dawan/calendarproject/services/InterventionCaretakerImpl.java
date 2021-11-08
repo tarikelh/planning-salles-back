@@ -2,13 +2,13 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.CountDto;
@@ -50,10 +50,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	private CourseRepository courseRepository;
 
 	@Autowired
-	private InterventionMapper InterventionMapper;
+	private InterventionMapper interventionMapper;
 
 	@Autowired
-	private InterventionMementoMapper InterventionMementoMapper;
+	private InterventionMementoMapper interventionMementoMapper;
 
 	@Value("${app.storagefolder}")
 	private String storageFolder;
@@ -67,10 +67,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	@Override
-	// @Async("taskExecutor")
-	public void addMemento(String email, Intervention intervention) throws Exception {
+	@Async("taskExecutor")
+	public InterventionMemento addMemento(String email, Intervention intervention) throws Exception {
 		InterventionMemento memento = new InterventionMemento();
-		InterventionMementoDto state = InterventionMementoMapper.interventionToInterventionMementoDto(intervention);
+		InterventionMementoDto state = interventionMementoMapper.interventionToInterventionMementoDto(intervention);
 		memento.setState(state);
 
 		if (intMementoRepository.countByInterventionId(memento.getState().getInterventionId()) != 0) {
@@ -93,13 +93,13 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		memento.setMementoMessage(
 				new MementoMessageDto(memento.getState().getInterventionId(), messageAction, email, modificationsDone));
 
-		intMementoRepository.saveAndFlush(memento);
+		return intMementoRepository.saveAndFlush(memento);
 	}
 
 	@Override
 	public InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
-		Intervention intToRestore = InterventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
+		Intervention intToRestore = interventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
 		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
 
 		intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).get());
@@ -112,7 +112,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		else
 			intToRestore.setMasterIntervention(null);
 
-		interventionService.checkIntegrity(InterventionMapper.interventionToInterventionDto(intToRestore));
+		interventionService.checkIntegrity(interventionMapper.interventionToInterventionDto(intToRestore));
 
 		intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
 		interventionRepository.saveAndFlush(intToRestore);
@@ -124,7 +124,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 		intMementoRepository.saveAndFlush(newIMem);
 
-		InterventionDto intDto = InterventionMapper.interventionToInterventionDto(intToRestore);
+		InterventionDto intDto = interventionMapper.interventionToInterventionDto(intToRestore);
 
 		return intDto;
 	}
