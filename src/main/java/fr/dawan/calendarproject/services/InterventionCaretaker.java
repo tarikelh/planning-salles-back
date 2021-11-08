@@ -11,7 +11,7 @@ import fr.dawan.calendarproject.entities.InterventionMemento;
 
 public interface InterventionCaretaker {
 
-	void addMemento(String email, Intervention intervention) throws Exception;
+	InterventionMemento addMemento(String email, Intervention intervention) throws Exception;
 
 	InterventionMemento getMementoById(long id);
 
@@ -34,5 +34,4 @@ public interface InterventionCaretaker {
 	CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd);
 	
 	InterventionMemento getLastBeforeMemento(long interventionId, long interventionMementoId);
-
 }

@@ -5,9 +5,21 @@ import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class CsvToolsGeneric {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	public static <T> void toCsv(String filePath, List<T> lp, String separator) throws Exception {
+public class CsvToolsGeneric {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CsvToolsGeneric.class);
+
+	/**
+	 * Generic method to generate a Csv file
+	 * 
+	 * @param filePath Storage folder path for the selected file
+	 * @param lp List of objects we want to add in the CSV file
+	 * @param separator Seperate each object fields with a separator, for instance ';'
+	 */
+	public static <T> void toCsv(String filePath, List<T> lp, String separator) {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
 			if (lp != null && lp.size() > 0) {
 				Field[] fields = lp.get(0).getClass().getDeclaredFields();
@@ -50,7 +62,8 @@ public class CsvToolsGeneric {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error("CSV method error ", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

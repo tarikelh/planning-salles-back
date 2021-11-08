@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +42,8 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	private CourseMapper courseMapper;
 	
+	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
+	
 	@Override
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
@@ -56,9 +60,9 @@ public class CourseServiceImpl implements CourseService {
 	public List<CourseDto> getAllCourses(int page, int size, String search) {
 		Pageable pagination = null;
 		
-		if(page != -1 & size != -1) 
+		if(page != -1 && size != -1) 
 			pagination = PageRequest.of(page, size);
-		else
+		else if(page == -1 && size == -1)
 			pagination = Pageable.unpaged();
 		
 		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
@@ -140,6 +144,8 @@ public class CourseServiceImpl implements CourseService {
 				}
 				courseRepository.saveAndFlush(c);
 			}
+		} else {
+			logger.error("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 

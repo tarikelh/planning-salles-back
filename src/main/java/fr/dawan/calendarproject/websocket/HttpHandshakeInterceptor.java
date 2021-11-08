@@ -13,11 +13,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+/**
+ * <p>
+ * For easy deployment, the WebSocket uses HTTP Handshake. 
+ * This means that for the first time, the client sends an HTTP request to the server, indicating to the server that it is not an HTTP by asking it to equip itself with the WebSocket. 
+ * They ultimately form a connection.
+ *</p>
+ */
 @Component
 public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpHandshakeInterceptor.class);
 
+	/**
+	 *Handles events immediately before the WebSocket connects with HTTP.
+	 */
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
@@ -31,6 +41,9 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 		return true;
 	}
 
+	/**
+	 *Handles events immediately after the WebSocket connects with HTTP.
+	 */
 	@Override
 	public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Exception exception) {

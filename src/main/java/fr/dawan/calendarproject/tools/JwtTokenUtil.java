@@ -12,16 +12,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+/**
+ *Class with methods to manage JWT Token
+ */
 @Component
 public class JwtTokenUtil implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7318632445064842428L;
 
 
-	// TODO changer la validité ici
+	// TODO change validity here
 	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
 	@Value("${jwt.secret}")
