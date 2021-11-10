@@ -90,6 +90,21 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getAllByUserId(long userId) {
 		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
 	}
+	
+	@Override
+	public List<InterventionDto> getAllByUserIdAndFilter(long userId, String filterCourse, long filterLocation, 
+			String filterStatus, String filterType) {
+		InterventionStatus filterTypeEnum = null;
+		if (InterventionStatus.contains(filterType)) {
+			filterTypeEnum = InterventionStatus.valueOf(filterType);
+		}
+		List<Intervention> interventions = interventionRepository.getAllByUserIdAndFilter(userId, filterCourse, filterLocation, filterStatus, filterTypeEnum);
+		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
+		for (Intervention intervention : interventions) {
+			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
+		}
+		return interventionsDto;
+	}
 
 	@Override
 	public InterventionDto getById(long id) {

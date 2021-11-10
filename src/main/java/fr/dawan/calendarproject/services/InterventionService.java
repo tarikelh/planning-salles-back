@@ -15,6 +15,8 @@ public interface InterventionService {
 	List<InterventionDto> getAllInterventions(int page, int max);
 
 	List<InterventionDto> getAllByUserId(long userId);
+	
+	List<InterventionDto> getAllByUserIdAndFilter(long userId, String filterCourse, long filterLocation, String filterStatus, String filterType);
 
 	InterventionDto getById(long id);
 

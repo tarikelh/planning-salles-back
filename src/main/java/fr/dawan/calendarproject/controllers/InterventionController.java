@@ -62,6 +62,14 @@ public class InterventionController {
 		return interventionService.getAllByUserId(userId);
 	}
 	
+	// GET - user - id & filters
+	@GetMapping(value = "/user/filter/{userId}", produces = "application/json")
+	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, @RequestParam(value = "filterCourse", defaultValue = "") String filterCourse, 
+			@RequestParam(value = "filterLocation", defaultValue = "-1") long filterLocation, @RequestParam(value = "filterStatus", defaultValue = "") String filterStatus, 
+			@RequestParam(value = "filterType", defaultValue = "") String filterType) {
+		return interventionService.getAllByUserIdAndFilter(userId, filterCourse, filterLocation, filterStatus, filterType);
+	}
+	
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
 	public InterventionDto getById(@PathVariable("id") long id) {

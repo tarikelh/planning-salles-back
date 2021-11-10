@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
 
 @Repository
@@ -49,7 +50,11 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
 
-	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.user.id = :userId")
+	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")
 	List<Intervention> getAllByUserId(@Param("userId") long userId);
+	
+	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId AND i.course = :filterCourse AND i.location.id = :filterLocation AND i.validated = :filterStatus AND i.type :filterType")
+	List<Intervention> getAllByUserIdAndFilter(@Param("userId") long userId, @Param("filterCourse") String filterCourse,
+			@Param("filterLocation") long filterLocation, @Param("filterStatus") String filterStatus, @Param("filterType") InterventionStatus filterType);
 
 }
