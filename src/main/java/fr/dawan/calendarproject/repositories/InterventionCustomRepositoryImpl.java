@@ -30,17 +30,16 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 	}
 
 	// URL :
-	// /api/interventions/filter/{userId}?filterCourse=agile&filterDate=06/10/2021&filterLocation=1&filterValidated=true&filterType=INTERN
+	// /api/interventions/filter/{userId}?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
 	// paramsMap :
-	// ?filterCourse=agile&filterDate=06/10/2021&filterLocation=1&filterValidated=true&filterType=INTERN
-	private Query getQueryBy(String req, Map<String, String[]> paramsMap) {
+	// ?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
+	private Query getQueryBy(long userId, String req, Map<String, String[]> paramsMap) {
 		StringBuilder jpqlRequest = new StringBuilder(req);
 		
 		for (String param : paramsMap.keySet()) {
 			if (!checkEmptyArray(paramsMap.get(param))) {
 				if (param.equals("filterCourse")) {
 					jpqlRequest.append(" AND i.course.title like :" + param);
-
 				} else if (param.equals("filterLocation")) {
 					jpqlRequest.append(" AND i.location.id = :" + param);
 				} else if (param.equals("filterValidated")) {
@@ -50,7 +49,11 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 				}
 			}
 		}
-		System.out.println("REQ : " + jpqlRequest.toString());
+		
+		if (userId != 0) {
+			jpqlRequest.append(" AND i.user.id = " + userId);
+		}
+
 		Query query = em.createQuery(jpqlRequest.toString());
 		for (String param : paramsMap.keySet()) {
 			if (!checkEmptyArray(paramsMap.get(param))) {
@@ -63,8 +66,6 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 					} else if (param.equals("filterType")) {
 						paramType = InterventionStatus.class;
 					}
-					
-					System.out.println("class field : " + param + " :::> " + paramType);
 
 					if (paramType.equals(String.class)) {
 						query.setParameter(param, "%" + paramsMap.get(param)[0] + "%");
@@ -90,8 +91,8 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Intervention> searchBy(long userId, Map<String, String[]> paramsMap) {
-		String req = "SELECT * FROM Intervention i WHERE i.isMaster = false AND i.user.id = :userId";
-		Query query = getQueryBy(req, paramsMap);
+		String req = "SELECT i FROM Intervention i WHERE i.isMaster = false";
+		Query query = getQueryBy(userId, req, paramsMap);
 		return (List<Intervention>) query.getResultList();
 	}
 

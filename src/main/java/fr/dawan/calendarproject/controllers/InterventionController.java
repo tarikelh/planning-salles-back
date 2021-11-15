@@ -65,7 +65,7 @@ public class InterventionController {
 	}
 	
 	// GET - user - id & filters
-	// /api/interventions/filter/{userId}?filterCourse=agile&filterDate=06/10/2021&filterLocation=1&filterValidated=true&filterType=INTERN
+	// /api/interventions/filter/{userId}?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
 	@GetMapping(value = "/filter/{userId}", produces = "application/json")
 	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, HttpServletRequest request) {
 		Map<String, String[]> paramsMap = request.getParameterMap();

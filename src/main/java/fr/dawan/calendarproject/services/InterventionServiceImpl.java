@@ -96,20 +96,20 @@ public class InterventionServiceImpl implements InterventionService {
 		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
 	}
 	
+	//NB : method used for mobile application
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
-		/*
-		InterventionStatus filterTypeEnum = null;
-		if (InterventionStatus.contains(filterType)) {
-			filterTypeEnum = InterventionStatus.valueOf(filterType);
+		//verify if user exists
+		if(userRepository.findById(userId).get() != null) {
+			//search filtered interventions from the user selected
+			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
+			List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
+			for (Intervention intervention : interventions) {
+				interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
+			}
+			return interventionsDto;
 		}
-		*/
-		List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
-		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
-		for (Intervention intervention : interventions) {
-			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
-		}
-		return interventionsDto;
+		return null;
 	}
 
 	@Override
