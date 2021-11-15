@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,6 +34,9 @@ public class ResetPasswordController {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
+	
+	@Value("${vue.baseurl}")
+    private String vueUrl;
 
 	@PostMapping(value = "/forgot", produces = "application/json")
 	public ResponseEntity<?> sendTokenByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
@@ -46,11 +50,13 @@ public class ResetPasswordController {
 			// Ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
+			
+			String resetLink = vueUrl + "/#/fr/reset-password?token=" + token;
 
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
 			msg.setSubject("Réinitialisation du mot de passe DaCalendar");
-			msg.setText("Pour réinitialiser votre mot de passe, veuillez entrer ce code : " + token);
+			msg.setText("Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + resetLink);
 
 			javaMailSender.send(msg);
 
@@ -78,6 +84,7 @@ public class ResetPasswordController {
 
 		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());
 		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
+		
 
 		if (token) {
 			String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
