@@ -3,7 +3,9 @@ package fr.dawan.calendarproject.controllers;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,11 +65,11 @@ public class InterventionController {
 	}
 	
 	// GET - user - id & filters
-	@GetMapping(value = "/user/filter/{userId}", produces = "application/json")
-	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, @RequestParam(value = "filterCourse", defaultValue = "") String filterCourse, 
-			@RequestParam(value = "filterLocation", defaultValue = "-1") long filterLocation, @RequestParam(value = "filterStatus", defaultValue = "") String filterStatus, 
-			@RequestParam(value = "filterType", defaultValue = "") String filterType) {
-		return interventionService.getAllByUserIdAndFilter(userId, filterCourse, filterLocation, filterStatus, filterType);
+	// /api/interventions/filter/{userId}?filterCourse=agile&filterDate=06/10/2021&filterLocation=1&filterValidated=true&filterType=INTERN
+	@GetMapping(value = "/filter/{userId}", produces = "application/json")
+	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, HttpServletRequest request) {
+		Map<String, String[]> paramsMap = request.getParameterMap();
+		return interventionService.searchBy(userId, paramsMap);
 	}
 	
 	// GET - id

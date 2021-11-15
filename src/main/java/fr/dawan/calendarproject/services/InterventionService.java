@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
@@ -16,7 +17,7 @@ public interface InterventionService {
 
 	List<InterventionDto> getAllByUserId(long userId);
 	
-	List<InterventionDto> getAllByUserIdAndFilter(long userId, String filterCourse, long filterLocation, String filterStatus, String filterType);
+	List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap);
 
 	InterventionDto getById(long id);
 
