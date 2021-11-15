@@ -3,7 +3,9 @@ package fr.dawan.calendarproject.controllers;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,14 @@ public class InterventionController {
 	@GetMapping(value = "/user/{userId}", produces = "application/json")
 	public List<InterventionDto> getAllByUserId(@PathVariable("userId") long userId) {
 		return interventionService.getAllByUserId(userId);
+	}
+	
+	// GET - user - id & filters
+	// /api/interventions/filter/{userId}?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
+	@GetMapping(value = "/filter/{userId}", produces = "application/json")
+	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, HttpServletRequest request) {
+		Map<String, String[]> paramsMap = request.getParameterMap();
+		return interventionService.searchBy(userId, paramsMap);
 	}
 	
 	// GET - id

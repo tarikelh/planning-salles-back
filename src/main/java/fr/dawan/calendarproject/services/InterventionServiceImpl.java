@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.InterventionCustomRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -47,6 +49,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionRepository interventionRepository;
+	
+	@Autowired
+	private InterventionCustomRepository interventionCustomRepository;
 
 	@Autowired
 	private LocationRepository locationRepository;
@@ -89,6 +94,22 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getAllByUserId(long userId) {
 		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
+	}
+	
+	//NB : method used for mobile application
+	@Override
+	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
+		//verify if user exists
+		if(userRepository.findById(userId).get() != null) {
+			//search filtered interventions from the user selected
+			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
+			List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
+			for (Intervention intervention : interventions) {
+				interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
+			}
+			return interventionsDto;
+		}
+		return null;
 	}
 
 	@Override
