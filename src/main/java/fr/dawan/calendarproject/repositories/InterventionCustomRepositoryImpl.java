@@ -53,6 +53,8 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 		if (userId != 0) {
 			jpqlRequest.append(" AND i.user.id = " + userId);
 		}
+		
+		jpqlRequest.append(" ORDER BY i.dateStart ASC");
 
 		Query query = em.createQuery(jpqlRequest.toString());
 		for (String param : paramsMap.keySet()) {
