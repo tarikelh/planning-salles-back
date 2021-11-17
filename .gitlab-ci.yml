@@ -55,5 +55,5 @@ archive:
       -o StrictHostKeyChecking=no
       -b archive_batch
       $ARCHIVE_USER@$ARCHIVE_HOST
-  only:
-    - dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
