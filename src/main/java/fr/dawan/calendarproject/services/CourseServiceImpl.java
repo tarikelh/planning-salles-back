@@ -60,9 +60,9 @@ public class CourseServiceImpl implements CourseService {
 	public List<CourseDto> getAllCourses(int page, int size, String search) {
 		Pageable pagination = null;
 		
-		if(page != -1 && size != -1) 
+		if(page > -1 && size > 0) 
 			pagination = PageRequest.of(page, size);
-		else if(page == -1 && size == -1)
+		else
 			pagination = Pageable.unpaged();
 		
 		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
@@ -145,7 +145,7 @@ public class CourseServiceImpl implements CourseService {
 				courseRepository.saveAndFlush(c);
 			}
 		} else {
-			logger.error("ResponseEntity from the webservice WDG2 not correct");
+			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");   
 		}
 	}
 

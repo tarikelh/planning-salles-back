@@ -57,7 +57,7 @@ public class SkillServiceImpl implements SkillService {
 	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
 		Pageable pagination = null;
 
-		if (page != -1 & size != -1)
+		if(page > -1 && size > 0) 
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
