@@ -155,21 +155,6 @@ class CourseServiceTest {
 	}
 	
 	@Test
-	void shouldThrowExceptionWhenPageIsNotCorrect() {
-		assertThrows(Exception.class, () -> {
-			courseService.getAllCourses(-1, 1, "");
-		});
-		
-		assertThrows(Exception.class, () -> {
-			courseService.getAllCourses(1, -15, "");
-		});
-		
-		assertThrows(Exception.class, () -> {
-			courseService.getAllCourses(-7, -11, "Jave");
-		});
-	}
-	
-	@Test
 	void shouldGetInterventionById() {
 		long intervId = 2;
 		
