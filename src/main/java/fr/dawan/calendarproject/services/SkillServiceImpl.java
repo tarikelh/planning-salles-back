@@ -57,7 +57,7 @@ public class SkillServiceImpl implements SkillService {
 	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
 		Pageable pagination = null;
 
-		if (page != -1 & size != -1)
+		if (page > -1 && size > 0)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
@@ -69,6 +69,7 @@ public class SkillServiceImpl implements SkillService {
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
 		}
+
 		return result;
 	}
 
@@ -80,7 +81,11 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		return skillMapper.skillToAdvancedSkillDto(skill.get());
+		
+		if (skill.isPresent())
+			return skillMapper.skillToAdvancedSkillDto(skill.get());
+		
+		return null;
 	}
 
 	@Override
@@ -106,6 +111,7 @@ public class SkillServiceImpl implements SkillService {
 		s.setUsers(usersList);
 
 		s = skillRepository.saveAndFlush(s);
+		
 		return skillMapper.skillToAdvancedSkillDto(s);
 	}
 
@@ -114,10 +120,12 @@ public class SkillServiceImpl implements SkillService {
 		String instanceClass = s.getClass().toString();
 		String path = "/api/skills";
 
-		for (long userId : s.getUsersId()) {
-			if (!userRepository.findById(userId).isPresent()) {
-				String message = "User with id: " + userId + " does not exist.";
-				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
+		if (s.getUsersId() != null) {
+			for (long userId : s.getUsersId()) {
+				if (!userRepository.findById(userId).isPresent()) {
+					String message = "User with id: " + userId + " does not exist.";
+					errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
+				}
 			}
 		}
 

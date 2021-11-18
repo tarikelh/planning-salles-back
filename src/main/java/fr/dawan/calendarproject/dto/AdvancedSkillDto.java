@@ -24,5 +24,4 @@ public class AdvancedSkillDto extends SkillDto {
 	public void setUsersId(List<Long> usersId) {
 		this.usersId = usersId;
 	}
-
 }

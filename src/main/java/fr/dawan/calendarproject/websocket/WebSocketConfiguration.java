@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.websocket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -8,12 +10,15 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 	
 	@Autowired
-    private HttpHandshakeInterceptor handshakeInterceptor;
+	private HttpHandshakeInterceptor handshakeInterceptor;
 
 	@Value("${vue.baseurl}")
 	private String vueUrl;
