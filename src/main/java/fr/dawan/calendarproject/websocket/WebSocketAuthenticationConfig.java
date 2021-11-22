@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.websocket;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -55,17 +56,13 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
                     String accessToken = authorization.get(0).split(" ")[1];
                     
                     if (jwtTokenUtil.isTokenExpired(accessToken)) {
-                    	error = new APIError(999, "websocket", "TokenExpired",
-                    			"Error : token expired !", "websocket");
-                    	throw new TokenException(error);
+                    	logger.error("Websocket Error : token expired ! ");
                     }
                     	
               
     				String email = jwtTokenUtil.getUsernameFromToken(accessToken);
     				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
-                    	error = new APIError(999, "websocket", "TokenError",
-                    			"Error : token not known !", "websocket");
-                    	throw new TokenException(error);
+    					logger.error("Websocket Error : token not known ! " + email + ". Date : " + LocalDateTime.now());
     				}
     				
                 }

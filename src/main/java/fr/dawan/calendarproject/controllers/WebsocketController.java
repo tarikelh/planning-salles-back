@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,6 +17,8 @@ public class WebsocketController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	
+	private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
 
 	// Handles messages from /app/chat. (Note the Spring adds the /app prefix for
 	// us).
@@ -27,13 +31,15 @@ public class WebsocketController {
 		// verify the token before to send a websocket message
 		String accessToken = header.split(" ")[1];
 
-		if (jwtTokenUtil.isTokenExpired(accessToken))
-			throw new Exception("Error : token expired ! - WebSocket");
+		if (jwtTokenUtil.isTokenExpired(accessToken)) {
+			throw new Exception("Websocket Error : token expired !");
+		}
 
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken))
-			throw new Exception("Error : token not known ! - WebSocket");
-
+		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
+			throw new Exception("Websocket Error : token not known !");
+		}
+			
 		// Verify message format from the websocket
 		if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null
 				&& messageWebsocketDto.getType().equals("DELETE")) {
@@ -42,7 +48,7 @@ public class WebsocketController {
 				&& (messageWebsocketDto.getType().equals("ADD") || messageWebsocketDto.getType().equals("EDIT")))
 			return messageWebsocketDto;
 		else {
-			throw new Exception("Error : incorrect message ! - WebSocket");
+			throw new Exception("Websocket Error : incorrect message !");
 		}
 
 	}
