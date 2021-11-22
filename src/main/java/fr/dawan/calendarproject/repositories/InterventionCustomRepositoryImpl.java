@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.repositories;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +48,8 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 					jpqlRequest.append(" AND i.validated = :" + param);
 				} else if (param.equals("filterType")) {
 					jpqlRequest.append(" AND i.type = :" + param);
+				} else if (param.equals("filterDate")) {
+					jpqlRequest.append(" AND  EXTRACT(YEAR FROM i.dateStart) = :" + param);
 				}
 			}
 		}
@@ -67,6 +71,8 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 						paramType = boolean.class;
 					} else if (param.equals("filterType")) {
 						paramType = InterventionStatus.class;
+					} else if (param.equals("filterDate")) {
+						paramType = LocalDate.class;
 					}
 
 					if (paramType.equals(String.class)) {
@@ -81,7 +87,10 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 						query.setParameter(param, Long.parseLong(paramsMap.get(param)[0]));
 					} else if (paramType.equals(InterventionStatus.class)) {
 						query.setParameter(param, InterventionStatus.valueOf(paramsMap.get(param)[0]));
-					}// TODO if other types
+					} else if (paramType.equals(LocalDate.class)) {
+						DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+						query.setParameter(param, LocalDate.parse(paramsMap.get(param)[0], dateFormat).getYear());
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
