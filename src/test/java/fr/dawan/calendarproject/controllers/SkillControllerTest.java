@@ -170,12 +170,12 @@ public class SkillControllerTest {
 	
 	@Test
 	public void shouldReturn404WhenUpdateWrongId() throws Exception {
-		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(1, "SuperDevOps", 0, null);
+		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(15454, "SuperDevOps", 0, null);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToUpdateJson = objectMapper.writeValueAsString(skillToUpdate);
 		
-		when(skillService.saveOrUpdate(skillToUpdate)).thenReturn(skillToUpdate);
+		when(skillService.saveOrUpdate(skillToUpdate)).thenReturn(null);
 		
 		String res = mockMvc.perform(put("/api/skills/")
 				.contentType(MediaType.APPLICATION_JSON)

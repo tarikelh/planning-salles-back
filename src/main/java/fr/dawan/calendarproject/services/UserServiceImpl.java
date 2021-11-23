@@ -90,9 +90,11 @@ public class UserServiceImpl implements UserService {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+			
 			for (User u : users) {
 				result.add(userMapper.userToAdvancedUserDto(u));
 			}
+			
 			return result;
 		} else {
 			// HANDLE ERROR
@@ -103,7 +105,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto getById(long id) {
 		Optional<User> user = userRepository.findById(id);
-		return userMapper.userToAdvancedUserDto(user.get());
+		
+		if (user.isPresent())
+			return userMapper.userToAdvancedUserDto(user.get());
+		else
+			return null;
 	}
 
 	@Override
@@ -113,6 +119,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
+		if (user.getId() > 0 && !userRepository.findById(user.getId()).isPresent())
+			return null;
+
 		checkIntegrity(user);
 
 		User u = userMapper.advancedUserDtoToUser(user);
@@ -130,10 +139,10 @@ public class UserServiceImpl implements UserService {
 
 		// Hash Password
 		try {
-			if (u.getId() == 0) {
+			if (user.getId() == 0) {
 				u.setPassword(HashTools.hashSHA512(u.getPassword()));
 			} else {
-				AdvancedUserDto userInDB = getById(u.getId());
+				User userInDB = userRepository.getOne(u.getId());
 				if (!userInDB.getPassword().equals(u.getPassword())) {
 					u.setPassword(HashTools.hashSHA512(u.getPassword()));
 				}
@@ -183,6 +192,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto findByEmail(String email) {
 		User u = userRepository.findByEmail(email);
+
 		if (u != null)
 			return userMapper.userToAdvancedUserDto(u);
 

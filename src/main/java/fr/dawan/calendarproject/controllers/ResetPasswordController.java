@@ -36,7 +36,7 @@ public class ResetPasswordController {
 	private JavaMailSender javaMailSender;
 	
 	@Value("${vue.baseurl}")
-    private String vueUrl;
+	private String vueUrl;
 
 	@PostMapping(value = "/forgot", produces = "application/json")
 	public ResponseEntity<?> sendTokenByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
