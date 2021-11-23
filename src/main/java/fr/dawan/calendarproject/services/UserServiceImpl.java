@@ -148,39 +148,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user) {
-		User u = userMapper.advancedUserDtoToUser(user);
-
-		Set<Skill> skillsList = new HashSet<Skill>();
-
-		if (user.getSkillsId() != null) {
-			user.getSkillsId().forEach(id -> {
-				skillsList.add(skillRepository.getOne(id));
-			});
-		}
-		u.setSkills(skillsList);
-
-		u.setLocation(locationRepository.getOne(user.getLocationId()));
-
-		// Hash Password
-		try {
-			if (u.getId() == 0) {
-				u.setPassword(HashTools.hashSHA512(u.getPassword()));
-			} else {
-				AdvancedUserDto userInDB = getById(u.getId());
-				if (!userInDB.getPassword().equals(u.getPassword())) {
-					u.setPassword(HashTools.hashSHA512(u.getPassword()));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		u = userRepository.saveAndFlush(u);
-		return userMapper.userToAdvancedUserDto(u);
-
-	}
-
-	@Override
 	public AdvancedUserDto findByEmail(String email) {
 		User u = userRepository.findByEmail(email);
 		if (u != null)

@@ -24,6 +24,4 @@ public interface UserService {
 	AdvancedUserDto findByEmail(String email);
 
 	boolean checkIntegrity(AdvancedUserDto u);
-
-	AdvancedUserDto saveOrUpdatePassword(AdvancedUserDto user);
 }

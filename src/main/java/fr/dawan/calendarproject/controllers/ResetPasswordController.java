@@ -95,7 +95,7 @@ public class ResetPasswordController {
 				uDto.setPassword(reset.getPassword());
 
 				// save the new password in DB
-				userService.saveOrUpdatePassword(uDto);
+				userService.saveOrUpdate(uDto);
 
 				return ResponseEntity.status(HttpStatus.OK).build();
 			} else if (uDto.getPassword().equals(hashedPwd))
