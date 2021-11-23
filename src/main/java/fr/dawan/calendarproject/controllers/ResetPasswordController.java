@@ -66,19 +66,6 @@ public class ResetPasswordController {
 		}
 	}
 
-	@PostMapping(value = "/check-token", consumes = "application/json")
-	public ResponseEntity<?> checkToken(@RequestBody TokenDto tokenObj) throws Exception {
-
-		String token = tokenObj.getToken();
-		String checktoken = TokenSaver.tokensByEmail.get(tokenObj.getEmail());
-
-		if (token.equals(checktoken))
-			return ResponseEntity.status(HttpStatus.OK).build();
-		else
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
-	}
-
 	@PostMapping(value = "/reset-password", consumes = "application/json")
 	public ResponseEntity<?> resetPassword(@RequestBody ResetResponse reset) throws Exception {
 
