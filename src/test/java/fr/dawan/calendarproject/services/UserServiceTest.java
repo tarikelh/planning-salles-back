@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.entities.Location;
@@ -317,12 +318,24 @@ class UserServiceTest {
 				"dbalavoine@dawan.fr", "newStrongPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);
 		
-		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+		when(locationRepository.findById(any(Long.class)))
+				.thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(uList.get(0));
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(alreadyExistingEmail);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("EmailNotUniq", result.getType());
+		assertEquals("Email already used.",
+				result.getMessage());
 	}
 	
 	@Test
@@ -335,9 +348,20 @@ class UserServiceTest {
 				.thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badEmail);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("InvalidEmail", result.getType());
+		assertEquals("Email must be valid.",
+				result.getMessage());
 	}
 	
 	@Test
@@ -350,9 +374,20 @@ class UserServiceTest {
 				.thenReturn(Optional.empty());
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badLocId);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("LocationNotFound", result.getType());
+		assertEquals("Location with id: " + badLocId.getLocationId() + " does not exist.",
+				result.getMessage());
 	}
 	
 	@Test
@@ -369,9 +404,20 @@ class UserServiceTest {
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badSkill);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("SkillNotFound", result.getType());
+		assertEquals("Skill with id: " + skillIds.get(0) + " does not exist.",
+				result.getMessage());
 	}
 	
 	@Test
@@ -390,13 +436,24 @@ class UserServiceTest {
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(shortPwd);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("PasswordTooShort", result.getType());
+		assertEquals("Password must be at least 8 characters long",
+				result.getMessage());
 	}
 	
 	@Test
-	void shouldThrowWhenUserHasBad() {
+	void shouldThrowWhenUserHasBadCompany() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
 		
 		List<Long> skillIds = new ArrayList<Long>();
@@ -411,9 +468,20 @@ class UserServiceTest {
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badCompany);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("UnknownUserCompany", result.getType());
+		assertEquals("Company: " + badCompany.getCompany() + " is not valid.",
+				result.getMessage());
 	}
 	
 	@Test
@@ -432,9 +500,20 @@ class UserServiceTest {
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
 		
-		assertThrows(EntityFormatException.class, () -> {
+		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badType);
 		});
+		
+		Object[] array = resultException.getErrors().toArray();
+		APIError result = (APIError) array[0];
+		
+		assertEquals(1, resultException.getErrors().size());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
+				result.getInstanceClass());
+		assertEquals("/api/users", result.getPath());
+		assertEquals("UnknownUserType", result.getType());
+		assertEquals("Type: " + badType.getType() + " is not valid.",
+				result.getMessage());
 	}
 	
 	@Test
