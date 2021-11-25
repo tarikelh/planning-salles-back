@@ -3,6 +3,8 @@ package fr.dawan.calendarproject.interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,6 +21,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private UserService userService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(TokenInterceptor.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -29,8 +33,10 @@ public class TokenInterceptor implements HandlerInterceptor {
 		// System.out.println("Header (authorization) :" +
 		// request.getHeader("Authorization"));
 		
+		String uri = request.getRequestURI();
+		logger.info(uri);
+		
 		if(!request.getMethod().equalsIgnoreCase("OPTIONS")){
-			
 			if (!request.getRequestURI().equals("/authenticate") && !request.getRequestURI().equals("/forgot")
 					&& !request.getRequestURI().equals("/check-token")
 					&& !request.getRequestURI().equals("/reset-password")) {
@@ -41,7 +47,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 	
 				String token = headerAuth.substring(7);
 	
-				// validation le token et extraire les infos
+				// validate token and get info
 				if (jwtTokenUtil.isTokenExpired(token))
 					throw new Exception("Error : token expired");
 	
@@ -49,7 +55,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(token))
 					throw new Exception("Error : token not known !");
 	
-				// Vérification du role d'un utilisateur
+				// verification of the user role
 				String typeRequest = request.getMethod();
 				if (!typeRequest.equals("GET")) {
 					String userType = userService.findByEmail(email).getType();
@@ -57,7 +63,6 @@ public class TokenInterceptor implements HandlerInterceptor {
 						throw new Exception("Error : Unauthorized action !");
 					}
 				}
-				// TODO autres extractions du jeton ou autres traitements
 			}
 		}
 		

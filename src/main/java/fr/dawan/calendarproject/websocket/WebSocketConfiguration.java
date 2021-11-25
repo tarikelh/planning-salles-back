@@ -20,7 +20,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
