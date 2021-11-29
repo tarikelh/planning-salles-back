@@ -94,6 +94,9 @@ class InterventionCaretakerTest {
 		interventions.add(new Intervention(1, "I am a lamba Intervention updated", mockedLoc, mockedCourse, mockedUser,
 				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0));
+		interventions.add(new Intervention(2, "I am a lamba Intervention with Master Intervention", mockedLoc, mockedCourse, mockedUser,
+				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), false, interventions.get(0), 0));
 		
 		interventionsDtos.add(new InterventionDto(0, "I am a new Intervention", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
@@ -101,13 +104,15 @@ class InterventionCaretakerTest {
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
 		interventionsDtos.add(new InterventionDto(1, "I am a lamba Intervention updated", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
+		interventionsDtos.add(new InterventionDto(1, "I am a lamba Intervention updated", 1, 1, 1, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(0).getId(), false, 0));
 		
 		intMementoDtos.add(new InterventionMementoDto(0, "I am a new Intervention", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
 		intMementoDtos.add(new InterventionMementoDto(0, "I am a lamba Intervention", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
 		intMementoDtos.add(new InterventionMementoDto(0, "I am a lamba Intervention updated", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
-				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(0).getId(), false));
 	
 		interventionMementos.add(new InterventionMemento(intMementoDtos.get(0)));
 		interventionMementos.get(0).setId(1);
@@ -121,6 +126,9 @@ class InterventionCaretakerTest {
 		interventionMementos.add(new InterventionMemento(intMementoDtos.get(1)));
 		interventionMementos.get(3).setId(4);
 		interventionMementos.get(3).setMementoMessage(new MementoMessageDto(4, " Has been restored ", email, ""));
+		interventionMementos.add(new InterventionMemento(intMementoDtos.get(1)));
+		interventionMementos.get(4).setId(5);
+		interventionMementos.get(4).setMementoMessage(new MementoMessageDto(5, " has been deleted by ", email, ""));
 	}
 	
 	@Test
@@ -136,27 +144,75 @@ class InterventionCaretakerTest {
 		
 		InterventionMemento result = caretaker.addMemento(email, interventions.get(0));
 		
-		//assertEquals(" has been created by ", result.getMementoMessage().getMessageAction());
+		assertEquals(" has been created by ", result.getMementoMessage().getMessageAction());
+	}
+	
+	@Test
+	void testAddMementoForAnEditIntervention() throws Exception {	
+		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(2))).thenReturn(intMementoDtos.get(2));
+		when(intMementoRepository.countByInterventionId((interventionMementos.get(2)).getState().getInterventionId())).thenReturn(3L);
+		when(interventionRepository.existsById((interventionMementos.get(2)).getState().getInterventionId())).thenReturn(true);
+		when(intMementoRepository.getLastInterventionMemento(interventionMementos.get(2).getState().getInterventionId())).thenReturn(interventionMementos.get(1));
+		when(intMementoRepository.saveAndFlush(any(InterventionMemento.class))).thenReturn(interventionMementos.get(2));
+		
+		InterventionMemento result = caretaker.addMemento(email, interventions.get(2));
+		
+		assertEquals(" has been changed by ", result.getMementoMessage().getMessageAction());
+	}
+	
+	@Test
+	void testAddMementoForADeleteIntervention() throws Exception {	
+		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(1))).thenReturn(intMementoDtos.get(1));
+		when(intMementoRepository.countByInterventionId((interventionMementos.get(1)).getState().getInterventionId())).thenReturn(1L);
+		when(interventionRepository.existsById((interventionMementos.get(1)).getState().getInterventionId())).thenReturn(false);
+		
+		when(intMementoRepository.saveAndFlush(any(InterventionMemento.class))).thenReturn(interventionMementos.get(4));
+		
+		InterventionMemento result = caretaker.addMemento(email, interventions.get(1));
+		
+		assertEquals(" has been deleted by ", result.getMementoMessage().getMessageAction());
 	}
 	
 	@Test
 	void testRestoreMemento() throws Exception {
-		/*
-		when(intMementoRepository.findById(interventionMementos.get(1).getId()).get()).thenReturn(interventionMementos.get(1));
+		when(intMementoRepository.findById(interventionMementos.get(1).getId())).thenReturn(Optional.of(interventionMementos.get(1)));
 		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(1).getState())).thenReturn(interventions.get(1));
+		
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
-		when(interventionRepository.findById(any(Long.class))).thenReturn(Optional.of(interventions.get(0)));
-		when(interventionMapper.interventionToInterventionDto(interventions.get(1))).thenReturn(interventionsDtos.get(1));
+			
+		when(interventionService.checkIntegrity(interventionsDtos.get(1))).thenReturn(true);
 		when(interventionRepository.getOne(interventions.get(1).getId())).thenReturn(interventions.get(1));
 		when(interventionRepository.saveAndFlush(interventions.get(1))).thenReturn(interventions.get(1));
 		when(intMementoRepository.saveAndFlush(interventionMementos.get(3))).thenReturn(interventionMementos.get(3));
 		when(interventionMapper.interventionToInterventionDto(interventions.get(1))).thenReturn(interventionsDtos.get(1));
 		
-		InterventionDto  result = caretaker.restoreMemento(interventionMementos.get(1).getId(), email);
-		*/
-		//assertEquals(interventionsDtos.get(1), result);
+		
+		InterventionDto result = caretaker.restoreMemento(interventionMementos.get(1).getId(), email);
+		
+		assertEquals(interventionsDtos.get(1), result);
+	}
+	
+	@Test
+	void testRestoreMementoWithMasterEvent() throws Exception {
+		when(intMementoRepository.findById(interventionMementos.get(1).getId())).thenReturn(Optional.of(interventionMementos.get(1)));
+		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(1).getState())).thenReturn(interventions.get(1));
+		
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
+		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
+		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
+			
+		when(interventionService.checkIntegrity(interventionsDtos.get(1))).thenReturn(true);
+		when(interventionRepository.getOne(interventions.get(1).getId())).thenReturn(interventions.get(1));
+		when(interventionRepository.saveAndFlush(interventions.get(1))).thenReturn(interventions.get(1));
+		when(intMementoRepository.saveAndFlush(interventionMementos.get(3))).thenReturn(interventionMementos.get(3));
+		when(interventionMapper.interventionToInterventionDto(interventions.get(1))).thenReturn(interventionsDtos.get(1));
+		
+		
+		InterventionDto result = caretaker.restoreMemento(interventionMementos.get(1).getId(), email);
+		
+		assertEquals(interventionsDtos.get(1), result);
 	}
 
 	@Test
