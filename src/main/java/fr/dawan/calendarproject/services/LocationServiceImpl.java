@@ -135,7 +135,7 @@ public class LocationServiceImpl implements LocationService {
 		URI url = new URI("https://dawan.org/public/location/");
 		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
 		
-		if(repWs.getStatusCode()==HttpStatus.OK) {
+		if(repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			LocationDG2Dto[] resArray = objectMapper.readValue(json, LocationDG2Dto[].class);
 			lResJson = Arrays.asList(resArray);
@@ -152,5 +152,4 @@ public class LocationServiceImpl implements LocationService {
 			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");   
 		}
 	}
-
 }

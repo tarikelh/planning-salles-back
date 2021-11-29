@@ -46,7 +46,6 @@ public class EmailServiceImpl implements EmailService {
 	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd)
 			throws Exception {
 
-		// add asyncrhone method
 		for (long uId : userId) {
 			List<Intervention> interventions = interventionRepository.findByUserIdAndDates(uId, dateStart, dateEnd);
 			Optional<User> trainer = userRepository.findById(uId);
@@ -70,14 +69,11 @@ public class EmailServiceImpl implements EmailService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 			}
-
 		}
-
 	}
 
-	private MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
+	public MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
 			throws Exception {
 
 		MimeMessage message = emailSender.createMimeMessage();
@@ -101,7 +97,7 @@ public class EmailServiceImpl implements EmailService {
 		return message;
 	}
 
-	private MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception {
+	public MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception {
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		CalendarOutputter outputter = new CalendarOutputter();
@@ -117,7 +113,7 @@ public class EmailServiceImpl implements EmailService {
 		return calendarPart;
 	}
 
-	private MimeBodyPart createTextPart(String content, String encoding) throws MessagingException {
+	public MimeBodyPart createTextPart(String content, String encoding) throws MessagingException {
 		MimeBodyPart text = new MimeBodyPart();
 		text.setText(content);
 		text.setHeader("Content-Type", String.format("text/plain; charset=\"%s\"", encoding));

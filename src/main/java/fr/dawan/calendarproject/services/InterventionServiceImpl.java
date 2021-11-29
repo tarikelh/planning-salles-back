@@ -93,14 +93,15 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getAllByUserId(long userId) {
-		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
+		return interventionMapper.listInterventionToListInterventionDto(
+				interventionRepository.getAllByUserId(userId));
 	}
 	
 	//NB : method used for mobile application
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
 		//verify if user exists
-		if(userRepository.findById(userId).get() != null) {
+		if(userRepository.findById(userId).isPresent()) {
 			//search filtered interventions from the user selected
 			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
 			List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
@@ -109,6 +110,7 @@ public class InterventionServiceImpl implements InterventionService {
 			}
 			return interventionsDto;
 		}
+		
 		return null;
 	}
 
@@ -123,14 +125,16 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public void deleteById(long id, String email) {
 		// Memento creation and save
-		Intervention intToDelete = interventionRepository.findById(id).get();
+		Optional<Intervention> intToDelete = interventionRepository.findById(id);
 
-		interventionRepository.deleteById(id);
-
-		try {
-			caretaker.addMemento(email, intToDelete);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (intToDelete.isPresent()) {
+			interventionRepository.deleteById(id);
+			
+			try {
+				caretaker.addMemento(email, intToDelete.get());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -343,8 +347,10 @@ public class InterventionServiceImpl implements InterventionService {
 		Intervention masterIntervention;
 		Intervention newSplit;
 
-		dates.sort(new Comparator<DateRangeDto>() {
+		if (dates == null || dates.isEmpty())
+			return null;
 
+		dates.sort(new Comparator<DateRangeDto>() {
 			@Override
 			public int compare(DateRangeDto d1, DateRangeDto d2) {
 				return d1.getDateStart().compareTo(d2.getDateStart());
@@ -361,7 +367,7 @@ public class InterventionServiceImpl implements InterventionService {
 				if (range.getInterventionId() == interventionId || range.getInterventionId() == 0)
 					newSplit = (Intervention) toSplit.get().clone();
 				else
-					newSplit = interventionRepository.findById(range.getInterventionId()).get();
+					newSplit = interventionRepository.findById(range.getInterventionId()).orElse(null);
 
 				if (newSplit == null) {
 					Set<APIError> err = new HashSet<APIError>();
@@ -450,11 +456,8 @@ public class InterventionServiceImpl implements InterventionService {
 			for (DateRangeDto rangeToCheck : dates) {
 				if (dateRange != rangeToCheck && dateRange.isOverlapping(rangeToCheck)) {
 
-					Set<APIError> err = new HashSet<APIError>();
-					err.add(new APIError(400, dateRange.getClass().toString(), "DatesOvelaps",
+					errs.add(new APIError(400, dateRange.getClass().toString(), "DatesOvelaps",
 							"Intervention Splits Must Not Overlap.", "/api/interventions"));
-
-					throw new EntityFormatException(err);
 				}
 			}
 		}
@@ -465,11 +468,11 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubByMasterId(long id) {
-		Intervention master = interventionRepository.findById(id).get();
+		Optional<Intervention> master = interventionRepository.findById(id);
 		List<Intervention> iList;
 		List<InterventionDto> iListDto;
 
-		if (master != null && master.isMaster()) {
+		if (master.isPresent() && master.get().isMaster()) {
 			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(id);
 			iListDto = new ArrayList<InterventionDto>();
 
