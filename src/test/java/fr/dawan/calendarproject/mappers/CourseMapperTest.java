@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.mapper.CourseMapper;
@@ -21,11 +22,14 @@ class CourseMapperTest {
 
 	Course course = new Course();
 	CourseDto courseDto = new CourseDto();
+	CourseDG2Dto courseDG2Dto = new CourseDG2Dto();
 
 	@BeforeEach
 	void before() {
-		courseDto = new CourseDto(1, "title", "5", 3);
-		course = new Course(3, "eltit", "5", 1);
+		courseDG2Dto = new CourseDG2Dto("title", "3", "description", "slug", "alias", "fullAlias", 22.2, 45.5, 99, 9,
+				"objectives", "press");
+		courseDto = new CourseDto(1, "title", "5", 0);
+		course = new Course(2, "eltit", "5", 1);
 	}
 
 	@Test
@@ -36,6 +40,7 @@ class CourseMapperTest {
 		// assert
 		assertEquals(mappedCourseDto.getId(), course.getId());
 		assertEquals(mappedCourseDto.getTitle(), course.getTitle());
+		assertEquals(mappedCourseDto.getDuration(), course.getDuration());
 		assertEquals(mappedCourseDto.getVersion(), course.getVersion());
 	}
 
@@ -47,7 +52,18 @@ class CourseMapperTest {
 		// assert
 		assertEquals(mappedCourse.getId(), courseDto.getId());
 		assertEquals(mappedCourse.getTitle(), courseDto.getTitle());
+		assertEquals(mappedCourse.getDuration(), courseDto.getDuration());
 		assertEquals(mappedCourse.getVersion(), courseDto.getVersion());
+	}
+
+	@Test
+	void should_map_courseDG2DtoToCourse() {
+		// mapping
+		Course mappedCourse = courseMapper.courseDG2DtoToCourse(courseDG2Dto);
+
+		// assert
+		assertEquals(mappedCourse.getTitle(), courseDG2Dto.getTitle());
+		assertEquals(mappedCourse.getDuration(), courseDG2Dto.getDuration());
 	}
 
 }
