@@ -40,6 +40,14 @@ public class InterventionMemento implements Cloneable {
 		this.dateCreatedState = LocalDateTime.now();
 	}
 	
+	public InterventionMemento(long id, InterventionMementoDto state,
+			MementoMessageDto mementoMessage, int version) {
+		this.id = id;
+		this.state = state;
+		this.dateCreatedState = LocalDateTime.now();
+		this.mementoMessage = mementoMessage;
+		this.version = version;
+	}
 
 	public InterventionMementoDto getState() {
 		return state;

@@ -132,9 +132,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public InterventionMemento getMementoById(long id) {
 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
-		InterventionMementoDto iMemDto = i.get().getState();
-
+		
 		if (i.isPresent()) {
+			InterventionMementoDto iMemDto = i.get().getState();
+			
 			if (iMemDto.getCourseId() > 0)
 				iMemDto.setCourseTitle(courseRepository.findById(iMemDto.getCourseId()).get().getTitle());
 
@@ -167,6 +168,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(), dateEnd.plusDays(1).atStartOfDay());
 	}
 
+	// To Delete
 	public void serializeInterventionMementosAsCSV() throws Exception {
 		String fileName = "interventionMementoDates.csv";
 		String path = storageFolder + "/" + fileName;
