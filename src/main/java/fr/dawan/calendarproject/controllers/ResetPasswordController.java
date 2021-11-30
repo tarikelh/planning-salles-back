@@ -3,12 +3,16 @@ package fr.dawan.calendarproject.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,11 +56,41 @@ public class ResetPasswordController {
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
 			
 			String resetLink = vueUrl + "/#/fr/reset-password?token=" + token;
+			String body =
+			        "<HTML><body> <a href=\""+ resetLink +"\">Réinitialiser mon mot de passe</a></body></HTML>";
+
+			MimeMessage msg = javaMailSender.createMimeMessage();
+			
+			msg.addRecipients(Message.RecipientType.TO, uDto.getEmail());
+			msg.setSubject("Réinitialisation du mot de passe du Calendrier Dawan");
+			msg.setText("Bonjour " + uDto.getLastName() + ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
+					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + body, "UTF-8", "html");
+
+			javaMailSender.send(msg);
+
+			return ResponseEntity.status(HttpStatus.OK).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+	
+	@PostMapping(value = "/forgot-mobile", produces = "application/json")
+	public ResponseEntity<?> sendCodeByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
+		
+		UserDto uDto = userService.findByEmail(resetObj.getEmail());
+
+		if (uDto != null) {
+			Map<String, Object> claims = new HashMap<String, Object>();
+			claims.put("name", uDto.getFullName());
+
+			// Ajouter les données que l'on souhaite
+			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
+			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
 
 			SimpleMailMessage msg = new SimpleMailMessage();
 			msg.setTo(uDto.getEmail());
-			msg.setSubject("Réinitialisation du mot de passe DaCalendar");
-			msg.setText("Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + resetLink);
+			msg.setSubject("Réinitialisation du mot de passe DaCalendar Mobile");
+			msg.setText("Message Test de l'application mobile.");
 
 			javaMailSender.send(msg);
 
