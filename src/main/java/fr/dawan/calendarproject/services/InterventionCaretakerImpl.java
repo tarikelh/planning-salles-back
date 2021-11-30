@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import fr.dawan.calendarproject.dto.CountDto;
@@ -67,19 +66,20 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	@Override
-	@Async("taskExecutor")
 	public InterventionMemento addMemento(String email, Intervention intervention) throws Exception {
 		InterventionMemento memento = new InterventionMemento();
 		InterventionMementoDto state = interventionMementoMapper.interventionToInterventionMementoDto(intervention);
+		// copy of the intervention
 		memento.setState(state);
 
+		// check if mementos with this intervention already exist in database
 		if (intMementoRepository.countByInterventionId(memento.getState().getInterventionId()) != 0) {
+			// check if intervention still exists or not in database
 			if (interventionRepository.existsById(memento.getState().getInterventionId())) {
 				messageAction = " has been changed by ";
 
 				// Obtain difference between two interventions
-				InterventionMemento mementoBefore = intMementoRepository
-						.getLastInterventionMemento(memento.getState().getInterventionId());
+				InterventionMemento mementoBefore = intMementoRepository.getLastInterventionMemento(memento.getState().getInterventionId());
 				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(), memento.getState());
 			} else {
 				messageAction = " has been deleted by ";
@@ -132,9 +132,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public InterventionMemento getMementoById(long id) {
 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
-		InterventionMementoDto iMemDto = i.get().getState();
-
+		
 		if (i.isPresent()) {
+			InterventionMementoDto iMemDto = i.get().getState();
+			
 			if (iMemDto.getCourseId() > 0)
 				iMemDto.setCourseTitle(courseRepository.findById(iMemDto.getCourseId()).get().getTitle());
 
@@ -167,6 +168,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(), dateEnd.plusDays(1).atStartOfDay());
 	}
 
+	// To Delete
 	public void serializeInterventionMementosAsCSV() throws Exception {
 		String fileName = "interventionMementoDates.csv";
 		String path = storageFolder + "/" + fileName;
