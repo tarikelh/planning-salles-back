@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +25,36 @@ class JwtTokenUtilTest {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
-	private static String email1;
-	private static String email2;
-	private String token1;
-	private String token2;
+	private static String email1; // verify generate
+	private static String email2; // get with generate
+	private static String email3; // wrong
+	private static String token1;
+	private static String token2;
+	private static String token3;
 	
 	private static Map<String, Object> claims = new HashMap<String, Object>();
 	private static Map<String, String> tokensByEmail = new HashMap<String, String>();
+	
+	@BeforeAll()
+	public static void beforeAll() throws Exception {
+		
+	}
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		email1 = "admin1@admin.fr";
 		email2 = "admin2@admin.fr";
-		token1 = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjFAYWRtaW4uZnIiLCJuYW1lIjoiQWRtaW4xIEFkbWluMSIsImV4cCI6MTYzODM2NzUxMiwiaWF0IjoxNjM4MzQ5NTEyfQ.q9gbcpHNWlYotjRNqkRGqhAT1YR_WY1OJjPsZFvL6xVPqU8IQhLGupZT_GFh1tmt2k3GGp1x8z6F0J2JbJ8SXQ";
+		email3 = "admin3@admin.fr";
 		token2 = "tokentestadmin2";
 		
-		claims.put("name", "Admin1 Admin1"); 
+		claims.put("name", "Admin1 Admin1");
+		claims.put("name", "Admin2 Admin2"); 
+		claims.put("name", "Admin3 Admin3"); 
 		
-		tokensByEmail.put(email1, token1);
 		tokensByEmail.put(email2, token2);
+		tokensByEmail.put(email3, token3);
+		
+		token3 = jwtTokenUtil.doGenerateToken(claims, email3);
 	}
 	
 	@AfterAll()
@@ -50,6 +62,7 @@ class JwtTokenUtilTest {
 		claims.remove("name");
 		tokensByEmail.remove(email1);
 		tokensByEmail.remove(email2);
+		tokensByEmail.remove(email3);
 	}
 	
 	@Test
@@ -67,10 +80,10 @@ class JwtTokenUtilTest {
 
 	@Test
 	void shouldGetUsernameFromToken() {
-		String result = jwtTokenUtil.getUsernameFromToken(token1);
+		String result = jwtTokenUtil.getUsernameFromToken(token3);
 		
 		assertThat(result).isNotNull();
-		org.junit.Assert.assertEquals("admin1@admin.fr", result);
+		org.junit.Assert.assertEquals("admin3@admin.fr", result);
 	}
 	
 	@Test
@@ -83,9 +96,9 @@ class JwtTokenUtilTest {
 	@Test
 	void shouldGetIssuedAtDateFromToken() {
 		Calendar calendar = Calendar.getInstance();
-		LocalDate today = LocalDate.now();  
+		LocalDate today = LocalDate.now(); 
 		
-		Date result = jwtTokenUtil.getIssuedAtDateFromToken(token1);
+		Date result = jwtTokenUtil.getIssuedAtDateFromToken(token3);
 		
 		assertThat(result).isNotNull();
 		
@@ -99,7 +112,7 @@ class JwtTokenUtilTest {
 		Calendar calendar = Calendar.getInstance();
 		LocalDate today = LocalDate.now();  
 		
-		Date result = jwtTokenUtil.getIssuedAtDateFromToken(token1);
+		Date result = jwtTokenUtil.getIssuedAtDateFromToken(token3);
 		
 		assertThat(result).isNotNull();
 		
@@ -111,7 +124,7 @@ class JwtTokenUtilTest {
 
 	@Test
 	void shouldBeFalseIfTokenNotExpired() {
-		Boolean result = jwtTokenUtil.isTokenExpired(token1);
+		Boolean result = jwtTokenUtil.isTokenExpired(token3);
 		
 		org.junit.Assert.assertEquals(false, result);
 	}
