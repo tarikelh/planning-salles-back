@@ -5,12 +5,7 @@ import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class CsvToolsGeneric {
-	
-	private static final Logger logger = LoggerFactory.getLogger(CsvToolsGeneric.class);
 
 	/**
 	 * Generic method to generate a Csv file
@@ -19,7 +14,7 @@ public class CsvToolsGeneric {
 	 * @param lp List of objects we want to add in the CSV file
 	 * @param separator Seperate each object fields with a separator, for instance ';'
 	 */
-	public static <T> void toCsv(String filePath, List<T> lp, String separator) {
+	public static <T> void toCsv(String filePath, List<T> lp, String separator) throws Exception {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
 			if (lp != null && lp.size() > 0) {
 				Field[] fields = lp.get(0).getClass().getDeclaredFields();
@@ -61,9 +56,6 @@ public class CsvToolsGeneric {
 					bw.newLine();
 				}
 			}
-		} catch (Exception e) {
-			logger.error("CSV method error ", e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
