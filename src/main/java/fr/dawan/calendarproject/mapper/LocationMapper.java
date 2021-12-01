@@ -6,8 +6,9 @@ import org.mapstruct.Mapping;
 import fr.dawan.calendarproject.dto.LocationDG2Dto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
+import fr.dawan.calendarproject.repositories.LocationRepository;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {LocationRepository.class})
 public interface LocationMapper {
 
 	Location locationDtoToLocation(LocationDto location);
@@ -20,7 +21,4 @@ public interface LocationMapper {
 	@Mapping(target = "version", ignore = true)
 	Location locationDG2DtoToLocation(LocationDG2Dto locationDG2Dto);
 
-	default Long getSkillId(Location location) {
-		return location.getId();
-	}
 }

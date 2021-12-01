@@ -42,7 +42,7 @@ public interface UserMapper {
 	@Mapping(source = "locationId", target = "location")
 	@Mapping(source = "type", target = "enumType")
 	@Mapping(source = "company", target = "enumCompany")
-	User UserDtoToUser(UserDto userDto);
+	User userDtoToUser(UserDto userDto);
 
 	@Mapping(source = "location.id", target = "locationId")
 	@Mapping(source = "enumType", target = "type")

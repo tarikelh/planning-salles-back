@@ -145,7 +145,7 @@ class SkillServiceTest {
 		Skill repoReturn = new Skill(3, "Java Expert", null, 0);
 		AdvancedSkillDto expected = new AdvancedSkillDto(3, "Java Expert", 0, null);
 
-		when(skillMapper.AdvancedSkillDtoToSkill(any(AdvancedSkillDto.class)))
+		when(skillMapper.advancedSkillDtoToSkill(any(AdvancedSkillDto.class)))
 				.thenReturn(repoReturn);
 		when(skillRepository.saveAndFlush(any(Skill.class))).thenReturn(repoReturn);
 		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class))).thenReturn(expected);

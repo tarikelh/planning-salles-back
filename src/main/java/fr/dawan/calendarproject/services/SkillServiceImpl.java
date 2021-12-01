@@ -100,7 +100,7 @@ public class SkillServiceImpl implements SkillService {
 		if (skill.getId() > 0 && !skillRepository.findById(skill.getId()).isPresent())
 			return null;
 
-		Skill s = skillMapper.AdvancedSkillDtoToSkill(skill);
+		Skill s = skillMapper.advancedSkillDtoToSkill(skill);
 
 		Set<User> usersList = new HashSet<User>();
 		if (skill.getUsersId() != null) {
