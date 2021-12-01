@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,13 @@ class JwtTokenUtilTest {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
-	private String email1;
-	private String email2;
+	private static String email1;
+	private static String email2;
 	private String token1;
 	private String token2;
 	
-	private Map<String, Object> claims = new HashMap<String, Object>();
-	private Map<String, String> tokensByEmail = new HashMap<String, String>();
+	private static Map<String, Object> claims = new HashMap<String, Object>();
+	private static Map<String, String> tokensByEmail = new HashMap<String, String>();
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {
@@ -42,6 +43,13 @@ class JwtTokenUtilTest {
 		
 		tokensByEmail.put(email1, token1);
 		tokensByEmail.put(email2, token2);
+	}
+	
+	@AfterAll()
+	public static void afterAll() throws Exception {
+		claims.remove("name");
+		tokensByEmail.remove(email1);
+		tokensByEmail.remove(email2);
 	}
 	
 	@Test
