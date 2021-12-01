@@ -28,17 +28,17 @@ import fr.dawan.calendarproject.mapper.UserMapper;
 class UserMapperTest {
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
-	User user = new User();
-	User user2 = new User();
-	UserDto userDto = new UserDto();
-	AdvancedUserDto advUserDto = new AdvancedUserDto();
-	List<Long> skillsId = new ArrayList<Long>();
-	Set<Skill> skills = new HashSet<Skill>();
-	Set<User> users = new HashSet<User>();
-	List<User> usersList = new ArrayList<User>();
-	Skill skill = new Skill();
+	private User user = new User();
+	private User user2 = new User();
+	private UserDto userDto = new UserDto();
+	private AdvancedUserDto advUserDto = new AdvancedUserDto();
+	private List<Long> skillsId = new ArrayList<Long>();
+	private Set<Skill> skills = new HashSet<Skill>();
+	private Set<User> users = new HashSet<User>();
+	private List<User> usersList = new ArrayList<User>();
+	private Skill skill = new Skill();
 
 	@BeforeEach
 	void before() {
