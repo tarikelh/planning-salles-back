@@ -65,6 +65,16 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 	}
 
+	/**
+	 * Create an InterventionMemento, which is an intervention history. 
+	 * 
+	 * @param email from the user applying modification on an intervention
+	 * @param intervention object modified by the user (added, edited or deleted)
+	 * 
+	 * @return InterventionMemento intervention history created
+	 * 
+	 * @throws Exception handle exception 'IllegalAccessException' when cannot get value of fields in compareObjects method
+	 */
 	@Override
 	public InterventionMemento addMemento(String email, Intervention intervention) throws Exception {
 		InterventionMemento memento = new InterventionMemento();
@@ -96,6 +106,16 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return intMementoRepository.saveAndFlush(memento);
 	}
 
+	/**
+	 * Restore an Intervention from an intervention history (InterventionMemento). 
+	 * 
+	 * @param mementoId id of the intervention history we want to restore
+	 * @param email from the user applying modification on an intervention
+	 * 
+	 * @return InterventionDto intervention restored
+	 * 
+	 * @throws CloneNotSupportedException handle exception when cloning InterventionMemento
+	 */
 	@Override
 	public InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
 		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
@@ -129,6 +149,13 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return intDto;
 	}
 
+	/**
+	 * Get the intervention history (InterventionMemento) with its Id.
+	 * 
+	 * @param id intervention history (InterventionMemento) Id
+	 * 
+	 * @return InterventionMemento called by the user
+	 */
 	@Override
 	public InterventionMemento getMementoById(long id) {
 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
@@ -198,6 +225,14 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return new CountDto(intMementoRepository.countFilter(interventionId, dateStart, dateEnd));
 	}
 
+	/**
+	 * Get the intervention history (InterventionMemento) before the one called by the user.
+	 * 
+	 * @param interventionId id of the intervention the client is interested by
+	 * @param interventionMementoId intervention history the client selected
+	 * 
+	 * @return InterventionMemento created before the one selected
+	 */
 	@Override
 	public InterventionMemento getLastBeforeMemento(long interventionId, long interventionMementoId) {
 		return intMementoRepository.getLastBeforeIntMemento(interventionId, interventionMementoId);

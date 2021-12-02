@@ -194,16 +194,16 @@
 				</configuration>
 			</plugin>
 
- 			<!-- Plugins for JACOCO Coverage report -->
+			<!-- Plugins for JACOCO Coverage report -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.6.201602180812</version>
 				<configuration>
-                    <excludes>
-                        <exclude>**src/test/java</exclude>
-                    </excludes>
-                </configuration>
+					<excludes>
+						<exclude>**src/test/java</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<!-- Prepares the property pointing to the JaCoCo runtime agent which 
 						is passed as VM argument when Maven the Surefire plugin is executed. -->

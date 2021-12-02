@@ -106,6 +106,12 @@ public class CourseServiceImpl implements CourseService {
 		return courseMapper.courseToCourseDto(c);
 	}
 
+	/**
+	 * Verify if the course doesn't already exist in the database
+	 * 
+	 * @param CourseDto course that has to be verify with what already exists in the database
+	 * @return boolean return true if course title doesn't exist in the database. Otherwise send an Exception.
+	 */
 	@Override
 	public boolean checkUniqness(CourseDto course) {
 		Course duplicate = courseRepository.findByTitle(course.getId(), course.getTitle());
@@ -123,6 +129,9 @@ public class CourseServiceImpl implements CourseService {
 		return true;
 	}
 
+	/**
+	 * Fetch courses list from the webservice DG2
+	 */
 	@Override
 	public void fetchAllDG2Courses() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
