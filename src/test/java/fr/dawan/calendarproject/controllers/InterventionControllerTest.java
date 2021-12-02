@@ -25,6 +25,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -42,8 +44,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.MailingListDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
+import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
 import fr.dawan.calendarproject.tools.ICalTools;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
@@ -74,6 +79,12 @@ class InterventionControllerTest {
 
 	@MockBean
 	private JwtTokenUtil jwtTokenUtil;
+	
+	@MockBean
+	private HttpServletRequest request;
+	
+	@MockBean
+	private EmailService emailService;
 
 	private List<InterventionDto> intervs = new ArrayList<InterventionDto>();
 
@@ -120,6 +131,26 @@ class InterventionControllerTest {
 				.andExpect(jsonPath("$.userId", is(2)))
 				.andExpect(jsonPath("$.locationId", is(2)));
 	}
+	
+	@Test
+	void shouldFetchByUserId() throws Exception {
+		final long userId = 3;
+		when(interventionService.getAllByUserId(userId)).thenReturn(intervs.subList(2, 3));
+		
+		mockMvc.perform(get("/api/interventions/user/{userId}", userId).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(1)));
+	}
+	
+	@Test
+	void shouldFetchByUserIdAndFilters() throws Exception {
+		final long userId = 3;
+		when(interventionService.searchBy(any(long.class), Mockito.anyMap())).thenReturn(intervs.subList(2, 3));
+		
+		mockMvc.perform(get("/api/interventions/filter/{userId}", userId, request).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(1)));
+	}
 
 	@Test
 	void shouldGetMasterIntervention() throws Exception {
@@ -136,6 +167,31 @@ class InterventionControllerTest {
 				.andExpect(jsonPath("$[0].userId", is(2)))
 				.andExpect(jsonPath("$[0].locationId", is(2)));
 	}
+	
+	@Test
+	void shouldGetMasterInterventionById() throws Exception {
+		final long id = 2;
+		InterventionDto masterInterv = new InterventionDto(1, "I am lambda Intervention", 0, 0, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0);
+		
+		when(interventionService.getById(id)).thenReturn(masterInterv);
+		
+		mockMvc.perform(get("/api/interventions/masters/{id}", id).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.comment", is(masterInterv.getComment())));
+	}
+	
+	@Test
+	void shouldThrowErrorWhenInterventionNotMaster() throws Exception {
+		final long id = 2;
+		InterventionDto masterInterv = new InterventionDto(1, "I am lambda Intervention", 0, 0, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
+		
+		when(interventionService.getById(id)).thenReturn(masterInterv);
+		
+		mockMvc.perform(get("/api/interventions/masters/{id}", id).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
 
 	@Test
 	void shouldGetSubInterventions() throws Exception {
@@ -145,6 +201,23 @@ class InterventionControllerTest {
 		when(interventionService.getSubInterventions(any(String.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(subIntervs);
 		
 		mockMvc.perform(get("/api/interventions/sub?type=test&start=2021-09-01&end=2021-09-05").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(subIntervs.size())))
+				.andExpect(jsonPath("$[0].comment", is(subIntervs.get(0).getComment())))
+				.andExpect(jsonPath("$[0].courseId", is(3)))
+				.andExpect(jsonPath("$[0].userId", is(3)))
+				.andExpect(jsonPath("$[0].locationId", is(3)));
+	}
+	
+	@Test
+	void shouldGetSubInterventionsWithMasterId() throws Exception {
+		final long id = 2;
+		List<InterventionDto> subIntervs = new ArrayList<InterventionDto>();
+		subIntervs.add(intervs.get(2));
+		
+		when(interventionService.getSubByMasterId(id)).thenReturn(subIntervs);
+		
+		mockMvc.perform(get("/api/interventions/sub/{masterId}", id).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(subIntervs.size())))
 				.andExpect(jsonPath("$[0].comment", is(subIntervs.get(0).getComment())))
@@ -316,6 +389,43 @@ class InterventionControllerTest {
 		mockMvc.perform(get("/api/interventions/count?type=test").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.nb", is(2)));
+	}
+	
+	@Test
+	void shouldSendCalendarToEmployees() throws Exception {
+		List<Long> userIdList = new ArrayList<Long>();
+		userIdList.add(1L);
+		MailingListDto mailList = new MailingListDto(userIdList, "2021-11-03", "2021-11-05");
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String mailListJson = objectMapper.writeValueAsString(mailList);
+	
+		
+		doNothing().when(emailService).sendCalendarToSelectedEmployees(Mockito.anyList(), any(LocalDate.class), any(LocalDate.class));
+		
+		mockMvc.perform(post("/api/interventions/email/employees").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mailListJson))
+				.andExpect(status().isAccepted());
+	}
+	
+	@Test
+	void shouldSplitIntervention() throws Exception {
+		final long interventionId = 1;
+		List<DateRangeDto> dates = new ArrayList<DateRangeDto>();
+		dates.add(new DateRangeDto(1, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0),
+				LocalTime.of(17, 0)));
+		dates.add(new DateRangeDto(0, LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
+				LocalTime.of(17, 0)));
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String datesJson = objectMapper.writeValueAsString(dates);
+	
+		when(interventionService.splitIntervention(any(long.class), Mockito.anyList())).thenReturn(intervs.subList(0, 1));
+		
+		mockMvc.perform(post("/api/interventions/split/{id}", interventionId).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(datesJson))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(1)));
 	}
 
 }
