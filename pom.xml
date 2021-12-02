@@ -52,6 +52,12 @@
 			<version>2.7.3</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
 		<!--============================================================= -->
 		<!-- Tests -->
 		<!--============================================================= -->
