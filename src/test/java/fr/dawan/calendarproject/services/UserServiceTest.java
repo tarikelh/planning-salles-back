@@ -1,8 +1,9 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
@@ -46,7 +48,7 @@ class UserServiceTest {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@MockBean
 	private UserRepository userRepository;
 
@@ -61,49 +63,47 @@ class UserServiceTest {
 
 	private List<User> uList = new ArrayList<User>();
 	private List<AdvancedUserDto> uDtoList = new ArrayList<AdvancedUserDto>();
+	private User userFromDG2 = new User();
 
 	@BeforeEach
 	void setUp() throws Exception {
 		Location loc = Mockito.mock(Location.class);
-		
-		uList.add(new User(1, "Daniel", "Balavoine", loc,
-				"dbalavoine@dawan.fr", "testPassword", null,
+
+		uList.add(new User(1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0));
-		
-		uList.add(new User(2, "Michel", "Polnareff", loc,
-				"mpolnareff@dawan.fr", "testPasswordPolnareff", null,
+
+		uList.add(new User(2, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", "testPasswordPolnareff", null,
 				UserType.COMMERCIAL, UserCompany.JEHANN, "", 0));
-		
-		uList.add(new User(3, "Charles", "Aznavour", loc,
-				"caznavour@dawan.fr", "testPasswordAznav", null,
+
+		uList.add(new User(3, "Charles", "Aznavour", loc, "caznavour@dawan.fr", "testPasswordAznav", null,
 				UserType.FORMATEUR, UserCompany.JEHANN, "", 0));
-		
-		uDtoList.add(new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
-				"dbalavoine@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null));
-		
-		uDtoList.add(new AdvancedUserDto(2, "Michel", "Polnareff", 0,
-				"mpolnareff@dawan.fr", "testPasswordPolnareff",
+
+		uDtoList.add(new AdvancedUserDto(1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr", null, "ADMINISTRATIF",
+				"DAWAN", "", 0, null));
+
+		uDtoList.add(new AdvancedUserDto(2, "Michel", "Polnareff", 0, "mpolnareff@dawan.fr", "testPasswordPolnareff",
 				"COMMERCIAL", "JEHANN", "", 0, null));
-		
-		uDtoList.add(new AdvancedUserDto(3, "Charles", "Aznavour", 0,
-				"caznavour@dawan.fr", "testPasswordAznav",
+
+		uDtoList.add(new AdvancedUserDto(3, "Charles", "Aznavour", 0, "caznavour@dawan.fr", "testPasswordAznav",
 				"FORMATEUR", "JEHANN", "", 0, null));
+
+		userFromDG2 = new User(4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.FORMATEUR,
+				UserCompany.JEHANN, "", 0);
 	}
 
 	@Test
 	void contextLoads() {
 		assertThat(userService).isNotNull();
 	}
-	
+
 	@Test
 	void shouldGetAllUsersAndReturnDto() {
 		when(userRepository.findAll()).thenReturn(uList);
-		when(userMapper.userToAdvancedUserDto(any(User.class)))
-			.thenReturn(uDtoList.get(0), uDtoList.get(1), uDtoList.get(2));
-		
+		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(0), uDtoList.get(1),
+				uDtoList.get(2));
+
 		List<AdvancedUserDto> result = userService.getAllUsers();
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uList.size(), result.size());
 		assertEquals(uDtoList.size(), result.size());
@@ -114,42 +114,37 @@ class UserServiceTest {
 	void shouldGetUsersAndReturnPaginatedDtos() {
 		Page<User> p1 = new PageImpl<User>(uList.subList(0, 2));
 
-		when(userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(
-				any(String.class), any(String.class), any(String.class), any(Pageable.class)))
-			.thenReturn(p1);
-		when(userMapper.userToAdvancedUserDto(any(User.class)))
-			.thenReturn(uDtoList.get(0), uDtoList.get(1));
-		
+		when(userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(any(String.class),
+				any(String.class), any(String.class), any(Pageable.class))).thenReturn(p1);
+		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(0), uDtoList.get(1));
+
 		List<AdvancedUserDto> result = userService.getAllUsers(0, 2, "");
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uList.subList(0, 2).size(), result.size());
 	}
-	
+
 	@Test
 	void shouldGetAllUsersWithPageAndSizeLessThanZero() {
 		Page<User> unpagedSkills = new PageImpl<User>(uList);
 
-		when(userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(
-				any(String.class), any(String.class), any(String.class), any(Pageable.class)))
-			.thenReturn(unpagedSkills);
-		when(userMapper.userToAdvancedUserDto(any(User.class)))
-			.thenReturn(uDtoList.get(0), uDtoList.get(1));
-		
+		when(userRepository.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(any(String.class),
+				any(String.class), any(String.class), any(Pageable.class))).thenReturn(unpagedSkills);
+		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(0), uDtoList.get(1));
+
 		List<AdvancedUserDto> result = userService.getAllUsers(0, 2, "");
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uList.size(), result.size());
 	}
 
 	@Test
 	void shouldReturnCountOfUserssWithGivenKeyword() {
-		when(userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(
-				any(String.class), any(String.class), any(String.class)))
-			.thenReturn((long)uList.size());
-		
+		when(userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(any(String.class),
+				any(String.class), any(String.class))).thenReturn((long) uList.size());
+
 		CountDto result = userService.count("");
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uList.size(), result.getNb());
 	}
@@ -158,7 +153,7 @@ class UserServiceTest {
 	void shouldGetAllUsersByType() {
 		when(userRepository.findAllByType(any(UserType.class))).thenReturn(uList.subList(0, 1));
 		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(0));
-		
+
 		List<AdvancedUserDto> result = userService.getAllUsersByType("ADMINISTRATIF");
 
 		assertThat(result).isNotNull();
@@ -170,14 +165,14 @@ class UserServiceTest {
 
 		assertThat(result).isNull();
 	}
-	
+
 	@Test
 	void shouldGetUserById() {
 		when(userRepository.findById(any(long.class))).thenReturn(Optional.of(uList.get(1)));
 		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(1));
-		
+
 		AdvancedUserDto result = userService.getById(2);
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uDtoList.get(1), result);
 	}
@@ -202,23 +197,19 @@ class UserServiceTest {
 		sList.add(s2);
 		Skill s3 = new Skill(3, "SQL", null, 0);
 		sList.add(s3);
-		
+
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
 		skillIds.add(2L);
 		skillIds.add(3L);
-		
-		AdvancedUserDto toCreate = new AdvancedUserDto(0, "Michel", "Delpech", 0,
-				"mdelpech@dawan.fr", "testPassword",
+
+		AdvancedUserDto toCreate = new AdvancedUserDto(0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
-		AdvancedUserDto expected = new AdvancedUserDto(3, "Michel", "Delpech", 0,
-				"mdelpech@dawan.fr", "testPassword",
+		AdvancedUserDto expected = new AdvancedUserDto(3, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
-		User repoReturn = new User(3, "Michel", "Delpech",
-				mockedLoc,
-				"mdelpech@dawan.fr", "testPassword", sList,
+		User repoReturn = new User(3, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		
+
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -228,21 +219,20 @@ class UserServiceTest {
 		hashTools.when(() -> HashTools.hashSHA512(any(String.class))).thenReturn("hashedPassword");
 		when(userRepository.saveAndFlush(any(User.class))).thenReturn(repoReturn);
 		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(expected);
-		
+
 		AdvancedUserDto result = userService.saveOrUpdate(toCreate);
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(expected, result);
 		assertEquals(sList.size(), result.getSkillsId().size());
-		
-		if(!hashTools.isClosed())
+
+		if (!hashTools.isClosed())
 			hashTools.close();
 	}
 
 	@Test
 	void ShouldReturnNullWhenUpdateUserWithWrongId() {
-		AdvancedUserDto toUpdate = new AdvancedUserDto(222, "Michel", "Delpech", 0,
-				"mdelpech@dawan.fr", "testPassword",
+		AdvancedUserDto toUpdate = new AdvancedUserDto(222, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);
 
 		when(skillRepository.findById(any(long.class))).thenReturn(Optional.empty());
@@ -256,22 +246,17 @@ class UserServiceTest {
 	void ShouldHashWhenPasswordHasChanged() {
 		MockedStatic<HashTools> hashTools = Mockito.mockStatic(HashTools.class);
 		Location mockedLoc = Mockito.mock(Location.class);
-		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
-		User newPwd = new User(1, "Daniel", "Balavoine", mockedLoc,
-				"dbalavoine@dawan.fr", "newStrongPassword", null,
+		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+		User newPwd = new User(1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "newStrongPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		User oldPwd = new User(1, "Daniel", "Balavoine", mockedLoc,
-				"dbalavoine@dawan.fr", "testPassword", null,
+		User oldPwd = new User(1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		User newHashed = new User(1, "Daniel", "Balavoine", mockedLoc,
-				"dbalavoine@dawan.fr", "hashedNewStrongPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		AdvancedUserDto expected = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
-				"dbalavoine@dawan.fr", "hashedNewStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
-		
+		User newHashed = new User(1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "hashedNewStrongPassword",
+				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
+		AdvancedUserDto expected = new AdvancedUserDto(1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
+				"hashedNewStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(oldPwd));
@@ -281,260 +266,255 @@ class UserServiceTest {
 		hashTools.when(() -> HashTools.hashSHA512(any(String.class))).thenReturn("hashedNewStrongPassword");
 		when(userRepository.saveAndFlush(any(User.class))).thenReturn(newHashed);
 		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(expected);
-		
+
 		AdvancedUserDto result = userService.saveOrUpdate(newPwdDto);
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(expected, result);
 		assertEquals("hashedNewStrongPassword", result.getPassword());
-		
-		if(!hashTools.isClosed())
+
+		if (!hashTools.isClosed())
 			hashTools.close();
 	}
-	
+
 	@Test
 	void shouldFindUserByEmail() {
 		when(userRepository.findByEmail(any(String.class))).thenReturn(uList.get(0));
 		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(uDtoList.get(0));
-		
+
 		AdvancedUserDto result = userService.findByEmail("dbalavoine@dawan.fr");
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(uDtoList.get(0), result);
 	}
-	
+
 	@Test
 	void shouldReturnNullWhenFindUserWithWrongEmail() {
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
-		
+
 		AdvancedUserDto result = userService.findByEmail("wrongEmail@dawan.fr");
-		
+
 		assertThat(result).isNull();
 	}
 
 	@Test
 	void shouldThrowWhenUserHasDuplicateEmail() {
-		AdvancedUserDto alreadyExistingEmail = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
-		
-		when(locationRepository.findById(any(Long.class)))
-				.thenReturn(Optional.of(Mockito.mock(Location.class)));
+		AdvancedUserDto alreadyExistingEmail = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(uList.get(0));
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(alreadyExistingEmail);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("EmailNotUniq", result.getType());
-		assertEquals("Email already used.",
-				result.getMessage());
+		assertEquals("Email already used.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasBadEmail() {
-		AdvancedUserDto badEmail = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12,
-				"dbalavoinedawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
-		
-		when(locationRepository.findById(any(Long.class)))
-				.thenReturn(Optional.of(Mockito.mock(Location.class)));
+		AdvancedUserDto badEmail = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12, "dbalavoinedawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badEmail);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("InvalidEmail", result.getType());
-		assertEquals("Email must be valid.",
-				result.getMessage());
+		assertEquals("Email must be valid.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasBadLocationId() {
-		AdvancedUserDto badLocId = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
-		
-		when(locationRepository.findById(any(Long.class)))
-				.thenReturn(Optional.empty());
+		AdvancedUserDto badLocId = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badLocId);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("LocationNotFound", result.getType());
-		assertEquals("Location with id: " + badLocId.getLocationId() + " does not exist.",
-				result.getMessage());
+		assertEquals("Location with id: " + badLocId.getLocationId() + " does not exist.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasBadSkill() {
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
-		
-		AdvancedUserDto badSkill = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
-		
-		when(locationRepository.findById(any(Long.class)))
-			.thenReturn(Optional.of(Mockito.mock(Location.class)));
+
+		AdvancedUserDto badSkill = new AdvancedUserDto(0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badSkill);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("SkillNotFound", result.getType());
-		assertEquals("Skill with id: " + skillIds.get(0) + " does not exist.",
-				result.getMessage());
+		assertEquals("Skill with id: " + skillIds.get(0) + " does not exist.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasTooShortPassword() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
-		
+
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
-		
-		AdvancedUserDto shortPwd = new AdvancedUserDto(0, "Daniel", "Balavoine", 12,
-				"dbalavoine@dawan.fr", "short",
+
+		AdvancedUserDto shortPwd = new AdvancedUserDto(0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr", "short",
 				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
-		
-		when(locationRepository.findById(any(Long.class)))
-			.thenReturn(Optional.of(Mockito.mock(Location.class)));
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(shortPwd);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("PasswordTooShort", result.getType());
-		assertEquals("Password must be at least 8 characters long",
-				result.getMessage());
+		assertEquals("Password must be at least 8 characters long", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasBadCompany() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
-		
+
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
-		
-		AdvancedUserDto badCompany = new AdvancedUserDto(0, "Daniel", "Balavoine", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "BADCOMPANY", "", 0, skillIds);
-		
-		when(locationRepository.findById(any(Long.class)))
-			.thenReturn(Optional.of(Mockito.mock(Location.class)));
+
+		AdvancedUserDto badCompany = new AdvancedUserDto(0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "BADCOMPANY", "", 0, skillIds);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badCompany);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("UnknownUserCompany", result.getType());
-		assertEquals("Company: " + badCompany.getCompany() + " is not valid.",
-				result.getMessage());
+		assertEquals("Company: " + badCompany.getCompany() + " is not valid.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldThrowWhenUserHasBadType() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
-		
+
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
-		
-		AdvancedUserDto badType = new AdvancedUserDto(0, "Daniel", "Balavoine", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"BADTYPE", "DAWAN", "", 0, skillIds);
-		
-		when(locationRepository.findById(any(Long.class)))
-			.thenReturn(Optional.of(Mockito.mock(Location.class)));
+
+		AdvancedUserDto badType = new AdvancedUserDto(0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "BADTYPE", "DAWAN", "", 0, skillIds);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
-		
+
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badType);
 		});
-		
+
 		Object[] array = resultException.getErrors().toArray();
 		APIError result = (APIError) array[0];
-		
+
 		assertEquals(1, resultException.getErrors().size());
-		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto",
-				result.getInstanceClass());
+		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("UnknownUserType", result.getType());
-		assertEquals("Type: " + badType.getType() + " is not valid.",
-				result.getMessage());
+		assertEquals("Type: " + badType.getType() + " is not valid.", result.getMessage());
 	}
-	
+
 	@Test
 	void shouldReturnTrueWhenUserIsCorrect() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
-		
+
 		List<Long> skillIds = new ArrayList<Long>();
 		skillIds.add(1L);
-		
-		AdvancedUserDto goodUser = new AdvancedUserDto(0, "Daniel", "Balavoine", 12,
-				"dbalavoine@dawan.fr", "newStrongPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
-		
-		when(locationRepository.findById(any(Long.class)))
-			.thenReturn(Optional.of(Mockito.mock(Location.class)));
+
+		AdvancedUserDto goodUser = new AdvancedUserDto(0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
-		
+
 		boolean result = userService.checkIntegrity(goodUser);
-		
+
 		assertThat(result).isTrue();
 	}
 
+	@Test
+	void shouldFetchAllDG2UsersWhenUserExistInDb() {
+		// mocking
+		when(userMapper.userDG2DtoToUser(any(UserDG2Dto.class))).thenReturn(userFromDG2);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(userFromDG2);
+		when(userRepository.saveAndFlush(any(User.class))).thenReturn(userFromDG2);
+
+		// assert
+		assertDoesNotThrow(() -> {
+			userService.fetchAllDG2Users();
+		});
+	}
+
+	@Test
+	void shouldFetchAllDG2UsersWhenUserDoNotExistInDb() {
+		// mocking
+		when(userMapper.userDG2DtoToUser(any(UserDG2Dto.class))).thenReturn(userFromDG2);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+		when(userRepository.saveAndFlush(any(User.class))).thenReturn(userFromDG2);
+
+		// assert
+		assertDoesNotThrow(() -> {
+			userService.fetchAllDG2Users();
+		});
+	}
 }
