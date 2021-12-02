@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.ResetPasswordDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
-import fr.dawan.calendarproject.dto.TokenDto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.services.UserService;
@@ -103,11 +101,10 @@ public class ResetPasswordController {
 	@PostMapping(value = "/reset-password", consumes = "application/json")
 	public ResponseEntity<?> resetPassword(@RequestBody ResetResponse reset) throws Exception {
 
-		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());
-		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
-		
+		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());	
 
 		if (token) {
+			String hashedPwd = HashTools.hashSHA512(reset.getPassword());
 			String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
 
 			AdvancedUserDto uDto = userService.findByEmail(email);
@@ -119,8 +116,14 @@ public class ResetPasswordController {
 				userService.saveOrUpdate(uDto);
 
 				return ResponseEntity.status(HttpStatus.OK).build();
-			} else if (uDto.getPassword().equals(hashedPwd))
+			} else if (uDto != null && uDto.getPassword().equals(hashedPwd)) {
+				// same password
 				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+			}
+			else {
+				// if user == null
+				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+			}
 
 		}
 

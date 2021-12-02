@@ -6,6 +6,16 @@ public class MessageWebsocketDto {
 	private String id;
 	private String event;
 
+	
+
+	public MessageWebsocketDto() {
+	}
+
+	public MessageWebsocketDto(String type, String id, String event) {
+		this.type = type;
+		this.id = id;
+		this.event = event;
+	}
 
 	public String getType() {
 		return type;
