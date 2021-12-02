@@ -150,5 +150,27 @@ class ResetPasswordControllerTest {
 		mockMvc.perform(post("/forgot").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.accept(MediaType.APPLICATION_JSON).content(resetPasswordDtoJson)).andExpect(status().isNotFound());
 	}
+	
+	@Test
+	void shouldSendCodeByEmail() throws Exception {
+		ResetPasswordDto resetPasswordDto = new ResetPasswordDto(email, "ResetPasswordTest");
+		String resetPasswordDtoJson = objectMapper.writeValueAsString(resetPasswordDto);
+		when(userService.findByEmail(email)).thenReturn(adUserDto);
+		when(jwtTokenUtil.doGenerateToken(Mockito.anyMap(), any(String.class))).thenReturn("testToken123");
+		doNothing().when(javaMailSender).send(mimeMessage);
+		
+		mockMvc.perform(post("/forgot-mobile").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(resetPasswordDtoJson)).andExpect(status().isOk());
+	}
+	
+	@Test
+	void shouldThrowErrorWhenEmailDoesNotExistForForgotMobile() throws Exception {
+		ResetPasswordDto resetPasswordDto = new ResetPasswordDto("randomemail@test.fr", "ResetPasswordTest");
+		String resetPasswordDtoJson = objectMapper.writeValueAsString(resetPasswordDto);	
+		when(userService.findByEmail(email)).thenReturn(null);
+		
+		mockMvc.perform(post("/forgot-mobile").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(resetPasswordDtoJson)).andExpect(status().isNotFound());
+	}
 
 }

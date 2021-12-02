@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -795,5 +796,10 @@ class InterventionServiceTest {
 
 		assertEquals(5, resultException.getErrors().size());
 		assertEquals("/api/interventions", result.getPath());
+	}
+	
+	@Test
+	void testToStringIntervention() {
+	    assertFalse(new Intervention().toString().contains("@"));
 	}
 }

@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -535,6 +536,11 @@ class UserServiceTest {
 		boolean result = userService.checkIntegrity(goodUser);
 		
 		assertThat(result).isTrue();
+	}
+	
+	@Test
+	void testToStringUser() {
+	    assertFalse(new User().toString().contains("@"));
 	}
 
 }

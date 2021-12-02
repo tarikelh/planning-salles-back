@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -250,7 +251,7 @@ class InterventionCaretakerTest {
 	}
 
 	@Test
-	void testGetPaginatedMemento() {
+	void shouldGetPaginatedMemento() {
 		when(intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(0, 2))).thenReturn(interventionMementos.subList(0, 2));
 		
 		List<InterventionMemento> result = caretaker.getAllMemento(0, 2);
@@ -317,6 +318,16 @@ class InterventionCaretakerTest {
 		InterventionMemento result = caretaker.getLastBeforeMemento(interventionId, interventionMementoId);
 		
 		assertEquals(interventionMementos.get(1), result);
+	}
+	
+	@Test
+	void testToStringInterventionMementoDto() {
+	    assertFalse(new InterventionMementoDto().toString().contains("@"));
+	}
+	
+	@Test
+	void testToStringMementoMessageDto() {
+	    assertFalse(new MementoMessageDto().toString().contains("@"));
 	}
 
 }
