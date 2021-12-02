@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
@@ -51,6 +52,7 @@ class UserMapperTest {
 	private List<Long> usersId = new ArrayList<Long>();
 	private UserDto userDto = new UserDto();
 	private AdvancedUserDto advUserDto = new AdvancedUserDto();
+	private UserDG2Dto userDG2Dto = new UserDG2Dto();
 	private List<Long> skillsId = new ArrayList<Long>();
 	private Set<Skill> skills = new HashSet<Skill>();
 	private Set<User> usersSet = new HashSet<User>();
@@ -73,6 +75,9 @@ class UserMapperTest {
 
 		userDto = new UserDto(2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
 				"DAWAN", "zfzfzh.pngé", 2);
+
+		userDG2Dto = new UserDG2Dto(2, "dtofustname", "dtolastname", 1, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
+				"DAWAN", "zfzfzh.pngé", skillsId, 0);
 
 		user = new User(3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", 1);
@@ -221,4 +226,25 @@ class UserMapperTest {
 		assertThat(mappedUserSkillsIds.contains(user2));
 	}
 
+	@Test
+	void should_map_userDG2DtoToUser() {
+		// mocking
+		when(locationRepository.getOne(any(Long.class))).thenReturn(location);
+		when(skillMapper.listLongToSetSkills(any())).thenReturn(skills);
+
+		// mapping
+		User mappedUser = userMapper.userDG2DtoToUser(userDG2Dto);
+
+		// assert
+		assertEquals(mappedUser.getId(), userDG2Dto.getId());
+		assertEquals(mappedUser.getFirstName(), userDG2Dto.getFirstName());
+		assertEquals(mappedUser.getLastName(), userDG2Dto.getLastName());
+		assertEquals(mappedUser.getFullname(), userDG2Dto.getFullName());
+		assertEquals(mappedUser.getLocation().getId(), userDG2Dto.getLocationId());
+		assertEquals(mappedUser.getEmail(), userDG2Dto.getEmail());
+		assertEquals(mappedUser.getType().toString(), userDG2Dto.getType());
+		assertEquals(mappedUser.getCompany().toString(), userDG2Dto.getCompany());
+		assertEquals(mappedUser.getSkills(), skills);
+		assertEquals(mappedUser.getVersion(), userDG2Dto.getVersion());
+	}
 }

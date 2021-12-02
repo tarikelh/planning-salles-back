@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,7 +19,7 @@ public class UserDG2Dto {
 
 	private String email;
 
-//	private String password;
+	private String password;
 
 	@JsonProperty("job")
 	private String type;
@@ -26,14 +27,14 @@ public class UserDG2Dto {
 	@JsonProperty("name")
 	private String company;
 
-//	private String imagePath;
+	private String imagePath;
 
-//	private List<Long> skillsId;
+	private List<Long> skillsId;
 
 	private int version;
 
 	public UserDG2Dto() {
-//		setSkillsId(new ArrayList<Long>());
+		setSkillsId(new ArrayList<Long>());
 	}
 
 	public UserDG2Dto(long id, String firstName, String lastName, long locationId, String email, String password,
@@ -43,11 +44,11 @@ public class UserDG2Dto {
 		setLastName(lastName);
 		setLocationId(locationId);
 		setEmail(email);
-//		setPassword(password);
+		setPassword(password);
 		setType(type);
 		setCompany(company);
-//		setImagePath(imagePath);
-//		setSkillsId(skillsId);
+		setImagePath(imagePath);
+		setSkillsId(skillsId);
 		setVersion(version);
 	}
 
@@ -91,13 +92,13 @@ public class UserDG2Dto {
 		this.email = email;
 	}
 
-//	public String getPassword() {
-//		return password;
-//	}
-//
-//	public void setPassword(String password) {
-//		this.password = password;
-//	}
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public String getType() {
 		return type;
@@ -115,21 +116,21 @@ public class UserDG2Dto {
 		this.company = company;
 	}
 
-//	public String getImagePath() {
-//		return imagePath;
-//	}
-//
-//	public void setImagePath(String imagePath) {
-//		this.imagePath = imagePath;
-//	}
-//
-//	public List<Long> getSkillsId() {
-//		return skillsId;
-//	}
-//
-//	public void setSkillsId(List<Long> skillsId) {
-//		this.skillsId = skillsId;
-//	}
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public List<Long> getSkillsId() {
+		return skillsId;
+	}
+
+	public void setSkillsId(List<Long> skillsId) {
+		this.skillsId = skillsId;
+	}
 
 	public String getFullName() {
 		return getFirstName() + " " + getLastName();
