@@ -96,12 +96,7 @@ class UserMapperTest {
 	@Test
 	void should_map_userToAdvancedUserDto() {
 		// mocking
-		List<Long> list = new ArrayList<Long>();
-		for (Skill skill : user.getSkills()) {
-			list.add(skill.getId());
-		}
-
-		when(skillMapper.setSkillsToListLong(any())).thenReturn(list);
+		when(skillMapper.setSkillsToListLong(any())).thenReturn(skillsId);
 
 		// mapping
 		AdvancedUserDto mappedAdvancedUserDto = userMapper.userToAdvancedUserDto(user);
@@ -114,7 +109,7 @@ class UserMapperTest {
 		assertEquals(mappedAdvancedUserDto.getLocationId(), user.getLocation().getId());
 		assertEquals(mappedAdvancedUserDto.getEmail(), user.getEmail());
 		assertEquals(mappedAdvancedUserDto.getPassword(), user.getPassword());
-		assertEquals(mappedAdvancedUserDto.getSkillsId(), list);
+		assertEquals(mappedAdvancedUserDto.getSkillsId(), skillsId);
 		assertEquals(mappedAdvancedUserDto.getType(), user.getType().toString());
 		assertEquals(mappedAdvancedUserDto.getCompany(), user.getCompany().toString());
 		assertEquals(mappedAdvancedUserDto.getImagePath(), user.getImagePath());
@@ -191,13 +186,8 @@ class UserMapperTest {
 		// mapping
 		List<Long> mappedUserSkillsIds = userMapper.setUsersToListLong(usersSet);
 
-		List<Long> list = new ArrayList<Long>();
-		for (User user : usersSet) {
-			list.add(user.getId());
-		}
-
 		// assert
-		assertEquals(mappedUserSkillsIds, list);
+		assertEquals(mappedUserSkillsIds, usersId);
 	}
 
 	@Test
