@@ -12,6 +12,9 @@ public class ResetPasswordDto {
 	public ResetPasswordDto() {
 		super();
 	}
+	public ResetPasswordDto(String email) {
+		this.email = email;
+	}
 	public String getEmail() {
 		return email;
 	}

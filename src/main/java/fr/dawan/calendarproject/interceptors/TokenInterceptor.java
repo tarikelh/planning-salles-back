@@ -39,6 +39,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 		if(!request.getMethod().equalsIgnoreCase("OPTIONS")){
 			if (!request.getRequestURI().equals("/authenticate")
 					&& !request.getRequestURI().equals("/forgot")
+					&& !request.getRequestURI().equals("/forgot-mobile")
 					&& !request.getRequestURI().equals("/check-token")
 					&& !request.getRequestURI().equals("/reset-password")
 					&& !request.getRequestURI().contains("/ws")) {
