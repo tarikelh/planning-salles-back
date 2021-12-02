@@ -243,32 +243,32 @@ public class UserServiceImpl implements UserService {
 			lResJson = objectMapper.readValue(line, new TypeReference<List<UserDG2Dto>>() {
 			});
 			for (UserDG2Dto userDG2Dto : lResJson) {
-				userDG2Dto.setType(userDG2JobToUserType(userDG2Dto.getType()));
+				userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		for (UserDG2Dto cDG2 : lResJson) {
-			User userInported = userMapper.userDG2DtoToUser(cDG2);
-			User userInDb = userRepository.findByEmail(userInported.getEmail());
+			User userImported = userMapper.userDG2DtoToUser(cDG2);
+			User userInDb = userRepository.findByEmail(userImported.getEmail());
 
 			if (userInDb != null) {
-				userInDb.setId(userInported.getId());
-				userInDb.setCompany(userInported.getCompany());
-				userInDb.setEmail(userInported.getEmail());
-				userInDb.setEnumCompany(userInported.getEnumCompany());
-				userInDb.setEnumType(userInported.getEnumType());
-				userInDb.setFirstName(userInported.getFirstName());
-				userInDb.setImagePath(userInported.getImagePath());
-				userInDb.setLastName(userInported.getLastName());
-				userInDb.setLocation(userInported.getLocation());
-				userInDb.setPassword(userInported.getPassword());
-				userInDb.setSkills(userInported.getSkills());
-				userInDb.setType(userInported.getType());
-				userInDb.setVersion(userInported.getVersion());
+				userInDb.setId(userImported.getId());
+				userInDb.setCompany(userImported.getCompany());
+				userInDb.setEmail(userImported.getEmail());
+				userInDb.setEnumCompany(userImported.getEnumCompany());
+				userInDb.setEnumType(userImported.getEnumType());
+				userInDb.setFirstName(userImported.getFirstName());
+				userInDb.setImagePath(userImported.getImagePath());
+				userInDb.setLastName(userImported.getLastName());
+				userInDb.setLocation(userImported.getLocation());
+				userInDb.setPassword(userImported.getPassword());
+				userInDb.setSkills(userImported.getSkills());
+				userInDb.setType(userImported.getType());
+				userInDb.setVersion(userImported.getVersion());
 			} else {
-				userInDb = userInported;
+				userInDb = userImported;
 			}
 
 			if (userInDb.getPassword() == null) {
@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
 //		}
 	}
 
-	private String userDG2JobToUserType(String job) {
+	private String userDG2JobToUserTypeString(String job) {
 		if (!job.isEmpty()) {
 			String lowerCaseJob = job.toLowerCase();
 			if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {
