@@ -54,7 +54,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		// registry.addEndpoint("/ws");
 		registry.addEndpoint("/ws")
-				// Allow the origin http://localhost:8080 to send messages to us. (Base URL of
+				// Allow the origin http://server:port to send messages to us. (Base URL of
 				// the client)
 				.setAllowedOrigins(vueUrl)
 				// Enable SockJS fallback options
