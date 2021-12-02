@@ -284,7 +284,7 @@ public class UserServiceImpl implements UserService {
 	private String userDG2JobToUserType(String job) {
 		if (!job.isEmpty()) {
 			String lowerCaseJob = job.toLowerCase();
-			if (lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {
+			if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {
 				return UserType.APPRENTI.toString();
 			} else if (lowerCaseJob.contains("format")) {
 				return UserType.FORMATEUR.toString();
