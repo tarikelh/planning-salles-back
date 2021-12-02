@@ -1,4 +1,4 @@
-package fr.dawan.calendarproject.interceptors;
+ package fr.dawan.calendarproject.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +24,13 @@ public class TokenInterceptor implements HandlerInterceptor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TokenInterceptor.class);
 
+	/**
+	 * Every HTTP request pass throught preHandle method before to perform the request
+	 * 
+	 * @param request HTTP request sent from the client
+	 * @return boolean If the api doesn't request for a token or if the token is valid it will return true.
+	 * @throws Exception Throw an exception if there is an issue with the token.
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
