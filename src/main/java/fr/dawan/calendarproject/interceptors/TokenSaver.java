@@ -3,6 +3,10 @@ package fr.dawan.calendarproject.interceptors;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * While the server is running the token from an user will be saved in TokenSaver.
+ * TokenSaver will save < email, token >
+ */
 public class TokenSaver {
 	// email/token
 	public static Map<String, String> tokensByEmail;

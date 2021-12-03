@@ -15,7 +15,7 @@ public interface SkillMapper {
 
 	List<Long> setSkillsToListLong(Set<Skill> skills);
 
-	Set<Skill> listSkillToSetSkill(List<Skill> skils);
+	Set<Skill> listSkillsToSetSkills(List<Skill> skils);
 
 	default Long getSkillId(Skill skill) {
 		return skill.getId();
@@ -27,5 +27,5 @@ public interface SkillMapper {
 	AdvancedSkillDto skillToAdvancedSkillDto(Skill skill);
 
 	@Mapping(source = "usersId", target = "users")
-	Skill AdvancedSkillDtoToSkill(AdvancedSkillDto advSkill);
+	Skill advancedSkillDtoToSkill(AdvancedSkillDto advSkill);
 }
