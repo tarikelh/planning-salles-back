@@ -39,7 +39,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
-	
+
 	@Override
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
@@ -54,13 +54,14 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
 		Pageable pagination = null;
-		
-		if(page > -1 && size > 0) 
+
+		if (page > -1 && size > 0)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
-		
-		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
+
+		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get()
+				.collect(Collectors.toList());
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
@@ -68,14 +69,12 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
-	
 
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(locationRepository.countByCityContaining(search));
 	}
 
-	
 	@Override
 	public LocationDto getById(long id) {
 		Optional<Location> l = locationRepository.findById(id);
@@ -131,25 +130,29 @@ public class LocationServiceImpl implements LocationService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
-		
+
 		URI url = new URI("https://dawan.org/public/location/");
 		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
-		
-		if(repWs.getStatusCode() == HttpStatus.OK) {
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			LocationDG2Dto[] resArray = objectMapper.readValue(json, LocationDG2Dto[].class);
 			lResJson = Arrays.asList(resArray);
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location l = locationMapper.locationDG2DtoToLocation(lDG2);
 				Location foundL = locationRepository.findByCity(l.getCity());
-				if(foundL != null) {
+				if (foundL != null) {
 					l.setId(foundL.getId());
 					l.setColor(foundL.getColor());
+					l.setVersion(foundL.getVersion());
+				}
+				if (l.getColor().isEmpty() || l.getColor() == null) {
+					l.setColor("#00cc99");
 				}
 				locationRepository.saveAndFlush(l);
 			}
 		} else {
-			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");   
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 }
