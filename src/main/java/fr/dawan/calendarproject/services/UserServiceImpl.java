@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.services;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +13,13 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +54,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
@@ -227,61 +236,68 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void fetchAllDG2Users() throws Exception {
+	public void fetchAllDG2Users(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-//		RestTemplate restTemplate = new RestTemplate();
 		List<UserDG2Dto> lResJson = new ArrayList<UserDG2Dto>();
 
-//		URI url = new URI("https://dawan.org/api2/planning/employees");
-//		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
+		URI url = new URI("https://dawan.org/api2/planning/employees");
 
-//		if (repWs.getStatusCode() == HttpStatus.OK) {
-//			String json = repWs.getBody();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
 
-		try {
-			String line = "[{\"id\":167678,\"firstName\":\"Nadjla\",\"lastName\":\"ADAM IBOURA\",\"locationId\":10,\"email\":\"nadamiboura@dawan.fr\",\"job\":\"DW\",\"name\":\"DAWAN\",\"skill\":\"\"},{\"id\":125334,\"firstName\":\"Wilson\",\"lastName\":\"AGBOR\",\"locationId\":2,\"email\":\"wagbor@dawan.fr\",\"job\":\"Formateur D\\u00e9cisionnel\",\"name\":\"DAWAN\",\"skill\":\"\"},{\"id\":110482,\"firstName\":\"Thomas\",\"lastName\":\"ALDAITZ\",\"locationId\":3,\"email\":\"taldaitz@dawan.fr\",\"job\":\"Formateur\",\"name\":\"DAWAN\",\"skill\":\".NET PHP Magento\"},{\"id\":7436,\"firstName\":\"Mathilde\",\"lastName\":\"ALONSO\",\"locationId\":6,\"email\":\"malonso@dawan.fr\",\"job\":\"Formatrice\",\"name\":\"DAWAN\",\"skill\":\"\"},{\"id\":40209,\"firstName\":\"Antoine\",\"lastName\":\"ANDO\",\"locationId\":6,\"email\":\"aando@dawan.fr\",\"job\":\"D\\u00e9veloppeur web\",\"name\":\"DAWAN\",\"skill\":\"PHP, Web\"},{\"id\":173185,\"firstName\":\"Victor\",\"lastName\":\"ANDR\\u00c9\",\"locationId\":10,\"email\":\"vandre@dawan.fr\",\"job\":\"\",\"name\":\"DAWAN\",\"skill\":\"\"},{\"id\":183,\"firstName\":\"Emmanuel\",\"lastName\":\"ANNE\",\"locationId\":7,\"email\":\"eanne@dawan.fr\",\"job\":\"\",\"name\":\"DAWAN\",\"skill\":\"\"},{\"id\":116696,\"firstName\":\"Dawan\",\"lastName\":\"ANSIBLE\",\"locationId\":3,\"email\":\"ansible@dawan.fr\",\"job\":\"\",\"name\":\"DAWAN\",\"skill\":\"\"}]";
-			lResJson = objectMapper.readValue(line, new TypeReference<List<UserDG2Dto>>() {
-			});
-			for (UserDG2Dto userDG2Dto : lResJson) {
-				userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
+			String json = repWs.getBody();
+
+			try {
+				lResJson = objectMapper.readValue(json, new TypeReference<List<UserDG2Dto>>() {
+				});
+				for (UserDG2Dto userDG2Dto : lResJson) {
+					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+
+			for (UserDG2Dto cDG2 : lResJson) {
+				User userImported = userMapper.userDG2DtoToUser(cDG2);
+				User userInDb = userRepository.findByEmail(userImported.getEmail());
+
+				if (userInDb != null) {
+					userInDb.setId(userImported.getId());
+					userInDb.setCompany(userImported.getCompany());
+					userInDb.setEmail(userImported.getEmail());
+					userInDb.setEnumCompany(userImported.getEnumCompany());
+					userInDb.setEnumType(userImported.getEnumType());
+					userInDb.setFirstName(userImported.getFirstName());
+					userInDb.setImagePath(userImported.getImagePath());
+					userInDb.setLastName(userImported.getLastName());
+					userInDb.setLocation(userImported.getLocation());
+					userInDb.setPassword(userImported.getPassword());
+					userInDb.setSkills(userImported.getSkills());
+					userInDb.setType(userImported.getType());
+					userInDb.setVersion(userImported.getVersion());
+				} else {
+					userInDb = userImported;
+				}
+
+				if (userInDb.getPassword() == null) {
+					userInDb.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
+				}
+				userRepository.saveAndFlush(userInDb);
+			}
+		} else {
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
-
-		for (UserDG2Dto cDG2 : lResJson) {
-			User userImported = userMapper.userDG2DtoToUser(cDG2);
-			User userInDb = userRepository.findByEmail(userImported.getEmail());
-
-			if (userInDb != null) {
-				userInDb.setId(userImported.getId());
-				userInDb.setCompany(userImported.getCompany());
-				userInDb.setEmail(userImported.getEmail());
-				userInDb.setEnumCompany(userImported.getEnumCompany());
-				userInDb.setEnumType(userImported.getEnumType());
-				userInDb.setFirstName(userImported.getFirstName());
-				userInDb.setImagePath(userImported.getImagePath());
-				userInDb.setLastName(userImported.getLastName());
-				userInDb.setLocation(userImported.getLocation());
-				userInDb.setPassword(userImported.getPassword());
-				userInDb.setSkills(userImported.getSkills());
-				userInDb.setType(userImported.getType());
-				userInDb.setVersion(userImported.getVersion());
-			} else {
-				userInDb = userImported;
-			}
-
-			if (userInDb.getPassword() == null) {
-				userInDb.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
-			}
-			userRepository.saveAndFlush(userInDb);
-		}
-//		} else {
-//			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
-//		}
 	}
 
 	private String userDG2JobToUserTypeString(String job) {
+		if (job == null) {
+			job = "";
+		}
 		if (!job.isEmpty()) {
 			String lowerCaseJob = job.toLowerCase();
 			if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {

@@ -19,6 +19,9 @@ public class Location {
 	@Column(nullable = true, length = 9, unique = true)
 	private String color;
 
+//	@Column(nullable = true, length = 9, unique = true)
+//	private String color;
+
 	@Version
 	private int version;
 
@@ -35,7 +38,7 @@ public class Location {
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}

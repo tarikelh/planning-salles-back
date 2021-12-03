@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,9 +96,12 @@ public class UserController {
 
 	// FETCH Dawan webservice
 	@GetMapping(value = "/dg2", produces = "application/json")
-	public ResponseEntity<?> fetchAllDG2() {
+	public ResponseEntity<?> fetchAllDG2(@RequestHeader Map<String, String> headers) {
+		String userDG2 = headers.get("x-auth-token");
+		String[] splitUserDG2String = userDG2.split(":");
+
 		try {
-			userService.fetchAllDG2Users();
+			userService.fetchAllDG2Users(splitUserDG2String[0], splitUserDG2String[1]);
 			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
