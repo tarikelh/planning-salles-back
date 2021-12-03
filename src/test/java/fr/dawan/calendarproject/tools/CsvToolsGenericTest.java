@@ -1,13 +1,8 @@
 package fr.dawan.calendarproject.tools;
 
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +23,7 @@ class CsvToolsGenericTest {
 	private CourseMapper courseMapper;
 	
 	@Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 	
 	private String pathExist;
 	private String pathDoesNotExist;

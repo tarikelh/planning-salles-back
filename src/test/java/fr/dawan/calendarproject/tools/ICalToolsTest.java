@@ -2,27 +2,14 @@ package fr.dawan.calendarproject.tools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.net.SocketException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import fr.dawan.calendarproject.entities.Course;
-import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.enums.InterventionStatus;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Method;

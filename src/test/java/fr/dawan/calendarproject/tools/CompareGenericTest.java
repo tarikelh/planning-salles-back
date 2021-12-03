@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.tools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.Skill;
 
 class CompareGenericTest {
 	
