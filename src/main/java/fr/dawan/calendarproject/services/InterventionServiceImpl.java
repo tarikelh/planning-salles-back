@@ -1,8 +1,10 @@
 package fr.dawan.calendarproject.services;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -15,11 +17,20 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
+import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.enums.InterventionStatus;
@@ -67,6 +78,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionMapper interventionMapper;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Override
 	public List<InterventionDto> getAllInterventions() {
@@ -484,5 +498,66 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<InterventionDG2Dto> lResJson = new ArrayList<InterventionDG2Dto>();
+		int count = 0;
+		
+		URI url = new URI(
+				String.format("https://dawan.org/api2/planning/interventions/%s/%s", start.toString(), end.toString()));
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+		
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+		
+		if(repWs.getStatusCode() == HttpStatus.OK) {
+			String json = repWs.getBody();
+			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
+			
+			lResJson = Arrays.asList(resArray);
+			Set<Long> masterIds = new HashSet<Long>();
+			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
+			
+			lResJson.forEach(i -> {
+				if(masterIds.contains(i.getId()))
+					i.setMaster(true);
+				
+				String type = i.getType() == "shared" ? "SUR_MESURE" : "INTERN";
+				i.setType(type);
+				
+				i.setValidated(i.getAttendeesCount() > 0);
+				
+				i.setDateStart(i.getDateStart().substring(0, 10));
+				i.setDateEnd(i.getDateEnd().substring(0, 10));
+			});
+			
+			for (InterventionDG2Dto iDG2 : lResJson) {
+				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
+				Optional<Intervention> alreadyInDb = interventionRepository.findById(i.getId());
+
+				if(alreadyInDb.isPresent() && alreadyInDb.get().equalsDG2(i))
+					continue;
+				else if(alreadyInDb.isPresent() && !alreadyInDb.get().equalsDG2(i)) {
+					i.setComment(alreadyInDb.get().getComment());
+					i.setTimeStart(alreadyInDb.get().getTimeStart());
+					i.setTimeEnd(alreadyInDb.get().getTimeEnd());
+					i.setVersion(alreadyInDb.get().getVersion());
+				}
+
+				count++;
+				interventionRepository.saveAndFlush(i);
+
+			}
+		} else {
+			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");
+		}
+		
+		return count;
 	}
 }

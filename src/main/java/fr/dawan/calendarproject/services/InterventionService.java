@@ -46,4 +46,6 @@ public interface InterventionService {
 	List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates);
 
 	List<InterventionDto> getSubByMasterId(long id);
+	
+	int fetchDG2Interventions(String email, String pwd,LocalDate start, LocalDate end) throws Exception;
 }

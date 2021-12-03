@@ -6,6 +6,8 @@ import java.time.LocalTime;
 public class InterventionDto implements Cloneable {
 
 	private long id;
+	
+	private String slug;
 
 	private String comment;
 
@@ -14,6 +16,8 @@ public class InterventionDto implements Cloneable {
 	private long courseId;
 
 	private long userId;
+	
+	private int attendeesCount;
 
 	private String type;
 
@@ -36,14 +40,16 @@ public class InterventionDto implements Cloneable {
 	public InterventionDto() {
 	}
 
-	public InterventionDto(long id, String comment, long locationId, long courseId, long userId, String type,
-			boolean validated, LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster,
-			int version) {
+	public InterventionDto(long id, String slug, String comment, long locationId, long courseId, long userId,
+			int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
+			LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster, int version) {
 		this.id = id;
+		this.slug = slug;
 		this.comment = comment;
 		this.locationId = locationId;
 		this.courseId = courseId;
 		this.userId = userId;
+		this.attendeesCount = attendeesCount;
 		this.type = type;
 		this.validated = validated;
 		this.dateStart = dateStart;
@@ -167,6 +173,22 @@ public class InterventionDto implements Cloneable {
 		this.version = version;
 	}
 
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	public int getAttendeesCount() {
+		return attendeesCount;
+	}
+
+	public void setAttendeesCount(int attendeesCount) {
+		this.attendeesCount = attendeesCount;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -184,12 +206,12 @@ public class InterventionDto implements Cloneable {
 		result = prime * result + (isMaster ? 1231 : 1237);
 		result = prime * result + (int) (locationId ^ (locationId >>> 32));
 		result = prime * result + (int) (masterInterventionId ^ (masterInterventionId >>> 32));
+		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
 		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
 		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result + (int) (userId ^ (userId >>> 32));
 		result = prime * result + (validated ? 1231 : 1237);
-		result = prime * result + version;
 		return result;
 	}
 
@@ -227,6 +249,11 @@ public class InterventionDto implements Cloneable {
 			return false;
 		if (masterInterventionId != other.masterInterventionId)
 			return false;
+		if (slug == null) {
+			if (other.slug != null)
+				return false;
+		} else if (!slug.equals(other.slug))
+			return false;
 		if (timeEnd == null) {
 			if (other.timeEnd != null)
 				return false;
@@ -245,8 +272,6 @@ public class InterventionDto implements Cloneable {
 		if (userId != other.userId)
 			return false;
 		if (validated != other.validated)
-			return false;
-		if (version != other.version)
 			return false;
 		return true;
 	}

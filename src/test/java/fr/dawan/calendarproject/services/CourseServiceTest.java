@@ -270,7 +270,7 @@ class CourseServiceTest {
 		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
 		
 		//Verify request succeed
-	    assertEquals(200, repWs.getStatusCodeValue());
+		assertEquals(200, repWs.getStatusCodeValue());
 	}
 	
 	@Test
