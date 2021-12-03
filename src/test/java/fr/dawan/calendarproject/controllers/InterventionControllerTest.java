@@ -427,5 +427,34 @@ class InterventionControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(1)));
 	}
-
+	
+	@Test
+	void shouldFetchInterventionFromDg2AndReturnOkStatus() throws Exception {
+		LocalDate start = LocalDate.now();
+		LocalDate end = LocalDate.now().plusDays(2);
+		
+		when(interventionService.fetchDG2Interventions(
+				any(String.class), any(String.class), any(LocalDate.class), any(LocalDate.class)))
+			.thenReturn(3);
+		
+		mockMvc.perform(get("/api/interventions/dg2/{start}/{end}", start.toString(), end.toString())
+				.accept(MediaType.APPLICATION_JSON)
+				.header("X-AUTH-TOKEN", "test@dawan.fr:testPassword"))
+				.andExpect(status().isOk());
+		
+	}
+	
+	@Test
+	void shouldReturnInternalServerErrorStatusIfFetchDg2Throw() throws Exception {
+		LocalDate start = LocalDate.now();
+		LocalDate end = LocalDate.now().plusDays(2);
+		
+		doThrow(Exception.class).when(interventionService).fetchDG2Interventions(
+				any(String.class), any(String.class), any(LocalDate.class), any(LocalDate.class));
+		
+		mockMvc.perform(get("/api/interventions/dg2/{start}/{end}", start.toString(), end.toString())
+				.accept(MediaType.APPLICATION_JSON)
+				.header("X-AUTH-TOKEN", "test@dawan.fr:testPassword"))
+				.andExpect(status().isInternalServerError());
+	}
 }
