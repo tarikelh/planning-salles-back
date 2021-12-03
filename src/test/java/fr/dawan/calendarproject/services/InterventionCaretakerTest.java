@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -86,61 +87,47 @@ class InterventionCaretakerTest {
 		mockedLoc = Mockito.mock(Location.class);
 		mockedCourse = Mockito.mock(Course.class);
 		mockedUser = Mockito.mock(User.class);
-
-		interventions.add(new Intervention(0, "I am a new Intervention", mockedLoc, mockedCourse, mockedUser,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), false, null, 0));
-		interventions.add(new Intervention(1, "I am a lamba Intervention", mockedLoc, mockedCourse, mockedUser,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), false, null, 0));
-		interventions.add(new Intervention(1, "I am a lamba Intervention updated", mockedLoc, mockedCourse, mockedUser,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), false, null, 0));
-		interventions.add(new Intervention(2, "I am a lamba Intervention with Master Intervention", mockedLoc,
-				mockedCourse, mockedUser, InterventionStatus.SUR_MESURE, true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), false, interventions.get(1), 0));
-
-		interventionsDtos.add(new InterventionDto(0, "I am a new Intervention", 1, 1, 1, "SUR_MESURE", true,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
-		interventionsDtos.add(new InterventionDto(1, "I am a lamba Intervention", 1, 1, 1, "SUR_MESURE", true,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
-		interventionsDtos.add(new InterventionDto(1, "I am a lamba Intervention updated", 1, 1, 1, "SUR_MESURE", true,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
-		interventionsDtos.add(new InterventionDto(2, "I am a lamba Intervention with Master Intervention", 1, 1, 1,
-				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), interventions.get(1).getId(), false, 0));
-
-		intMementoDtos.add(new InterventionMementoDto(0, "I am a new Intervention", 1, "Bordeaux", 1,
-				"Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
-		intMementoDtos.add(new InterventionMementoDto(0, "I am a lamba Intervention", 1, "Bordeaux", 1,
-				"Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
-		intMementoDtos.add(new InterventionMementoDto(1, "I am a lamba Intervention updated", 1, "Bordeaux", 1,
-				"Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
-		intMementoDtos.add(new InterventionMementoDto(2, "I am a lamba Intervention  with Master Intervention", 1,
-				"Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1).getId(),
-				false));
-		intMementoDtos.add(new InterventionMementoDto(3, "I am a lamba Intervention with no location, user and course",
-				0, "", 0, "", 0, "", "SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
-
-		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0),
-				new MementoMessageDto(1, " has been created by ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(2, intMementoDtos.get(1),
-				new MementoMessageDto(2, " has been created by ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(3, intMementoDtos.get(2),
-				new MementoMessageDto(3, " has been changed by ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(4, intMementoDtos.get(1),
-				new MementoMessageDto(4, " Has been restored ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(5, intMementoDtos.get(1),
-				new MementoMessageDto(5, " has been deleted by ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(6, intMementoDtos.get(3),
-				new MementoMessageDto(6, " has been created by ", email, ""), 0));
-		interventionMementos.add(new InterventionMemento(7, intMementoDtos.get(4),
-				new MementoMessageDto(7, " has been created by ", email, ""), 0));
+		
+		interventions.add(new Intervention(0, "newSlug", "I am a new Intervention", mockedLoc, mockedCourse, mockedUser,
+				0, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+		interventions.add(new Intervention(1, "LambdaSlug", "I am a lamba Intervention", mockedLoc, mockedCourse, mockedUser,
+				0, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+		interventions.add(new Intervention(1, "updatedSlug", "I am a lamba Intervention updated", mockedLoc, mockedCourse, mockedUser,
+				0, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+		interventions.add(new Intervention(2, "masterSlug", "I am a lamba Intervention with Master Intervention", mockedLoc, mockedCourse, mockedUser,
+				0, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1), false, 0));
+		
+		interventionsDtos.add(new InterventionDto(0, "newSlug", "I am a new Intervention", 1, 1, 1, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
+		interventionsDtos.add(new InterventionDto(1, "LambdaSlug", "I am a lamba Intervention", 1, 1, 1, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
+		interventionsDtos.add(new InterventionDto(1, "updatedSlug", "I am a lamba Intervention updated", 1, 1, 1, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
+		interventionsDtos.add(new InterventionDto(2, "masterSlug", "I am a lamba Intervention with Master Intervention", 1, 1, 1, 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1).getId(), false, 0));
+		
+		intMementoDtos.add(new InterventionMementoDto(0, "I am a new Intervention", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+		intMementoDtos.add(new InterventionMementoDto(0, "I am a lamba Intervention", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+		intMementoDtos.add(new InterventionMementoDto(1, "I am a lamba Intervention updated", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+		intMementoDtos.add(new InterventionMementoDto(2, "I am a lamba Intervention  with Master Intervention", 1, "Bordeaux", 1, "Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE",
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1).getId(), false));
+		intMementoDtos.add(new InterventionMementoDto(3, "I am a lamba Intervention with no location, user and course", 0, "", 0, "", 0, "", "SUR_MESURE",
+				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+	
+		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0), new MementoMessageDto(1, " has been created by ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(2, intMementoDtos.get(1), new MementoMessageDto(2, " has been created by ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(3, intMementoDtos.get(2), new MementoMessageDto(3, " has been changed by ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(4, intMementoDtos.get(1), new MementoMessageDto(4, " Has been restored ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(5, intMementoDtos.get(1), new MementoMessageDto(5, " has been deleted by ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(6, intMementoDtos.get(3), new MementoMessageDto(6, " has been created by ", email, ""), 0));
+		interventionMementos.add(new InterventionMemento(7, intMementoDtos.get(4), new MementoMessageDto(7, " has been created by ", email, ""), 0));
 	}
 
 	@Test
@@ -280,10 +267,9 @@ class InterventionCaretakerTest {
 	}
 
 	@Test
-	void testGetPaginatedMemento() {
-		when(intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(0, 2)))
-				.thenReturn(interventionMementos.subList(0, 2));
-
+	void shouldGetPaginatedMemento() {
+		when(intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(0, 2))).thenReturn(interventionMementos.subList(0, 2));
+		
 		List<InterventionMemento> result = caretaker.getAllMemento(0, 2);
 
 		assertEquals(interventionMementos.subList(0, 2), result);
@@ -351,6 +337,16 @@ class InterventionCaretakerTest {
 		InterventionMemento result = caretaker.getLastBeforeMemento(interventionId, interventionMementoId);
 
 		assertEquals(interventionMementos.get(1), result);
+	}
+	
+	@Test
+	void testToStringInterventionMementoDto() {
+	    assertFalse(new InterventionMementoDto().toString().contains("@"));
+	}
+	
+	@Test
+	void testToStringMementoMessageDto() {
+	    assertFalse(new MementoMessageDto().toString().contains("@"));
 	}
 
 }

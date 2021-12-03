@@ -202,5 +202,18 @@ public class InterventionController {
 		}
 	}
 
+	//FETCH Dawan webservice
+	@GetMapping(value = "/dg2/{start}/{end}", produces="application/json")
+	public ResponseEntity<?> fetchAllDG2(@PathVariable("start") String start, @PathVariable("end") String end, @RequestHeader Map<String, String> headers) {
+		String auth = headers.get("X-AUTH-TOKEN");
+		try {
+			int count = interventionService.fetchDG2Interventions(
+					auth.split(":")[0], auth.split(":")[1], LocalDate.parse(start), LocalDate.parse(end));
+			
+			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2. " + count + " interventions imported or updated.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
+		}
+	}
 	
 }

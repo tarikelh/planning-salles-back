@@ -42,9 +42,15 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	private JavaMailSender emailSender;
 
+	/**
+	 * Will send an email to every employees selected. Their intervention will be in the email body.
+	 * 
+	 * @param userId List of user id (long) at who we want to send an email
+	 * @param dateStart date when we want to start to gather intervention
+	 * @param dateEnd date when we want to stop to gather intervention
+	 */
 	@Override
-	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd)
-			throws Exception {
+	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd) {
 
 		for (long uId : userId) {
 			List<Intervention> interventions = interventionRepository.findByUserIdAndDates(uId, dateStart, dateEnd);

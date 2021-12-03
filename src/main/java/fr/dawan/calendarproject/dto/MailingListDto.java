@@ -7,6 +7,15 @@ public class MailingListDto {
 	private List<Long> usersId;
 	private String dateStart;
 	private String dateEnd;
+	
+	public MailingListDto() {
+	}
+
+	public MailingListDto(List<Long> usersId, String dateStart, String dateEnd) {
+		this.usersId = usersId;
+		this.dateStart = dateStart;
+		this.dateEnd = dateEnd;
+	}
 
 	public List<Long> getUsersId() {
 		return usersId;

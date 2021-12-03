@@ -270,38 +270,14 @@ class CourseServiceTest {
 		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
 		
 		//Verify request succeed
-	    assertEquals(200, repWs.getStatusCodeValue());
+		assertEquals(200, repWs.getStatusCodeValue());
 	}
 	
 	@Test
 	void shouldGetCoursesFromDG2() throws Exception {
 		
-		//doNothing().when(any(ResponseEntity.class)).getBody();
-		
-		//when(any(ObjectMapper.class).readValue(any(String.class), CourseDG2Dto[].class)).thenReturn(resArray);
-		
-		//not working :
-		//when(Arrays.asList(any(CourseDG2Dto[].class))).thenReturn(cDG2Dtos);
-		
-		/*
-		when(courseMapper.courseDG2DtoToCourse(cDG2Dtos.get(0))).thenReturn(courses.get(0));
-		when(courseMapper.courseDG2DtoToCourse(cDG2Dtos.get(1))).thenReturn(courses.get(1));
-		when(courseMapper.courseDG2DtoToCourse(cDG2Dtos.get(2))).thenReturn(courses.get(2));
-		*/
 		when(courseMapper.courseDG2DtoToCourse(any(CourseDG2Dto.class))).thenReturn(courses.get(0));
-		
-		/*
 		when(courseRepository.findByTitleAndDuration(courses.get(0).getTitle(), courses.get(0).getDuration())).thenReturn(courses.get(0));
-		when(courseRepository.findByTitleAndDuration(courses.get(1).getTitle(), courses.get(1).getDuration())).thenReturn(courses.get(1));
-		when(courseRepository.findByTitleAndDuration(courses.get(2).getTitle(), courses.get(2).getDuration())).thenReturn(courses.get(2));
-		*/
-		when(courseRepository.findByTitleAndDuration(courses.get(0).getTitle(), courses.get(0).getDuration())).thenReturn(courses.get(0));
-		
-		/*
-		when(courseRepository.saveAndFlush(courses.get(0))).thenReturn(courses.get(0));
-		when(courseRepository.saveAndFlush(courses.get(1))).thenReturn(courses.get(1));
-		when(courseRepository.saveAndFlush(courses.get(2))).thenReturn(courses.get(2));
-		*/
 		when(courseRepository.saveAndFlush(courses.get(0))).thenReturn(courses.get(0));
 		
 		assertDoesNotThrow( () -> courseService.fetchAllDG2Courses());

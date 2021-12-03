@@ -76,18 +76,24 @@ class EmailServiceTest {
 				"dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
 		
-		iList.add(new Intervention(1, "I am lambda Intervention", loc, mockedCourse, receiver,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), false, null, 0));
+		iList.add(new Intervention(1, "lambdaSlug", "I am lambda Intervention",
+				loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
+				LocalDate.now(), LocalDate.now().plusDays(5),
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
 
-		Intervention masterDummy = new Intervention(2, "I am a master Intervention", loc, mockedCourse,
-				receiver, InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(2),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), true, null, 0);
+		Intervention masterDummy = new Intervention(2, "masterSlug", "I am a master Intervention",
+				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
+				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
+				LocalTime.of(9, 0), LocalTime.of(17, 0),
+				null, true, 0);
 		iList.add(masterDummy);
 
-		Intervention slaveDummy = new Intervention(3, "I am a slave Intervention", loc, mockedCourse, receiver,
-				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), false, masterDummy, 0);
+		Intervention slaveDummy = new Intervention(3, "slaveSlug", "I am a slave Intervention",
+				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
+				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
+				LocalTime.of(9, 0), LocalTime.of(17, 0),
+				masterDummy, false, 0);
+		
 		iList.add(slaveDummy);
 	}
 	

@@ -58,22 +58,22 @@ class InterventionMementoMapperTest {
 		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(3, "com", location, course, user, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), true, null, 0);
+		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN, true,
+				LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
 
-		intervention = new Intervention(1, "com", location, course, user, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0), false,
-				masterIntervention, 0);
+		intervention = new Intervention(1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
+				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0), masterIntervention,
+				false, 0);
 
-		intervention2 = new Intervention(7, "com7", location, course, user, InterventionStatus.SUR_MESURE, false,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), false,
-				masterIntervention, 0);
+		intervention2 = new Intervention(7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE, false,
+				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), masterIntervention,
+				false, 0);
 
-		interventionDto = new InterventionDto(5, "coms5", location.getId(), course.getId(), user.getId(), "SUR_MESURE",
+		interventionDto = new InterventionDto(5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
 				0);
 
-		interventionDto2 = new InterventionDto(2, "coms", location.getId(), course.getId(), user.getId(), "INTERN",
+		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0, "INTERN",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
 				0);
 

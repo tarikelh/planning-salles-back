@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,15 +83,21 @@ public class ResetPasswordController {
 			// Ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
 			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
+			
+			String resetLink = vueUrl + "/#/fr/reset-password?token=" + token;
+			String body =
+			        "<HTML><body> <a href=\""+ resetLink +"\">Réinitialiser mon mot de passe</a></body></HTML>";
 
-			SimpleMailMessage msg = new SimpleMailMessage();
-			msg.setTo(uDto.getEmail());
-			msg.setSubject("Réinitialisation du mot de passe DaCalendar Mobile");
-			msg.setText("Message Test de l'application mobile.");
+			MimeMessage msg = javaMailSender.createMimeMessage();
+			
+			msg.addRecipients(Message.RecipientType.TO, uDto.getEmail());
+			msg.setSubject("Réinitialisation du mot de passe du Calendrier Dawan");
+			msg.setText("Bonjour " + uDto.getLastName() + ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
+					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + body, "UTF-8", "html");
 
 			javaMailSender.send(msg);
 
-			return ResponseEntity.status(HttpStatus.OK).build();
+			return ResponseEntity.status(HttpStatus.OK).body(new ResetPasswordDto(resetObj.getEmail()));
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}

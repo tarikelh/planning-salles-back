@@ -125,6 +125,9 @@ public class LocationServiceImpl implements LocationService {
 		return true;
 	}
 
+	/**
+	 * Fetch courses list from the webservice DG2
+	 */
 	@Override
 	public void fetchAllDG2Locations() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
