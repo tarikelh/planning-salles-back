@@ -149,7 +149,7 @@ public class LocationServiceImpl implements LocationService {
 					l.setColor(foundL.getColor());
 					l.setVersion(foundL.getVersion());
 				}
-				if (l.getColor().isEmpty() || l.getColor() == null) {
+				if (l.getColor() == null) {
 					l.setColor("#00cc99");
 				}
 				locationRepository.saveAndFlush(l);
