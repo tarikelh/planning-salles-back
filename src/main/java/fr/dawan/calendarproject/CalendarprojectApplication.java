@@ -26,7 +26,7 @@ public class CalendarprojectApplication {
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-	
+
 	@Bean
 	public WebMvcConfigurer myMvcConfigurer() {
 
@@ -35,7 +35,8 @@ public class CalendarprojectApplication {
 			// CROSS ORIGIN
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE",
+						"OPTIONS");
 			}
 
 			// CONVERTERS

@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +27,7 @@ public class LocationController {
 
 	@Autowired
 	private LocationService locationService;
-	
+
 	// GET
 	@GetMapping(produces = "application/json")
 	public List<LocationDto> getAll() {
@@ -33,13 +35,14 @@ public class LocationController {
 	}
 
 	// GET
-	@GetMapping(value = {"/pagination"}, produces = "application/json")
-	public List<LocationDto> getAllPagination(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
-									@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
-									@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+	@GetMapping(value = { "/pagination" }, produces = "application/json")
+	public List<LocationDto> getAllPagination(
+			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
+			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
+			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return locationService.getAllLocations(page, size, search);
 	}
-	
+
 	// COUNT
 	@GetMapping(value = "/count", produces = "application/json")
 	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
@@ -80,18 +83,23 @@ public class LocationController {
 		if (loc != null)
 			return ResponseEntity.status(HttpStatus.OK).body(loc);
 		else
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id " + location.getId() + " Not Found");
-	
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Location with id " + location.getId() + " Not Found");
+
 	}
-	
-	//FETCH Dawan webservice
-	@GetMapping(value = "/dg2", produces="application/json")
-	public ResponseEntity<?> fetchAllDG2() {
+
+	// FETCH Dawan webservice
+	@GetMapping(value = "/dg2", produces = "application/json")
+	public ResponseEntity<?> fetchAllDG2(@RequestHeader Map<String, String> headers) {
+		String userDG2 = headers.get("x-auth-token");
+		String[] splitUserDG2String = userDG2.split(":");
+
 		try {
-			locationService.fetchAllDG2Locations();
+			locationService.fetchAllDG2Locations(splitUserDG2String[0], splitUserDG2String[1]);
 			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice DG2");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error while fetching data from the webservice DG2");
 		}
 	}
 }

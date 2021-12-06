@@ -24,4 +24,7 @@ public interface UserService {
 	AdvancedUserDto findByEmail(String email);
 
 	boolean checkIntegrity(AdvancedUserDto u);
+
+	void fetchAllDG2Users(String email, String password) throws Exception;
+
 }

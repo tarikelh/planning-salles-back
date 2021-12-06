@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.entities.Location;
@@ -21,6 +24,8 @@ import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.SkillMapper;
+import fr.dawan.calendarproject.mapper.UserMapper;
+import fr.dawan.calendarproject.repositories.SkillRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,6 +33,12 @@ class SkillMapperTest {
 
 	@Autowired
 	private SkillMapper skillMapper;
+
+	@MockBean
+	private SkillRepository skillRepository;
+
+	@MockBean
+	private UserMapper userMapper;
 
 	private Skill skill = new Skill();
 	private Skill skill2 = new Skill();
@@ -74,23 +85,24 @@ class SkillMapperTest {
 
 	@Test
 	void should_map_skillToAdvancedSkillDto() {
+		// mocking
+		when(userMapper.setUsersToListLong(any())).thenReturn(usersId);
+
 		// mapping
 		AdvancedSkillDto mappedAdvancedSkillDto = skillMapper.skillToAdvancedSkillDto(skill);
-
-		List<Long> list = new ArrayList<Long>();
-		for (User user : skill.getUsers()) {
-			list.add(user.getId());
-		}
 
 		// assert
 		assertEquals(mappedAdvancedSkillDto.getId(), skill.getId());
 		assertEquals(mappedAdvancedSkillDto.getTitle(), skill.getTitle());
-		assertEquals(mappedAdvancedSkillDto.getUsersId(), list);
+		assertEquals(mappedAdvancedSkillDto.getUsersId(), usersId);
 		assertEquals(mappedAdvancedSkillDto.getVersion(), skill.getVersion());
 	}
 
 	@Test
 	void should_map_advancedSkillDtoToSkill() {
+		// mocking
+		when(userMapper.listLongToSetUsers(any())).thenReturn(users);
+
 		// mapping
 		Skill mappedSkill = skillMapper.advancedSkillDtoToSkill(advSkillDto);
 
@@ -125,5 +137,20 @@ class SkillMapperTest {
 		// assert
 		assertEquals(mappedLongList.size(), skillsList.size());
 		assertEquals(mappedLongList, list);
+	}
+
+	@Test
+	void should_map_listLongToSetSkills() {
+		// mocking
+		when(skillRepository.getOne(skill.getId())).thenReturn(skill);
+		when(skillRepository.getOne(skill2.getId())).thenReturn(skill2);
+
+		// mapping
+		Set<Skill> mappedSkills = skillMapper.listLongToSetSkills(skillsId);
+
+		// assert
+		assertEquals(mappedSkills.size(), skillsId.size());
+		assertThat(mappedSkills.contains(skill));
+		assertThat(mappedSkills.contains(skill2));
 	}
 }

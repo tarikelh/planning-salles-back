@@ -44,16 +44,16 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
 class InterventionCaretakerTest {
-	
+
 	@Autowired
 	private InterventionCaretaker caretaker;
-	
+
 	@MockBean
 	private InterventionMapper interventionMapper;
-	
+
 	@MockBean
 	private InterventionMementoMapper interventionMementoMapper;
-	
+
 	@MockBean
 	private InterventionService interventionService;
 
@@ -71,17 +71,17 @@ class InterventionCaretakerTest {
 
 	@MockBean
 	private CourseRepository courseRepository;
-	
+
 	private String email = "admin@dawan.fr";
 	private Location mockedLoc;
 	private Course mockedCourse;
 	private User mockedUser;
-	
+
 	private List<Intervention> interventions = new ArrayList<Intervention>();
 	private List<InterventionDto> interventionsDtos = new ArrayList<InterventionDto>();
 	private List<InterventionMementoDto> intMementoDtos = new ArrayList<InterventionMementoDto>();
 	private List<InterventionMemento> interventionMementos = new ArrayList<InterventionMemento>();
-	
+
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		mockedLoc = Mockito.mock(Location.class);
@@ -129,124 +129,140 @@ class InterventionCaretakerTest {
 		interventionMementos.add(new InterventionMemento(6, intMementoDtos.get(3), new MementoMessageDto(6, " has been created by ", email, ""), 0));
 		interventionMementos.add(new InterventionMemento(7, intMementoDtos.get(4), new MementoMessageDto(7, " has been created by ", email, ""), 0));
 	}
-	
+
 	@Test
 	void contextLoads() {
 		assertThat(caretaker).isNotNull();
 	}
 
 	@Test
-	void shouldAddMementoForANewIntervention() throws Exception {	
-		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(0))).thenReturn(intMementoDtos.get(0));
-		when(intMementoRepository.countByInterventionId((interventionMementos.get(0)).getState().getInterventionId())).thenReturn(0L);
+	void shouldAddMementoForANewIntervention() throws Exception {
+		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(0)))
+				.thenReturn(intMementoDtos.get(0));
+		when(intMementoRepository.countByInterventionId((interventionMementos.get(0)).getState().getInterventionId()))
+				.thenReturn(0L);
 		when(intMementoRepository.saveAndFlush(any(InterventionMemento.class))).thenReturn(interventionMementos.get(0));
-		
+
 		InterventionMemento result = caretaker.addMemento(email, interventions.get(0));
-		
+
 		assertEquals(" has been created by ", result.getMementoMessage().getMessageAction());
 	}
-	
+
 	@Test
-	void shouldAddMementoForAnEditIntervention() throws Exception {	
-		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(2))).thenReturn(intMementoDtos.get(2));
-		when(intMementoRepository.countByInterventionId((interventionMementos.get(2)).getState().getInterventionId())).thenReturn(3L);
-		when(interventionRepository.existsById((interventionMementos.get(2)).getState().getInterventionId())).thenReturn(true);
-		when(intMementoRepository.getLastInterventionMemento(interventionMementos.get(2).getState().getInterventionId())).thenReturn(interventionMementos.get(1));
+	void shouldAddMementoForAnEditIntervention() throws Exception {
+		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(2)))
+				.thenReturn(intMementoDtos.get(2));
+		when(intMementoRepository.countByInterventionId((interventionMementos.get(2)).getState().getInterventionId()))
+				.thenReturn(3L);
+		when(interventionRepository.existsById((interventionMementos.get(2)).getState().getInterventionId()))
+				.thenReturn(true);
+		when(intMementoRepository
+				.getLastInterventionMemento(interventionMementos.get(2).getState().getInterventionId()))
+						.thenReturn(interventionMementos.get(1));
 		when(intMementoRepository.saveAndFlush(any(InterventionMemento.class))).thenReturn(interventionMementos.get(2));
-		
+
 		InterventionMemento result = caretaker.addMemento(email, interventions.get(2));
-		
+
 		assertEquals(" has been changed by ", result.getMementoMessage().getMessageAction());
 	}
-	
+
 	@Test
-	void shouldAddMementoForADeleteIntervention() throws Exception {	
-		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(1))).thenReturn(intMementoDtos.get(1));
-		when(intMementoRepository.countByInterventionId((interventionMementos.get(1)).getState().getInterventionId())).thenReturn(1L);
-		when(interventionRepository.existsById((interventionMementos.get(1)).getState().getInterventionId())).thenReturn(false);
-		
+	void shouldAddMementoForADeleteIntervention() throws Exception {
+		when(interventionMementoMapper.interventionToInterventionMementoDto(interventions.get(1)))
+				.thenReturn(intMementoDtos.get(1));
+		when(intMementoRepository.countByInterventionId((interventionMementos.get(1)).getState().getInterventionId()))
+				.thenReturn(1L);
+		when(interventionRepository.existsById((interventionMementos.get(1)).getState().getInterventionId()))
+				.thenReturn(false);
+
 		when(intMementoRepository.saveAndFlush(any(InterventionMemento.class))).thenReturn(interventionMementos.get(4));
-		
+
 		InterventionMemento result = caretaker.addMemento(email, interventions.get(1));
-		
+
 		assertEquals(" has been deleted by ", result.getMementoMessage().getMessageAction());
 	}
-	
+
 	@Test
 	void shouldRestoreMemento() throws Exception {
-		when(intMementoRepository.findById(interventionMementos.get(1).getId())).thenReturn(Optional.of(interventionMementos.get(1)));
-		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(1).getState())).thenReturn(interventions.get(1));
-		
+		when(intMementoRepository.findById(interventionMementos.get(1).getId()))
+				.thenReturn(Optional.of(interventionMementos.get(1)));
+		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(1).getState()))
+				.thenReturn(interventions.get(1));
+
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
-			
+
 		when(interventionService.checkIntegrity(interventionsDtos.get(1))).thenReturn(true);
 		when(interventionRepository.getOne(interventions.get(1).getId())).thenReturn(interventions.get(1));
 		when(interventionRepository.saveAndFlush(interventions.get(1))).thenReturn(interventions.get(1));
 		when(intMementoRepository.saveAndFlush(interventionMementos.get(3))).thenReturn(interventionMementos.get(3));
-		when(interventionMapper.interventionToInterventionDto(interventions.get(1))).thenReturn(interventionsDtos.get(1));
-		
-		
+		when(interventionMapper.interventionToInterventionDto(interventions.get(1)))
+				.thenReturn(interventionsDtos.get(1));
+
 		InterventionDto result = caretaker.restoreMemento(interventionMementos.get(1).getId(), email);
-		
+
 		assertEquals(interventionsDtos.get(1), result);
 	}
-	
+
 	@Test
 	void shouldRestoreMementoWithMasterEvent() throws Exception {
-		when(intMementoRepository.findById(interventionMementos.get(5).getId())).thenReturn(Optional.of(interventionMementos.get(5)));
-		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(5).getState())).thenReturn(interventions.get(3));
-		
+		when(intMementoRepository.findById(interventionMementos.get(5).getId()))
+				.thenReturn(Optional.of(interventionMementos.get(5)));
+		when(interventionMementoMapper.interventionMementoDtoToIntervention(interventionMementos.get(5).getState()))
+				.thenReturn(interventions.get(3));
+
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
-		
-		
-		when(interventionRepository.findById(interventionMementos.get(5).getState().getMasterInterventionId())).thenReturn(Optional.of(interventions.get(1)));
-		
+
+		when(interventionRepository.findById(interventionMementos.get(5).getState().getMasterInterventionId()))
+				.thenReturn(Optional.of(interventions.get(1)));
+
 		when(interventionService.checkIntegrity(interventionsDtos.get(3))).thenReturn(true);
 		when(interventionRepository.getOne(interventions.get(3).getId())).thenReturn(interventions.get(3));
 		when(interventionRepository.saveAndFlush(interventions.get(3))).thenReturn(interventions.get(3));
 		when(intMementoRepository.saveAndFlush(interventionMementos.get(5))).thenReturn(interventionMementos.get(5));
-		when(interventionMapper.interventionToInterventionDto(interventions.get(3))).thenReturn(interventionsDtos.get(3));
-		
-		
+		when(interventionMapper.interventionToInterventionDto(interventions.get(3)))
+				.thenReturn(interventionsDtos.get(3));
+
 		InterventionDto result = caretaker.restoreMemento(interventionMementos.get(5).getId(), email);
-		
+
 		assertEquals(interventionsDtos.get(3), result);
 	}
 
 	@Test
 	void shouldGetMementoById() {
-		when(intMementoRepository.findById(interventionMementos.get(5).getId())).thenReturn(Optional.of(interventionMementos.get(5)));
+		when(intMementoRepository.findById(interventionMementos.get(5).getId()))
+				.thenReturn(Optional.of(interventionMementos.get(5)));
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
-		
+
 		InterventionMemento result1 = caretaker.getMementoById(interventionMementos.get(5).getId());
 		assertEquals(interventionMementos.get(5), result1);
-		
-		when(intMementoRepository.findById(interventionMementos.get(6).getId())).thenReturn(Optional.of(interventionMementos.get(6)));
+
+		when(intMementoRepository.findById(interventionMementos.get(6).getId()))
+				.thenReturn(Optional.of(interventionMementos.get(6)));
 		InterventionMemento result2 = caretaker.getMementoById(interventionMementos.get(6).getId());
 		assertEquals(interventionMementos.get(6), result2);
 	}
-	
+
 	@Test
 	void shouldGetMementoByIdNull() {
 		when(intMementoRepository.findById(0L)).thenReturn(Optional.empty());
-		
+
 		InterventionMemento result = caretaker.getMementoById(0L);
-		
+
 		assertEquals(null, result);
 	}
 
 	@Test
 	void shouldGetAllMemento() {
 		when(intMementoRepository.findAll()).thenReturn(interventionMementos);
-		
+
 		List<InterventionMemento> result = caretaker.getAllMemento();
-		
+
 		assertEquals(interventionMementos, result);
 	}
 
@@ -255,7 +271,7 @@ class InterventionCaretakerTest {
 		when(intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(0, 2))).thenReturn(interventionMementos.subList(0, 2));
 		
 		List<InterventionMemento> result = caretaker.getAllMemento(0, 2);
-		
+
 		assertEquals(interventionMementos.subList(0, 2), result);
 	}
 
@@ -263,10 +279,11 @@ class InterventionCaretakerTest {
 	void shouldGetAllMementoByDates() {
 		LocalDate start = LocalDate.now();
 		LocalDate end = LocalDate.now().plusDays(5);
-		when(intMementoRepository.findAllByDateCreatedStateBetween(start.atStartOfDay(), end.plusDays(1).atStartOfDay())).thenReturn(interventionMementos);
-		
+		when(intMementoRepository.findAllByDateCreatedStateBetween(start.atStartOfDay(),
+				end.plusDays(1).atStartOfDay())).thenReturn(interventionMementos);
+
 		List<InterventionMemento> result = caretaker.getAllMementoDates(start, end);
-		
+
 		assertEquals(interventionMementos, result);
 	}
 
@@ -274,9 +291,9 @@ class InterventionCaretakerTest {
 	void shouldReturnCount() {
 		CountDto expectedCount = new CountDto(7);
 		when(intMementoRepository.count()).thenReturn(7L);
-		
+
 		CountDto result = caretaker.count();
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(expectedCount.getNb(), result.getNb());
 	}
@@ -288,10 +305,11 @@ class InterventionCaretakerTest {
 		int size = 4;
 		LocalDateTime start = LocalDateTime.now();
 		LocalDateTime end = LocalDateTime.now().plusDays(5);
-		when(intMementoRepository.filterByIntIdAndDates(interventionId, start, end, PageRequest.of(page, size))).thenReturn(interventionMementos.subList(1, 4));
-		
+		when(intMementoRepository.filterByIntIdAndDates(interventionId, start, end, PageRequest.of(page, size)))
+				.thenReturn(interventionMementos.subList(1, 4));
+
 		List<InterventionMemento> result = caretaker.filterMemento(interventionId, start, end, page, size);
-		
+
 		assertEquals(interventionMementos.subList(1, 4), result);
 
 	}
@@ -302,9 +320,9 @@ class InterventionCaretakerTest {
 		LocalDateTime end = LocalDateTime.now().plusDays(5);
 		CountDto expectedCount = new CountDto(1);
 		when(intMementoRepository.countFilter(3L, start, end)).thenReturn(1L);
-		
+
 		CountDto result = caretaker.countFilter(3L, start, end);
-		
+
 		assertThat(result).isNotNull();
 		assertEquals(expectedCount.getNb(), result.getNb());
 	}
@@ -313,10 +331,11 @@ class InterventionCaretakerTest {
 	void shouldGetLastBeforeMemento() {
 		long interventionId = 1;
 		long interventionMementoId = 3;
-		when(intMementoRepository.getLastBeforeIntMemento(interventionId, interventionMementoId)).thenReturn(interventionMementos.get(1));
-		
+		when(intMementoRepository.getLastBeforeIntMemento(interventionId, interventionMementoId))
+				.thenReturn(interventionMementos.get(1));
+
 		InterventionMemento result = caretaker.getLastBeforeMemento(interventionId, interventionMementoId);
-		
+
 		assertEquals(interventionMementos.get(1), result);
 	}
 	

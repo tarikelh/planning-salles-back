@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.repositories.LocationRepository;
@@ -48,4 +49,12 @@ public interface UserMapper {
 	@Mapping(source = "enumType", target = "type")
 	@Mapping(source = "enumCompany", target = "company")
 	UserDto userToUserDto(User user);
+
+	@Mapping(target = "imagePath", ignore = true)
+	@Mapping(target = "password", ignore = true)
+	@Mapping(target = "enumCompany", source = "company")
+	@Mapping(target = "enumType", source = "type")
+	@Mapping(target = "location", source = "locationId")
+	@Mapping(target = "skills", source = "skillsId")
+	User userDG2DtoToUser(UserDG2Dto cDG2);
 }

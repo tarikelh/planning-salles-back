@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.services;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,11 +13,21 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserCompany;
@@ -44,6 +55,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private RestTemplate restTemplate;
+
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
 		List<User> users = userRepository.findAll();
@@ -61,7 +75,7 @@ public class UserServiceImpl implements UserService {
 	public List<AdvancedUserDto> getAllUsers(int page, int size, String search) {
 		Pageable pagination = null;
 
-		if(page > -1 && size > 0) 
+		if (page > -1 && size > 0)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
@@ -90,11 +104,11 @@ public class UserServiceImpl implements UserService {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
 			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
-			
+
 			for (User u : users) {
 				result.add(userMapper.userToAdvancedUserDto(u));
 			}
-			
+
 			return result;
 		} else {
 			// HANDLE ERROR
@@ -105,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public AdvancedUserDto getById(long id) {
 		Optional<User> user = userRepository.findById(id);
-		
+
 		if (user.isPresent())
 			return userMapper.userToAdvancedUserDto(user.get());
 		else
@@ -219,5 +233,81 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public void fetchAllDG2Users(String email, String password) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<UserDG2Dto> lResJson = new ArrayList<UserDG2Dto>();
+
+		URI url = new URI("https://dawan.org/api2/planning/employees");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
+			String json = repWs.getBody();
+
+			try {
+				lResJson = objectMapper.readValue(json, new TypeReference<List<UserDG2Dto>>() {
+				});
+				for (UserDG2Dto userDG2Dto : lResJson) {
+					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			for (UserDG2Dto cDG2 : lResJson) {
+				User userImported = userMapper.userDG2DtoToUser(cDG2);
+				User userInDb = userRepository.findByEmail(userImported.getEmail());
+
+				if (userInDb != null) {
+					userInDb.setId(userImported.getId());
+					userInDb.setCompany(userImported.getCompany());
+					userInDb.setEmail(userImported.getEmail());
+					userInDb.setEnumCompany(userImported.getEnumCompany());
+					userInDb.setEnumType(userImported.getEnumType());
+					userInDb.setFirstName(userImported.getFirstName());
+					userInDb.setImagePath(userImported.getImagePath());
+					userInDb.setLastName(userImported.getLastName());
+					userInDb.setLocation(userImported.getLocation());
+					userInDb.setPassword(userImported.getPassword());
+					userInDb.setSkills(userImported.getSkills());
+					userInDb.setType(userImported.getType());
+					userInDb.setVersion(userImported.getVersion());
+				} else {
+					userInDb = userImported;
+				}
+
+				if (userInDb.getPassword() == null) {
+					userInDb.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
+				}
+				userRepository.saveAndFlush(userInDb);
+			}
+		} else {
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
+		}
+	}
+
+	private String userDG2JobToUserTypeString(String job) {
+		if (job == null) {
+			job = "";
+		}
+		if (!job.isEmpty()) {
+			String lowerCaseJob = job.toLowerCase();
+			if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {
+				return UserType.APPRENTI.toString();
+			} else if (lowerCaseJob.contains("format")) {
+				return UserType.FORMATEUR.toString();
+			} else if (lowerCaseJob.contains("admin")) {
+				return UserType.ADMINISTRATIF.toString();
+			}
+		}
+		return UserType.NOT_FOUND.toString();
 	}
 }

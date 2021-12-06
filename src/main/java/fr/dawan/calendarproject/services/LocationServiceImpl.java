@@ -14,6 +14,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,7 +42,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private LocationMapper locationMapper;
-	
+
 	@Override
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
@@ -54,13 +57,14 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
 		Pageable pagination = null;
-		
-		if(page > -1 && size > 0) 
+
+		if (page > -1 && size > 0)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
-		
-		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get().collect(Collectors.toList());
+
+		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get()
+				.collect(Collectors.toList());
 
 		List<LocationDto> result = new ArrayList<LocationDto>();
 		for (Location l : locations) {
@@ -68,14 +72,12 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
-	
 
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(locationRepository.countByCityContaining(search));
 	}
 
-	
 	@Override
 	public LocationDto getById(long id) {
 		Optional<Location> l = locationRepository.findById(id);
@@ -130,29 +132,39 @@ public class LocationServiceImpl implements LocationService {
 	 * Fetch courses list from the webservice DG2
 	 */
 	@Override
-	public void fetchAllDG2Locations() throws Exception {
+	public void fetchAllDG2Locations(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
-		
-		URI url = new URI("https://dawan.org/public/location/");
-		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
-		
-		if(repWs.getStatusCode() == HttpStatus.OK) {
+
+		URI url = new URI("https://dawan.org/api2/planning/locations");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			LocationDG2Dto[] resArray = objectMapper.readValue(json, LocationDG2Dto[].class);
 			lResJson = Arrays.asList(resArray);
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location l = locationMapper.locationDG2DtoToLocation(lDG2);
 				Location foundL = locationRepository.findByCity(l.getCity());
-				if(foundL != null) {
+				if (foundL != null) {
 					l.setId(foundL.getId());
 					l.setColor(foundL.getColor());
+					l.setVersion(foundL.getVersion());
+				}
+				if (l.getColor() == null) {
+					l.setColor("#00cc99");
 				}
 				locationRepository.saveAndFlush(l);
 			}
 		} else {
-			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");   
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 }

@@ -6,9 +6,8 @@ import org.mapstruct.Mapping;
 import fr.dawan.calendarproject.dto.LocationDG2Dto;
 import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.repositories.LocationRepository;
 
-@Mapper(componentModel = "spring", uses = {LocationRepository.class})
+@Mapper(componentModel = "spring")
 public interface LocationMapper {
 
 	Location locationDtoToLocation(LocationDto location);
