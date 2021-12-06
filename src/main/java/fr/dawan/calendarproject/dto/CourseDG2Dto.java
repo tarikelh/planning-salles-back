@@ -1,7 +1,10 @@
 package fr.dawan.calendarproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseDG2Dto {
-	
+
 	private String title;
 	private String duration;
 	private String description;
@@ -14,12 +17,11 @@ public class CourseDG2Dto {
 	private double remotelyPrice;
 	private String objectives;
 	private String prerequisites;
-	
+
 	public CourseDG2Dto() {
-		
+
 	}
-	
-	
+
 	public CourseDG2Dto(String title, String duration, String description, String slug, String alias, String fullAlias,
 			double standardPrice, double customPrice, double customPriceExtra, double remotelyPrice, String objectives,
 			String prerequisites) {
@@ -37,7 +39,6 @@ public class CourseDG2Dto {
 		this.prerequisites = prerequisites;
 	}
 
-
 	public String getTitle() {
 		return title;
 	}
@@ -50,11 +51,9 @@ public class CourseDG2Dto {
 		return duration;
 	}
 
-
 	public void setDuration(String duration) {
 		this.duration = duration;
 	}
-
 
 	public String getDescription() {
 		return description;

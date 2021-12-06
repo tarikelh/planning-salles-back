@@ -43,6 +43,9 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private LocationMapper locationMapper;
 
+	@Autowired
+	RestTemplate restTemplate;
+
 	@Override
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
@@ -134,7 +137,6 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public void fetchAllDG2Locations(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
 
 		URI url = new URI("https://dawan.org/api2/planning/locations");
