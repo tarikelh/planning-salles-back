@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,9 +44,9 @@ public class CourseServiceImpl implements CourseService {
 
 	@Autowired
 	private CourseMapper courseMapper;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
-	
+
 	@Override
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
@@ -59,13 +62,14 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public List<CourseDto> getAllCourses(int page, int size, String search) {
 		Pageable pagination = null;
-		
-		if(page > -1 && size > 0) 
+
+		if (page > -1 && size > 0)
 			pagination = PageRequest.of(page, size);
 		else
 			pagination = Pageable.unpaged();
-		
-		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get().collect(Collectors.toList());
+
+		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get()
+				.collect(Collectors.toList());
 
 		List<CourseDto> result = new ArrayList<CourseDto>();
 		for (Course c : courses) {
@@ -74,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
-	
+
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(courseRepository.countByTitleContaining(search));
@@ -109,8 +113,10 @@ public class CourseServiceImpl implements CourseService {
 	/**
 	 * Verify if the course doesn't already exist in the database
 	 * 
-	 * @param CourseDto course that has to be verify with what already exists in the database
-	 * @return boolean return true if course title doesn't exist in the database. Otherwise send an Exception.
+	 * @param CourseDto course that has to be verify with what already exists in the
+	 *                  database
+	 * @return boolean return true if course title doesn't exist in the database.
+	 *         Otherwise send an Exception.
 	 */
 	@Override
 	public boolean checkUniqness(CourseDto course) {
@@ -133,28 +139,34 @@ public class CourseServiceImpl implements CourseService {
 	 * Fetch courses list from the webservice DG2
 	 */
 	@Override
-	public void fetchAllDG2Courses() throws Exception {
+	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
-		
-		URI url = new URI("https://dawan.org/public/training/");
-		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
-		
-		if(repWs.getStatusCode()==HttpStatus.OK) {
+
+		URI url = new URI("https://dawan.org/api2/planning/trainings");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			CourseDG2Dto[] resArray = objectMapper.readValue(json, CourseDG2Dto[].class);
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course c = courseMapper.courseDG2DtoToCourse(cDG2);
 				Course foundC = courseRepository.findByTitleAndDuration(c.getTitle(), c.getDuration());
-				if(foundC != null) {
+				if (foundC != null) {
 					c.setId(foundC.getId());
 				}
 				courseRepository.saveAndFlush(c);
 			}
 		} else {
-			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");   
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 

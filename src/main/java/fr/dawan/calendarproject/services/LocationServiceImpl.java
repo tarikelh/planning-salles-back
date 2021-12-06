@@ -14,6 +14,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -129,13 +132,19 @@ public class LocationServiceImpl implements LocationService {
 	 * Fetch courses list from the webservice DG2
 	 */
 	@Override
-	public void fetchAllDG2Locations() throws Exception {
+	public void fetchAllDG2Locations(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		RestTemplate restTemplate = new RestTemplate();
 		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
 
-		URI url = new URI("https://dawan.org/public/location/");
-		ResponseEntity<String> repWs = restTemplate.getForEntity(url, String.class);
+		URI url = new URI("https://dawan.org/api2/planning/locations");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
 
 		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
