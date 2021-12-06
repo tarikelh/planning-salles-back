@@ -26,7 +26,7 @@ public interface InterventionMapper {
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
 
 	List<InterventionDto> listInterventionToListInterventionDto(List<Intervention> interventions);
-	
+
 	List<Intervention> listInterventionDtoToListIntervention(List<InterventionDto> interventionDtos);
 
 	@Mapping(target = "course.id", source = "courseId")

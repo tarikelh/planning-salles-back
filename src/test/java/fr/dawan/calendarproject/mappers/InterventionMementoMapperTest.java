@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
@@ -37,6 +38,7 @@ class InterventionMementoMapperTest {
 	private Intervention intervention = new Intervention();
 	private Intervention masterIntervention = new Intervention();
 	private InterventionDto interventionDto = new InterventionDto();
+	private InterventionDG2Dto interventionDG2Dto = new InterventionDG2Dto();
 	private Intervention intervention2 = new Intervention();
 	private InterventionDto interventionDto2 = new InterventionDto();
 	private Location location = new Location();
@@ -58,24 +60,29 @@ class InterventionMementoMapperTest {
 		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
+		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
+				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
+				0);
 
 		intervention = new Intervention(1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0), masterIntervention,
-				false, 0);
+				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
+				masterIntervention, false, 0);
 
-		intervention2 = new Intervention(7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE, false,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), masterIntervention,
-				false, 0);
+		intervention2 = new Intervention(7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE,
+				false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
+				masterIntervention, false, 0);
 
-		interventionDto = new InterventionDto(5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0, "SUR_MESURE",
-				true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
-				0);
+		interventionDto = new InterventionDto(5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0,
+				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0),
+				LocalTime.of(17, 0), 0, false, 0);
 
-		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0, "INTERN",
-				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
-				0);
+		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
+				"INTERN", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
+				0, false, 0);
+
+		interventionDG2Dto = new InterventionDG2Dto(35, location.getId(), course.getId(), user.getId(),
+				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", true,
+				masterIntervention.getId(), false, 5);
 
 		interventionList.add(intervention);
 		interventionList.add(intervention2);
@@ -147,5 +154,23 @@ class InterventionMementoMapperTest {
 		assertEquals(mappedInterventionList.size(), interventionDtoList.size());
 		assertThat(mappedInterventionList.contains(intervention));
 		assertThat(mappedInterventionList.contains(intervention2));
+	}
+
+	@Test
+	void should_map_interventionDG2DtoToIntervention() {
+		// mapping
+		Intervention mappedIntervention = interventionMapper.interventionDG2DtoToIntervention(interventionDG2Dto);
+
+		// assert
+		assertEquals(mappedIntervention.getId(), interventionDG2Dto.getId());
+		assertEquals(mappedIntervention.getLocation().getId(), interventionDG2Dto.getLocationId());
+		assertEquals(mappedIntervention.getCourse().getId(), interventionDG2Dto.getCourseId());
+		assertEquals(mappedIntervention.getUser().getId(), interventionDG2Dto.getUserId());
+		assertEquals(mappedIntervention.getType().toString(), interventionDG2Dto.getType());
+		assertEquals(mappedIntervention.isValidated(), interventionDG2Dto.isValidated());
+		assertEquals(mappedIntervention.getDateStart().toString(), interventionDG2Dto.getDateStart());
+		assertEquals(mappedIntervention.getDateEnd().toString(), interventionDG2Dto.getDateEnd());
+		assertEquals(mappedIntervention.isMaster(), interventionDG2Dto.isMaster());
+		assertEquals(mappedIntervention.getMasterIntervention().getId(), interventionDG2Dto.getMasterInterventionId());
 	}
 }

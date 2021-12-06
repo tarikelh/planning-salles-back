@@ -51,12 +51,13 @@ class InterventionMapperTest {
 		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
+		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
+				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
+				0);
 
 		intervention = new Intervention(1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0), masterIntervention,
-				false, 0);
+				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
+				masterIntervention, false, 0);
 
 		interventionMementoDto = new InterventionMementoDto(0, "I am a new Intervention", 1, "Bordeaux", 1,
 				"Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
@@ -109,5 +110,4 @@ class InterventionMapperTest {
 		assertEquals(mappedIntervention.getMasterIntervention().getId(),
 				interventionMementoDto.getMasterInterventionId());
 	}
-
 }

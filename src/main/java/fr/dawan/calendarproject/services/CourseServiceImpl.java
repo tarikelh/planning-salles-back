@@ -45,6 +45,9 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	private CourseMapper courseMapper;
 
+	@Autowired
+	RestTemplate restTemplate;
+
 	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
 
 	@Override
@@ -141,7 +144,6 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		RestTemplate restTemplate = new RestTemplate();
 		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
 
 		URI url = new URI("https://dawan.org/api2/planning/trainings");
