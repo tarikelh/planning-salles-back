@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -97,7 +96,7 @@ class InterventionMementoMapperTest {
 
 		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
 				"INTERN", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				5, false, 0);
+				0, false, 0);
 
 		interventionDG2Dto = new InterventionDG2Dto(35, location.getId(), course.getId(), user.getId(),
 				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", true,
@@ -132,6 +131,12 @@ class InterventionMementoMapperTest {
 
 	@Test
 	void should_map_interventionDtoToIntervention() {
+		// mocking
+		when(courseRepository.getOne(course.getId())).thenReturn(course);
+		when(locationRepository.getOne(location.getId())).thenReturn(location);
+		when(userRepository.getOne(user.getId())).thenReturn(user);
+		when(interventionService.getById(interventionDto2.getId())).thenReturn(interventionDto2);
+		when(interventionService.getById(0)).thenReturn(null);
 		// mapping
 		Intervention mappedIntervention = interventionMapper.interventionDtoToIntervention(interventionDto);
 
@@ -148,7 +153,7 @@ class InterventionMementoMapperTest {
 		assertEquals(mappedIntervention.getTimeStart(), interventionDto.getTimeStart());
 		assertEquals(mappedIntervention.getTimeEnd(), interventionDto.getTimeEnd());
 		assertEquals(mappedIntervention.isMaster(), interventionDto.isMaster());
-		assertEquals(mappedIntervention.getMasterIntervention().getId(), interventionDto.getMasterInterventionId());
+		assertEquals(mappedIntervention.getMasterIntervention(), null);
 	}
 
 	@Test
@@ -181,7 +186,8 @@ class InterventionMementoMapperTest {
 		when(courseRepository.getOne(course.getId())).thenReturn(course);
 		when(locationRepository.getOne(location.getId())).thenReturn(location);
 		when(userRepository.getOne(user.getId())).thenReturn(user);
-		when(interventionService.getById(any(Long.class))).thenReturn(interventionDto);
+		when(interventionService.getById(interventionDto2.getId())).thenReturn(interventionDto2);
+		when(interventionService.getById(0)).thenReturn(null);
 
 		// mapping
 		Intervention mappedIntervention = interventionMapper.interventionDG2DtoToIntervention(interventionDG2Dto);
@@ -196,6 +202,6 @@ class InterventionMementoMapperTest {
 		assertEquals(mappedIntervention.getDateStart().toString(), interventionDG2Dto.getDateStart());
 		assertEquals(mappedIntervention.getDateEnd().toString(), interventionDG2Dto.getDateEnd());
 		assertEquals(mappedIntervention.isMaster(), interventionDG2Dto.isMaster());
-		assertEquals(mappedIntervention.getMasterIntervention().getId(), interventionDG2Dto.getMasterInterventionId());
+		assertEquals(mappedIntervention.getMasterIntervention(), null);
 	}
 }
