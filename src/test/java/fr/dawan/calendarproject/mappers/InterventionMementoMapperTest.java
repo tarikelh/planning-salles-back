@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -27,6 +30,10 @@ import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
+import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.services.InterventionService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,6 +41,18 @@ class InterventionMementoMapperTest {
 
 	@Autowired
 	private InterventionMapper interventionMapper;
+
+	@MockBean
+	CourseRepository courseRepository;
+
+	@MockBean
+	LocationRepository locationRepository;
+
+	@MockBean
+	UserRepository userRepository;
+
+	@MockBean
+	InterventionService interventionService;
 
 	private Intervention intervention = new Intervention();
 	private Intervention masterIntervention = new Intervention();
@@ -51,7 +70,7 @@ class InterventionMementoMapperTest {
 	@BeforeEach
 	void before() {
 		location = new Location(1, "paris", "#32656", 1);
-		course = new Course(1, "C#", "5", 2);
+		course = new Course(1, "C#", "5", "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
@@ -60,7 +79,7 @@ class InterventionMementoMapperTest {
 		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
+		masterIntervention = new Intervention(5, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
 				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
 				0);
 
@@ -78,7 +97,7 @@ class InterventionMementoMapperTest {
 
 		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
 				"INTERN", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				0, false, 0);
+				5, false, 0);
 
 		interventionDG2Dto = new InterventionDG2Dto(35, location.getId(), course.getId(), user.getId(),
 				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", true,
@@ -158,6 +177,12 @@ class InterventionMementoMapperTest {
 
 	@Test
 	void should_map_interventionDG2DtoToIntervention() {
+		// mocking
+		when(courseRepository.getOne(course.getId())).thenReturn(course);
+		when(locationRepository.getOne(location.getId())).thenReturn(location);
+		when(userRepository.getOne(user.getId())).thenReturn(user);
+		when(interventionService.getById(any(Long.class))).thenReturn(interventionDto);
+
 		// mapping
 		Intervention mappedIntervention = interventionMapper.interventionDG2DtoToIntervention(interventionDG2Dto);
 

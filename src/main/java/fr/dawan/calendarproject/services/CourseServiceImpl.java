@@ -160,12 +160,22 @@ public class CourseServiceImpl implements CourseService {
 			CourseDG2Dto[] resArray = objectMapper.readValue(json, CourseDG2Dto[].class);
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
-				Course c = courseMapper.courseDG2DtoToCourse(cDG2);
-				Course foundC = courseRepository.findByTitleAndDuration(c.getTitle(), c.getDuration());
-				if (foundC != null) {
-					c.setId(foundC.getId());
+				Course courseImport = courseMapper.courseDG2DtoToCourse(cDG2);
+				Course course = new Course();
+				Optional<Course> optCourse = courseRepository.findById(courseImport.getId());
+
+				if (optCourse.isPresent()) {
+					if (optCourse.get().equals(courseImport)) {
+						continue;
+					} else {
+						course = courseImport;
+						courseRepository.saveAndFlush(course);
+						continue;
+					}
+				} else {
+					course = courseImport;
+					courseRepository.saveAndFlush(course);
 				}
-				courseRepository.saveAndFlush(c);
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");

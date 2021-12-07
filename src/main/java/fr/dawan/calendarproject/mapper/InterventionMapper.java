@@ -8,8 +8,13 @@ import org.mapstruct.Mapping;
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.LocationRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
+import fr.dawan.calendarproject.services.InterventionService;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { CourseRepository.class, LocationRepository.class, UserRepository.class,
+		InterventionService.class })
 public interface InterventionMapper {
 
 	@Mapping(target = "courseId", source = "course.id")
@@ -18,10 +23,10 @@ public interface InterventionMapper {
 	@Mapping(target = "masterInterventionId", source = "masterIntervention.id")
 	InterventionDto interventionToInterventionDto(Intervention intervention);
 
-	@Mapping(target = "course.id", source = "courseId")
-	@Mapping(target = "location.id", source = "locationId")
-	@Mapping(target = "user.id", source = "userId")
-	@Mapping(target = "masterIntervention.id", source = "masterInterventionId")
+	@Mapping(target = "course", source = "courseId")
+	@Mapping(target = "location", source = "locationId")
+	@Mapping(target = "user", source = "userId")
+	@Mapping(target = "masterIntervention", source = "masterInterventionId")
 	@Mapping(target = "type", source = "type")
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
 
@@ -29,10 +34,10 @@ public interface InterventionMapper {
 
 	List<Intervention> listInterventionDtoToListIntervention(List<InterventionDto> interventionDtos);
 
-	@Mapping(target = "course.id", source = "courseId")
-	@Mapping(target = "location.id", source = "locationId")
-	@Mapping(target = "user.id", source = "userId")
-	@Mapping(target = "masterIntervention.id", source = "masterInterventionId")
+	@Mapping(target = "course", source = "courseId")
+	@Mapping(target = "location", source = "locationId")
+	@Mapping(target = "user", source = "userId")
+	@Mapping(target = "masterIntervention", source = "masterInterventionId")
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "dateStart", source = "dateStart", dateFormat = "yyyy-MM-dd")
 	@Mapping(target = "dateEnd", source = "dateEnd", dateFormat = "yyyy-MM-dd")

@@ -2,40 +2,38 @@ package fr.dawan.calendarproject.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
-
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "UniqueTitleAndDuration", columnNames = { "title", "duration" }))
 public class Course {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true)
 	private long id;
-	
+
 	@Column(nullable = false, length = 350)
 	private String title;
-	
+
 	@Column(nullable = true)
 	private String duration;
-	
+
+	@Column(unique = true)
+	private String slug;
+
 	@Version
 	private int version;
-	
-	//Constructor vide important si fait de la sérialization
+
+	// Constructor vide important si fait de la sérialization
 	public Course() {
-		
+
 	}
-	
-	public Course(long id, String title, String duration, int version) {
+
+	public Course(long id, String title, String duration, String slug, int version) {
 		setId(id);
 		setTitle(title);
 		setDuration(duration);
+		setSlug(slug);
 		setVersion(version);
 	}
 
@@ -54,7 +52,7 @@ public class Course {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public String getDuration() {
 		return duration;
 	}
@@ -71,12 +69,25 @@ public class Course {
 		this.version = version;
 	}
 
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", title=" + title + ", duration=" + duration + ", slug=" + slug + ", version="
+				+ version + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((duration == null) ? 0 : duration.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
 		return result;
 	}
 
@@ -89,22 +100,11 @@ public class Course {
 		if (getClass() != obj.getClass())
 			return false;
 		Course other = (Course) obj;
-		if (duration == null) {
-			if (other.duration != null)
+		if (slug == null) {
+			if (other.slug != null)
 				return false;
-		} else if (!duration.equals(other.duration))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
+		} else if (!slug.equals(other.slug))
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "Course [id=" + id + ", title=" + title + ", version=" + version + "]";
-	}
-	
 }

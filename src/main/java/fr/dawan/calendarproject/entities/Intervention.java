@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
@@ -21,12 +19,12 @@ import fr.dawan.calendarproject.enums.InterventionStatus;
 public class Intervention implements Cloneable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true)
 	private long id;
 
 	@Column(nullable = true, length = 255)
 	private String slug;
-	
+
 	@Column(nullable = true, length = 255)
 	private String comment;
 
@@ -40,7 +38,7 @@ public class Intervention implements Cloneable {
 	private User user;
 
 	private int attendeesCount;
-	
+
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private InterventionStatus type;
@@ -319,7 +317,7 @@ public class Intervention implements Cloneable {
 			return false;
 		return true;
 	}
-	
+
 	public boolean equalsDG2(Object obj) {
 		if (this == obj)
 			return true;
@@ -391,7 +389,7 @@ public class Intervention implements Cloneable {
 	@Override
 	public Intervention clone() {
 		try {
-			return (Intervention)super.clone();
+			return (Intervention) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

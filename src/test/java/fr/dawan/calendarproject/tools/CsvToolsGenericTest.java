@@ -21,20 +21,20 @@ class CsvToolsGenericTest {
 
 	@MockBean
 	private CourseMapper courseMapper;
-	
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
-	
+
 	private String pathExist;
 	private String pathDoesNotExist;
-	
+
 	private BufferedWriter bw;
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-		courses.add(new Course(1, "Java course for beginners", "5", 0));
-		courses.add(new Course(2, "C# course for intermediate level", "1", 0));
-		courses.add(new Course(3, "JavaScript course for beginners", "3", 0));
+		courses.add(new Course(1, "Java course for beginners", "5", "slug", 0));
+		courses.add(new Course(2, "C# course for intermediate level", "1", "slug", 0));
+		courses.add(new Course(3, "JavaScript course for beginners", "3", "slug", 0));
 
 		pathExist = "C:/Users/Admin-Stagiaire/Documents/Dawan/DawanPlanning/api/DaCalendar/coursesCsvTest.csv";
 		pathDoesNotExist = "";
@@ -42,7 +42,7 @@ class CsvToolsGenericTest {
 
 	@Test
 	void shouldThrowExceptionIfPathNoCorrect() {
-		
+
 		assertThrows(Exception.class, () -> {
 			CsvToolsGeneric.toCsv(pathDoesNotExist, courses, ";");
 		});

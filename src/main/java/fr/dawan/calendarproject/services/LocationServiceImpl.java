@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.services;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
@@ -142,7 +142,7 @@ public class LocationServiceImpl implements LocationService {
 		URI url = new URI("https://dawan.org/api2/planning/locations");
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("X-AUTH-TOKEN", email + ":" + password);
+		headers.add("x-auth-token", email + ":" + password);
 
 		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
@@ -150,20 +150,28 @@ public class LocationServiceImpl implements LocationService {
 
 		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
-			LocationDG2Dto[] resArray = objectMapper.readValue(json, LocationDG2Dto[].class);
-			lResJson = Arrays.asList(resArray);
+
+			lResJson = objectMapper.readValue(json, new TypeReference<List<LocationDG2Dto>>() {
+			});
+
 			for (LocationDG2Dto lDG2 : lResJson) {
-				Location l = locationMapper.locationDG2DtoToLocation(lDG2);
-				Location foundL = locationRepository.findByCity(l.getCity());
-				if (foundL != null) {
-					l.setId(foundL.getId());
-					l.setColor(foundL.getColor());
-					l.setVersion(foundL.getVersion());
+				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
+				Location location = new Location();
+				Optional<Location> optLocation = locationRepository.findById(locationImport.getId());
+
+				if (optLocation.isPresent()) {
+					if (optLocation.get().equals(locationImport)) {
+						continue;
+					} else {
+						location = locationImport;
+						locationRepository.saveAndFlush(location);
+						continue;
+					}
+				} else {
+					location = locationImport;
+					location.setColor("#00cc99");
+					locationRepository.saveAndFlush(location);
 				}
-				if (l.getColor() == null) {
-					l.setColor("#00cc99");
-				}
-				locationRepository.saveAndFlush(l);
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");

@@ -42,7 +42,7 @@ class InterventionMapperTest {
 	@BeforeEach
 	void before() {
 		location = new Location(1, "paris", "#32656", 1);
-		course = new Course(1, "C#", "5", 2);
+		course = new Course(1, "C#", "5", "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));

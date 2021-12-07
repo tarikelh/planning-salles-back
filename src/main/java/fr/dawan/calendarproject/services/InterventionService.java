@@ -7,16 +7,19 @@ import java.util.Map;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.mapper.DoIgnore;
 import net.fortuna.ical4j.model.Calendar;
 
 public interface InterventionService {
 
+	@DoIgnore
 	List<InterventionDto> getAllInterventions();
 
+	@DoIgnore
 	List<InterventionDto> getAllInterventions(int page, int max);
 
 	List<InterventionDto> getAllByUserId(long userId);
-	
+
 	List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap);
 
 	InterventionDto getById(long id);
@@ -31,6 +34,7 @@ public interface InterventionService {
 
 	CountDto count(String type);
 
+	@DoIgnore
 	List<InterventionDto> getMasterIntervention();
 
 	List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
@@ -46,6 +50,6 @@ public interface InterventionService {
 	List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates);
 
 	List<InterventionDto> getSubByMasterId(long id);
-	
-	int fetchDG2Interventions(String email, String pwd,LocalDate start, LocalDate end) throws Exception;
+
+	int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception;
 }

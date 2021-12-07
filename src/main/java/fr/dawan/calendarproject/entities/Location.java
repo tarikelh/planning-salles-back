@@ -2,21 +2,19 @@ package fr.dawan.calendarproject.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
 @Entity
 public class Location {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true)
 	private long id;
 
 	@Column(nullable = false, length = 255, unique = true)
 	private String city;
 
-	@Column(nullable = true, length = 9, unique = true)
+	@Column(nullable = true, length = 9)
 	private String color;
 
 	@Version

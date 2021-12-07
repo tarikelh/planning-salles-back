@@ -14,7 +14,7 @@ public interface LocationMapper {
 
 	LocationDto locationToLocationDto(Location location);
 
-	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "id", source = "id")
 	@Mapping(target = "city", source = "name")
 	@Mapping(target = "color", ignore = true)
 	@Mapping(target = "version", ignore = true)

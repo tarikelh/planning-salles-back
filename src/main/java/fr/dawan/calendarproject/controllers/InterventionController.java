@@ -45,7 +45,7 @@ public class InterventionController {
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
@@ -63,42 +63,43 @@ public class InterventionController {
 	public List<InterventionDto> getAllByUserId(@PathVariable("userId") long userId) {
 		return interventionService.getAllByUserId(userId);
 	}
-	
+
 	// GET - user - id & filters
 	// /api/interventions/filter/{userId}?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
 	@GetMapping(value = "/filter/{userId}", produces = "application/json")
-	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId, HttpServletRequest request) {
+	public List<InterventionDto> getAllByUserIdAndFilter(@PathVariable("userId") long userId,
+			HttpServletRequest request) {
 		Map<String, String[]> paramsMap = request.getParameterMap();
 		return interventionService.searchBy(userId, paramsMap);
 	}
-	
+
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
 	public InterventionDto getById(@PathVariable("id") long id) {
 		return interventionService.getById(id);
 	}
-	
+
 	// GET - Masters Interventions
 	@GetMapping(value = "/masters", produces = "application/json")
 	public List<InterventionDto> getMasterIntervention() {
 		return interventionService.getMasterIntervention();
 	}
-	
+
 	@GetMapping(value = "/masters/{id}", produces = "application/json")
 	public ResponseEntity<?> getMasterInterventionById(@PathVariable("id") long id) {
 		InterventionDto master = interventionService.getById(id);
-		
+
 		if (master.isMaster())
 			return ResponseEntity.ok(master);
 		else
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Master Intervention with id " + id + " does not exists or is not a master intervention.");
 	}
-	
+
 	// GET - NO Masters Interventions && verify UserType && between two dates
 	@GetMapping(value = "/sub", produces = "application/json")
-	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type, @RequestParam("start") String start, 
-			@RequestParam("end") String end) {
+	public List<InterventionDto> getSubInterventions(@RequestParam("type") String type,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
 		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 
@@ -106,16 +107,18 @@ public class InterventionController {
 	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
 	public ResponseEntity<?> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
 		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
-		
+
 		if (iList != null)
 			return ResponseEntity.ok(iList);
-		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Master intervention  with id " + id + " does not exists.");
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body("Master intervention  with id " + id + " does not exists.");
 	}
-	
+
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id, @RequestHeader(value = "Authorization") String token) {
+	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id,
+			@RequestHeader(value = "Authorization") String token) {
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		try {
 			interventionService.deleteById(id, email);
@@ -127,19 +130,21 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@Valid @RequestBody InterventionDto intervention, @RequestHeader(value = "Authorization") String token) throws Exception {
+	public InterventionDto save(@Valid @RequestBody InterventionDto intervention,
+			@RequestHeader(value = "Authorization") String token) throws Exception {
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		return interventionService.saveOrUpdate(intervention, email);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention, @RequestHeader(value = "Authorization") String token) throws Exception {
-	
+	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention,
+			@RequestHeader(value = "Authorization") String token) throws Exception {
+
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 
 		InterventionDto i = interventionService.saveOrUpdate(intervention, email);
-		
+
 		if (i != null)
 			return ResponseEntity.ok(i);
 		else
@@ -148,7 +153,7 @@ public class InterventionController {
 	}
 
 	@GetMapping(value = "/ical/{userId}")
-	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId")long userId) {
+	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId") long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
 		if (calendar != null) {
 			String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
@@ -156,13 +161,13 @@ public class InterventionController {
 			ByteArrayResource resource;
 			try {
 				resource = ICalTools.generateICSFile(calendar, fileName, f);
-				
+
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
 				headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 				headers.add("Pragma", "no-cache");
 				headers.add("Expires", "0");
-				
+
 				return ResponseEntity.ok().headers(headers).contentLength(f.length())
 						.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 			} catch (Exception e) {
@@ -170,50 +175,57 @@ public class InterventionController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Creating Calendar");
 			}
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Calendar For user ID " + userId + " is empty or the user ID does not exist");
-		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body("Calendar For user ID " + userId + " is empty or the user ID does not exist");
+
 	}
 
-	//Count
-	@GetMapping(value = "/count", produces =  "application/json")
+	// Count
+	@GetMapping(value = "/count", produces = "application/json")
 	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
 		return interventionService.count(type);
 	}
-	
-	//@RequestBody int[] usersId,
+
+	// @RequestBody int[] usersId,
 	@PostMapping(value = "/email/employees", produces = "application/json")
 	public ResponseEntity<?> sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
 		try {
-			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(), LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
+			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(),
+					LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("E-mail(s) sent");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending e-mail(s)");
 		}
 	}
-	
+
 	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId, @RequestBody List<DateRangeDto> dates) {
+	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId,
+			@RequestBody List<DateRangeDto> dates) {
 		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
-		
+
 		if (iDtoList != null) {
 			return ResponseEntity.ok(iDtoList);
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Intervention with id " + interventionId + " Not Found");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("Intervention with id " + interventionId + " Not Found");
 		}
 	}
 
-	//FETCH Dawan webservice
-	@GetMapping(value = "/dg2/{start}/{end}", produces="application/json")
-	public ResponseEntity<?> fetchAllDG2(@PathVariable("start") String start, @PathVariable("end") String end, @RequestHeader Map<String, String> headers) {
-		String auth = headers.get("X-AUTH-TOKEN");
+	// FETCH Dawan webservice
+	@GetMapping(value = "/dg2/{start}/{end}", produces = "application/json")
+	public ResponseEntity<?> fetchAllDG2(@PathVariable("start") String start, @PathVariable("end") String end,
+			@RequestHeader Map<String, String> headers) {
+		String auth = headers.get("x-auth-token");
 		try {
-			int count = interventionService.fetchDG2Interventions(
-					auth.split(":")[0], auth.split(":")[1], LocalDate.parse(start), LocalDate.parse(end));
-			
-			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2. " + count + " interventions imported or updated.");
+			int count = interventionService.fetchDG2Interventions(auth.split(":")[0], auth.split(":")[1],
+					LocalDate.parse(start), LocalDate.parse(end));
+
+			return ResponseEntity.status(HttpStatus.OK).body(
+					"Succeed to fetch data from the webservice DG2. " + count + " interventions imported or updated.");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error while fetching data from the webservice");
 		}
 	}
-	
+
 }

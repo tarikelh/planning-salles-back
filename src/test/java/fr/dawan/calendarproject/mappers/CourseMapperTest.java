@@ -26,10 +26,10 @@ class CourseMapperTest {
 
 	@BeforeEach
 	void before() {
-		courseDG2Dto = new CourseDG2Dto("title", "3", "description", "slug", "alias", "fullAlias", 22.2, 45.5, 99, 9,
-				"objectives", "press");
 		courseDto = new CourseDto(1, "title", "5", 0);
-		course = new Course(2, "eltit", "5", 1);
+		course = new Course(2, "eltit", "5", "slug", 1);
+		courseDG2Dto = new CourseDG2Dto("title", "3", "slug", 1);
+
 	}
 
 	@Test

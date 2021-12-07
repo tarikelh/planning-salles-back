@@ -62,46 +62,25 @@ class CourseServiceTest {
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-		courses.add(new Course(1, "Java course for beginners", "5", 0));
-		courses.add(new Course(2, "C# course for intermediate level", "1", 0));
-		courses.add(new Course(3, "JavaScript course for beginners", "3", 0));
+		courses.add(new Course(1, "Java course for beginners", "5", "slug", 0));
+		courses.add(new Course(2, "C# course for intermediate level", "slug", "1", 0));
+		courses.add(new Course(3, "JavaScript course for beginners", "slug", "3", 0));
 
 		cDtos.add(new CourseDto(1, "Java course for beginners", "5", 0));
 		cDtos.add(new CourseDto(2, "C# course for intermediate level", "1", 0));
 		cDtos.add(new CourseDto(3, "JavaScript course for beginners", "3", 0));
 
-		resArray[0] = new CourseDG2Dto("Java course for beginners", "5", "java basic", "java-beginners",
-				"java-beginners", "/formations/jee/java/Java-Beginners", 1495, 875, 75, 1495,
-				"Pouvoir réaliser des applications en Java - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Notions de programmation");
+		resArray[0] = new CourseDG2Dto("Java course for beginners", "5", "java basic", 1);
 
-		resArray[1] = new CourseDG2Dto("C# course for intermediate level", "1", "c# intermediate",
-				"csharp-intermediate", "csharp-intermediate", "/formations/csharp/.net/Csharp-Intermediate", 1685, 900,
-				90, 1685,
-				"Pouvoir réaliser des applications en C# - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Notions de programmation");
+		resArray[1] = new CourseDG2Dto("C# course for intermediate level", "1", "c# intermediate", 2);
 
-		resArray[2] = new CourseDG2Dto("JavaScript course for beginners", "3", "javascript basic",
-				"javascript-intermediate", "javascript-intermediate", "/formations/web/js/Javascript-Intermediate",
-				1329, 732, 60, 1329,
-				"Pouvoir réaliser des applications web en javascript - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Aucune");
+		resArray[2] = new CourseDG2Dto("JavaScript course for beginners", "3", "javascript basic", 13);
 
-		cDG2Dtos.add(new CourseDG2Dto("Java course for beginners", "5", "java basic", "java-beginners",
-				"java-beginners", "/formations/jee/java/Java-Beginners", 1495, 875, 75, 1495,
-				"Pouvoir réaliser des applications en Java - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Notions de programmation"));
+		cDG2Dtos.add(new CourseDG2Dto("Java course for beginners", "5", "java basic", 4));
 
-		cDG2Dtos.add(new CourseDG2Dto("C# course for intermediate level", "1", "c# intermediate", "csharp-intermediate",
-				"csharp-intermediate", "/formations/csharp/.net/Csharp-Intermediate", 1685, 900, 90, 1685,
-				"Pouvoir réaliser des applications en C# - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Notions de programmation"));
+		cDG2Dtos.add(new CourseDG2Dto("C# course for intermediate level", "1", "c# intermediate", 8));
 
-		cDG2Dtos.add(new CourseDG2Dto("JavaScript course for beginners", "3", "javascript basic",
-				"javascript-intermediate", "javascript-intermediate", "/formations/web/js/Javascript-Intermediate",
-				1329, 732, 60, 1329,
-				"Pouvoir réaliser des applications web en javascript - Savoir choisir les technologies adaptées et mettre en place des interfaces efficaces",
-				"Aucune"));
+		cDG2Dtos.add(new CourseDG2Dto("JavaScript course for beginners", "3", "javascript basic", 5));
 
 	}
 
@@ -196,9 +175,9 @@ class CourseServiceTest {
 
 	@Test
 	void shouldSaveNewCourse() throws Exception {
-		Course newCourse = new Course(0, "Vue.js course for beginners", "5", 0);
+		Course newCourse = new Course(0, "Vue.js course for beginners", "5", "slug", 0);
 		CourseDto newCourseDto = new CourseDto(0, "Vue.js course for beginners", "5", 0);
-		Course savedCourse = new Course(4, "Vue.js course for beginners", "5", 0);
+		Course savedCourse = new Course(4, "Vue.js course for beginners", "5", "slug", 0);
 		CourseDto expectedCourse = new CourseDto(4, "Vue.js course for beginners", "5", 0);
 
 		when(courseMapper.courseDtoToCouse(newCourseDto)).thenReturn(newCourse);
@@ -214,10 +193,10 @@ class CourseServiceTest {
 
 	@Test
 	void shouldUpdateCourse() throws Exception {
-		Course beforeUpdateCourse = new Course(3, "JavaScript course for beginners", "3", 0);
-		Course updatedCourse = new Course(3, "JavaScript course for beginners Updated", "5", 0);
+		Course beforeUpdateCourse = new Course(3, "JavaScript course for beginners", "3", "slug", 0);
+		Course updatedCourse = new Course(3, "JavaScript course for beginners Updated", "5", "slug", 0);
 		CourseDto updatedCourseDto = new CourseDto(3, "JavaScript course for beginners Updated", "5", 0);
-		Course savedCourse = new Course(3, "Vue.js course for beginners", "5", 1);
+		Course savedCourse = new Course(3, "Vue.js course for beginners", "5", "slug", 1);
 		CourseDto expectedCourse = new CourseDto(3, "Vue.js course for beginners", "5", 1);
 
 		when(courseRepository.findById(updatedCourse.getId())).thenReturn(Optional.of(beforeUpdateCourse));

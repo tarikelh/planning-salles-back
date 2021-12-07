@@ -264,30 +264,21 @@ public class UserServiceImpl implements UserService {
 
 			for (UserDG2Dto cDG2 : lResJson) {
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
-				User userInDb = userRepository.findByEmail(userImported.getEmail());
+				User user = new User();
+				Optional<User> optUser = userRepository.findById(userImported.getId());
 
-				if (userInDb != null) {
-					userInDb.setId(userImported.getId());
-					userInDb.setCompany(userImported.getCompany());
-					userInDb.setEmail(userImported.getEmail());
-					userInDb.setEnumCompany(userImported.getEnumCompany());
-					userInDb.setEnumType(userImported.getEnumType());
-					userInDb.setFirstName(userImported.getFirstName());
-					userInDb.setImagePath(userImported.getImagePath());
-					userInDb.setLastName(userImported.getLastName());
-					userInDb.setLocation(userImported.getLocation());
-					userInDb.setPassword(userImported.getPassword());
-					userInDb.setSkills(userImported.getSkills());
-					userInDb.setType(userImported.getType());
-					userInDb.setVersion(userImported.getVersion());
+				if (optUser.isPresent()) {
+					if (optUser.get().equals(userImported)) {
+						continue;
+					} else {
+						user = userImported;
+						userRepository.saveAndFlush(user);
+					}
 				} else {
-					userInDb = userImported;
+					user = userImported;
+					user.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
+					userRepository.saveAndFlush(user);
 				}
-
-				if (userInDb.getPassword() == null) {
-					userInDb.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
-				}
-				userRepository.saveAndFlush(userInDb);
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
@@ -298,16 +289,15 @@ public class UserServiceImpl implements UserService {
 		if (job == null) {
 			job = "";
 		}
-		if (!job.isEmpty()) {
-			String lowerCaseJob = job.toLowerCase();
-			if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("dw") || lowerCaseJob.contains("apprenti")) {
-				return UserType.APPRENTI.toString();
-			} else if (lowerCaseJob.contains("format")) {
-				return UserType.FORMATEUR.toString();
-			} else if (lowerCaseJob.contains("admin")) {
-				return UserType.ADMINISTRATIF.toString();
-			}
+		String lowerCaseJob = job.toLowerCase();
+
+		if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("associée") || lowerCaseJob.contains("gérant")
+				|| lowerCaseJob.contains("manager")) {
+			return UserType.ADMINISTRATIF.toString();
+		} else if (lowerCaseJob.contains("format")) {
+			return UserType.FORMATEUR.toString();
+		} else {
+			return UserType.APPRENTI.toString();
 		}
-		return UserType.NOT_FOUND.toString();
 	}
 }

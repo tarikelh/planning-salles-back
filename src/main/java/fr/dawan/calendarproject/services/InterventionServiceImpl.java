@@ -60,7 +60,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionRepository interventionRepository;
-	
+
 	@Autowired
 	private InterventionCustomRepository interventionCustomRepository;
 
@@ -78,7 +78,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private InterventionMapper interventionMapper;
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -107,16 +107,15 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getAllByUserId(long userId) {
-		return interventionMapper.listInterventionToListInterventionDto(
-				interventionRepository.getAllByUserId(userId));
+		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserId(userId));
 	}
-	
-	//NB : method used for mobile application
+
+	// NB : method used for mobile application
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
-		//verify if user exists
-		if(userRepository.findById(userId).isPresent()) {
-			//search filtered interventions from the user selected
+		// verify if user exists
+		if (userRepository.findById(userId).isPresent()) {
+			// search filtered interventions from the user selected
 			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
 			List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
 			for (Intervention intervention : interventions) {
@@ -124,7 +123,7 @@ public class InterventionServiceImpl implements InterventionService {
 			}
 			return interventionsDto;
 		}
-		
+
 		return null;
 	}
 
@@ -143,7 +142,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 		if (intToDelete.isPresent()) {
 			interventionRepository.deleteById(id);
-			
+
 			try {
 				caretaker.addMemento(email, intToDelete.get());
 			} catch (Exception e) {
@@ -440,31 +439,31 @@ public class InterventionServiceImpl implements InterventionService {
 		LocalTime timeStart;
 		LocalTime timeEnd;
 		String message;
-		
+
 		for (DateRangeDto dateRange : dates) {
 			dateStart = dateRange.getDateStart();
 			dateEnd = dateRange.getDateEnd();
 			timeStart = dateRange.getTimeStart();
 			timeEnd = dateRange.getTimeEnd();
-			
+
 			if (dateStart.isAfter(dateEnd)) {
 				if (dateRange.getInterventionId() > 0)
 					message = "Date Start must be prior to End for Intervention #" + dateRange.getInterventionId();
 				else
 					message = "Date Start must be prior to End for New Intervention Split";
 
-				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd",
-						message, "/api/interventions"));
+				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd", message,
+						"/api/interventions"));
 			}
-			
+
 			if (timeStart.isAfter(timeEnd)) {
 				if (dateRange.getInterventionId() > 0)
 					message = "Time Start must be prior to End for Intervention #" + dateRange.getInterventionId();
 				else
 					message = "Time Start must be prior to End for New Intervention Split";
 
-				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd",
-						message, "/api/interventions"));
+				errs.add(new APIError(400, dateRange.getClass().toString(), "DateStartIsBeforeEnd", message,
+						"/api/interventions"));
 			}
 
 			for (DateRangeDto rangeToCheck : dates) {
@@ -475,7 +474,7 @@ public class InterventionServiceImpl implements InterventionService {
 				}
 			}
 		}
-		
+
 		if (!errs.isEmpty())
 			throw new EntityFormatException(errs);
 	}
@@ -505,45 +504,45 @@ public class InterventionServiceImpl implements InterventionService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<InterventionDG2Dto> lResJson = new ArrayList<InterventionDG2Dto>();
 		int count = 0;
-		
+
 		URI url = new URI(
 				String.format("https://dawan.org/api2/planning/interventions/%s/%s", start.toString(), end.toString()));
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
-		
+
 		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-		
+
 		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
-		
-		if(repWs.getStatusCode() == HttpStatus.OK) {
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
-			
+
 			lResJson = Arrays.asList(resArray);
 			Set<Long> masterIds = new HashSet<Long>();
 			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
-			
+
 			lResJson.forEach(i -> {
-				if(masterIds.contains(i.getId()))
+				if (masterIds.contains(i.getId()))
 					i.setMaster(true);
-				
+
 				String type = i.getType() == "shared" ? "SUR_MESURE" : "INTERN";
 				i.setType(type);
-				
+
 				i.setValidated(i.getAttendeesCount() > 0);
-				
+
 				i.setDateStart(i.getDateStart().substring(0, 10));
 				i.setDateEnd(i.getDateEnd().substring(0, 10));
 			});
-			
+
 			for (InterventionDG2Dto iDG2 : lResJson) {
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
 				Optional<Intervention> alreadyInDb = interventionRepository.findById(i.getId());
 
-				if(alreadyInDb.isPresent() && alreadyInDb.get().equalsDG2(i))
+				if (alreadyInDb.isPresent() && alreadyInDb.get().equalsDG2(i))
 					continue;
-				else if(alreadyInDb.isPresent() && !alreadyInDb.get().equalsDG2(i)) {
+				else if (alreadyInDb.isPresent() && !alreadyInDb.get().equalsDG2(i)) {
 					i.setComment(alreadyInDb.get().getComment());
 					i.setTimeStart(alreadyInDb.get().getTimeStart());
 					i.setTimeEnd(alreadyInDb.get().getTimeEnd());
@@ -555,9 +554,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 			}
 		} else {
-			 throw new Exception("ResponseEntity from the webservice WDG2 not correct");
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
-		
+
 		return count;
 	}
 }
