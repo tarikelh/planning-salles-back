@@ -9,11 +9,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.mapper.DoIgnore;
 
 @Repository
 public interface InterventionRepository extends JpaRepository<Intervention, Long> {
+
+	@DoIgnore
+	@Override
+	List<Intervention> findAll();
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.course.id = :id")
 	List<Intervention> findByCourseId(@Param("id") long id);
@@ -36,6 +40,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	List<Intervention> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 
 	// get only master event
+	@DoIgnore
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user LEFT JOIN FETCH i.course WHERE i.isMaster = true")
 	List<Intervention> getMasterIntervention();
 
@@ -48,6 +53,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("SELECT COUNT(*) FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type")
 	long countByUserTypeNoMaster(@Param("type") UserType type);
 
+	@DoIgnore
 	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")

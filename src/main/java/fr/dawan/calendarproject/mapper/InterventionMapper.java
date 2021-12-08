@@ -9,12 +9,12 @@ import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
-import fr.dawan.calendarproject.services.InterventionService;
 
 @Mapper(componentModel = "spring", uses = { CourseRepository.class, LocationRepository.class, UserRepository.class,
-		InterventionService.class })
+		InterventionRepository.class })
 public interface InterventionMapper {
 
 	@Mapping(target = "courseId", source = "course.id")
@@ -46,4 +46,6 @@ public interface InterventionMapper {
 	@Mapping(target = "timeStart", ignore = true)
 	@Mapping(target = "timeEnd", ignore = true)
 	Intervention interventionDG2DtoToIntervention(InterventionDG2Dto iDG2);
+
+	List<Intervention> listInterventionDG2DtotoListIntervention(List<InterventionDG2Dto> interventionDG2Dtos);
 }

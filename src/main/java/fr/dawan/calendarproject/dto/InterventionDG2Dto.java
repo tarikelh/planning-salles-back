@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class InterventionDG2Dto {
 	private long id;
@@ -14,9 +14,9 @@ public class InterventionDG2Dto {
 	private boolean validated;
 	private long masterInterventionId;
 	private boolean isMaster;
-	@JsonAlias("nbParticipants")
+	@JsonProperty("nbParticipants")
 	private int attendeesCount;
-	
+
 	public InterventionDG2Dto() {
 	}
 
@@ -105,13 +105,9 @@ public class InterventionDG2Dto {
 		return validated;
 	}
 
-
-
 	public void setValidated(boolean validated) {
 		this.validated = validated;
 	}
-
-
 
 	public long getMasterInterventionId() {
 		return masterInterventionId;
@@ -132,7 +128,7 @@ public class InterventionDG2Dto {
 	public boolean isMaster() {
 		return isMaster;
 	}
-	
+
 	public void setMaster(boolean isMaster) {
 		this.isMaster = isMaster;
 	}

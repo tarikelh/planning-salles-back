@@ -11,7 +11,6 @@ import fr.dawan.calendarproject.entities.Course;
 public interface CourseMapper {
 	CourseDto courseToCourseDto(Course course);
 
-	@Mapping(target = "slug", ignore = true)
 	Course courseDtoToCouse(CourseDto courseDto);
 
 	@Mapping(target = "id", source = "id")

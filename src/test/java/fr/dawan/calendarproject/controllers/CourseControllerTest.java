@@ -58,35 +58,31 @@ class CourseControllerTest {
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
-		
-		courses.add(new CourseDto(1, "Java", "5", 0));
-		courses.add(new CourseDto(2, ".Net", "5", 0));
-		courses.add(new CourseDto(3, "Android", "5", 0));
+
+		courses.add(new CourseDto(1, "Java", "5", "slug", 0));
+		courses.add(new CourseDto(2, ".Net", "5", "slug", 0));
+		courses.add(new CourseDto(3, "Android", "5", "slug", 0));
 	}
 
 	@Test
 	void contextLoads() {
 		assertThat(courseController).isNotNull();
 	}
-	
+
 	@Test
 	void shouldFetchAllCourses() throws Exception {
 		when(courseService.getAllCourses()).thenReturn(courses);
 
-		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.size()", is(courses.size())))
-				.andExpect(jsonPath("$[0].title", is("Java")));
+		mockMvc.perform(get("/api/courses").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.size()", is(courses.size()))).andExpect(jsonPath("$[0].title", is("Java")));
 	}
 
 	@Test
 	void shouldFetchAllCoursesPagination() throws Exception {
-		when(courseService.getAllCourses(any(int.class), any(int.class), any(String.class)))
-				.thenReturn(courses);
+		when(courseService.getAllCourses(any(int.class), any(int.class), any(String.class))).thenReturn(courses);
 
 		mockMvc.perform(get("/api/courses/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.size()", is(courses.size())))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(courses.size())))
 				.andExpect(jsonPath("$[0].title", is("Java")));
 	}
 
@@ -96,8 +92,7 @@ class CourseControllerTest {
 		when(courseService.getById(courseId)).thenReturn(courses.get(1));
 
 		mockMvc.perform(get("/api/courses/{id}", courseId).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.title", is(".Net")));
+				.andExpect(status().isOk()).andExpect(jsonPath("$.title", is(".Net")));
 	}
 
 	@Test
@@ -114,9 +109,8 @@ class CourseControllerTest {
 		final long courseId = 1;
 		doNothing().when(courseService).deleteById(courseId);
 
-		String res = mockMvc.perform(delete("/api/courses/{id}", courseId))
-				.andExpect(status().isAccepted())
-				.andReturn().getResponse().getContentAsString();
+		String res = mockMvc.perform(delete("/api/courses/{id}", courseId)).andExpect(status().isAccepted()).andReturn()
+				.getResponse().getContentAsString();
 
 		assertEquals("Course with id " + courseId + " deleted", res);
 	}
@@ -137,25 +131,23 @@ class CourseControllerTest {
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-		CourseDto newCourse = new CourseDto(0, "Photoshop", "5", 0);
-		CourseDto resMock = new CourseDto(4, "Photoshop", "5", 0);
+		CourseDto newCourse = new CourseDto(0, "Photoshop", "5", "slug", 0);
+		CourseDto resMock = new CourseDto(4, "Photoshop", "5", "slug", 0);
 		String newCourseJson = objectMapper.writeValueAsString(newCourse);
 
 		when(courseService.saveOrUpdate(any(CourseDto.class))).thenReturn(resMock);
 
 		mockMvc.perform(post("/api/courses").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.accept(MediaType.APPLICATION_JSON).content(newCourseJson))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(4)))
-				.andExpect(jsonPath("$.title", is(newCourse.getTitle())))
+				.accept(MediaType.APPLICATION_JSON).content(newCourseJson)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(4))).andExpect(jsonPath("$.title", is(newCourse.getTitle())))
 				.andExpect(jsonPath("$.version", is(newCourse.getVersion())));
 	}
-	
+
 	@Test
 	void shouldUpdateCourse() throws Exception {
-		
-		CourseDto updated = new CourseDto(courses.get(0).getId(), courses.get(0).getTitle(), courses.get(0).getDuration(),
-				courses.get(0).getVersion());
+
+		CourseDto updated = new CourseDto(courses.get(0).getId(), courses.get(0).getTitle(),
+				courses.get(0).getDuration(), courses.get(0).getSlug(), courses.get(0).getVersion());
 
 		updated.setTitle("Java EE");
 
@@ -173,16 +165,14 @@ class CourseControllerTest {
 	@Test
 	void shouldReturn404WhenUpdateWithWrongId() throws Exception {
 
-		CourseDto newCourse = new CourseDto(120, "Photoshop", "5", 0);
+		CourseDto newCourse = new CourseDto(120, "Photoshop", "5", "slug", 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String newCourseJson = objectMapper.writeValueAsString(newCourse);
 
 		when(courseService.saveOrUpdate(newCourse)).thenReturn(null);
 
-		String res = mockMvc.perform(put("/api/courses")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(newCourseJson))
+		String res = mockMvc.perform(put("/api/courses").contentType(MediaType.APPLICATION_JSON).content(newCourseJson))
 				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
 
 		assertEquals(res, "Course with id " + newCourse.getId() + " Not Found");

@@ -5,18 +5,21 @@ public class CourseDto {
 	private long id;
 
 	private String title;
-	
+
 	private String duration;
-	
+
+	private String slug;
+
 	private int version;
-	
+
 	public CourseDto() {
 	}
-	
-	public CourseDto(long id, String title, String duration, int version) {
+
+	public CourseDto(long id, String title, String duration, String slug, int version) {
 		this.id = id;
 		this.title = title;
 		this.duration = duration;
+		this.slug = slug;
 		this.version = version;
 	}
 
@@ -44,6 +47,14 @@ public class CourseDto {
 		this.duration = duration;
 	}
 
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
 	public int getVersion() {
 		return version;
 	}
@@ -51,5 +62,4 @@ public class CourseDto {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-
 }

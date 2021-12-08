@@ -22,7 +22,7 @@ public class Intervention implements Cloneable {
 	@Column(unique = true)
 	private long id;
 
-	@Column(nullable = true, length = 255)
+	@Column(nullable = true, length = 255, unique = true)
 	private String slug;
 
 	@Column(nullable = true, length = 255)

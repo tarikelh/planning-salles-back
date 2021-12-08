@@ -66,9 +66,9 @@ class CourseServiceTest {
 		courses.add(new Course(2, "C# course for intermediate level", "slug", "1", 0));
 		courses.add(new Course(3, "JavaScript course for beginners", "slug", "3", 0));
 
-		cDtos.add(new CourseDto(1, "Java course for beginners", "5", 0));
-		cDtos.add(new CourseDto(2, "C# course for intermediate level", "1", 0));
-		cDtos.add(new CourseDto(3, "JavaScript course for beginners", "3", 0));
+		cDtos.add(new CourseDto(1, "Java course for beginners", "5", "slug", 0));
+		cDtos.add(new CourseDto(2, "C# course for intermediate level", "1", "slug", 0));
+		cDtos.add(new CourseDto(3, "JavaScript course for beginners", "3", "slug", 0));
 
 		resArray[0] = new CourseDG2Dto("Java course for beginners", "5", "java basic", 1);
 
@@ -176,9 +176,9 @@ class CourseServiceTest {
 	@Test
 	void shouldSaveNewCourse() throws Exception {
 		Course newCourse = new Course(0, "Vue.js course for beginners", "5", "slug", 0);
-		CourseDto newCourseDto = new CourseDto(0, "Vue.js course for beginners", "5", 0);
+		CourseDto newCourseDto = new CourseDto(0, "Vue.js course for beginners", "5", "slug", 0);
 		Course savedCourse = new Course(4, "Vue.js course for beginners", "5", "slug", 0);
-		CourseDto expectedCourse = new CourseDto(4, "Vue.js course for beginners", "5", 0);
+		CourseDto expectedCourse = new CourseDto(4, "Vue.js course for beginners", "5", "slug", 0);
 
 		when(courseMapper.courseDtoToCouse(newCourseDto)).thenReturn(newCourse);
 		when(courseRepository.saveAndFlush(newCourse)).thenReturn(savedCourse);
@@ -195,9 +195,9 @@ class CourseServiceTest {
 	void shouldUpdateCourse() throws Exception {
 		Course beforeUpdateCourse = new Course(3, "JavaScript course for beginners", "3", "slug", 0);
 		Course updatedCourse = new Course(3, "JavaScript course for beginners Updated", "5", "slug", 0);
-		CourseDto updatedCourseDto = new CourseDto(3, "JavaScript course for beginners Updated", "5", 0);
+		CourseDto updatedCourseDto = new CourseDto(3, "JavaScript course for beginners Updated", "5", "slug", 0);
 		Course savedCourse = new Course(3, "Vue.js course for beginners", "5", "slug", 1);
-		CourseDto expectedCourse = new CourseDto(3, "Vue.js course for beginners", "5", 1);
+		CourseDto expectedCourse = new CourseDto(3, "Vue.js course for beginners", "5", "slug", 1);
 
 		when(courseRepository.findById(updatedCourse.getId())).thenReturn(Optional.of(beforeUpdateCourse));
 		when(courseMapper.courseDtoToCouse(updatedCourseDto)).thenReturn(updatedCourse);
@@ -224,7 +224,7 @@ class CourseServiceTest {
 	@Test
 	void shouldReturnExceptionWhenCourseExisting() throws Exception {
 		Course course = courses.get(0);
-		CourseDto newCourseDto = new CourseDto(1, "Java course for beginners", "5", 0);
+		CourseDto newCourseDto = new CourseDto(1, "Java course for beginners", "5", "slug", 0);
 
 		when(courseRepository.findByTitle(newCourseDto.getId(), newCourseDto.getTitle())).thenReturn(course);
 
