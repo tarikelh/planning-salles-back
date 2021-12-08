@@ -44,14 +44,8 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.TimeZone;
-import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
 
 @Service
@@ -260,22 +254,15 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	public Calendar exportCalendarAsICal(long userId) {
-
 		List<Intervention> lst = interventionRepository.findByUserId(userId);
 
 		if (lst == null || lst.isEmpty())
 			return null;
 
-		Calendar calendar = new Calendar();
-		calendar.getProperties().add(new ProdId("-//Dawan Calendar//iCal4j 1.0//FR"));
-		calendar.getProperties().add(Version.VERSION_2_0);
-		calendar.getProperties().add(CalScale.GREGORIAN);
+		Calendar calendar = ICalTools.createCalendar("-//Dawan Planning//iCal4j 1.0//FR"); 
 		String calName = lst.get(0).getUser().getLastName() + lst.get(0).getUser().getFirstName();
 		calendar.getProperties().add(new XProperty("X-CALNAME", calName));
-
-		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
-		VTimeZone tz = timeZone.getVTimeZone();
+		VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
 
 		for (Intervention intervention : lst) {
 			VEvent event = ICalTools.createVEvent(intervention, tz);
@@ -527,7 +514,7 @@ public class InterventionServiceImpl implements InterventionService {
 				if (masterIds.contains(i.getId()))
 					i.setMaster(true);
 
-				String type = i.getType() == "shared" ? "SUR_MESURE" : "INTERN";
+				String type = i.getType().equals("shared") ? "SUR_MESURE" : "INTERN";
 				i.setType(type);
 
 				i.setValidated(i.getAttendeesCount() > 0);
