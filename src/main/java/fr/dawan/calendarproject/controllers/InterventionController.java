@@ -163,7 +163,7 @@ public class InterventionController {
 				resource = ICalTools.generateICSFile(calendar, fileName, f);
 
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
 				headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 				headers.add("Pragma", "no-cache");
 				headers.add("Expires", "0");

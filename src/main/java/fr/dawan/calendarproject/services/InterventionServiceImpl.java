@@ -507,7 +507,7 @@ public class InterventionServiceImpl implements InterventionService {
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
-			Set<Long> masterIds = new HashSet<Long>();
+			Set<Long> masterIds = new HashSet<>();
 			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
 
 			lResJson.forEach(i -> {
@@ -525,6 +525,11 @@ public class InterventionServiceImpl implements InterventionService {
 
 			for (InterventionDG2Dto iDG2 : lResJson) {
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
+				i.setCourse(courseRepository.findById(iDG2.getCourseId()).orElse(null));
+				i.setLocation(locationRepository.findById(iDG2.getLocationId()).orElse(null));
+				i.setUser(userRepository.findById(iDG2.getUserId()).orElse(null));
+				i.setMasterIntervention(interventionRepository.findById(iDG2.getMasterInterventionId()).orElse(null));
+				
 				Optional<Intervention> alreadyInDb = interventionRepository.findById(i.getId());
 
 				if (alreadyInDb.isPresent() && alreadyInDb.get().equalsDG2(i))
@@ -537,7 +542,12 @@ public class InterventionServiceImpl implements InterventionService {
 				}
 
 				count++;
-				interventionRepository.saveAndFlush(i);
+				try {
+					interventionRepository.saveAndFlush(i);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 			}
 		} else {
