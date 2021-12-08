@@ -30,9 +30,9 @@ import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
+import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
-import fr.dawan.calendarproject.services.InterventionService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,7 +51,7 @@ class InterventionMapperTest {
 	UserRepository userRepository;
 
 	@MockBean
-	InterventionService interventionService;
+	InterventionRepository interventionRepository;
 
 	private Intervention intervention = new Intervention();
 	private Intervention masterIntervention = new Intervention();
@@ -135,8 +135,8 @@ class InterventionMapperTest {
 		when(courseRepository.getOne(course.getId())).thenReturn(course);
 		when(locationRepository.getOne(location.getId())).thenReturn(location);
 		when(userRepository.getOne(user.getId())).thenReturn(user);
-		when(interventionService.getById(interventionDto2.getId())).thenReturn(interventionDto2);
-		when(interventionService.getById(0)).thenReturn(null);
+		when(interventionRepository.getOne(interventionDto2.getId())).thenReturn(intervention2);
+		when(interventionRepository.getOne(0L)).thenReturn(null);
 		// mapping
 		Intervention mappedIntervention = interventionMapper.interventionDtoToIntervention(interventionDto);
 
@@ -186,8 +186,8 @@ class InterventionMapperTest {
 		when(courseRepository.getOne(course.getId())).thenReturn(course);
 		when(locationRepository.getOne(location.getId())).thenReturn(location);
 		when(userRepository.getOne(user.getId())).thenReturn(user);
-		when(interventionService.getById(interventionDto2.getId())).thenReturn(interventionDto2);
-		when(interventionService.getById(0)).thenReturn(null);
+		when(interventionRepository.getOne(interventionDto2.getId())).thenReturn(intervention2);
+		when(interventionRepository.getOne(0L)).thenReturn(null);
 
 		// mapping
 		Intervention mappedIntervention = interventionMapper.interventionDG2DtoToIntervention(interventionDG2Dto);

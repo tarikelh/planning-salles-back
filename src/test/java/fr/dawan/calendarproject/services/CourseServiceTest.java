@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +34,6 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.entities.Course;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.CourseMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 
@@ -219,18 +217,6 @@ class CourseServiceTest {
 		when(courseRepository.existsById(4L)).thenReturn(false);
 
 		assertThat(courseService.saveOrUpdate(courseDto)).isNull();
-	}
-
-	@Test
-	void shouldReturnExceptionWhenCourseExisting() throws Exception {
-		Course course = courses.get(0);
-		CourseDto newCourseDto = new CourseDto(1, "Java course for beginners", "5", "slug", 0);
-
-		when(courseRepository.findByTitle(newCourseDto.getId(), newCourseDto.getTitle())).thenReturn(course);
-
-		assertThrows(EntityFormatException.class, () -> {
-			courseService.checkUniqness(newCourseDto);
-		});
 	}
 
 	@Test
