@@ -45,7 +45,7 @@ public class SkillServiceImpl implements SkillService {
 	public List<AdvancedSkillDto> getAllSkills() {
 		List<Skill> skills = skillRepository.findAll();
 
-		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
+		List<AdvancedSkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
@@ -64,7 +64,7 @@ public class SkillServiceImpl implements SkillService {
 
 		List<Skill> skills = skillRepository.findAllByTitleContaining(search, pagination).get()
 				.collect(Collectors.toList());
-		List<AdvancedSkillDto> result = new ArrayList<AdvancedSkillDto>();
+		List<AdvancedSkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
@@ -81,10 +81,10 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public AdvancedSkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
-		
+
 		if (skill.isPresent())
 			return skillMapper.skillToAdvancedSkillDto(skill.get());
-		
+
 		return null;
 	}
 
@@ -102,21 +102,19 @@ public class SkillServiceImpl implements SkillService {
 
 		Skill s = skillMapper.advancedSkillDtoToSkill(skill);
 
-		Set<User> usersList = new HashSet<User>();
+		Set<User> usersList = new HashSet<>();
 		if (skill.getUsersId() != null) {
-			skill.getUsersId().forEach(id -> {
-				usersList.add(userRepository.getOne(id));
-			});
+			skill.getUsersId().forEach(id -> usersList.add(userRepository.getOne(id)));
 		}
 		s.setUsers(usersList);
 
 		s = skillRepository.saveAndFlush(s);
-		
+
 		return skillMapper.skillToAdvancedSkillDto(s);
 	}
 
 	public boolean checkIntegrity(AdvancedSkillDto s) {
-		Set<APIError> errors = new HashSet<APIError>();
+		Set<APIError> errors = new HashSet<>();
 		String instanceClass = s.getClass().toString();
 		String path = "/api/skills";
 
