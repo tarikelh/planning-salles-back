@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.ResetResponse;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
@@ -38,6 +40,7 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.HashTools;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Service
 @Transactional
@@ -57,6 +60,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+	
+	@Value("${vue.baseurl}")
+	private String vueUrl;
 	
 
 	/**
@@ -397,5 +406,40 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return UserType.APPRENTI.toString();
 		}
+	}
+	
+	/**
+	 * Returns a Response Entity to check whether the password was updated or not.
+	 * 
+	 * @param reset A Reset Response containing the new password.
+	 * 
+	 * @exception Exception Returns an exception if the token is expired.
+	 */
+
+	@Override
+	public boolean resetPassword(ResetResponse reset) throws Exception {
+			String hashedPwd = HashTools.hashSHA512(reset.getPassword());
+			String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
+
+			User u = userRepository.findByEmail(email);
+			String currentPwd = ""; 
+			
+			if(u !=null)
+				currentPwd = HashTools.hashSHA512(u.getPassword());
+			
+			if (u != null && !currentPwd.equals(hashedPwd)) {
+				
+				u.setPassword(reset.getPassword());
+				userRepository.saveAndFlush(u);
+
+				return true;
+			} else if (u != null && currentPwd.equals(hashedPwd)) {
+				// same password
+				return false;
+			}
+			else {
+				// if user == null
+				return false;
+			}
 	}
 }

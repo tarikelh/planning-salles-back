@@ -7,6 +7,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.http.ResponseEntity;
+
+import fr.dawan.calendarproject.dto.ResetResponse;
+import fr.dawan.calendarproject.dto.UserDto;
 import net.fortuna.ical4j.model.Calendar;
 
 public interface EmailService {
@@ -18,4 +22,7 @@ public interface EmailService {
 	MimeBodyPart createTextPart(String content, String encoding) throws MessagingException;
 	
 	MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception;
+
+	void sendMailForResetPassword(UserDto uDto);
+
 }

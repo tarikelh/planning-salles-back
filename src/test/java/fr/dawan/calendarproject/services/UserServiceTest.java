@@ -36,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.ResetResponse;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
@@ -48,6 +49,7 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.HashTools;
+import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
@@ -67,6 +69,9 @@ class UserServiceTest {
 
 	@MockBean
 	private UserMapper userMapper;
+	
+	@MockBean
+	private JwtTokenUtil jwtTokenUtil;
 
 	@MockBean
 	private RestTemplate restTemplate;
@@ -75,9 +80,18 @@ class UserServiceTest {
 	private List<AdvancedUserDto> uDtoList = new ArrayList<AdvancedUserDto>();
 	private List<UserDG2Dto> usersDG2 = new ArrayList<UserDG2Dto>();
 	private User userFromDG2 = new User();
+	private AdvancedUserDto adUserDto;
+	private ResetResponse resetResponse;
+	private static String email = "dbalavoine@dawan.fr";
 
 	@BeforeEach
 	void setUp() throws Exception {
+		adUserDto = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
+				"dbalavoine@dawan.fr", "testPassword",
+				"ADMINISTRATIF", "DAWAN", "", 0, null);
+		
+		resetResponse = new ResetResponse("TokenTestResetPassword", "ResetPasswordTest");
+		
 		Location loc = Mockito.mock(Location.class);
 
 		uList.add(new User(1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
@@ -547,5 +561,42 @@ class UserServiceTest {
 		assertDoesNotThrow(() -> {
 			userService.fetchAllDG2Users("userEmail", "userPassword");
 		});
+	}
+	
+	@Test
+	void shouldResetPassword() throws Exception {
+		
+		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
+		when(userRepository.findByEmail(email)).thenReturn(uList.get(0));
+		when(userRepository.saveAndFlush(any(User.class))).thenReturn(uList.get(0));
+		
+		boolean resetStatus = userService.resetPassword(resetResponse);
+		
+		assertThat(resetStatus).isTrue();
+	}
+	
+	@Test
+	void shouldResetPasswordWhenUserNotFound() throws Exception {
+		
+		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
+		when(userRepository.findByEmail(email)).thenReturn(null);
+		when(userRepository.saveAndFlush(any(User.class))).thenReturn(null);
+		
+		boolean resetStatus = userService.resetPassword(resetResponse);
+		
+		assertThat(resetStatus).isFalse();
+	}
+	
+	@Test
+	void shouldResetPasswordWhenSameAsOld() throws Exception {
+		resetResponse.setPassword(uList.get(0).getPassword());
+		
+		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
+		when(userRepository.findByEmail(email)).thenReturn(uList.get(0));
+		when(userRepository.saveAndFlush(any(User.class))).thenReturn(uList.get(0));
+		
+		boolean resetStatus = userService.resetPassword(resetResponse);
+		
+		assertThat(resetStatus).isFalse();
 	}
 }
