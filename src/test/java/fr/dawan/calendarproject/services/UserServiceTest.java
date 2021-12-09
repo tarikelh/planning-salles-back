@@ -178,10 +178,10 @@ class UserServiceTest {
 	}
 
 	@Test
-	void shouldReturnNullWhenGivenTypeIsWrong() {
+	void shouldReturnEmptyListWhenGivenTypeIsWrong() {
 		List<AdvancedUserDto> result = userService.getAllUsersByType("BADUSERTYPE");
 
-		assertThat(result).isNull();
+		assertThat(result).isEmpty();
 	}
 
 	@Test
