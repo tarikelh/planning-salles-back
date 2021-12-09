@@ -191,8 +191,15 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	/**
-	 * Fetch courses list from the webservice DG2
+	 * Fetches all courses in the Dawan API.
+	 * 
+	 * @param email A String defining a user's email.
+	 * @param pwd A String defining a user's password.
+	 * 
+	 * @exception Exception Returns an exception if the request fails.
+	 *
 	 */
+	
 	@Override
 	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();

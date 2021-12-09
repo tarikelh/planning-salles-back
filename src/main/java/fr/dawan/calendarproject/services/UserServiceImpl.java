@@ -313,6 +313,16 @@ public class UserServiceImpl implements UserService {
 
 		return true;
 	}
+	
+	/**
+	 * Fetches all users in the Dawan API.
+	 * 
+	 * @param email A String defining a user's email.
+	 * @param pwd A String defining a user's password.
+	 * 
+	 * @exception Exception Returns an exception if the request fails.
+	 *
+	 */
 
 	@Override
 	public void fetchAllDG2Users(String email, String password) throws Exception {
@@ -363,6 +373,15 @@ public class UserServiceImpl implements UserService {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
+	
+	/**
+	 * Returns a role depending on the user's job.
+	 * 
+	 * @param job A String defining the user's job.
+	 * 
+	 * @return String Returns the user's role.
+	 *
+	 */
 
 	private String userDG2JobToUserTypeString(String job) {
 		if (job == null) {
@@ -370,7 +389,7 @@ public class UserServiceImpl implements UserService {
 		}
 		String lowerCaseJob = job.toLowerCase();
 
-		if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("associée") || lowerCaseJob.contains("gérant")
+		if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant")
 				|| lowerCaseJob.contains("manager")) {
 			return UserType.ADMINISTRATIF.toString();
 		} else if (lowerCaseJob.contains("format")) {
