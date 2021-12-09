@@ -49,6 +49,13 @@ public class CourseServiceImpl implements CourseService {
 	RestTemplate restTemplate;
 
 	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
+	
+	/**
+	 * Fetches all of the existing courses.
+	 * 
+	 * @return result Returns a list of courses.
+	 *
+	 */
 
 	@Override
 	public List<CourseDto> getAllCourses() {
@@ -61,6 +68,17 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
+	
+	/**
+	 * Fetches all of the existing courses, with a pagination system.
+	 * 
+	 * @param page An integer representing the current page displaying the courses.
+	 * @param size An integer defining the number of courses displayed by page.
+	 * @param search A String representing the admin's input to search for a specific course.
+	 * 
+	 * @return result Returns a list of courses, according to the pagination criteria.
+	 *
+	 */
 
 	@Override
 	public List<CourseDto> getAllCourses(int page, int size, String search) {
@@ -81,11 +99,29 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
+	
+	/**
+	 * Counts the number of courses.
+	 * 
+	 * @param search A String representing the admin's input to search for a specific course.
+	 * 
+	 * @return CountDto Returns the number of courses, according to the search criteria.
+	 *
+	 */
 
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(courseRepository.countByTitleContaining(search));
 	}
+	
+	/**
+	 * Fetches a single course, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each course.
+	 * 
+	 * @return CourseDto Returns a single course.
+	 *
+	 */
 
 	@Override
 	public CourseDto getById(long id) {
@@ -94,11 +130,27 @@ public class CourseServiceImpl implements CourseService {
 			return courseMapper.courseToCourseDto(c.get());
 		return null;
 	}
+	
+	/**
+	 * Delete a single course, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each course.
+	 *
+	 */
 
 	@Override
 	public void deleteById(long id) {
 		courseRepository.deleteById(id);
 	}
+	
+	/**
+	 * Adds a new course or update an existing one.
+	 * 
+	 * @param courseDto An object representing a Course.
+	 * 
+	 * @return CourseDto Returns the newly created course or an updated one.
+	 *
+	 */
 
 	@Override
 	public CourseDto saveOrUpdate(CourseDto courseDto) {

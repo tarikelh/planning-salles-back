@@ -76,6 +76,13 @@ public class InterventionServiceImpl implements InterventionService {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	/**
+	 * Fetches all of the existing interventions.
+	 * 
+	 * @return interventionsDto Returns a list of interventions.
+	 *
+	 */
+	
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
@@ -87,6 +94,16 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return interventionsDto;
 	}
+	
+	/**
+	 * Fetches all of the existing interventions, with a pagination system.
+	 * 
+	 * @param page An integer representing the current page displaying the interventions.
+	 * @param size An integer representing the last page of the pagination results.
+	 * 
+	 * @return interventionsDto Returns a list of interventions, according to the pagination criteria.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getAllInterventions(int page, int max) {
@@ -98,6 +115,15 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 		return interventionsDto;
 	}
+	
+	/**
+	 * Fetches all of the existing interventions for a single user.
+	 * 
+	 * @param userId An unique Integer used to identify each the interventions involving a specific user.
+	 * 
+	 * @return List<InterventionDto> Returns a list of interventions.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getAllByUserId(long userId) {
@@ -105,6 +131,17 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	// NB : method used for mobile application
+	
+	/**
+	 * Fetches all of the existing interventions for a specific user.
+	 * 
+	 * @param userId An unique Integer used to identify each the interventions involving a specific user.
+	 * @param paramsMap
+	 * 
+	 * @return interventionsDto Returns a list of interventions.
+	 *
+	 */
+	
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
 		List<InterventionDto> interventionsDto = new ArrayList<>();
@@ -120,6 +157,15 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 		return interventionsDto;
 	}
+	
+	/**
+	 * Fetches a single intervention, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each intervention.
+	 * 
+	 * @return InterventionDto Returns a single intervention.
+	 *
+	 */
 
 	@Override
 	public InterventionDto getById(long id) {
@@ -128,6 +174,13 @@ public class InterventionServiceImpl implements InterventionService {
 			return interventionMapper.interventionToInterventionDto(intervention.get());
 		return null;
 	}
+	
+	/**
+	 * Delete a single intervention, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each intervention.
+	 *
+	 */
 
 	@Override
 	public void deleteById(long id, String email) {
@@ -144,6 +197,16 @@ public class InterventionServiceImpl implements InterventionService {
 			}
 		}
 	}
+	
+	/**
+	 * Adds a new intervention or update an existing one.
+	 * 
+	 * @param intervention An object representing an Intervention.
+	 * @param email A String referring to the email of the current user.
+	 * 
+	 * @return InterventionDto Returns the newly created Intervention or an updated one.
+	 *
+	 */
 
 	@Override
 	public InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception {
@@ -174,6 +237,15 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return interventionMapper.interventionToInterventionDto(interv);
 	}
+	
+	/**
+	 * Fetches all of the existing interventions involving a specific course through its id.
+	 * 
+	 * @param id An unique Integer used to identify each the interventions involving a specific course.
+	 * 
+	 * @return iDtos Returns a list of interventions.
+	 *
+	 */
 
 	// Search
 	@Override
@@ -186,6 +258,15 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return iDtos;
 	}
+	
+	/**
+	 * Fetches all of the existing interventions involving a specific course through its title.
+	 * 
+	 * @param title A String referring to a Course's title.
+	 * 
+	 * @return iDto Returns a list of interventions.
+	 *
+	 */
 
 	// Search
 	@Override
@@ -197,6 +278,17 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return iDtos;
 	}
+	
+	/**
+	 * Fetches all of the existing interventions involving a specific user between two dates.
+	 * 
+	 * @param userId An unique Integer used to identify each the interventions involving a specific user.
+	 * @param start A LocalDate referring to the starting date.
+	 * @param end A LocalDate referring to the end date.
+	 * 
+	 * @return iDtos Returns a list of interventions.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
@@ -206,6 +298,16 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 		return iDtos;
 	}
+	
+	/**
+	 * Fetches all of the existing interventions between two dates.
+	 * 
+	 * @param start A LocalDate referring to the starting date.
+	 * @param end A LocalDate referring to the end date.
+	 * 
+	 * @return iDtos Returns a list of interventions.
+	 *
+	 */
 
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
 		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
@@ -214,6 +316,15 @@ public class InterventionServiceImpl implements InterventionService {
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 		return iDtos;
 	}
+	
+	/**
+	 * Counts the number of interventions according to a specific type.
+	 * 
+	 * @param type A String referring to a type of intervention.
+	 * 
+	 * @return CountDto Returns the number of interventions, according to the search criteria.
+	 *
+	 */
 
 	@Override
 	public CountDto count(String type) {
@@ -224,6 +335,13 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return null; // Exception
 	}
+	
+	/**
+	 * Fetches all master interventions.
+	 * 
+	 * @return iDtos Returns a list of all master interventions.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getMasterIntervention() {
@@ -235,6 +353,17 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return iDtos;
 	}
+	
+	/**
+	 * Fetches all sub-interventions, according to a specific type and between two dates.
+	 * 
+	 * @param type A String referring to a type of intervention.
+	 * @param start A LocalDate referring to the starting date.
+	 * @param end A LocalDate referring to the end date.
+	 * 
+	 * @return iDtos Returns a list of sub-interventions.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
@@ -251,6 +380,15 @@ public class InterventionServiceImpl implements InterventionService {
 			return iDtos;
 		}
 	}
+	
+	/**
+	 * Creates a Calendar component for the user.
+	 * 
+	 * @param userId An unique Integer used to identify the current user.
+	 * 
+	 * @return calendar Returns a calendar component.
+	 *
+	 */
 
 	public Calendar exportCalendarAsICal(long userId) {
 		List<Intervention> lst = interventionRepository.findByUserId(userId);
@@ -270,6 +408,15 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return calendar;
 	}
+	
+	/**
+	 * Checks whether a newly registered intervention is valid.
+	 * 
+	 * @param i An object representing an Intervention.
+	 * 
+	 * @return boolean Returns a boolean to say whether or not the intervention is correct.
+	 *
+	 */
 
 	public boolean checkIntegrity(InterventionDto i) {
 		Set<APIError> errors = new HashSet<>();
@@ -337,6 +484,16 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return true;
 	}
+	
+	/**
+	 * Fetches interventions following the split of an existing intervention.
+	 * 
+	 * @param interventionId An unique Integer used to identify an intervention.
+	 * @param dates A List of dates referring to the range of dates involved in the split.
+	 * 
+	 * @return iListDto Returns a list of interventions following a split.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates) {
@@ -417,6 +574,15 @@ public class InterventionServiceImpl implements InterventionService {
 			return iListDto;
 		}
 	}
+	
+	/**
+	 * Checks whether starting and ending dates aren't reversed and don't overlap.
+	 * 
+	 * @param dates A list of dates from a defined range.
+	 * 
+	 * @exception EntityFormatException
+	 *
+	 */
 
 	private void checkDatesIntegrity(List<DateRangeDto> dates) {
 		Set<APIError> errs = new HashSet<>();
@@ -464,6 +630,15 @@ public class InterventionServiceImpl implements InterventionService {
 		if (!errs.isEmpty())
 			throw new EntityFormatException(errs);
 	}
+	
+	/**
+	 * Fetches all sub-interventions related on a specific master intervention.
+	 * 
+	 * @param id An unique Integer used to identify a master intervention.
+	 * 
+	 * @return iListDto Returns a list of interventions.
+	 *
+	 */
 
 	@Override
 	public List<InterventionDto> getSubByMasterId(long id) {
@@ -483,6 +658,20 @@ public class InterventionServiceImpl implements InterventionService {
 
 		return iListDto;
 	}
+	
+	/**
+	 * Counts all interventions in the Dawan API, between two specific dates.
+	 * 
+	 * @param email A String defining a user's email.
+	 * @param pwd A String defining a user's password.
+	 * @param start A LocalDate referring to the starting date of an intervention.
+	 * @param end A LocalDate referring to the end date of intervention.
+	 * 
+	 * @return count Returns the number of interventions of the Dawan API between two dates.
+	 * 
+	 * @exception Exception
+	 *
+	 */
 
 	@Override
 	public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {

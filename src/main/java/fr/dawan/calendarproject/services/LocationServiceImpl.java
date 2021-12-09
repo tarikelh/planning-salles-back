@@ -45,6 +45,13 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	RestTemplate restTemplate;
+	
+	/**
+	 * Fetches all of the existing locations.
+	 * 
+	 * @return result Returns a list of locations.
+	 *
+	 */
 
 	@Override
 	public List<LocationDto> getAllLocations() {
@@ -56,6 +63,17 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
+	
+	/**
+	 * Fetches all of the existing locations, with a pagination system.
+	 * 
+	 * @param page An integer representing the current page displaying the locations.
+	 * @param size An integer defining the number of locations displayed by page.
+	 * @param search A String representing the admin's input to search for a specific location.
+	 * 
+	 * @return result Returns a list of locations, according to the pagination criteria.
+	 *
+	 */
 
 	@Override
 	public List<LocationDto> getAllLocations(int page, int size, String search) {
@@ -75,11 +93,29 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
+	
+	/**
+	 * Counts the number of locations.
+	 * 
+	 * @param search A String representing the admin's input to search for a specific location.
+	 * 
+	 * @return CountDto Returns the number of locations, according to the search criteria.
+	 *
+	 */
 
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(locationRepository.countByCityContaining(search));
 	}
+	
+	/**
+	 * Fetches a single location, according to their id.
+	 * 
+	 * @param id An unique Integer used to identify each location.
+	 * 
+	 * @return LocationDto Returns a single location.
+	 *
+	 */
 
 	@Override
 	public LocationDto getById(long id) {
@@ -88,11 +124,27 @@ public class LocationServiceImpl implements LocationService {
 			return locationMapper.locationToLocationDto(l.get());
 		return null;
 	}
+	
+	/**
+	 * Delete a single location, according to their id.
+	 * 
+	 * @param id An unique Integer used to identify each location.
+	 *
+	 */
 
 	@Override
 	public void deleteById(long id) {
 		locationRepository.deleteById(id);
 	}
+	
+	/**
+	 * Adds a new location or updates an existing one.
+	 * 
+	 * @param locationDto An object representing an Location.
+	 * 
+	 * @return LocationDto Returns the newly created user or an updated one.
+	 *
+	 */
 
 	@Override
 	public LocationDto saveOrUpdate(LocationDto locationDto) {
@@ -105,6 +157,15 @@ public class LocationServiceImpl implements LocationService {
 		l = locationRepository.saveAndFlush(l);
 		return locationMapper.locationToLocationDto(l);
 	}
+	
+	/**
+	 * Checks whether a newly registered location is valid.
+	 * 
+	 * @param l An object representing an Location.
+	 * 
+	 * @return boolean Returns a boolean to say whether or not the location is correct.
+	 *
+	 */
 
 	@Override
 	public boolean checkUniqness(LocationDto location) {

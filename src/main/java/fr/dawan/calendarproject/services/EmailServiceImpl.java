@@ -45,9 +45,9 @@ public class EmailServiceImpl implements EmailService {
 	/**
 	 * Will send an email to every employees selected. Their intervention will be in the email body.
 	 * 
-	 * @param userId List of user id (long) at who we want to send an email
-	 * @param dateStart date when we want to start to gather intervention
-	 * @param dateEnd date when we want to stop to gather intervention
+	 * @param userId List of user id (long) at who we want to send an email.
+	 * @param dateStart date when we want to start to gather intervention.
+	 * @param dateEnd date when we want to stop to gather intervention.
 	 */
 	@Override
 	public void sendCalendarToSelectedEmployees(List<Long> userId, LocalDate dateStart, LocalDate dateEnd) {
@@ -80,6 +80,17 @@ public class EmailServiceImpl implements EmailService {
 			}
 		}
 	}
+	
+	/**
+	 * Forms the body of the email.
+	 * 
+	 * @param recipient A String representing the recipient of the email.
+	 * @param subject A String designating the object of the email.
+	 * @param content A String representing the body of the message.
+	 * @param calendar Defines a calendar-specific data to send.
+	 * 
+	 * @return message Returns a MimeMessage to be sent.
+	 */
 
 	public MimeMessage setCalendarMessage(String recipient, String subject, String content, Calendar calendar)
 			throws Exception {
