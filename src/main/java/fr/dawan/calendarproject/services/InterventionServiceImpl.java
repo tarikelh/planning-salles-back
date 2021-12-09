@@ -85,7 +85,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getAllInterventions() {
 		List<Intervention> interventions = interventionRepository.findAll();
-		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
+		List<InterventionDto> interventionsDto = new ArrayList<>();
 
 		for (Intervention intervention : interventions) {
 			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
@@ -98,7 +98,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getAllInterventions(int page, int max) {
 		List<Intervention> interventions = interventionRepository.findAll(PageRequest.of(page, max)).get()
 				.collect(Collectors.toList());
-		List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
+		List<InterventionDto> interventionsDto = new ArrayList<>();
 		for (Intervention intervention : interventions) {
 			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
 		}
@@ -113,18 +113,18 @@ public class InterventionServiceImpl implements InterventionService {
 	// NB : method used for mobile application
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
+		List<InterventionDto> interventionsDto = new ArrayList<>();
+
 		// verify if user exists
 		if (userRepository.findById(userId).isPresent()) {
 			// search filtered interventions from the user selected
 			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
-			List<InterventionDto> interventionsDto = new ArrayList<InterventionDto>();
 			for (Intervention intervention : interventions) {
 				interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
 			}
 			return interventionsDto;
 		}
-
-		return null;
+		return interventionsDto;
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getByCourseId(long id) {
 		List<Intervention> interventions = interventionRepository.findByCourseId(id);
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		List<InterventionDto> iDtos = new ArrayList<>();
 
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
@@ -197,7 +197,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getByCourseTitle(String title) {
 		List<Intervention> interventions = interventionRepository.findByCourseTitle(title);
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		List<InterventionDto> iDtos = new ArrayList<>();
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 
@@ -207,7 +207,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
 		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		List<InterventionDto> iDtos = new ArrayList<>();
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 		return iDtos;
@@ -215,7 +215,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
 		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		List<InterventionDto> iDtos = new ArrayList<>();
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
 		return iDtos;
@@ -234,7 +234,7 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> getMasterIntervention() {
 		List<Intervention> interventions = interventionRepository.getMasterIntervention();
-		List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+		List<InterventionDto> iDtos = new ArrayList<>();
 
 		for (Intervention i : interventions)
 			iDtos.add(interventionMapper.interventionToInterventionDto(i));
@@ -244,18 +244,17 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
+		List<InterventionDto> iDtos = new ArrayList<>();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
 					dateStart, dateEnd);
-			List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 			for (Intervention i : interventions)
 				iDtos.add(interventionMapper.interventionToInterventionDto(i));
 
 			return iDtos;
 		} else {
-			// HANDLE ERROR
-			return null;
+			return iDtos;
 		}
 	}
 
@@ -286,7 +285,7 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 
 	public boolean checkIntegrity(InterventionDto i) {
-		Set<APIError> errors = new HashSet<APIError>();
+		Set<APIError> errors = new HashSet<>();
 		String instanceClass = i.getClass().toString();
 		String path = "/api/interventions";
 
@@ -294,12 +293,12 @@ public class InterventionServiceImpl implements InterventionService {
 			errors.add(
 					new APIError(401, instanceClass, "BadDatesSequence", "Start date must be before end date.", path));
 
-		if (i.isMaster() == true && i.getMasterInterventionId() != 0)
+		if (i.isMaster() && i.getMasterInterventionId() != 0)
 			errors.add(new APIError(402, instanceClass, "MasterInterventionLoop",
 					"A master intervention cannot has a master intervention.", path));
 
 		if (!InterventionStatus.contains(i.getType())) {
-			String message = "Type: " + i.getType().toString() + " is not a valid type.";
+			String message = "Type: " + i.getType() + " is not a valid type.";
 			errors.add(new APIError(403, instanceClass, "UnknownInterventionType", message, path));
 		}
 
@@ -356,12 +355,12 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> splitIntervention(long interventionId, List<DateRangeDto> dates) {
 		Optional<Intervention> toSplit = interventionRepository.findById(interventionId);
 		List<Intervention> iList;
-		List<InterventionDto> iListDto;
+		List<InterventionDto> iListDto = new ArrayList<>();
 		Intervention masterIntervention;
 		Intervention newSplit;
 
 		if (dates == null || dates.isEmpty())
-			return null;
+			return iListDto;
 
 		dates.sort(new Comparator<DateRangeDto>() {
 			@Override
@@ -373,17 +372,17 @@ public class InterventionServiceImpl implements InterventionService {
 		checkDatesIntegrity(dates);
 
 		if (toSplit.isPresent()) {
-			iList = new ArrayList<Intervention>();
+			iList = new ArrayList<>();
 
 			for (DateRangeDto range : dates) {
 
 				if (range.getInterventionId() == interventionId || range.getInterventionId() == 0)
-					newSplit = (Intervention) toSplit.get().clone();
+					newSplit = toSplit.get().clone();
 				else
 					newSplit = interventionRepository.findById(range.getInterventionId()).orElse(null);
 
 				if (newSplit == null) {
-					Set<APIError> err = new HashSet<APIError>();
+					Set<APIError> err = new HashSet<>();
 					err.add(new APIError(404, Intervention.class.toString(), "IdDoesNotExists",
 							"Intervention with id " + range.getInterventionId() + " Not found.", "/api/interventions"));
 
@@ -421,19 +420,19 @@ public class InterventionServiceImpl implements InterventionService {
 
 			iList.add(0, masterIntervention);
 
-			iListDto = new ArrayList<InterventionDto>();
+			iListDto = new ArrayList<>();
 
 			for (Intervention intervention : iList)
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
 
 			return iListDto;
 		} else {
-			return null;
+			return iListDto;
 		}
 	}
 
 	private void checkDatesIntegrity(List<DateRangeDto> dates) {
-		Set<APIError> errs = new HashSet<APIError>();
+		Set<APIError> errs = new HashSet<>();
 		LocalDate dateStart;
 		LocalDate dateEnd;
 		LocalTime timeStart;
@@ -483,11 +482,10 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getSubByMasterId(long id) {
 		Optional<Intervention> master = interventionRepository.findById(id);
 		List<Intervention> iList;
-		List<InterventionDto> iListDto;
+		List<InterventionDto> iListDto = new ArrayList<>();
 
 		if (master.isPresent() && master.get().isMaster()) {
 			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(id);
-			iListDto = new ArrayList<InterventionDto>();
 
 			for (Intervention intervention : iList) {
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
@@ -496,13 +494,13 @@ public class InterventionServiceImpl implements InterventionService {
 			return iListDto;
 		}
 
-		return null;
+		return iListDto;
 	}
 
 	@Override
 	public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<InterventionDG2Dto> lResJson = new ArrayList<InterventionDG2Dto>();
+		List<InterventionDG2Dto> lResJson;
 		int count = 0;
 
 		URI url = new URI(
@@ -520,14 +518,14 @@ public class InterventionServiceImpl implements InterventionService {
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
-			Set<Long> masterIds = new HashSet<Long>();
+			Set<Long> masterIds = new HashSet<>();
 			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
 
 			lResJson.forEach(i -> {
 				if (masterIds.contains(i.getId()))
 					i.setMaster(true);
 
-				String type = i.getType() == "shared" ? "SUR_MESURE" : "INTERN";
+				String type = "shared".equals(i.getType()) ? "SUR_MESURE" : "INTERN";
 				i.setType(type);
 
 				i.setValidated(i.getAttendeesCount() > 0);

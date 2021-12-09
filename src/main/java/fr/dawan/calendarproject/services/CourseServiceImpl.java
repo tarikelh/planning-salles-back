@@ -54,7 +54,7 @@ public class CourseServiceImpl implements CourseService {
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
 
-		List<CourseDto> result = new ArrayList<CourseDto>();
+		List<CourseDto> result = new ArrayList<>();
 		for (Course c : courses) {
 			result.add(courseMapper.courseToCourseDto(c));
 		}
@@ -74,7 +74,7 @@ public class CourseServiceImpl implements CourseService {
 		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get()
 				.collect(Collectors.toList());
 
-		List<CourseDto> result = new ArrayList<CourseDto>();
+		List<CourseDto> result = new ArrayList<>();
 		for (Course c : courses) {
 			result.add(courseMapper.courseToCourseDto(c));
 		}
@@ -126,11 +126,10 @@ public class CourseServiceImpl implements CourseService {
 		Course duplicate = courseRepository.findByTitle(course.getId(), course.getTitle());
 
 		if (duplicate != null) {
-			Set<APIError> errors = new HashSet<APIError>();
+			Set<APIError> errors = new HashSet<>();
 			String instanceClass = duplicate.getClass().toString();
-			String path = "/api/courses";
 			errors.add(new APIError(505, instanceClass, "Title Not Unique",
-					"Course with title " + course.getTitle() + " already exists", path));
+					"Course with title " + course.getTitle() + " already exists", "/api/courses"));
 
 			throw new EntityFormatException(errors);
 		}
@@ -144,9 +143,10 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
+		List<CourseDG2Dto> lResJson;
 
-		URI url = new URI("https://dawan.org/api2/planning/trainings");
+		String uri = "https://dawan.org/api2/planning/trainings";
+		URI url = new URI(uri);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + password);
@@ -161,16 +161,14 @@ public class CourseServiceImpl implements CourseService {
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course courseImport = courseMapper.courseDG2DtoToCourse(cDG2);
-				Course course = new Course();
+				Course course;
 				Optional<Course> optCourse = courseRepository.findById(courseImport.getId());
 
 				if (optCourse.isPresent()) {
 					if (optCourse.get().equals(courseImport)) {
-						continue;
 					} else {
 						course = courseImport;
 						courseRepository.saveAndFlush(course);
-						continue;
 					}
 				} else {
 					course = courseImport;

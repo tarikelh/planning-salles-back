@@ -50,7 +50,7 @@ public class LocationServiceImpl implements LocationService {
 	public List<LocationDto> getAllLocations() {
 		List<Location> locations = locationRepository.findAll();
 
-		List<LocationDto> result = new ArrayList<LocationDto>();
+		List<LocationDto> result = new ArrayList<>();
 		for (Location l : locations) {
 			result.add(locationMapper.locationToLocationDto(l));
 		}
@@ -69,7 +69,7 @@ public class LocationServiceImpl implements LocationService {
 		List<Location> locations = locationRepository.findAllByCityContaining(search, pagination).get()
 				.collect(Collectors.toList());
 
-		List<LocationDto> result = new ArrayList<LocationDto>();
+		List<LocationDto> result = new ArrayList<>();
 		for (Location l : locations) {
 			result.add(locationMapper.locationToLocationDto(l));
 		}
@@ -111,8 +111,8 @@ public class LocationServiceImpl implements LocationService {
 		List<Location> duplicates = locationRepository.findDuplicates(location.getId(), location.getCity(),
 				location.getColor());
 
-		if (duplicates.size() > 0) {
-			Set<APIError> errors = new HashSet<APIError>();
+		if (!duplicates.isEmpty()) {
+			Set<APIError> errors = new HashSet<>();
 			String instanceClass = duplicates.get(0).getClass().toString();
 			String path = "/api/locations";
 
@@ -137,7 +137,7 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	public void fetchAllDG2Locations(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<LocationDG2Dto> lResJson = new ArrayList<LocationDG2Dto>();
+		List<LocationDG2Dto> lResJson;
 
 		URI url = new URI("https://dawan.org/api2/planning/locations");
 
@@ -156,17 +156,12 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
-				Location location = new Location();
+				Location location;
 				Optional<Location> optLocation = locationRepository.findById(locationImport.getId());
 
-				if (optLocation.isPresent()) {
-					if (optLocation.get().equals(locationImport)) {
-						continue;
-					} else {
-						location = locationImport;
-						locationRepository.saveAndFlush(location);
-						continue;
-					}
+				if (optLocation.isPresent() && optLocation.get().equals(locationImport)) {
+					location = locationImport;
+					locationRepository.saveAndFlush(location);
 				} else {
 					location = locationImport;
 					location.setColor("#00cc99");

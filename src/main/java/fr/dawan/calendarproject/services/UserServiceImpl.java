@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -58,11 +59,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Value("${user.service.defaultUsersPasswordImport}")
+	private String defaultUsersPasswordImport;
+
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
 		List<User> users = userRepository.findAll();
 
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+		List<AdvancedUserDto> result = new ArrayList<>();
 
 		for (User u : users) {
 			result.add(userMapper.userToAdvancedUserDto(u));
@@ -83,7 +87,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepository
 				.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pagination)
 				.get().collect(Collectors.toList());
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+		List<AdvancedUserDto> result = new ArrayList<>();
 
 		for (User u : users) {
 			result.add(userMapper.userToAdvancedUserDto(u));
@@ -100,10 +104,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
+		List<AdvancedUserDto> result = new ArrayList<>();
+
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
-			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 			for (User u : users) {
 				result.add(userMapper.userToAdvancedUserDto(u));
@@ -111,8 +116,7 @@ public class UserServiceImpl implements UserService {
 
 			return result;
 		} else {
-			// HANDLE ERROR
-			return null;
+			return result;
 		}
 	}
 
@@ -140,12 +144,10 @@ public class UserServiceImpl implements UserService {
 
 		User u = userMapper.advancedUserDtoToUser(user);
 
-		Set<Skill> skillsList = new HashSet<Skill>();
+		Set<Skill> skillsList = new HashSet<>();
 
 		if (user.getSkillsId() != null) {
-			user.getSkillsId().forEach(id -> {
-				skillsList.add(skillRepository.getOne(id));
-			});
+			user.getSkillsId().forEach(id -> skillsList.add(skillRepository.getOne(id)));
 		}
 		u.setSkills(skillsList);
 
@@ -164,10 +166,8 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		u = userRepository.saveAndFlush(u);
-		AdvancedUserDto advUser = userMapper.userToAdvancedUserDto(u);
-		return advUser;
+		return userMapper.userToAdvancedUserDto(u);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public boolean checkIntegrity(AdvancedUserDto u) {
-		Set<APIError> errors = new HashSet<APIError>();
+		Set<APIError> errors = new HashSet<>();
 		String instanceClass = u.getClass().toString();
 		String path = "/api/users";
 		// Location Must EXIST
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void fetchAllDG2Users(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<UserDG2Dto> lResJson = new ArrayList<UserDG2Dto>();
+		List<UserDG2Dto> lResJson = new ArrayList<>();
 
 		URI url = new URI("https://dawan.org/api2/planning/employees");
 
@@ -264,23 +264,21 @@ public class UserServiceImpl implements UserService {
 
 			for (UserDG2Dto cDG2 : lResJson) {
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
-				User user = new User();
+				User user;
 				Optional<User> optUser = userRepository.findById(userImported.getId());
 
-				if (optUser.isPresent()) {
-					if (optUser.get().equals(userImported)) {
-						continue;
-					} else {
-						user = userImported;
-						userRepository.saveAndFlush(user);
-					}
+				if (optUser.isPresent() && !optUser.get().equals(userImported)) {
+					user = userImported;
+					userRepository.saveAndFlush(user);
 				} else {
 					user = userImported;
-					user.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
+					user.setPassword(HashTools.hashSHA512(defaultUsersPasswordImport));
 					userRepository.saveAndFlush(user);
 				}
 			}
-		} else {
+		} else
+
+		{
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
