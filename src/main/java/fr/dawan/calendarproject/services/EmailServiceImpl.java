@@ -56,24 +56,26 @@ public class EmailServiceImpl implements EmailService {
 			List<Intervention> interventions = interventionRepository.findByUserIdAndDates(uId, dateStart, dateEnd);
 			Optional<User> trainer = userRepository.findById(uId);
 
-			String subject = "Planning Intervention " + trainer.get().getFullname();
-			String content = "Bonjour" + trainer.get().getFullname() + ".\n"
-					+ "Veuillez trouvez ci-joint le planning complet de vos interventions.";
-
-			VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
-
-			Calendar calendar = ICalTools.createCalendar("-//Google Inc//Google Calendar 70.9054//EN");
-
-			if (interventions.size() > 0) {
-				for (Intervention intervention : interventions) {
-					calendar.getComponents().add(ICalTools.createVEvent(intervention, tz));
-				}
-
-				try {
-					MimeMessage message = setCalendarMessage(trainer.get().getEmail(), subject, content, calendar);
-					emailSender.send(message);
-				} catch (Exception e) {
-					e.printStackTrace();
+			if (trainer.isPresent()) {				
+				String subject = "Planning Intervention " + trainer.get().getFullname();
+				String content = "Bonjour" + trainer.get().getFullname() + ".\n"
+						+ "Veuillez trouvez ci-joint le planning complet de vos interventions.";
+				
+				VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
+				
+				Calendar calendar = ICalTools.createCalendar("-//Dawan Planning//iCal4j 1.0//FR");
+				
+				if (!interventions.isEmpty()) {
+					for (Intervention intervention : interventions) {
+						calendar.getComponents().add(ICalTools.createVEvent(intervention, tz));
+					}
+					
+					try {
+						MimeMessage message = setCalendarMessage(trainer.get().getEmail(), subject, content, calendar);
+						emailSender.send(message);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
