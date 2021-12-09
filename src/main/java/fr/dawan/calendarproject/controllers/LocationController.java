@@ -51,7 +51,7 @@ public class LocationController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
 		LocationDto loc = locationService.getById(id);
 		if (loc != null)
 			return ResponseEntity.status(HttpStatus.OK).body(loc);
@@ -61,7 +61,7 @@ public class LocationController {
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
+	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			locationService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Location with id " + id + " Deleted");
@@ -78,7 +78,7 @@ public class LocationController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody LocationDto location) {
+	public ResponseEntity<Object> update(@RequestBody LocationDto location) {
 		LocationDto loc = locationService.saveOrUpdate(location);
 		if (loc != null)
 			return ResponseEntity.status(HttpStatus.OK).body(loc);
@@ -90,7 +90,7 @@ public class LocationController {
 
 	// FETCH Dawan webservice
 	@GetMapping(value = "/dg2", produces = "application/json")
-	public ResponseEntity<?> fetchAllDG2(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<String> fetchAllDG2(@RequestHeader Map<String, String> headers) {
 		String userDG2 = headers.get("x-auth-token");
 		String[] splitUserDG2String = userDG2.split(":");
 

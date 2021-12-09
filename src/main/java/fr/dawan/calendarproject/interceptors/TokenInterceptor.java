@@ -62,7 +62,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 					throw new Exception("Error : token expired");
 	
 				String email = jwtTokenUtil.getUsernameFromToken(token);
-				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(token))
+				if (!TokenSaver.getTokensbyemail().containsKey(email) || !TokenSaver.getTokensbyemail().get(email).equals(token))
 					throw new Exception("Error : token not known !");
 	
 				// verification of the user role

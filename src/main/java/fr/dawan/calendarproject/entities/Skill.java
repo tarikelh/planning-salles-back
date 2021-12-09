@@ -15,18 +15,17 @@ import javax.persistence.Version;
 
 @Entity
 public class Skill {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(unique = true, nullable = false, length = 255)
 	private String title;
-	
+
 	@ManyToMany
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "skill_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private Set<User> users = new HashSet<User>();
-	
+	private Set<User> users = new HashSet<>();
 
 	@Version
 	private int version;
@@ -60,7 +59,7 @@ public class Skill {
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
-	
+
 	public int getVersion() {
 		return version;
 	}

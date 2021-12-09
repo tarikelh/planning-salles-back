@@ -35,33 +35,34 @@ public class ResetPasswordController {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Value("${vue.baseurl}")
 	private String vueUrl;
 
 	@PostMapping(value = "/forgot", produces = "application/json")
-	public ResponseEntity<?> sendTokenByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
+	public ResponseEntity<String> sendTokenByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
 
 		UserDto uDto = userService.findByEmail(resetObj.getEmail());
 
 		if (uDto != null) {
-			Map<String, Object> claims = new HashMap<String, Object>();
+			Map<String, Object> claims = new HashMap<>();
 			claims.put("name", uDto.getFullName());
 
 			// Ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
-			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
-			
+			TokenSaver.getTokensbyemail().put(resetObj.getEmail(), token);
+
 			String resetLink = vueUrl + "/#/fr/reset-password?token=" + token;
-			String body =
-			        "<HTML><body> <a href=\""+ resetLink +"\">Réinitialiser mon mot de passe</a></body></HTML>";
+			String body = "<HTML><body> <a href=\"" + resetLink + "\">Réinitialiser mon mot de passe</a></body></HTML>";
 
 			MimeMessage msg = javaMailSender.createMimeMessage();
-			
+
 			msg.addRecipients(Message.RecipientType.TO, uDto.getEmail());
 			msg.setSubject("Réinitialisation du mot de passe du Calendrier Dawan");
-			msg.setText("Bonjour " + uDto.getLastName() + ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
-					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + body, "UTF-8", "html");
+			msg.setText("Bonjour " + uDto.getLastName()
+					+ ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
+					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : "
+					+ body, "UTF-8", "html");
 
 			javaMailSender.send(msg);
 
@@ -70,30 +71,31 @@ public class ResetPasswordController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
-	
+
 	@PostMapping(value = "/forgot-mobile", produces = "application/json")
-	public ResponseEntity<?> sendCodeByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
-		
+	public ResponseEntity<Object> sendCodeByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
+
 		UserDto uDto = userService.findByEmail(resetObj.getEmail());
 
 		if (uDto != null) {
-			Map<String, Object> claims = new HashMap<String, Object>();
+			Map<String, Object> claims = new HashMap<>();
 			claims.put("name", uDto.getFullName());
 
 			// Ajouter les données que l'on souhaite
 			String token = jwtTokenUtil.doGenerateToken(claims, resetObj.getEmail());
-			TokenSaver.tokensByEmail.put(resetObj.getEmail(), token);
-			
+			TokenSaver.getTokensbyemail().put(resetObj.getEmail(), token);
+
 			String resetLink = vueUrl + "/#/fr/reset-password?token=" + token;
-			String body =
-			        "<HTML><body> <a href=\""+ resetLink +"\">Réinitialiser mon mot de passe</a></body></HTML>";
+			String body = "<HTML><body> <a href=\"" + resetLink + "\">Réinitialiser mon mot de passe</a></body></HTML>";
 
 			MimeMessage msg = javaMailSender.createMimeMessage();
-			
+
 			msg.addRecipients(Message.RecipientType.TO, uDto.getEmail());
 			msg.setSubject("Réinitialisation du mot de passe du Calendrier Dawan");
-			msg.setText("Bonjour " + uDto.getLastName() + ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
-					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + body, "UTF-8", "html");
+			msg.setText("Bonjour " + uDto.getLastName()
+					+ ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
+					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : "
+					+ body, "UTF-8", "html");
 
 			javaMailSender.send(msg);
 
@@ -104,9 +106,9 @@ public class ResetPasswordController {
 	}
 
 	@PostMapping(value = "/reset-password", consumes = "application/json")
-	public ResponseEntity<?> resetPassword(@RequestBody ResetResponse reset) throws Exception {
+	public ResponseEntity<String> resetPassword(@RequestBody ResetResponse reset) throws Exception {
 
-		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());	
+		boolean token = TokenSaver.getTokensbyemail().containsValue(reset.getToken());
 
 		if (token) {
 			String hashedPwd = HashTools.hashSHA512(reset.getPassword());
@@ -124,8 +126,7 @@ public class ResetPasswordController {
 			} else if (uDto != null && uDto.getPassword().equals(hashedPwd)) {
 				// same password
 				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-			}
-			else {
+			} else {
 				// if user == null
 				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 			}

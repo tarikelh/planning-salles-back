@@ -326,10 +326,10 @@ class InterventionControllerTest {
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
 				.andReturn().getResponse();
 
-		assertEquals(response.getHeader("content-disposition"), "attachment; filename=test.ics");
-		assertEquals(response.getHeader("Cache-Control"), "no-cache, no-store, must-revalidate");
-		assertEquals(response.getHeader("pragma"), "no-cache");
-		assertEquals(response.getHeader("Expires"), "0");
+		assertEquals("attachment; filename=test.ics", response.getHeader("content-disposition"));
+		assertEquals("no-cache, no-store, must-revalidate", response.getHeader("Cache-Control"));
+		assertEquals("no-cache", response.getHeader("pragma"));
+		assertEquals("0", response.getHeader("Expires"));
 
 		f.delete();
 		if (!calTools.isClosed())

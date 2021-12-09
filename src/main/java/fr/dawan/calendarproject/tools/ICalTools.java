@@ -1,6 +1,5 @@
 package fr.dawan.calendarproject.tools;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,8 +40,10 @@ import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
 
-
 public class ICalTools {
+
+	private ICalTools() {
+	}
 
 	public static Calendar createCalendar(String prodId) {
 		Calendar calendar = new Calendar();
@@ -58,7 +59,7 @@ public class ICalTools {
 		Date end = ICalTools.formatLocalDate(i.getDateEnd().plusDays(1));
 		String description = i.getUser().getFullname() + " - " + i.getCourse().getTitle() + " - " + i.getComment();
 		String mailTo = "mailto:" + i.getUser().getEmail();
-		List<String> attendeesMailTo = new ArrayList<String>();
+		List<String> attendeesMailTo = new ArrayList<>();
 
 		attendeesMailTo.add(mailTo);
 
@@ -67,7 +68,7 @@ public class ICalTools {
 		}
 
 		VEvent event = new VEvent(start, end, i.getCourse().getTitle());
-		event.getProperties().add(new Description(description.toString()));
+		event.getProperties().add(new Description(description));
 		event.getProperties().add(new Location(i.getLocation().getCity()));
 		event.getProperties().add(tz.getTimeZoneId());
 

@@ -33,9 +33,9 @@ class CompareGenericTest {
 		String result2 = CompareGeneric.compareObjects(newCourse2, courses.get(0));
 		String result3 = CompareGeneric.compareObjects(newCourse3, courses.get(0));
 
-		assertEquals(result1, "title / ");
-		assertEquals(result2, "duration / ");
-		assertEquals(result3, "title / duration / ");
+		assertEquals("title / ", result1);
+		assertEquals("duration / ", result2);
+		assertEquals("title / duration / ", result3);
 	}
 
 	@Test

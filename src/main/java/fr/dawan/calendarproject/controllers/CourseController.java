@@ -51,7 +51,7 @@ public class CourseController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
 		CourseDto cDto = courseService.getById(id);
 		if (cDto != null)
 			return ResponseEntity.status(HttpStatus.OK).body(cDto);
@@ -61,7 +61,7 @@ public class CourseController {
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
+	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			courseService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Course with id " + id + " deleted");
@@ -78,7 +78,7 @@ public class CourseController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody CourseDto course) {
+	public ResponseEntity<Object> update(@RequestBody CourseDto course) {
 
 		CourseDto response = courseService.saveOrUpdate(course);
 
@@ -90,7 +90,7 @@ public class CourseController {
 
 	// FETCH Dawan webservice
 	@GetMapping(value = "/dg2", produces = "application/json")
-	public ResponseEntity<?> fetchAllDG2(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<String> fetchAllDG2(@RequestHeader Map<String, String> headers) {
 		String userDG2 = headers.get("x-auth-token");
 		String[] splitUserDG2String = userDG2.split(":");
 

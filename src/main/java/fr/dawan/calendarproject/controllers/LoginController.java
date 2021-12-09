@@ -29,11 +29,11 @@ public class LoginController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@PostMapping(value = "/authenticate", consumes = "application/json")
-	public ResponseEntity<?> checkLogin(@RequestBody LoginDto loginObj) {
+	public ResponseEntity<Object> checkLogin(@RequestBody LoginDto loginObj) {
 
 		UserDto uDto = userService.findByEmail(loginObj.getEmail());
 
@@ -46,15 +46,17 @@ public class LoginController {
 		}
 
 		if (uDto != null && uDto.getPassword().contentEquals(hashedPwd)) {
-			Map<String, Object> claims = new HashMap<String, Object>();
+			Map<String, Object> claims = new HashMap<>();
 			claims.put("name", uDto.getFullName());
 
 			String token = jwtTokenUtil.doGenerateToken(claims, loginObj.getEmail());
-			TokenSaver.tokensByEmail.put(loginObj.getEmail(), token);
+			TokenSaver.getTokensbyemail().put(loginObj.getEmail(), token);
 
 			return ResponseEntity.ok(new LoginResponseDto(uDto, token));
 		} else {
-			logger.error("Login Error : incorrect username or password entered by " + loginObj.getEmail() + ". Date : " + LocalDateTime.now());
+			String message = "Login Error : incorrect username or password entered by " + loginObj.getEmail()
+					+ ". Date : " + LocalDateTime.now();
+			logger.error(message);
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
 					.body("Erreur : identifiant ou mot de passe incorrects !");
 		}

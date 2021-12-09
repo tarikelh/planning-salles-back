@@ -64,7 +64,7 @@ class ResetPasswordControllerTest {
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {	
-		TokenSaver.tokensByEmail.put(email, "TokenTestResetPassword");
+		TokenSaver.getTokensbyemail().put(email, "TokenTestResetPassword");
 		
 		adUserDto = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
 				"dbalavoine@dawan.fr", "testPassword",
@@ -81,7 +81,7 @@ class ResetPasswordControllerTest {
 	
 	@AfterAll()
 	public static void afterAll() throws Exception {
-		TokenSaver.tokensByEmail.remove(email);
+		TokenSaver.getTokensbyemail().remove(email);
 	}
 
 	@Test

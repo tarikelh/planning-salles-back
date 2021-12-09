@@ -91,7 +91,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                     	
               
     				String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-    				if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
+    				if (!TokenSaver.getTokensbyemail().containsKey(email) || !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
     					logger.error("Websocket Error : token not known ! " + email + ". Date : " + LocalDateTime.now());
     				}
     				

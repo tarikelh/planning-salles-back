@@ -20,9 +20,8 @@ public class JwtTokenUtil implements Serializable {
 
 	private static final long serialVersionUID = -7318632445064842428L;
 
-
 	// TODO change validity here
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+	public static final long JWT_TOKEN_VALIDITY = 5L * 60L * 60L;
 
 	@Value("${jwt.secret}")
 	private String secret;
