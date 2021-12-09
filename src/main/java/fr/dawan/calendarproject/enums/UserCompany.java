@@ -1,7 +1,7 @@
 package fr.dawan.calendarproject.enums;
 
 public enum UserCompany {
-	DAWAN, JEHANN;
+	DAWAN, JEHANN, OTHER;
 	
 	public static boolean contains(String value) {
 		for (UserCompany company : UserCompany.values()) {
