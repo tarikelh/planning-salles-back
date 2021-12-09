@@ -182,8 +182,8 @@ class InterventionServiceTest {
 
 		assertThat(page1).isNotNull();
 		assertThat(page2).isNotNull();
-		assertEquals(page1.size(), 2);
-		assertEquals(page2.size(), 1);
+		assertEquals(2, page1.size());
+		assertEquals(1, page2.size());
 		assertEquals(page1, iDtos.subList(0, 2));
 		assertEquals(page2, iDtos.subList(2, 3));
 	}
@@ -290,7 +290,7 @@ class InterventionServiceTest {
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expectedInterv);
-		assertEquals(result.getId(), 5L);
+		assertEquals(5L, result.getId());
 	}
 
 	@Test

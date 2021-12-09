@@ -36,7 +36,7 @@ public class WebsocketController {
 		}
 
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-		if (!TokenSaver.tokensByEmail.containsKey(email) || !TokenSaver.tokensByEmail.get(email).equals(accessToken)) {
+		if (!TokenSaver.getTokensbyemail().containsKey(email) || !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
 			throw new Exception("Websocket Error : token not known !");
 		}
 			

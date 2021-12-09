@@ -44,8 +44,8 @@ class TokenInterceptorTest {
 		request = new MockHttpServletRequest();
 		request.setServerName("www.example.com");
 		
-		TokenSaver.tokensByEmail.put(email, "tokenTestTokenInterceptor123");
-		TokenSaver.tokensByEmail.put(emailNonAdmin, "tokenTestTokenInterceptor456");
+		TokenSaver.getTokensbyemail().put(email, "tokenTestTokenInterceptor123");
+		TokenSaver.getTokensbyemail().put(emailNonAdmin, "tokenTestTokenInterceptor456");
 		
 		user = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
 				"dbalavoine@dawan.fr", "testPassword",
@@ -54,8 +54,8 @@ class TokenInterceptorTest {
 	
 	@AfterAll()
 	public static void afterAll() throws Exception {
-		TokenSaver.tokensByEmail.remove(email);
-		TokenSaver.tokensByEmail.remove(emailNonAdmin);
+		TokenSaver.getTokensbyemail().remove(email);
+		TokenSaver.getTokensbyemail().remove(emailNonAdmin);
 	}
 	
 	@Test

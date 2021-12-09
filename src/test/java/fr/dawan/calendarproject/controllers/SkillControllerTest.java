@@ -36,17 +36,17 @@ import fr.dawan.calendarproject.services.SkillService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SkillControllerTest {
+class SkillControllerTest {
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	SkillController skillController;
-	
+
 	@MockBean
 	SkillService skillService;
 
@@ -54,137 +54,122 @@ public class SkillControllerTest {
 	private TokenInterceptor tokenInterceptor;
 
 	private List<AdvancedSkillDto> skills = new ArrayList<AdvancedSkillDto>();
-	
+
 	@BeforeEach()
-	public void beforeEach() throws Exception {
+	void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
 		skills.add(new AdvancedSkillDto(1, "DevOps", 0, null));
 		skills.add(new AdvancedSkillDto(2, "POO", 0, null));
 		skills.add(new AdvancedSkillDto(3, "SQL", 0, null));
 	}
-	
+
 	@Test
 	void contextLoads() {
 		assertThat(skillController).isNotNull();
 	}
-	
+
 	@Test
-	public void shouldFetchAllSkills() throws Exception {
+	void shouldFetchAllSkills() throws Exception {
 		when(skillService.getAllSkills()).thenReturn(skills);
-		
-		mockMvc.perform(get("/api/skills").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.size()", is(skills.size())))
-				.andExpect(jsonPath("$[2].title", is(skills.get(2).getTitle())));
-	}
-	
-	@Test
-	public void shouldFetchAllSkillsPagination() throws Exception {
-		when(skillService.getAllSkills(any(int.class), any(int.class), any(String.class))).thenReturn(skills);
-		
-		mockMvc.perform(get("/api/skills/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
+
+		mockMvc.perform(get("/api/skills").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.size()", is(skills.size())))
 				.andExpect(jsonPath("$[2].title", is(skills.get(2).getTitle())));
 	}
 
 	@Test
-	public void shouldFetchOneSkillById() throws Exception {
+	void shouldFetchAllSkillsPagination() throws Exception {
+		when(skillService.getAllSkills(any(int.class), any(int.class), any(String.class))).thenReturn(skills);
+
+		mockMvc.perform(get("/api/skills/pagination?page=0&size=0&search=").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.size()", is(skills.size())))
+				.andExpect(jsonPath("$[2].title", is(skills.get(2).getTitle())));
+	}
+
+	@Test
+	void shouldFetchOneSkillById() throws Exception {
 		long skillId = 2;
 		when(skillService.getById(skillId)).thenReturn(skills.get(1));
-		
-		mockMvc.perform(get("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(2)))
-				.andExpect(jsonPath("$.title", is(skills.get(1).getTitle())));
+
+		mockMvc.perform(get("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(2))).andExpect(jsonPath("$.title", is(skills.get(1).getTitle())));
 	}
-	
+
 	@Test
-	public void shouldReturn404WhenWrongId() throws Exception {
+	void shouldReturn404WhenWrongId() throws Exception {
 		final long skillId = 12;
 		when(skillService.getById(skillId)).thenReturn(null);
-		
+
 		mockMvc.perform(get("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void shouldDeleteSkillById() throws Exception {
+	void shouldDeleteSkillById() throws Exception {
 		final long skillId = 1;
 		doNothing().when(skillService).deleteById(skillId);
-		
+
 		String res = mockMvc.perform(delete("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isAccepted())
-				.andReturn().getResponse().getContentAsString();
-		
-		assertEquals(res,"Skill with Id " + skillId + " Deleted");
-	}
-	
-	@Test
-	public void shouldReturn404WhenDeleteWithWrongId() throws Exception {
-		final long skillId = 10;
-		doThrow(IllegalArgumentException.class).when(skillService).deleteById(skillId);
-		
-		String res = mockMvc.perform(delete("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound())
-				.andReturn().getResponse().getContentAsString();
-		
-		assertEquals(res,"Skill with Id " + skillId + " Not Found");
+				.andExpect(status().isAccepted()).andReturn().getResponse().getContentAsString();
+
+		assertEquals(res, "Skill with Id " + skillId + " Deleted");
 	}
 
 	@Test
-	public void shouldCreateNewSkill() throws Exception {
+	void shouldReturn404WhenDeleteWithWrongId() throws Exception {
+		final long skillId = 10;
+		doThrow(IllegalArgumentException.class).when(skillService).deleteById(skillId);
+
+		String res = mockMvc.perform(delete("/api/skills/{id}", skillId).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+
+		assertEquals(res, "Skill with Id " + skillId + " Not Found");
+	}
+
+	@Test
+	void shouldCreateNewSkill() throws Exception {
 		AdvancedSkillDto skillToCreate = new AdvancedSkillDto(0, "DevOps", 0, null);
-		
+
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToCreateJson = objectMapper.writeValueAsString(skillToCreate);
-		
+
 		when(skillService.saveOrUpdate(any(AdvancedSkillDto.class))).thenReturn(skills.get(0));
-		
-		mockMvc.perform(post("/api/skills").contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).content(skillToCreateJson))
-				.andExpect(status().isOk())
+
+		mockMvc.perform(post("/api/skills").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+				.content(skillToCreateJson)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", not(skillToCreate.getId())))
 				.andExpect(jsonPath("$.title", is(skillToCreate.getTitle())));
 	}
 
 	@Test
-	public void shouldUpdateSkill() throws Exception {
+	void shouldUpdateSkill() throws Exception {
 		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(1, "SuperDevOps", 0, null);
-		
+
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToUpdateJson = objectMapper.writeValueAsString(skillToUpdate);
-		
+
 		when(skillService.saveOrUpdate(any(AdvancedSkillDto.class))).thenReturn(skillToUpdate);
-		
-		mockMvc.perform(put("/api/skills/")
-				.contentType(MediaType.APPLICATION_JSON)
-				.characterEncoding("utf-8")
-				.accept(MediaType.APPLICATION_JSON)
-				.content(skillToUpdateJson))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.title", is(skillToUpdate.getTitle())));
+
+		mockMvc.perform(put("/api/skills/").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(skillToUpdateJson)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.title", is(skillToUpdate.getTitle())));
 	}
-	
+
 	@Test
-	public void shouldReturn404WhenUpdateWrongId() throws Exception {
+	void shouldReturn404WhenUpdateWrongId() throws Exception {
 		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(15454, "SuperDevOps", 0, null);
-		
+
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToUpdateJson = objectMapper.writeValueAsString(skillToUpdate);
-		
+
 		when(skillService.saveOrUpdate(skillToUpdate)).thenReturn(null);
-		
-		String res = mockMvc.perform(put("/api/skills/")
-				.contentType(MediaType.APPLICATION_JSON)
-				.characterEncoding("utf-8")
-				.accept(MediaType.APPLICATION_JSON)
-				.content(skillToUpdateJson))
-				.andExpect(status().isNotFound())
-				.andReturn().getResponse().getContentAsString();
-		
+
+		String res = mockMvc
+				.perform(put("/api/skills/").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+						.accept(MediaType.APPLICATION_JSON).content(skillToUpdateJson))
+				.andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+
 		assertEquals(res, "Skill with Id " + skillToUpdate.getId() + " Not Found");
 	}
 

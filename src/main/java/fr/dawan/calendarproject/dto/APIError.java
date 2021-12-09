@@ -1,7 +1,13 @@
 package fr.dawan.calendarproject.dto;
 
-public class APIError {
+import java.io.Serializable;
 
+public class APIError implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2683647596234001146L;
 	private int errorCode;
 	private String instanceClass;
 	private String type;
