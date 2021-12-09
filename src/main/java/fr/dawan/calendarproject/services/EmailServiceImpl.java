@@ -103,7 +103,6 @@ public class EmailServiceImpl implements EmailService {
 		message.addHeaderLine("charset=UTF-8");
 		message.addHeaderLine("component=VEVENT");
 
-		helper.setFrom("noreply@dawan-calendar.fr");
 		helper.setTo(recipient);
 		helper.setSubject(subject);
 
