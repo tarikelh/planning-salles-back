@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +46,6 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	RestTemplate restTemplate;
 
-	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
-	
 	/**
 	 * Fetches all of the existing courses.
 	 * 
@@ -68,15 +64,18 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
-	
+
 	/**
 	 * Fetches all of the existing courses, with a pagination system.
 	 * 
-	 * @param page An integer representing the current page displaying the courses.
-	 * @param size An integer defining the number of courses displayed by page.
-	 * @param search A String representing the admin's input to search for a specific course.
+	 * @param page   An integer representing the current page displaying the
+	 *               courses.
+	 * @param size   An integer defining the number of courses displayed by page.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific course.
 	 * 
-	 * @return result Returns a list of courses, according to the pagination criteria.
+	 * @return result Returns a list of courses, according to the pagination
+	 *         criteria.
 	 *
 	 */
 
@@ -99,13 +98,15 @@ public class CourseServiceImpl implements CourseService {
 
 		return result;
 	}
-	
+
 	/**
 	 * Counts the number of courses.
 	 * 
-	 * @param search A String representing the admin's input to search for a specific course.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific course.
 	 * 
-	 * @return CountDto Returns the number of courses, according to the search criteria.
+	 * @return CountDto Returns the number of courses, according to the search
+	 *         criteria.
 	 *
 	 */
 
@@ -113,7 +114,7 @@ public class CourseServiceImpl implements CourseService {
 	public CountDto count(String search) {
 		return new CountDto(courseRepository.countByTitleContaining(search));
 	}
-	
+
 	/**
 	 * Fetches a single course, according to its id.
 	 * 
@@ -130,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
 			return courseMapper.courseToCourseDto(c.get());
 		return null;
 	}
-	
+
 	/**
 	 * Delete a single course, according to its id.
 	 * 
@@ -142,7 +143,7 @@ public class CourseServiceImpl implements CourseService {
 	public void deleteById(long id) {
 		courseRepository.deleteById(id);
 	}
-	
+
 	/**
 	 * Adds a new course or update an existing one.
 	 * 
@@ -216,13 +217,7 @@ public class CourseServiceImpl implements CourseService {
 				Course course;
 				Optional<Course> optCourse = courseRepository.findById(courseImport.getId());
 
-				if (optCourse.isPresent()) {
-					if (optCourse.get().equals(courseImport)) {
-					} else {
-						course = courseImport;
-						courseRepository.saveAndFlush(course);
-					}
-				} else {
+				if (optCourse.isPresent() && optCourse.get().equals(courseImport)) {
 					course = courseImport;
 					courseRepository.saveAndFlush(course);
 				}
