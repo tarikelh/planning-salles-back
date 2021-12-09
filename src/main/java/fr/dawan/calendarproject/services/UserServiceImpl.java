@@ -57,6 +57,14 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+
+	/**
+	 * Fetches all of the existing users.
+	 * 
+	 * @return result Returns a list of users.
+	 *
+	 */
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
@@ -70,6 +78,17 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
+	
+	/**
+	 * Fetches all of the existing users, with a pagination system.
+	 * 
+	 * @param page An integer representing the current page displaying the users.
+	 * @param size An integer defining the number of users displayed by page.
+	 * @param search A String representing the admin's input to search for a specific user.
+	 * 
+	 * @return result Returns a list of users, according to the pagination criteria.
+	 *
+	 */
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers(int page, int size, String search) {
@@ -92,11 +111,28 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 
+	/**
+	 * Counts the number of users.
+	 * 
+	 * @param search A String representing the admin's input to search for a specific user.
+	 * 
+	 * @return CountDto Returns the number of users, according to the search criteria.
+	 *
+	 */
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(
 				userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search));
 	}
+	
+	/**
+	 * Fetches all of the existing users, according their type.
+	 * 
+	 * @param type A String designating the type of user search by the admin.
+	 * 
+	 * @return result Returns a list of users, according to the type criteria.
+	 *
+	 */
 
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
@@ -115,6 +151,15 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Fetches a single user, according to their id.
+	 * 
+	 * @param id An unique Integer used to identify each user.
+	 * 
+	 * @return AdvancedUserDto Returns a single user.
+	 *
+	 */
 
 	@Override
 	public AdvancedUserDto getById(long id) {
@@ -125,11 +170,27 @@ public class UserServiceImpl implements UserService {
 		else
 			return null;
 	}
+	
+	/**
+	 * Delete a single user, according to their id.
+	 * 
+	 * @param id An unique Integer used to identify each user.
+	 *
+	 */
 
 	@Override
 	public void deleteById(long id) {
 		userRepository.deleteById(id);
 	}
+	
+	/**
+	 * Adds a new user or updates an existing one.
+	 * 
+	 * @param user An object representing an User.
+	 * 
+	 * @return advUser Returns the newly created user or an updated one.
+	 *
+	 */
 
 	@Override
 	public AdvancedUserDto saveOrUpdate(AdvancedUserDto user) {
@@ -169,6 +230,15 @@ public class UserServiceImpl implements UserService {
 		AdvancedUserDto advUser = userMapper.userToAdvancedUserDto(u);
 		return advUser;
 	}
+	
+	/**
+	 * Fetches a single user, according to their email.
+	 * 
+	 * @param email A String representing the user's email adress.
+	 * 
+	 * @return Returns a single user.
+	 *
+	 */
 
 	@Override
 	public AdvancedUserDto findByEmail(String email) {
@@ -179,6 +249,15 @@ public class UserServiceImpl implements UserService {
 
 		return null;
 	}
+	
+	/**
+	 * Checks whether a newly registered user is valid.
+	 * 
+	 * @param u An object representing an User.
+	 * 
+	 * @return Returns a boolean to say whether or not the user is correct.
+	 *
+	 */
 
 	public boolean checkIntegrity(AdvancedUserDto u) {
 		Set<APIError> errors = new HashSet<APIError>();

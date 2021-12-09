@@ -40,6 +40,13 @@ public class SkillServiceImpl implements SkillService {
 
 	@Autowired
 	private SkillMapper skillMapper;
+	
+	/**
+	 * Fetches all of the existing skills.
+	 * 
+	 * @return Returns a list of skills.
+	 *
+	 */
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills() {
@@ -52,6 +59,17 @@ public class SkillServiceImpl implements SkillService {
 		}
 		return result;
 	}
+	
+	/**
+	 * Fetches all of the existing skills, with a pagination system.
+	 * 
+	 * @param page An integer representing the current page displaying the skills.
+	 * @param size An integer defining the number of skills displayed by page.
+	 * @param search A String representing the admin's input to search for a specific skill.
+	 * 
+	 * @return Returns a list of skills, according to the pagination criteria.
+	 *
+	 */
 
 	@Override
 	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
@@ -72,11 +90,29 @@ public class SkillServiceImpl implements SkillService {
 
 		return result;
 	}
+	
+	/**
+	 * Counts the number of skills.
+	 * 
+	 * @param search A String representing the admin's input to search for a specific skill.
+	 * 
+	 * @return Returns the number of skills, according to the search criteria.
+	 *
+	 */
 
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(skillRepository.countByTitleContaining(search));
 	}
+	
+	/**
+	 * Fetches a single skill, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each skill.
+	 * 
+	 * @return Returns a single skill.
+	 *
+	 */
 
 	@Override
 	public AdvancedSkillDto getById(long id) {
@@ -87,11 +123,27 @@ public class SkillServiceImpl implements SkillService {
 		
 		return null;
 	}
+	
+	/**
+	 * Delete a single skill, according to its id.
+	 * 
+	 * @param id An unique Integer used to identify each user.
+	 *
+	 */
 
 	@Override
 	public void deleteById(long id) {
 		skillRepository.deleteById(id);
 	}
+	
+	/**
+	 * Adds a new skill or updates an existing one.
+	 * 
+	 * @param skill An object representing an Skill.
+	 * 
+	 * @return Returns the newly created skill or an updated one.
+	 *
+	 */
 
 	@Override
 	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
@@ -114,6 +166,15 @@ public class SkillServiceImpl implements SkillService {
 		
 		return skillMapper.skillToAdvancedSkillDto(s);
 	}
+	
+	/**
+	 * Checks whether a newly registered skill is valid.
+	 * 
+	 * @param s An object representing an Skill.
+	 * 
+	 * @return boolean Returns a boolean to say whether or not the skill is correct.
+	 *
+	 */
 
 	public boolean checkIntegrity(AdvancedSkillDto s) {
 		Set<APIError> errors = new HashSet<APIError>();
