@@ -193,7 +193,13 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * Fetch courses list from the webservice DG2
+	 * Fetches all locations in the Dawan API.
+	 * 
+	 * @param email A String defining a user's email.
+	 * @param pwd A String defining a user's password.
+	 * 
+	 * @exception Exception Returns an exception if the request fails.
+	 *
 	 */
 	@Override
 	public void fetchAllDG2Locations(String email, String password) throws Exception {

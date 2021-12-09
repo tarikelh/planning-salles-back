@@ -318,9 +318,9 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 	
 	/**
-	 * Counts the number of interventions according to a specific type.
+	 * Counts the number of interventions involving to a specific type of user.
 	 * 
-	 * @param type A String referring to a type of intervention.
+	 * @param type A String referring to a type of user.
 	 * 
 	 * @return CountDto Returns the number of interventions, according to the search criteria.
 	 *
@@ -355,9 +355,9 @@ public class InterventionServiceImpl implements InterventionService {
 	}
 	
 	/**
-	 * Fetches all sub-interventions, according to a specific type and between two dates.
+	 * Fetches all sub-interventions, involving a specific type of user and between two dates.
 	 * 
-	 * @param type A String referring to a type of intervention.
+	 * @param type A String referring to a type of user.
 	 * @param start A LocalDate referring to the starting date.
 	 * @param end A LocalDate referring to the end date.
 	 * 
@@ -669,7 +669,7 @@ public class InterventionServiceImpl implements InterventionService {
 	 * 
 	 * @return count Returns the number of interventions of the Dawan API between two dates.
 	 * 
-	 * @exception Exception
+	 * @exception Exception Returns an exception if the request fails.
 	 *
 	 */
 

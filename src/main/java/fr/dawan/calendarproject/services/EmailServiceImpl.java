@@ -114,6 +114,15 @@ public class EmailServiceImpl implements EmailService {
 
 		return message;
 	}
+	
+	/**
+	 * Forms the body of the calendar component.
+	 * 
+	 * @param calendar Defines a calendar-specific data.
+	 * @param filename A String defining the name of the calendar file.
+	 * 
+	 * @return calendar Returns the body of the calendar to be sent.
+	 */
 
 	public MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception {
 
@@ -130,6 +139,15 @@ public class EmailServiceImpl implements EmailService {
 
 		return calendarPart;
 	}
+	
+	/**
+	 * Forms the text of the email.
+	 * 
+	 * @param content A String representing the text of the email.
+	 * @param encoding A String defining the type of encoding.
+	 * 
+	 * @return calendar Returns the body of the text for the email.
+	 */
 
 	public MimeBodyPart createTextPart(String content, String encoding) throws MessagingException {
 		MimeBodyPart text = new MimeBodyPart();
