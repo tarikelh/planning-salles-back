@@ -14,8 +14,10 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
 import fr.dawan.calendarproject.dto.MementoMessageDto;
+import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionMemento;
+import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.mapper.InterventionMementoMapper;
@@ -57,26 +59,25 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Value("${app.storagefolder}")
 	private String storageFolder;
 
-	private String messageAction = null;
-
-	private String modificationsDone = null;
-
 	public InterventionCaretakerImpl() {
-
+		// TODO document why this constructor is empty
 	}
 
 	/**
-	 * Create an InterventionMemento, which is an intervention history. 
+	 * Create an InterventionMemento, which is an intervention history.
 	 * 
-	 * @param email from the user applying modification on an intervention
+	 * @param email        from the user applying modification on an intervention
 	 * @param intervention object modified by the user (added, edited or deleted)
 	 * 
 	 * @return InterventionMemento intervention history created
 	 * 
-	 * @throws Exception handle exception 'IllegalAccessException' when cannot get value of fields in compareObjects method
+	 * @throws Exception handle exception 'IllegalAccessException' when cannot get
+	 *                   value of fields in compareObjects method
 	 */
 	@Override
 	public InterventionMemento addMemento(String email, Intervention intervention) throws Exception {
+		String messageAction = "";
+		String modificationsDone = "";
 		InterventionMemento memento = new InterventionMemento();
 		InterventionMementoDto state = interventionMementoMapper.interventionToInterventionMementoDto(intervention);
 		// copy of the intervention
@@ -89,7 +90,8 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 				messageAction = " has been changed by ";
 
 				// Obtain difference between two interventions
-				InterventionMemento mementoBefore = intMementoRepository.getLastInterventionMemento(memento.getState().getInterventionId());
+				InterventionMemento mementoBefore = intMementoRepository
+						.getLastInterventionMemento(memento.getState().getInterventionId());
 				modificationsDone = CompareGeneric.compareObjects(mementoBefore.getState(), memento.getState());
 			} else {
 				messageAction = " has been deleted by ";
@@ -107,30 +109,36 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	/**
-	 * Restore an Intervention from an intervention history (InterventionMemento). 
+	 * Restore an Intervention from an intervention history (InterventionMemento).
 	 * 
 	 * @param mementoId id of the intervention history we want to restore
-	 * @param email from the user applying modification on an intervention
+	 * @param email     from the user applying modification on an intervention
 	 * 
 	 * @return InterventionDto intervention restored
 	 * 
-	 * @throws CloneNotSupportedException handle exception when cloning InterventionMemento
+	 * @throws CloneNotSupportedException handle exception when cloning
+	 *                                    InterventionMemento
 	 */
 	@Override
 	public InterventionDto restoreMemento(long mementoId, String email) throws CloneNotSupportedException {
-		InterventionMemento iMem = intMementoRepository.findById(mementoId).get();
-		Intervention intToRestore = interventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
-		InterventionMemento newIMem = (InterventionMemento) iMem.clone();
+		InterventionMemento iMem = intMementoRepository.findById(mementoId).orElse(null);
+		Intervention intToRestore = new Intervention();
+		InterventionMemento newIMem = new InterventionMemento();
 
-		intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).get());
-		intToRestore.setLocation(locationRepository.findById(iMem.getState().getLocationId()).get());
-		intToRestore.setUser(userRepository.findById(iMem.getState().getUserId()).get());
+		if (iMem != null) {
+			intToRestore = interventionMementoMapper.interventionMementoDtoToIntervention(iMem.getState());
+			newIMem = (InterventionMemento) iMem.clone();
 
-		if (iMem.getState().getMasterInterventionId() > 0)
-			intToRestore.setMasterIntervention(
-					interventionRepository.findById(iMem.getState().getMasterInterventionId()).get());
-		else
-			intToRestore.setMasterIntervention(null);
+			intToRestore.setCourse(courseRepository.findById(iMem.getState().getCourseId()).orElse(null));
+			intToRestore.setLocation(locationRepository.findById(iMem.getState().getLocationId()).orElse(null));
+			intToRestore.setUser(userRepository.findById(iMem.getState().getUserId()).orElse(null));
+
+			if (iMem.getState().getMasterInterventionId() > 0)
+				intToRestore.setMasterIntervention(
+						interventionRepository.findById(iMem.getState().getMasterInterventionId()).orElse(null));
+			else
+				intToRestore.setMasterIntervention(null);
+		}
 
 		interventionService.checkIntegrity(interventionMapper.interventionToInterventionDto(intToRestore));
 
@@ -144,9 +152,7 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 		intMementoRepository.saveAndFlush(newIMem);
 
-		InterventionDto intDto = interventionMapper.interventionToInterventionDto(intToRestore);
-
-		return intDto;
+		return interventionMapper.interventionToInterventionDto(intToRestore);
 	}
 
 	/**
@@ -159,24 +165,32 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Override
 	public InterventionMemento getMementoById(long id) {
 		Optional<InterventionMemento> i = intMementoRepository.findById(id);
-		
+
 		if (i.isPresent()) {
 			InterventionMementoDto iMemDto = i.get().getState();
-			
-			if (iMemDto.getCourseId() > 0)
-				iMemDto.setCourseTitle(courseRepository.findById(iMemDto.getCourseId()).get().getTitle());
 
-			if (iMemDto.getUserId() > 0) {
-				User u = userRepository.findById(iMemDto.getUserId()).get();
-				iMemDto.setUserFullName(u.getFullname());
+			if (iMemDto != null) {
+				if (iMemDto.getCourseId() > 0) {
+					Course course = courseRepository.findById(iMemDto.getCourseId()).orElse(null);
+					if (course != null)
+						iMemDto.setCourseTitle(course.getTitle());
+				}
+
+				if (iMemDto.getUserId() > 0) {
+					User u = userRepository.findById(iMemDto.getUserId()).orElse(null);
+					if (u != null)
+						iMemDto.setUserFullName(u.getFullname());
+				}
+
+				if (iMemDto.getLocationId() > 0) {
+
+					Location location = locationRepository.findById(iMemDto.getLocationId()).orElse(null);
+					if (location != null)
+						iMemDto.setLocationCity(location.getCity());
+				}
+				return i.get();
 			}
-
-			if (iMemDto.getLocationId() > 0)
-				iMemDto.setLocationCity(locationRepository.findById(iMemDto.getLocationId()).get().getCity());
-
-			return i.get();
 		}
-
 		return null;
 	}
 
@@ -192,7 +206,8 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 	@Override
 	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
-		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(), dateEnd.plusDays(1).atStartOfDay());
+		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(),
+				dateEnd.plusDays(1).atStartOfDay());
 	}
 
 	// To Delete
@@ -226,9 +241,11 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	}
 
 	/**
-	 * Get the intervention history (InterventionMemento) before the one called by the user.
+	 * Get the intervention history (InterventionMemento) before the one called by
+	 * the user.
 	 * 
-	 * @param interventionId id of the intervention the client is interested by
+	 * @param interventionId        id of the intervention the client is interested
+	 *                              by
 	 * @param interventionMementoId intervention history the client selected
 	 * 
 	 * @return InterventionMemento created before the one selected
