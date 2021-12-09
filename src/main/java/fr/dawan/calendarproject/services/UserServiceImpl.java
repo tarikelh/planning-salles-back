@@ -346,24 +346,28 @@ public class UserServiceImpl implements UserService {
 				});
 				for (UserDG2Dto userDG2Dto : lResJson) {
 					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+					userDG2Dto.setCompany(userDG2CompanyToUserCompanyString(userDG2Dto.getCompany()));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			for (UserDG2Dto cDG2 : lResJson) {
-				User userImported = userMapper.userDG2DtoToUser(cDG2);
-				User user;
-				Optional<User> optUser = userRepository.findById(userImported.getId());
+				
+					User userImported = userMapper.userDG2DtoToUser(cDG2);
+					userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
+					userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
+					User user;
+					Optional<User> optUser = userRepository.findById(userImported.getId());
 
-				if (optUser.isPresent() && !optUser.get().equals(userImported)) {
-					user = userImported;
-					userRepository.saveAndFlush(user);
-				} else {
-					user = userImported;
-					user.setPassword(HashTools.hashSHA512(defaultUsersPasswordImport));
-					userRepository.saveAndFlush(user);
-				}
+					if (optUser.isPresent() && !optUser.get().equals(userImported)) {
+						user = userImported;
+						userRepository.saveAndFlush(user);
+					} else {
+						user = userImported;
+						user.setPassword(HashTools.hashSHA512(defaultUsersPasswordImport));
+						userRepository.saveAndFlush(user);
+					}
 			}
 		} else
 
@@ -395,5 +399,18 @@ public class UserServiceImpl implements UserService {
 		} else {
 			return UserType.APPRENTI.toString();
 		}
+	}
+	
+	private String userDG2CompanyToUserCompanyString(String company) {
+		if (company == null) {
+			company = "";
+		}
+		
+		if(company.toLowerCase().contains("dawan"))
+			return UserCompany.DAWAN.toString();
+		else if(company.toLowerCase().contains("jehann"))
+			return UserCompany.JEHANN.toString();
+		else
+			return UserCompany.OTHER.toString();
 	}
 }
