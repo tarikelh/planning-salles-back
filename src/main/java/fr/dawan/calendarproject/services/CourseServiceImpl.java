@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +46,6 @@ public class CourseServiceImpl implements CourseService {
 	@Autowired
 	RestTemplate restTemplate;
 
-	private static final Logger logger = LoggerFactory.getLogger(CourseServiceImpl.class);
-	
 	/**
 	 * Fetches all of the existing courses.
 	 * 
@@ -61,22 +57,25 @@ public class CourseServiceImpl implements CourseService {
 	public List<CourseDto> getAllCourses() {
 		List<Course> courses = courseRepository.findAll();
 
-		List<CourseDto> result = new ArrayList<CourseDto>();
+		List<CourseDto> result = new ArrayList<>();
 		for (Course c : courses) {
 			result.add(courseMapper.courseToCourseDto(c));
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * Fetches all of the existing courses, with a pagination system.
 	 * 
-	 * @param page An integer representing the current page displaying the courses.
-	 * @param size An integer defining the number of courses displayed by page.
-	 * @param search A String representing the admin's input to search for a specific course.
+	 * @param page   An integer representing the current page displaying the
+	 *               courses.
+	 * @param size   An integer defining the number of courses displayed by page.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific course.
 	 * 
-	 * @return result Returns a list of courses, according to the pagination criteria.
+	 * @return result Returns a list of courses, according to the pagination
+	 *         criteria.
 	 *
 	 */
 
@@ -92,20 +91,22 @@ public class CourseServiceImpl implements CourseService {
 		List<Course> courses = courseRepository.findAllByTitleContaining(search, pagination).get()
 				.collect(Collectors.toList());
 
-		List<CourseDto> result = new ArrayList<CourseDto>();
+		List<CourseDto> result = new ArrayList<>();
 		for (Course c : courses) {
 			result.add(courseMapper.courseToCourseDto(c));
 		}
 
 		return result;
 	}
-	
+
 	/**
 	 * Counts the number of courses.
 	 * 
-	 * @param search A String representing the admin's input to search for a specific course.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific course.
 	 * 
-	 * @return CountDto Returns the number of courses, according to the search criteria.
+	 * @return CountDto Returns the number of courses, according to the search
+	 *         criteria.
 	 *
 	 */
 
@@ -113,7 +114,7 @@ public class CourseServiceImpl implements CourseService {
 	public CountDto count(String search) {
 		return new CountDto(courseRepository.countByTitleContaining(search));
 	}
-	
+
 	/**
 	 * Fetches a single course, according to its id.
 	 * 
@@ -130,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
 			return courseMapper.courseToCourseDto(c.get());
 		return null;
 	}
-	
+
 	/**
 	 * Delete a single course, according to its id.
 	 * 
@@ -142,7 +143,7 @@ public class CourseServiceImpl implements CourseService {
 	public void deleteById(long id) {
 		courseRepository.deleteById(id);
 	}
-	
+
 	/**
 	 * Adds a new course or update an existing one.
 	 * 
@@ -178,11 +179,10 @@ public class CourseServiceImpl implements CourseService {
 		Course duplicate = courseRepository.findByTitle(course.getId(), course.getTitle());
 
 		if (duplicate != null) {
-			Set<APIError> errors = new HashSet<APIError>();
+			Set<APIError> errors = new HashSet<>();
 			String instanceClass = duplicate.getClass().toString();
-			String path = "/api/courses";
 			errors.add(new APIError(505, instanceClass, "Title Not Unique",
-					"Course with title " + course.getTitle() + " already exists", path));
+					"Course with title " + course.getTitle() + " already exists", "/api/courses"));
 
 			throw new EntityFormatException(errors);
 		}
@@ -203,9 +203,10 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<CourseDG2Dto> lResJson = new ArrayList<CourseDG2Dto>();
+		List<CourseDG2Dto> lResJson;
 
-		URI url = new URI("https://dawan.org/api2/planning/trainings");
+		String uri = "https://dawan.org/api2/planning/trainings";
+		URI url = new URI(uri);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + password);
@@ -220,18 +221,10 @@ public class CourseServiceImpl implements CourseService {
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course courseImport = courseMapper.courseDG2DtoToCourse(cDG2);
-				Course course = new Course();
+				Course course;
 				Optional<Course> optCourse = courseRepository.findById(courseImport.getId());
 
-				if (optCourse.isPresent()) {
-					if (optCourse.get().equals(courseImport)) {
-						continue;
-					} else {
-						course = courseImport;
-						courseRepository.saveAndFlush(course);
-						continue;
-					}
-				} else {
+				if (optCourse.isPresent() && optCourse.get().equals(courseImport)) {
 					course = courseImport;
 					courseRepository.saveAndFlush(course);
 				}

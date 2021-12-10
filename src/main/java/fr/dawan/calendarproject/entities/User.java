@@ -38,7 +38,7 @@ public class User {
 	@Column(unique = true, nullable = false, length = 255)
 	private String email;
 
-	@Column(nullable = false, length = 150)
+	@Column(nullable = false, columnDefinition = "varchar(150) default '23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619'")
 	private String password;
 
 	@ManyToMany()

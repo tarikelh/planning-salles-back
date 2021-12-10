@@ -41,7 +41,7 @@ public class ResetPasswordController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
-	
+
 	@PostMapping(value = "/forgot-mobile", produces = "application/json")
 	public ResponseEntity<Object> sendCodeByEmail(@RequestBody ResetPasswordDto resetObj) throws Exception {
 		
@@ -60,7 +60,7 @@ public class ResetPasswordController {
 	@PostMapping(value = "/reset-password", consumes = "application/json")
 	public ResponseEntity<String> resetPassword(@RequestBody ResetResponse reset) throws Exception {
 
-		boolean token = TokenSaver.tokensByEmail.containsValue(reset.getToken());	
+		boolean token = TokenSaver.getTokensbyemail().containsValue(reset.getToken());
 
 		if (token) {
 			boolean resetStatus = userService.resetPassword(reset);

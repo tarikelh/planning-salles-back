@@ -134,11 +134,11 @@ class CourseServiceTest {
 		assertThat(page3).isNotNull();
 		assertThat(page4).isNotNull();
 		assertThat(page5).isNotNull();
-		assertEquals(page1.size(), 1);
-		assertEquals(page2.size(), 3);
-		assertEquals(page3.size(), 1);
-		assertEquals(page4.size(), 3);
-		assertEquals(page5.size(), 1);
+		assertEquals(1, page1.size());
+		assertEquals(3, page2.size());
+		assertEquals(1, page3.size());
+		assertEquals(3, page4.size());
+		assertEquals(1, page5.size());
 		assertEquals(page1, cDtos.subList(0, 1));
 		assertEquals(page2, cDtos.subList(0, 3));
 		assertEquals(page3, cDtos.subList(1, 2));
@@ -186,7 +186,7 @@ class CourseServiceTest {
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expectedCourse);
-		assertEquals(result.getId(), 4);
+		assertEquals(4, result.getId());
 	}
 
 	@Test
@@ -206,7 +206,7 @@ class CourseServiceTest {
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expectedCourse);
-		assertEquals(result.getVersion(), 1);
+		assertEquals(1, result.getVersion());
 	}
 
 	@Test
@@ -251,6 +251,7 @@ class CourseServiceTest {
 		assertEquals(200, repWs.getStatusCodeValue());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldGetCoursesFromDG2() throws Exception {
 		String body = "[{\"id\":\"10\",\"duration\":\"3.00\",\"title\":\"HTML\\/CSS : Fondamentaux\",\"version\":\"0\"},\r\n"

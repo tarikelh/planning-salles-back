@@ -60,13 +60,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
+
 	@Value("${vue.baseurl}")
 	private String vueUrl;
-	
 
 	/**
 	 * Fetches all of the existing users.
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	public List<AdvancedUserDto> getAllUsers() {
 		List<User> users = userRepository.findAll();
 
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+		List<AdvancedUserDto> result = new ArrayList<>();
 
 		for (User u : users) {
 			result.add(userMapper.userToAdvancedUserDto(u));
@@ -87,13 +86,14 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
+
 	/**
 	 * Fetches all of the existing users, with a pagination system.
 	 * 
-	 * @param page An integer representing the current page displaying the users.
-	 * @param size An integer defining the number of users displayed by page.
-	 * @param search A String representing the admin's input to search for a specific user.
+	 * @param page   An integer representing the current page displaying the users.
+	 * @param size   An integer defining the number of users displayed by page.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific user.
 	 * 
 	 * @return result Returns a list of users, according to the pagination criteria.
 	 *
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepository
 				.findAllByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search, pagination)
 				.get().collect(Collectors.toList());
-		List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
+		List<AdvancedUserDto> result = new ArrayList<>();
 
 		for (User u : users) {
 			result.add(userMapper.userToAdvancedUserDto(u));
@@ -123,9 +123,11 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Counts the number of users.
 	 * 
-	 * @param search A String representing the admin's input to search for a specific user.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific user.
 	 * 
-	 * @return CountDto Returns the number of users, according to the search criteria.
+	 * @return CountDto Returns the number of users, according to the search
+	 *         criteria.
 	 *
 	 */
 	@Override
@@ -133,7 +135,7 @@ public class UserServiceImpl implements UserService {
 		return new CountDto(
 				userRepository.countByFirstNameContainingOrLastNameContainingOrEmailContaining(search, search, search));
 	}
-	
+
 	/**
 	 * Fetches all of the existing users, according their type.
 	 * 
@@ -145,10 +147,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
+		List<AdvancedUserDto> result = new ArrayList<>();
+
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByType(userType);
-			List<AdvancedUserDto> result = new ArrayList<AdvancedUserDto>();
 
 			for (User u : users) {
 				result.add(userMapper.userToAdvancedUserDto(u));
@@ -156,11 +159,10 @@ public class UserServiceImpl implements UserService {
 
 			return result;
 		} else {
-			// HANDLE ERROR
-			return null;
+			return result;
 		}
 	}
-	
+
 	/**
 	 * Fetches a single user, according to their id.
 	 * 
@@ -179,7 +181,7 @@ public class UserServiceImpl implements UserService {
 		else
 			return null;
 	}
-	
+
 	/**
 	 * Delete a single user, according to their id.
 	 * 
@@ -191,7 +193,7 @@ public class UserServiceImpl implements UserService {
 	public void deleteById(long id) {
 		userRepository.deleteById(id);
 	}
-	
+
 	/**
 	 * Adds a new user or updates an existing one.
 	 * 
@@ -210,12 +212,10 @@ public class UserServiceImpl implements UserService {
 
 		User u = userMapper.advancedUserDtoToUser(user);
 
-		Set<Skill> skillsList = new HashSet<Skill>();
+		Set<Skill> skillsList = new HashSet<>();
 
 		if (user.getSkillsId() != null) {
-			user.getSkillsId().forEach(id -> {
-				skillsList.add(skillRepository.getOne(id));
-			});
+			user.getSkillsId().forEach(id -> skillsList.add(skillRepository.getOne(id)));
 		}
 		u.setSkills(skillsList);
 
@@ -234,12 +234,10 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		u = userRepository.saveAndFlush(u);
-		AdvancedUserDto advUser = userMapper.userToAdvancedUserDto(u);
-		return advUser;
+		return userMapper.userToAdvancedUserDto(u);
 	}
-	
+
 	/**
 	 * Fetches a single user, according to their email.
 	 * 
@@ -258,7 +256,7 @@ public class UserServiceImpl implements UserService {
 
 		return null;
 	}
-	
+
 	/**
 	 * Checks whether a newly registered user is valid.
 	 * 
@@ -269,7 +267,7 @@ public class UserServiceImpl implements UserService {
 	 */
 
 	public boolean checkIntegrity(AdvancedUserDto u) {
-		Set<APIError> errors = new HashSet<APIError>();
+		Set<APIError> errors = new HashSet<>();
 		String instanceClass = u.getClass().toString();
 		String path = "/api/users";
 		// Location Must EXIST
@@ -322,12 +320,12 @@ public class UserServiceImpl implements UserService {
 
 		return true;
 	}
-	
+
 	/**
 	 * Fetches all users in the Dawan API.
 	 * 
 	 * @param email A String defining a user's email.
-	 * @param pwd A String defining a user's password.
+	 * @param pwd   A String defining a user's password.
 	 * 
 	 * @exception Exception Returns an exception if the request fails.
 	 *
@@ -336,7 +334,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void fetchAllDG2Users(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<UserDG2Dto> lResJson = new ArrayList<UserDG2Dto>();
+		List<UserDG2Dto> lResJson = new ArrayList<>();
 
 		URI url = new URI("https://dawan.org/api2/planning/employees");
 
@@ -355,34 +353,33 @@ public class UserServiceImpl implements UserService {
 				});
 				for (UserDG2Dto userDG2Dto : lResJson) {
 					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+					userDG2Dto.setCompany(userDG2CompanyToUserCompanyString(userDG2Dto.getCompany()));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			for (UserDG2Dto cDG2 : lResJson) {
+
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
-				User user = new User();
+				userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
+
 				Optional<User> optUser = userRepository.findById(userImported.getId());
 
-				if (optUser.isPresent()) {
-					if (optUser.get().equals(userImported)) {
-						continue;
-					} else {
-						user = userImported;
-						userRepository.saveAndFlush(user);
-					}
+				if (optUser.isPresent() && !optUser.get().equals(userImported)) {
+					userImported.setSkills(optUser.get().getSkills());
+					userRepository.saveAndFlush(userImported);
 				} else {
-					user = userImported;
-					user.setPassword(HashTools.hashSHA512("7ayh8j9bpcFyjYF6u+wc"));
-					userRepository.saveAndFlush(user);
+					userRepository.saveAndFlush(userImported);
 				}
 			}
-		} else {
+		} else
+
+		{
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
-	
+
 	/**
 	 * Returns a role depending on the user's job.
 	 * 
@@ -407,7 +404,7 @@ public class UserServiceImpl implements UserService {
 			return UserType.APPRENTI.toString();
 		}
 	}
-	
+
 	/**
 	 * Returns a Response Entity to check whether the password was updated or not.
 	 * 
@@ -418,28 +415,40 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean resetPassword(ResetResponse reset) throws Exception {
-			String hashedPwd = HashTools.hashSHA512(reset.getPassword());
-			String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
+		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
+		String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
 
-			User u = userRepository.findByEmail(email);
-			String currentPwd = ""; 
-			
-			if(u !=null)
-				currentPwd = HashTools.hashSHA512(u.getPassword());
-			
-			if (u != null && !currentPwd.equals(hashedPwd)) {
-				
-				u.setPassword(reset.getPassword());
-				userRepository.saveAndFlush(u);
+		User u = userRepository.findByEmail(email);
+		String currentPwd = "";
 
-				return true;
-			} else if (u != null && currentPwd.equals(hashedPwd)) {
-				// same password
-				return false;
-			}
-			else {
-				// if user == null
-				return false;
-			}
+		if (u != null)
+			currentPwd = HashTools.hashSHA512(u.getPassword());
+
+		if (u != null && !currentPwd.equals(hashedPwd)) {
+
+			u.setPassword(reset.getPassword());
+			userRepository.saveAndFlush(u);
+
+			return true;
+		} else if (u != null && currentPwd.equals(hashedPwd)) {
+			// same password
+			return false;
+		} else {
+			// if user == null
+			return false;
+		}
+	}
+
+	private String userDG2CompanyToUserCompanyString(String company) {
+		if (company == null) {
+			company = "";
+		}
+
+		if (company.toLowerCase().contains("dawan"))
+			return UserCompany.DAWAN.toString();
+		else if (company.toLowerCase().contains("jehann"))
+			return UserCompany.JEHANN.toString();
+		else
+			return UserCompany.OTHER.toString();
 	}
 }

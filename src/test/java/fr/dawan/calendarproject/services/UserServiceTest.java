@@ -192,10 +192,10 @@ class UserServiceTest {
 	}
 
 	@Test
-	void shouldReturnNullWhenGivenTypeIsWrong() {
+	void shouldReturnEmptyListWhenGivenTypeIsWrong() {
 		List<AdvancedUserDto> result = userService.getAllUsersByType("BADUSERTYPE");
 
-		assertThat(result).isNull();
+		assertThat(result).isEmpty();
 	}
 
 	@Test
@@ -529,6 +529,7 @@ class UserServiceTest {
 		assertFalse(new User().toString().contains("@"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldFetchAllDG2UsersWhenUserExistInDb() {
 		// mocking
@@ -546,6 +547,7 @@ class UserServiceTest {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldFetchAllDG2UsersWhenUserDoNotExistInDb() {
 		// mocking

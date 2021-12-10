@@ -86,7 +86,7 @@ public class InterventionController {
 	}
 
 	@GetMapping(value = "/masters/{id}", produces = "application/json")
-	public ResponseEntity<?> getMasterInterventionById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getMasterInterventionById(@PathVariable("id") long id) {
 		InterventionDto master = interventionService.getById(id);
 
 		if (master.isMaster())
@@ -105,7 +105,7 @@ public class InterventionController {
 
 	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
 	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
-	public ResponseEntity<?> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
+	public ResponseEntity<Object> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
 		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
 
 		if (iList != null)
@@ -117,7 +117,7 @@ public class InterventionController {
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id,
+	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id,
 			@RequestHeader(value = "Authorization") String token) {
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		try {
@@ -138,7 +138,7 @@ public class InterventionController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@Valid @RequestBody InterventionDto intervention,
+	public ResponseEntity<Object> update(@Valid @RequestBody InterventionDto intervention,
 			@RequestHeader(value = "Authorization") String token) throws Exception {
 
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
@@ -153,7 +153,7 @@ public class InterventionController {
 	}
 
 	@GetMapping(value = "/ical/{userId}")
-	public ResponseEntity<?> exportUserInteventions(@PathVariable("userId") long userId) {
+	public ResponseEntity<Object> exportUserInteventions(@PathVariable("userId") long userId) {
 		Calendar calendar = interventionService.exportCalendarAsICal(userId);
 		if (calendar != null) {
 			String fileName = calendar.getProperty("X-CALNAME").getValue() + ".ics";
@@ -163,7 +163,7 @@ public class InterventionController {
 				resource = ICalTools.generateICSFile(calendar, fileName, f);
 
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
 				headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 				headers.add("Pragma", "no-cache");
 				headers.add("Expires", "0");
@@ -188,7 +188,7 @@ public class InterventionController {
 
 	// @RequestBody int[] usersId,
 	@PostMapping(value = "/email/employees", produces = "application/json")
-	public ResponseEntity<?> sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
+	public ResponseEntity<String> sendCalendarToEmployees(@Valid @RequestBody MailingListDto mailingList) {
 		try {
 			emailService.sendCalendarToSelectedEmployees(mailingList.getUsersId(),
 					LocalDate.parse(mailingList.getDateStart()), LocalDate.parse(mailingList.getDateEnd()));
@@ -199,7 +199,7 @@ public class InterventionController {
 	}
 
 	@PostMapping(value = "/split/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<?> splitIntervention(@PathVariable("id") long interventionId,
+	public ResponseEntity<Object> splitIntervention(@PathVariable("id") long interventionId,
 			@RequestBody List<DateRangeDto> dates) {
 		List<InterventionDto> iDtoList = interventionService.splitIntervention(interventionId, dates);
 
@@ -213,7 +213,7 @@ public class InterventionController {
 
 	// FETCH Dawan webservice
 	@GetMapping(value = "/dg2/{start}/{end}", produces = "application/json")
-	public ResponseEntity<?> fetchAllDG2(@PathVariable("start") String start, @PathVariable("end") String end,
+	public ResponseEntity<String> fetchAllDG2(@PathVariable("start") String start, @PathVariable("end") String end,
 			@RequestHeader Map<String, String> headers) {
 		String auth = headers.get("x-auth-token");
 		try {

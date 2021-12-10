@@ -2,14 +2,11 @@ package fr.dawan.calendarproject.tools;
 
 import static org.junit.Assert.assertThrows;
 
-import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.entities.Course;
@@ -22,13 +19,7 @@ class CsvToolsGenericTest {
 	@MockBean
 	private CourseMapper courseMapper;
 
-	@Rule
-	public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-	private String pathExist;
 	private String pathDoesNotExist;
-
-	private BufferedWriter bw;
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
@@ -36,7 +27,6 @@ class CsvToolsGenericTest {
 		courses.add(new Course(2, "C# course for intermediate level", "1", "slug", 0));
 		courses.add(new Course(3, "JavaScript course for beginners", "3", "slug", 0));
 
-		pathExist = "C:/Users/Admin-Stagiaire/Documents/Dawan/DawanPlanning/api/DaCalendar/coursesCsvTest.csv";
 		pathDoesNotExist = "";
 	}
 

@@ -25,7 +25,7 @@ public class SkillController {
 
 	@Autowired
 	private SkillService skillService;
-	
+
 	// GET
 	@GetMapping(produces = "application/json")
 	public List<AdvancedSkillDto> getAll() {
@@ -33,33 +33,34 @@ public class SkillController {
 	}
 
 	// GET
-	@GetMapping(value = {"/pagination"}, produces = "application/json")
-	public List<AdvancedSkillDto> getAllPagination(@RequestParam(value = "page", defaultValue = "-1", required = false) int page, 
-										@RequestParam(value = "size", defaultValue = "-1", required = false) int size, 
-										@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+	@GetMapping(value = { "/pagination" }, produces = "application/json")
+	public List<AdvancedSkillDto> getAllPagination(
+			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
+			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
+			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return skillService.getAllSkills(page, size, search);
 	}
-	
+
 	// COUNT
-	@GetMapping(value = {"/count"}, produces = "application/json")
+	@GetMapping(value = { "/count" }, produces = "application/json")
 	public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
 		return skillService.count(search);
 	}
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
 		AdvancedSkillDto skill = skillService.getById(id);
-		
+
 		if (skill != null)
 			return ResponseEntity.status(HttpStatus.OK).body(skill);
-		
+
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with Id " + id + " Not Found");
 	}
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
+	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			skillService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Skill with Id " + id + " Deleted");
@@ -76,10 +77,10 @@ public class SkillController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody AdvancedSkillDto skill) {
+	public ResponseEntity<Object> update(@RequestBody AdvancedSkillDto skill) {
 		AdvancedSkillDto updatedSkill = skillService.saveOrUpdate(skill);
-	
-		if(updatedSkill != null)
+
+		if (updatedSkill != null)
 			return ResponseEntity.status(HttpStatus.OK).body(updatedSkill);
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Skill with Id " + skill.getId() + " Not Found");

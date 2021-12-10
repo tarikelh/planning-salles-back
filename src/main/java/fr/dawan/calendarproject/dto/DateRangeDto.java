@@ -66,16 +66,10 @@ public class DateRangeDto {
 	public boolean isOverlapping(DateRangeDto toCheck) {
 		LocalDate toCheckStart = toCheck.getDateStart();
 		LocalDate toCheckEnd = toCheck.getDateEnd();
-		
-		if ((dateStart.isAfter(toCheckStart) || dateStart.isEqual(toCheckStart))
-				&& (dateStart.isBefore(toCheckEnd) || dateStart.isEqual(toCheckEnd))) {
-			return true;
-		}
-		else if ((dateEnd.isAfter(toCheckStart) || dateEnd.isEqual(toCheckStart))
-				&& (dateEnd.isBefore(toCheckEnd) || dateEnd.isEqual(toCheckEnd))) {
-			return true;
-		}
-		
-		return false;
+
+		return ((dateStart.isAfter(toCheckStart) || dateStart.isEqual(toCheckStart))
+				&& (dateStart.isBefore(toCheckEnd) || dateStart.isEqual(toCheckEnd)))
+				|| ((dateEnd.isAfter(toCheckStart) || dateEnd.isEqual(toCheckStart))
+						&& (dateEnd.isBefore(toCheckEnd) || dateEnd.isEqual(toCheckEnd)));
 	}
 }

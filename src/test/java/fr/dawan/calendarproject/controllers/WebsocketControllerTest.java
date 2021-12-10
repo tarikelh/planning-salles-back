@@ -34,12 +34,12 @@ class WebsocketControllerTest {
 	
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-		TokenSaver.tokensByEmail.put(email, "tokenwebsockettest");
+		TokenSaver.getTokensbyemail().put(email, "tokenwebsockettest");
 	}
 	
 	@AfterAll()
 	public static void afterAll() throws Exception {
-		TokenSaver.tokensByEmail.remove(email);
+		TokenSaver.getTokensbyemail().remove(email);
 	}
 	
 	@Test

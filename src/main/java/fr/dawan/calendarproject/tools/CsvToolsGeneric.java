@@ -7,16 +7,20 @@ import java.util.List;
 
 public class CsvToolsGeneric {
 
+	private CsvToolsGeneric() {
+	}
+
 	/**
 	 * Generic method to generate a Csv file
 	 * 
-	 * @param filePath Storage folder path for the selected file
-	 * @param lp List of objects we want to add in the CSV file
-	 * @param separator Seperate each object fields with a separator, for instance ';'
+	 * @param filePath  Storage folder path for the selected file
+	 * @param lp        List of objects we want to add in the CSV file
+	 * @param separator Seperate each object fields with a separator, for instance
+	 *                  ';'
 	 */
 	public static <T> void toCsv(String filePath, List<T> lp, String separator) throws Exception {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
-			if (lp != null && lp.size() > 0) {
+			if (lp != null && !lp.isEmpty()) {
 				Field[] fields = lp.get(0).getClass().getDeclaredFields();
 				for (int i = 0; i < fields.length; i++) {
 					fields[i].setAccessible(true);
@@ -33,7 +37,7 @@ public class CsvToolsGeneric {
 						}
 					} else {
 						Class<?> cls = Class.forName(fields[i].getType().getName());
-						Object clsInstance = (Object) cls.newInstance();
+						Object clsInstance = cls.newInstance();
 						Field[] subFields = clsInstance.getClass().getDeclaredFields();
 						for (int j = 0; j < subFields.length; j++) {
 							bw.write(subFields[j].getName());

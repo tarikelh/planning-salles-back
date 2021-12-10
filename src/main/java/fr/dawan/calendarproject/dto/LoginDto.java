@@ -14,7 +14,7 @@ public class LoginDto implements Serializable {
 	private String email;
 	private String password;
 
-	public LoginDto(String email, String password, String captchaToken) {
+	public LoginDto(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}

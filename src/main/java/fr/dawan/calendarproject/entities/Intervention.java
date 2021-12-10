@@ -388,11 +388,15 @@ public class Intervention implements Cloneable {
 
 	@Override
 	public Intervention clone() {
+		Intervention intervention = null;
 		try {
-			return (Intervention) super.clone();
+			intervention = (Intervention) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		return null;
+		if (intervention != null) {
+			return intervention;
+		}
+		return intervention;
 	}
 }

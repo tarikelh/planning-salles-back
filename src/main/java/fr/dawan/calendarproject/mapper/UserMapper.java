@@ -54,7 +54,7 @@ public interface UserMapper {
 	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "enumCompany", source = "company")
 	@Mapping(target = "enumType", source = "type")
-	@Mapping(target = "location", source = "locationId")
-	@Mapping(target = "skills", source = "skillsId")
+	@Mapping(target = "location", ignore = true)
+	@Mapping(target = "skills", ignore = true)
 	User userDG2DtoToUser(UserDG2Dto cDG2);
 }

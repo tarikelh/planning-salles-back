@@ -37,9 +37,11 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 	// ?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN
 	private Query getQueryBy(long userId, String req, Map<String, String[]> paramsMap) {
 		StringBuilder jpqlRequest = new StringBuilder(req);
-		
-		for (String param : paramsMap.keySet()) {
-			if (!checkEmptyArray(paramsMap.get(param))) {
+
+		for (Map.Entry<String, String[]> entry : paramsMap.entrySet()) {
+			String[] value = entry.getValue();
+
+			for (String param : value) {
 				if (param.equals("filterCourse")) {
 					jpqlRequest.append(" AND i.course.title like :" + param);
 				} else if (param.equals("filterLocation")) {
@@ -53,11 +55,11 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 				}
 			}
 		}
-		
+
 		if (userId != 0) {
 			jpqlRequest.append(" AND i.user.id = " + userId);
 		}
-		
+
 		jpqlRequest.append(" ORDER BY i.dateStart ASC");
 
 		Query query = em.createQuery(jpqlRequest.toString());
@@ -104,7 +106,7 @@ public class InterventionCustomRepositoryImpl implements InterventionCustomRepos
 	public List<Intervention> searchBy(long userId, Map<String, String[]> paramsMap) {
 		String req = "SELECT i FROM Intervention i WHERE i.isMaster = false";
 		Query query = getQueryBy(userId, req, paramsMap);
-		return (List<Intervention>) query.getResultList();
+		return query.getResultList();
 	}
 
 }
