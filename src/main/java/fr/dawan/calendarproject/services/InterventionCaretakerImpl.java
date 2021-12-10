@@ -59,10 +59,6 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 	@Value("${app.storagefolder}")
 	private String storageFolder;
 
-	public InterventionCaretakerImpl() {
-		// TODO document why this constructor is empty
-	}
-
 	/**
 	 * Create an InterventionMemento, which is an intervention history.
 	 * 

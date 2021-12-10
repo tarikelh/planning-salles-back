@@ -17,8 +17,8 @@ public class CompareGeneric {
 	 * @param objAfter  updated object
 	 * @param objBefore same object but with the state before the modification
 	 * @return String return a String with all fields that were modified between
-	 *         objBefore and objAfter. For instance "dateStart / dateEnd / location
-	 *         /" Return 'null' if the two objects are from different Class
+	 *         objBefore and objAfter. For instance "dateStart / dateEnd / location/". 
+	 *         Return 'null' if the two objects are from different Class
 	 * @throws Exception handle exception 'IllegalAccessException' when cannot get
 	 *                   value of fields
 	 */

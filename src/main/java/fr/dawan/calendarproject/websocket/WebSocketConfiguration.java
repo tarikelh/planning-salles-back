@@ -29,14 +29,14 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
 	@Value("${vue.baseurl}")
 	private String vueUrl;
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(WebSocketConfiguration.class);
-	
+
 	/**
-	 *Set prefix for endpoints to listen and send messages for the WebSocket
+	 * Set prefix for endpoints to listen and send messages for the WebSocket
 	 */
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -48,7 +48,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 	}
 
 	/**
-	 *Registers the endpoint where the connection will take place for the WebSocket
+	 * Registers the endpoint where the connection will take place for the WebSocket
 	 */
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -60,46 +60,47 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 				// Enable SockJS fallback options
 				.withSockJS();
 	}
-	
+
 	/**
-	 *Token verification when client try to connect to the WebSocket
+	 * Token verification when client try to connect to the WebSocket
 	 *
-	 *@param registration customize the configuration for a MessageChannel.
-	 *<p>
-	 *For more information about ChannelRegistration you can check its documentation.
-	 *</p>
-	 *@see ChannelRegistration
+	 * @param registration customize the configuration for a MessageChannel.
+	 *                     <p>
+	 *                     For more information about ChannelRegistration you can
+	 *                     check its documentation.
+	 *                     </p>
+	 * @see ChannelRegistration
 	 */
 	@Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
-        	
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-            	
-                StompHeaderAccessor accessor =
-                        MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    List<String> authorization = accessor.getNativeHeader("X-Authorization");
-                    logger.debug("X-Authorization: {}", authorization);
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(new ChannelInterceptor() {
 
-                    String accessToken = authorization.get(0).split(" ")[1];
-                    
-                    if (jwtTokenUtil.isTokenExpired(accessToken)) {
-                    	logger.error("Websocket Error : token expired ! ");
-                    }
-                    	
-              
-    				String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-    				if (!TokenSaver.getTokensbyemail().containsKey(email) || !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
-    					logger.error("Websocket Error : token not known ! " + email + ". Date : " + LocalDateTime.now());
-    				}
-    				
-                }
-                
-                return message;
-            }
-        });
-    }
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+
+				StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+					List<String> authorization = accessor.getNativeHeader("X-Authorization");
+					logger.debug("X-Authorization: {}", authorization);
+
+					String accessToken = authorization.get(0).split(" ")[1];
+
+					if (jwtTokenUtil.isTokenExpired(accessToken)) {
+						logger.error("Websocket Error : token expired ! ");
+					}
+
+					String email = jwtTokenUtil.getUsernameFromToken(accessToken);
+					if (!TokenSaver.getTokensbyemail().containsKey(email)
+							|| !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
+						logger.error(
+								"Websocket Error : token not known ! " + email + ". Date : " + LocalDateTime.now());
+					}
+
+				}
+
+				return message;
+			}
+		});
+	}
 
 }

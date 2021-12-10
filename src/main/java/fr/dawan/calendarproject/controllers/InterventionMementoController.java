@@ -48,7 +48,7 @@ public class InterventionMementoController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> GetById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
 		InterventionMemento iMem = caretaker.getMementoById(id);
 
 		if (iMem == null)
@@ -64,7 +64,7 @@ public class InterventionMementoController {
 	}
 
 	@GetMapping(value = "filter/{interventionId}")
-	public ResponseEntity<?> filterMemento(@PathVariable("interventionId") long interventionId,
+	public ResponseEntity<Object> filterMemento(@PathVariable("interventionId") long interventionId,
 			@RequestParam("start") String start, @RequestParam("end") String end, @RequestParam("page") int page,
 			@RequestParam("size") int size) {
 
@@ -74,7 +74,7 @@ public class InterventionMementoController {
 		List<InterventionMemento> iMem = caretaker.filterMemento(interventionId, dateTimeStart, dateTimeEnd, page,
 				size);
 
-		if (iMem.size() == 0)
+		if (iMem.isEmpty())
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Intervention Memento Dto with id " + interventionId + " Not Found");
 
@@ -91,7 +91,7 @@ public class InterventionMementoController {
 	}
 
 	@GetMapping(value = "/restore/{id}")
-	public ResponseEntity<?> restore(@PathVariable("id") long mementoId,
+	public ResponseEntity<Object> restore(@PathVariable("id") long mementoId,
 			@RequestHeader(value = "Authorization") String token) {
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 
@@ -107,7 +107,7 @@ public class InterventionMementoController {
 	// get the "last before" intervention memento to visualize modifications that
 	// were done
 	@GetMapping(value = "/last-before")
-	public ResponseEntity<?> lastBeforeMemento(@RequestParam("interventionId") long interventionId,
+	public ResponseEntity<Object> lastBeforeMemento(@RequestParam("interventionId") long interventionId,
 			@RequestParam("interventionMementoId") long interventionMementoId) {
 
 		InterventionMemento iMem = caretaker.getLastBeforeMemento(interventionId, interventionMementoId);
@@ -121,7 +121,7 @@ public class InterventionMementoController {
 
 	// Export Intervention Mementos as CSV
 	@GetMapping(value = "/export-csv", produces = "text/csv")
-	public ResponseEntity<?> exportInterventionMementoAsCSV() {
+	public ResponseEntity<Object> exportInterventionMementoAsCSV() {
 		try {
 			caretaker.serializeInterventionMementosAsCSV();
 
@@ -145,7 +145,7 @@ public class InterventionMementoController {
 
 	// Export Intervention Mementos as CSV between 2 dates
 	@GetMapping(value = "/export-csv-dates", produces = "text/csv")
-	public ResponseEntity<?> exportInterventionMementoAsCSVByDates(
+	public ResponseEntity<Object> exportInterventionMementoAsCSVByDates(
 			@RequestParam("dateStart") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateStart,
 			@RequestParam("dateEnd") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateEnd) {
 		try {
@@ -167,7 +167,6 @@ public class InterventionMementoController {
 					.contentType(MediaType.parseMediaType("text/csv")).body(new FileSystemResource(path));
 
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("création csv non réalisée");
 		}
 	}
