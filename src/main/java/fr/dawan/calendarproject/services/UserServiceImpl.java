@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -66,9 +65,6 @@ public class UserServiceImpl implements UserService {
 	 * @return result Returns a list of users.
 	 *
 	 */
-
-	@Value("${user.service.defaultUsersPasswordImport}")
-	private String defaultUsersPasswordImport;
 
 	@Override
 	public List<AdvancedUserDto> getAllUsers() {
@@ -356,17 +352,14 @@ public class UserServiceImpl implements UserService {
 				
 					User userImported = userMapper.userDG2DtoToUser(cDG2);
 					userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
-					userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
-					User user;
+
 					Optional<User> optUser = userRepository.findById(userImported.getId());
 
 					if (optUser.isPresent() && !optUser.get().equals(userImported)) {
-						user = userImported;
-						userRepository.saveAndFlush(user);
+						userImported.setSkills(optUser.get().getSkills());
+						userRepository.saveAndFlush(userImported);
 					} else {
-						user = userImported;
-						user.setPassword(HashTools.hashSHA512(defaultUsersPasswordImport));
-						userRepository.saveAndFlush(user);
+						userRepository.saveAndFlush(userImported);
 					}
 			}
 		} else

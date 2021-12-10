@@ -251,6 +251,7 @@ class CourseServiceTest {
 		assertEquals(200, repWs.getStatusCodeValue());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldGetCoursesFromDG2() throws Exception {
 		String body = "[{\"id\":\"10\",\"duration\":\"3.00\",\"title\":\"HTML\\/CSS : Fondamentaux\",\"version\":\"0\"},\r\n"

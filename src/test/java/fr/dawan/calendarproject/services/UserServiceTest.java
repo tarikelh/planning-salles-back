@@ -515,6 +515,7 @@ class UserServiceTest {
 		assertFalse(new User().toString().contains("@"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldFetchAllDG2UsersWhenUserExistInDb() {
 		// mocking
@@ -532,6 +533,7 @@ class UserServiceTest {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void shouldFetchAllDG2UsersWhenUserDoNotExistInDb() {
 		// mocking
@@ -548,4 +550,5 @@ class UserServiceTest {
 			userService.fetchAllDG2Users("userEmail", "userPassword");
 		});
 	}
+	
 }
