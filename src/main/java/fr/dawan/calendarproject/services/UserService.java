@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.ResetResponse;
 
 public interface UserService {
 
@@ -26,5 +27,7 @@ public interface UserService {
 	boolean checkIntegrity(AdvancedUserDto u);
 
 	void fetchAllDG2Users(String email, String password) throws Exception;
+
+	boolean resetPassword(ResetResponse reset) throws Exception;
 
 }

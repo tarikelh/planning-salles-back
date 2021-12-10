@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -83,17 +84,17 @@ class ResetPasswordControllerTest {
 	public static void afterAll() throws Exception {
 		TokenSaver.getTokensbyemail().remove(email);
 	}
-
+	
+	
 	@Test
 	void shouldResetPassword() throws Exception {
-
-		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
-		when(userService.findByEmail(email)).thenReturn(adUserDto);
-		when(userService.saveOrUpdate(any(AdvancedUserDto.class))).thenReturn(adUserDto);
 		
+		when(userService.resetPassword(any(ResetResponse.class))).thenReturn(true);
 		mockMvc.perform(post("/reset-password").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.accept(MediaType.APPLICATION_JSON).content(resetResponseJson)).andExpect(status().isOk());
+		
 	}
+	
 	
 	@Test
 	void shouldReturnErrorWhenUserNotKnownForResetPassword() throws Exception {
