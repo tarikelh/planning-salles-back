@@ -78,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
 			Optional<User> trainer = userRepository.findById(uId);
 
 			String subject = "Planning Intervention " + trainer.get().getFullname();
-			String content = "Bonjour" + trainer.get().getFullname() + ".\n"
+			String content = "Bonjour " + trainer.get().getFullname() + ".\n"
 					+ "Veuillez trouvez ci-joint le planning complet de vos interventions.";
 
 			VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
@@ -186,7 +186,7 @@ public class EmailServiceImpl implements EmailService {
 	 */
 
 	@Override
-	public void sendMailForResetPassword(UserDto uDto) {
+	public void sendMailForResetPassword(UserDto uDto) throws Exception {
 		Map<String, Object> claims = new HashMap<String, Object>();
 		claims.put("name", uDto.getFullName());
 
@@ -198,15 +198,11 @@ public class EmailServiceImpl implements EmailService {
 		        "<HTML><body> <a href=\""+ resetLink +"\">Réinitialiser mon mot de passe</a></body></HTML>";
 
 		MimeMessage msg = emailSender.createMimeMessage();
-		
-		try {
 			msg.addRecipients(Message.RecipientType.TO, uDto.getEmail());
 			msg.setSubject("Réinitialisation du mot de passe du Calendrier Dawan");
 			msg.setText("Bonjour " + uDto.getLastName() + ". <br /><br />Ce message vous a été envoyé car vous avez oublié votre mot de passe sur l'application"
 					+ " Calendrier Dawan. <br />Pour réinitialiser votre mot de passe, veuillez cliquer sur ce lien : " + body, "UTF-8", "html");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		
 
 		emailSender.send(msg);

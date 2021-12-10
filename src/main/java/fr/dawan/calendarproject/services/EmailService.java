@@ -23,6 +23,6 @@ public interface EmailService {
 	
 	MimeBodyPart createCalendarBodyPart(Calendar calendar, String filename) throws Exception;
 
-	void sendMailForResetPassword(UserDto uDto);
+	void sendMailForResetPassword(UserDto uDto) throws Exception;
 
 }

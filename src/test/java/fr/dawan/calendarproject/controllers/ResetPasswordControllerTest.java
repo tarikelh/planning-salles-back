@@ -84,7 +84,16 @@ class ResetPasswordControllerTest {
 	public static void afterAll() throws Exception {
 		TokenSaver.tokensByEmail.remove(email);
 	}
-
+	
+	
+	@Test
+	void shouldResetPassword() throws Exception {
+		
+		when(userService.resetPassword(any(ResetResponse.class))).thenReturn(true);
+		mockMvc.perform(post("/reset-password").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON).content(resetResponseJson)).andExpect(status().isOk());
+		
+	}
 	
 	
 	@Test
