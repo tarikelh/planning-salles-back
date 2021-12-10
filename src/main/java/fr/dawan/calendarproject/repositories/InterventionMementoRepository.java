@@ -17,7 +17,7 @@ public interface InterventionMementoRepository extends JpaRepository<Interventio
 	
 	List<InterventionMemento> findAllByOrderByIdDesc(Pageable pageable);
 
-	@Query("SELECT COUNT(*) FROM InterventionMemento i WHERE i.state.interventionId = :interventionId")
+	@Query("SELECT COUNT(i.id) FROM InterventionMemento i WHERE i.state.interventionId = :interventionId")
 	long countByInterventionId(@Param("interventionId") long interventionId);
 	
 	// get the last intervention memento to compare with

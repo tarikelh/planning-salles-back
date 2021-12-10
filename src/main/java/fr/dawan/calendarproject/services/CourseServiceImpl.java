@@ -229,8 +229,6 @@ public class CourseServiceImpl implements CourseService {
 					courseRepository.saveAndFlush(course);
 				}
 			}
-		} else {
-			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 
