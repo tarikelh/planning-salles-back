@@ -19,10 +19,14 @@ public class InterventionMementoDto implements Cloneable {
 	private long locationId;
 
 	private String locationCity;
+	
+	private long locationIdDg2;
 
 	private long courseId;
 
 	private String courseTitle;
+	
+	private long courseIdDg2;
 
 	private long userId;
 
@@ -50,18 +54,19 @@ public class InterventionMementoDto implements Cloneable {
 	}
 
 	public InterventionMementoDto(long interventionId, long idDg2, String slug, String comment, long locationId,
-			String locationCity, long courseId, String courseTitle, long userId, String userFullName,
-			int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
-			LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
-		super();
+			String locationCity, long locationIdDg2, long courseId, String courseTitle, long courseIdDg2, long userId,
+			String userFullName, int attendeesCount, String type, boolean validated, LocalDate dateStart,
+			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
 		this.interventionId = interventionId;
 		this.idDg2 = idDg2;
 		this.slug = slug;
 		this.comment = comment;
 		this.locationId = locationId;
 		this.locationCity = locationCity;
+		this.locationIdDg2 = locationIdDg2;
 		this.courseId = courseId;
 		this.courseTitle = courseTitle;
+		this.courseIdDg2 = courseIdDg2;
 		this.userId = userId;
 		this.userFullName = userFullName;
 		this.attendeesCount = attendeesCount;
@@ -75,7 +80,6 @@ public class InterventionMementoDto implements Cloneable {
 		this.isMaster = isMaster;
 	}
 
-	
 	public long getInterventionId() {
 		return interventionId;
 	}
@@ -92,12 +96,28 @@ public class InterventionMementoDto implements Cloneable {
 		this.locationId = locationId;
 	}
 
+	public long getLocationIdDg2() {
+		return locationIdDg2;
+	}
+
+	public void setLocationIdDg2(long locationIdDg2) {
+		this.locationIdDg2 = locationIdDg2;
+	}
+
 	public long getCourseId() {
 		return courseId;
 	}
 
 	public void setCourseId(long courseId) {
 		this.courseId = courseId;
+	}
+
+	public long getCourseIdDg2() {
+		return courseIdDg2;
+	}
+
+	public void setCourseIdDg2(long courseIdDg2) {
+		this.courseIdDg2 = courseIdDg2;
 	}
 
 	public long getUserId() {
@@ -236,7 +256,7 @@ public class InterventionMementoDto implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("interventionId=");
+		builder.append("InterventionMementoDto [interventionId=");
 		builder.append(interventionId);
 		builder.append(", idDg2=");
 		builder.append(idDg2);
@@ -248,10 +268,14 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(locationId);
 		builder.append(", locationCity=");
 		builder.append(locationCity);
+		builder.append(", locationIdDg2=");
+		builder.append(locationIdDg2);
 		builder.append(", courseId=");
 		builder.append(courseId);
 		builder.append(", courseTitle=");
 		builder.append(courseTitle);
+		builder.append(", courseIdDg2=");
+		builder.append(courseIdDg2);
 		builder.append(", userId=");
 		builder.append(userId);
 		builder.append(", userFullName=");
@@ -274,6 +298,7 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(masterInterventionId);
 		builder.append(", isMaster=");
 		builder.append(isMaster);
+		builder.append("]");
 		return builder.toString();
 	}
 

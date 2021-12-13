@@ -32,6 +32,7 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
@@ -727,10 +728,19 @@ public class InterventionServiceImpl implements InterventionService {
 
 			for (InterventionDG2Dto iDG2 : lResJson) {
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
-				i.setCourse(courseRepository.findById(iDG2.getCourseId()).orElse(null));
-				i.setLocation(locationRepository.findById(iDG2.getLocationId()).orElse(null));
+				//
+				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
+				
+				if(!c.isPresent()) {
+					iDG2.getCourseId();
+					i.setCourse(getCourseBySlug(iDG2));
+				}
+				else
+					i.setCourse(c.get());
+				
+				i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
 				i.setUser(userRepository.findByIdDg2(iDG2.getUserId()).orElse(null));
-				i.setMasterIntervention(interventionRepository.findById(iDG2.getMasterInterventionId()).orElse(null));
+				i.setMasterIntervention(interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 
 				Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
 
@@ -748,5 +758,10 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		return count;
+	}
+	
+	private Course getCourseBySlug(InterventionDG2Dto iDG2) {
+		String slug = iDG2.getSlug().substring(0, iDG2.getSlug().length() - 10);
+		return courseRepository.findBySlug(slug).orElse(null);
 	}
 }

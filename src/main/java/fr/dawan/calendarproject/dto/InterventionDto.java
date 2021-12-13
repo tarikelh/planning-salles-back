@@ -14,8 +14,12 @@ public class InterventionDto implements Cloneable {
 	private String comment;
 
 	private long locationId;
+	
+	private long locationIdDg2;
 
 	private long courseId;
+	
+	private long courseIdDg2;
 
 	private long userId;
 	
@@ -42,16 +46,19 @@ public class InterventionDto implements Cloneable {
 	public InterventionDto() {
 	}
 
-	public InterventionDto(long id, long idDg2, String slug, String comment, long locationId, long courseId,
-			long userId, int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
-			LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster, int version) {
+	public InterventionDto(long id, long idDg2, String slug, String comment, long locationId, long locationIdDg2,
+			long courseId, long courseIdDg2, long userId, int attendeesCount, String type, boolean validated,
+			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId,
+			boolean isMaster, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
 		this.comment = comment;
 		this.locationId = locationId;
+		this.locationIdDg2 = locationIdDg2;
 		this.courseId = courseId;
+		this.courseIdDg2 = courseIdDg2;
 		this.userId = userId;
 		this.attendeesCount = attendeesCount;
 		this.type = type;
@@ -64,7 +71,6 @@ public class InterventionDto implements Cloneable {
 		this.isMaster = isMaster;
 		this.version = version;
 	}
-
 
 	public long getId() {
 		return id;
@@ -130,12 +136,28 @@ public class InterventionDto implements Cloneable {
 		this.locationId = locationId;
 	}
 
+	public long getLocationIdDg2() {
+		return locationIdDg2;
+	}
+
+	public void setLocationIdDg2(long locationIdDg2) {
+		this.locationIdDg2 = locationIdDg2;
+	}
+
 	public long getCourseId() {
 		return courseId;
 	}
 
 	public void setCourseId(long courseId) {
 		this.courseId = courseId;
+	}
+
+	public long getCourseIdDg2() {
+		return courseIdDg2;
+	}
+
+	public void setCourseIdDg2(long courseIdDg2) {
+		this.courseIdDg2 = courseIdDg2;
 	}
 
 	public long getUserId() {

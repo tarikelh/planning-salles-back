@@ -18,6 +18,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 	Course findByTitle(@Param("id") long id, @Param("title") String title);
 
 	Optional<Course> findBySlug(String slug);
+	
+	Optional<Course> findByIdDg2(long idDg2);
 
 	Course findByTitleAndDuration(String title, String duration);
 

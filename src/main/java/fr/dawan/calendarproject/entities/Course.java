@@ -13,6 +13,9 @@ public class Course {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(nullable = true)
+	private long idDg2;
 
 	@Column(nullable = false, length = 350)
 	private String title;
@@ -31,8 +34,9 @@ public class Course {
 
 	}
 
-	public Course(long id, String title, String duration, String slug, int version) {
+	public Course(long id, long idDg2, String title, String duration, String slug, int version) {
 		setId(id);
+		setIdDg2(idDg2);
 		setTitle(title);
 		setDuration(duration);
 		setSlug(slug);
@@ -45,6 +49,14 @@ public class Course {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getTitle() {
@@ -81,8 +93,21 @@ public class Course {
 
 	@Override
 	public String toString() {
-		return "Course [id=" + id + ", title=" + title + ", duration=" + duration + ", slug=" + slug + ", version="
-				+ version + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Course [id=");
+		builder.append(id);
+		builder.append(", idDg2=");
+		builder.append(idDg2);
+		builder.append(", title=");
+		builder.append(title);
+		builder.append(", duration=");
+		builder.append(duration);
+		builder.append(", slug=");
+		builder.append(slug);
+		builder.append(", version=");
+		builder.append(version);
+		builder.append("]");
+		return builder.toString();
 	}
 
 	@Override
