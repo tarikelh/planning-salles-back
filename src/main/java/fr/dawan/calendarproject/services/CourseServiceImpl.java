@@ -236,8 +236,6 @@ public class CourseServiceImpl implements CourseService {
 					}
 				}
 			}
-		} else {
-			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
 

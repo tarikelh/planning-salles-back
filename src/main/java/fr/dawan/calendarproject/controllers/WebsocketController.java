@@ -1,7 +1,5 @@
 package fr.dawan.calendarproject.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -9,6 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import fr.dawan.calendarproject.dto.MessageWebsocketDto;
+import fr.dawan.calendarproject.exceptions.WebSocketException;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
@@ -17,8 +16,6 @@ public class WebsocketController {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-	
-	private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
 
 	// Handles messages from /app/chat. (Note the Spring adds the /app prefix for
 	// us).
@@ -26,20 +23,21 @@ public class WebsocketController {
 	// Sends the return value of this method to /topic/messages
 	@SendTo("/topic/messages")
 	public MessageWebsocketDto getMessages(MessageWebsocketDto messageWebsocketDto,
-			@Header(name = "token") String header) throws Exception {
+			@Header(name = "token") String header) throws WebSocketException {
 
 		// verify the token before to send a websocket message
 		String accessToken = header.split(" ")[1];
 
 		if (jwtTokenUtil.isTokenExpired(accessToken)) {
-			throw new Exception("Websocket Error : token expired !");
+			throw new WebSocketException("Websocket Error : token expired !");
 		}
 
 		String email = jwtTokenUtil.getUsernameFromToken(accessToken);
-		if (!TokenSaver.getTokensbyemail().containsKey(email) || !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
-			throw new Exception("Websocket Error : token not known !");
+		if (!TokenSaver.getTokensbyemail().containsKey(email)
+				|| !TokenSaver.getTokensbyemail().get(email).equals(accessToken)) {
+			throw new WebSocketException("Websocket Error : token not known !");
 		}
-			
+
 		// Verify message format from the websocket
 		if (messageWebsocketDto.getId() != null && messageWebsocketDto.getEvent() == null
 				&& messageWebsocketDto.getType().equals("DELETE")) {
@@ -48,7 +46,7 @@ public class WebsocketController {
 				&& (messageWebsocketDto.getType().equals("ADD") || messageWebsocketDto.getType().equals("EDIT")))
 			return messageWebsocketDto;
 		else {
-			throw new Exception("Websocket Error : incorrect message !");
+			throw new WebSocketException("Websocket Error : incorrect message !");
 		}
 
 	}

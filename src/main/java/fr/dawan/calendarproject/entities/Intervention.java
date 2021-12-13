@@ -51,11 +51,9 @@ public class Intervention implements Cloneable {
 	@Column(nullable = false)
 	private boolean validated;
 
-	// dateDebut, dateFin, many interv to one Employe, many interv. to one
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateStart;
 
-	// OU - @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dateEnd;
 

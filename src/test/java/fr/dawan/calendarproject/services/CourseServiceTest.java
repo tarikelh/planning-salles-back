@@ -147,28 +147,28 @@ class CourseServiceTest {
 	}
 
 	@Test
-	void shouldGetInterventionById() {
-		long intervId = 2;
+	void shouldGetCourseById() {
+		long course = 2;
 
 		CourseDto expected = cDtos.get(1);
 
-		when(courseRepository.findById(intervId)).thenReturn(Optional.of(courses.get(1)));
+		when(courseRepository.findById(course)).thenReturn(Optional.of(courses.get(1)));
 		when(courseMapper.courseToCourseDto(courses.get(1))).thenReturn(cDtos.get(1));
 
-		CourseDto result = courseService.getById(intervId);
+		CourseDto result = courseService.getById(course);
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expected);
-		assertEquals(result.getId(), intervId);
+		assertEquals(result.getId(), course);
 	}
 
 	@Test
 	void shouldReturnNullWhenGetByIdWhenWrongIdProvided() {
-		long intervId = -15;
+		long course = -15;
 
-		when(courseRepository.findById(intervId)).thenReturn(Optional.empty());
+		when(courseRepository.findById(course)).thenReturn(Optional.empty());
 
-		assertThat(courseService.getById(intervId)).isNull();
+		assertThat(courseService.getById(course)).isNull();
 	}
 
 	@Test
