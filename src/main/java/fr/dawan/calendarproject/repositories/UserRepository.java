@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			String email, Pageable pageable);
 
 	@Query("FROM User u WHERE u.email = :email")
-	User findByEmail(@Param("email") String email);
+	Optional<User> findByEmail(@Param("email") String email);
 
 	@Query("FROM User u WHERE u.email = :email AND u.id <> :id")
 	User findDuplicateEmail(@Param("email") String email, @Param("id") long id);
@@ -33,5 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	// Verifier si le le group by id pose PB ?
 	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type")
 	List<User> findAllByType(@Param("type") UserType type);
+
+	Optional<User> findByIdDg2(long userId);
 
 }

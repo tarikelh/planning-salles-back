@@ -249,10 +249,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public AdvancedUserDto findByEmail(String email) {
-		User u = userRepository.findByEmail(email);
+		Optional<User> u = userRepository.findByEmail(email);
 
-		if (u != null)
-			return userMapper.userToAdvancedUserDto(u);
+		if (u.isPresent())
+			return userMapper.userToAdvancedUserDto(u.get());
 
 		return null;
 	}
@@ -362,15 +362,25 @@ public class UserServiceImpl implements UserService {
 			for (UserDG2Dto cDG2 : lResJson) {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
-				userImported.setLocation(locationRepository.findById(cDG2.getLocationId()).orElse(null));
+				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
 
-				Optional<User> optUser = userRepository.findById(userImported.getId());
+				Optional<User> optUser = userRepository.findByEmail(userImported.getEmail());
 
-				if (optUser.isPresent() && !optUser.get().equals(userImported)) {
-					userImported.setSkills(optUser.get().getSkills());
-					userRepository.saveAndFlush(userImported);
-				} else {
-					userRepository.saveAndFlush(userImported);
+				if (!optUser.isPresent() || !optUser.get().equals(userImported)) {
+					if (userImported.getSkills() == null) {
+						userImported.setSkills(new HashSet<>());
+					}
+
+					if (userImported.getPassword() == null) {
+						userImported.setPassword(
+								"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
+					}
+					try {
+						userRepository.saveAndFlush(userImported);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		} else
@@ -418,7 +428,7 @@ public class UserServiceImpl implements UserService {
 		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
 		String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
 
-		User u = userRepository.findByEmail(email);
+		User u = userRepository.findByEmail(email).orElse(null);
 		String currentPwd = "";
 
 		if (u != null)

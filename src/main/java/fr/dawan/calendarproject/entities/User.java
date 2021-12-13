@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -23,7 +25,7 @@ import fr.dawan.calendarproject.enums.UserType;
 @Entity
 public class User {
 	@Id
-	@Column(unique = true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(nullable = false, length = 255)
@@ -38,12 +40,12 @@ public class User {
 	@Column(unique = true, nullable = false, length = 255)
 	private String email;
 
-	@Column(nullable = false, columnDefinition = "varchar(150) default '23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619'")
+	@Column(nullable = false)
 	private String password;
 
 	@ManyToMany()
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-	private Set<Skill> skills = new HashSet<Skill>();
+	private Set<Skill> skills = new HashSet<>();
 
 	@Enumerated(EnumType.STRING)
 	private UserType type;
@@ -54,16 +56,19 @@ public class User {
 	@Column(nullable = true, columnDefinition = "TEXT")
 	private String imagePath;
 
+	@Column(unique = true)
+	private long idDg2;
+
 	@Version
 	private int version;
 
 	// Constructor important pour la sérialization (exemple Jackson)
 	public User() {
-		setSkills(new HashSet<Skill>());
+		setSkills(new HashSet<>());
 	}
 
 	public User(long id, String firstName, String lastName, Location location, String email, String password,
-			Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+			long idDg2, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
 		setId(id);
 		setFirstName(firstName);
 		setLastName(lastName);
@@ -74,6 +79,7 @@ public class User {
 		setType(type);
 		setCompany(company);
 		setImagePath(imagePath);
+		setIdDg2(idDg2);
 		setVersion(version);
 	}
 
@@ -123,6 +129,14 @@ public class User {
 
 	public void setType(UserType type) {
 		this.type = type;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public int getVersion() {
@@ -185,7 +199,7 @@ public class User {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		return result;
 	}
 
@@ -198,7 +212,10 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (id != other.id)
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
 			return false;
 		return true;
 	}

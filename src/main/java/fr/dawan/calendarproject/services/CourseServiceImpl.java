@@ -162,7 +162,11 @@ public class CourseServiceImpl implements CourseService {
 
 		Course c = courseMapper.courseDtoToCouse(courseDto);
 
-		c = courseRepository.saveAndFlush(c);
+		try {
+			c = courseRepository.saveAndFlush(c);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return courseMapper.courseToCourseDto(c);
 	}
 
@@ -194,12 +198,12 @@ public class CourseServiceImpl implements CourseService {
 	 * Fetches all courses in the Dawan API.
 	 * 
 	 * @param email A String defining a user's email.
-	 * @param pwd A String defining a user's password.
+	 * @param pwd   A String defining a user's password.
 	 * 
 	 * @exception Exception Returns an exception if the request fails.
 	 *
 	 */
-	
+
 	@Override
 	public void fetchAllDG2Courses(String email, String password) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -221,12 +225,15 @@ public class CourseServiceImpl implements CourseService {
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course courseImport = courseMapper.courseDG2DtoToCourse(cDG2);
-				Course course;
-				Optional<Course> optCourse = courseRepository.findById(courseImport.getId());
+				Optional<Course> optCourse = courseRepository.findBySlug(courseImport.getSlug());
 
-				if (optCourse.isPresent() && optCourse.get().equals(courseImport)) {
-					course = courseImport;
-					courseRepository.saveAndFlush(course);
+				if (!optCourse.isPresent() || !optCourse.get().equals(courseImport)) {
+					try {
+						courseRepository.saveAndFlush(courseImport);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		} else {

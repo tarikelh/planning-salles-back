@@ -9,8 +9,9 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import fr.dawan.calendarproject.dto.InterventionMementoDto;
@@ -25,7 +26,7 @@ import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.InterventionMementoMapper;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@RunWith(MockitoJUnitRunner.class)
 class InterventionMementoMapperTest {
 
 	@Autowired

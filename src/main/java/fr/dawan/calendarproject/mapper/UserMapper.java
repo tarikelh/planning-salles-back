@@ -56,5 +56,6 @@ public interface UserMapper {
 	@Mapping(target = "enumType", source = "type")
 	@Mapping(target = "location", ignore = true)
 	@Mapping(target = "skills", ignore = true)
+	@Mapping(target = "idDg2", source = "id")
 	User userDG2DtoToUser(UserDG2Dto cDG2);
 }

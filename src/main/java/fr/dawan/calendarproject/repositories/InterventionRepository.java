@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.repositories;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -58,5 +59,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")
 	List<Intervention> getAllByUserId(@Param("userId") long userId);
+
+	Optional<Intervention> findBySlug(String slug);
 
 }

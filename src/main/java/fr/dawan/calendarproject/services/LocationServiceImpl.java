@@ -45,7 +45,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	RestTemplate restTemplate;
-	
+
 	/**
 	 * Fetches all of the existing locations.
 	 * 
@@ -63,15 +63,18 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Fetches all of the existing locations, with a pagination system.
 	 * 
-	 * @param page An integer representing the current page displaying the locations.
-	 * @param size An integer defining the number of locations displayed by page.
-	 * @param search A String representing the admin's input to search for a specific location.
+	 * @param page   An integer representing the current page displaying the
+	 *               locations.
+	 * @param size   An integer defining the number of locations displayed by page.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific location.
 	 * 
-	 * @return result Returns a list of locations, according to the pagination criteria.
+	 * @return result Returns a list of locations, according to the pagination
+	 *         criteria.
 	 *
 	 */
 
@@ -93,13 +96,15 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Counts the number of locations.
 	 * 
-	 * @param search A String representing the admin's input to search for a specific location.
+	 * @param search A String representing the admin's input to search for a
+	 *               specific location.
 	 * 
-	 * @return CountDto Returns the number of locations, according to the search criteria.
+	 * @return CountDto Returns the number of locations, according to the search
+	 *         criteria.
 	 *
 	 */
 
@@ -107,7 +112,7 @@ public class LocationServiceImpl implements LocationService {
 	public CountDto count(String search) {
 		return new CountDto(locationRepository.countByCityContaining(search));
 	}
-	
+
 	/**
 	 * Fetches a single location, according to their id.
 	 * 
@@ -124,7 +129,7 @@ public class LocationServiceImpl implements LocationService {
 			return locationMapper.locationToLocationDto(l.get());
 		return null;
 	}
-	
+
 	/**
 	 * Delete a single location, according to their id.
 	 * 
@@ -136,7 +141,7 @@ public class LocationServiceImpl implements LocationService {
 	public void deleteById(long id) {
 		locationRepository.deleteById(id);
 	}
-	
+
 	/**
 	 * Adds a new location or updates an existing one.
 	 * 
@@ -157,13 +162,14 @@ public class LocationServiceImpl implements LocationService {
 		l = locationRepository.saveAndFlush(l);
 		return locationMapper.locationToLocationDto(l);
 	}
-	
+
 	/**
 	 * Checks whether a newly registered location is valid.
 	 * 
 	 * @param l An object representing an Location.
 	 * 
-	 * @return boolean Returns a boolean to say whether or not the location is correct.
+	 * @return boolean Returns a boolean to say whether or not the location is
+	 *         correct.
 	 *
 	 */
 
@@ -196,7 +202,7 @@ public class LocationServiceImpl implements LocationService {
 	 * Fetches all locations in the Dawan API.
 	 * 
 	 * @param email A String defining a user's email.
-	 * @param pwd A String defining a user's password.
+	 * @param pwd   A String defining a user's password.
 	 * 
 	 * @exception Exception Returns an exception if the request fails.
 	 *
@@ -223,16 +229,17 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
-				Location location;
-				Optional<Location> optLocation = locationRepository.findById(locationImport.getId());
+				Optional<Location> optLocation = locationRepository.findByCity(locationImport.getCity());
 
-				if (optLocation.isPresent() && optLocation.get().equals(locationImport)) {
-					location = locationImport;
-					locationRepository.saveAndFlush(location);
-				} else {
-					location = locationImport;
-					location.setColor("#00cc99");
-					locationRepository.saveAndFlush(location);
+				if (!optLocation.isPresent() || !optLocation.get().equals(locationImport)) {
+					if (locationImport.getColor() == null) {
+						locationImport.setColor("#00cc99");
+					}
+					try {
+						locationRepository.saveAndFlush(locationImport);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		} else {

@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
@@ -9,7 +11,7 @@ import javax.persistence.Version;
 public class Course {
 
 	@Id
-	@Column(unique = true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(nullable = false, length = 350)

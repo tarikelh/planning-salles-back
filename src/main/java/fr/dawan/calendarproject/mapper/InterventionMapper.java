@@ -23,6 +23,7 @@ public interface InterventionMapper {
 	@Mapping(target = "masterInterventionId", source = "masterIntervention.id")
 	InterventionDto interventionToInterventionDto(Intervention intervention);
 
+	@Mapping(target = "idDg2", ignore = true)
 	@Mapping(target = "course", source = "courseId")
 	@Mapping(target = "location", source = "locationId")
 	@Mapping(target = "user", source = "userId")
@@ -34,13 +35,14 @@ public interface InterventionMapper {
 
 	List<Intervention> listInterventionDtoToListIntervention(List<InterventionDto> interventionDtos);
 
+	@Mapping(target = "idDg2", source = "id")
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "dateStart", source = "dateStart", dateFormat = "yyyy-MM-dd")
 	@Mapping(target = "dateEnd", source = "dateEnd", dateFormat = "yyyy-MM-dd")
 	@Mapping(target = "course", ignore = true)
 	@Mapping(target = "location", ignore = true)
 	@Mapping(target = "user", ignore = true)
-	@Mapping(target = "masterIntervention", ignore=true)
+	@Mapping(target = "masterIntervention", ignore = true)
 	@Mapping(target = "version", ignore = true)
 	@Mapping(target = "comment", ignore = true)
 	@Mapping(target = "timeStart", ignore = true)

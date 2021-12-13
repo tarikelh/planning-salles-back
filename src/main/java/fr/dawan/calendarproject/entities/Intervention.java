@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
@@ -19,8 +21,11 @@ import fr.dawan.calendarproject.enums.InterventionStatus;
 public class Intervention implements Cloneable {
 
 	@Id
-	@Column(unique = true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+
+	@Column(unique = true)
+	private long idDg2;
 
 	@Column(nullable = true, length = 255, unique = true)
 	private String slug;
@@ -71,7 +76,7 @@ public class Intervention implements Cloneable {
 	public Intervention() {
 	}
 
-	public Intervention(long id, String slug, String comment, Location location, Course course, User user,
+	public Intervention(long id, long idDg2, String slug, String comment, Location location, Course course, User user,
 			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
 			boolean isMaster, int version) {
@@ -90,6 +95,7 @@ public class Intervention implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterIntervention = masterIntervention;
 		this.isMaster = isMaster;
+		this.idDg2 = idDg2;
 		this.version = version;
 	}
 
@@ -161,6 +167,14 @@ public class Intervention implements Cloneable {
 		return dateEnd;
 	}
 
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
+	}
+
 	public void setDateEnd(LocalDate dateEnd) {
 		this.dateEnd = dateEnd;
 	}
@@ -225,22 +239,7 @@ public class Intervention implements Cloneable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + attendeesCount;
-		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		result = prime * result + ((course == null) ? 0 : course.hashCode());
-		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
-		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + (isMaster ? 1231 : 1237);
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((masterIntervention == null) ? 0 : masterIntervention.hashCode());
-		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
-		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
-		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + (validated ? 1231 : 1237);
-		result = prime * result + version;
+		result = prime * result + (int) (idDg2 ^ (idDg2 >>> 32));
 		return result;
 	}
 
@@ -253,67 +252,7 @@ public class Intervention implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Intervention other = (Intervention) obj;
-		if (attendeesCount != other.attendeesCount)
-			return false;
-		if (comment == null) {
-			if (other.comment != null)
-				return false;
-		} else if (!comment.equals(other.comment))
-			return false;
-		if (course == null) {
-			if (other.course != null)
-				return false;
-		} else if (!course.equals(other.course))
-			return false;
-		if (dateEnd == null) {
-			if (other.dateEnd != null)
-				return false;
-		} else if (!dateEnd.equals(other.dateEnd))
-			return false;
-		if (dateStart == null) {
-			if (other.dateStart != null)
-				return false;
-		} else if (!dateStart.equals(other.dateStart))
-			return false;
-		if (id != other.id)
-			return false;
-		if (isMaster != other.isMaster)
-			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (masterIntervention == null) {
-			if (other.masterIntervention != null)
-				return false;
-		} else if (!masterIntervention.equals(other.masterIntervention))
-			return false;
-		if (slug == null) {
-			if (other.slug != null)
-				return false;
-		} else if (!slug.equals(other.slug))
-			return false;
-		if (timeEnd == null) {
-			if (other.timeEnd != null)
-				return false;
-		} else if (!timeEnd.equals(other.timeEnd))
-			return false;
-		if (timeStart == null) {
-			if (other.timeStart != null)
-				return false;
-		} else if (!timeStart.equals(other.timeStart))
-			return false;
-		if (type != other.type)
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		if (validated != other.validated)
-			return false;
-		if (version != other.version)
+		if (idDg2 != other.idDg2)
 			return false;
 		return true;
 	}
