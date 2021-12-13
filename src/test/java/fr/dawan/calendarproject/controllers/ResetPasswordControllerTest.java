@@ -67,7 +67,7 @@ class ResetPasswordControllerTest {
 	public void beforeEach() throws Exception {	
 		TokenSaver.getTokensbyemail().put(email, "TokenTestResetPassword");
 		
-		adUserDto = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
+		adUserDto = new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 0,
 				"dbalavoine@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);
 		

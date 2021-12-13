@@ -49,19 +49,19 @@ class InterventionMementoMapperTest {
 		skills.add(new Skill(2, "c#", null, 4));
 		skills.add(new Skill(3, "java", null, 5));
 
-		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
+		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
+		masterIntervention = new Intervention(3, 3, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
 				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
 				0);
 
-		intervention = new Intervention(1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
+		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
 				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
 				masterIntervention, false, 0);
 
-		interventionMementoDto = new InterventionMementoDto(0, "I am a new Intervention", 1, "Bordeaux", 1,
-				"Java for intermediate level", 1, "Admin Fullname", "SUR_MESURE", true, LocalDate.now(),
+		interventionMementoDto = new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Bordeaux", 1,
+				"Java for intermediate level", 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),
 				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false);
 	}
 

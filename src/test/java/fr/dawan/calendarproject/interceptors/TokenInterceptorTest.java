@@ -47,7 +47,7 @@ class TokenInterceptorTest {
 		TokenSaver.getTokensbyemail().put(email, "tokenTestTokenInterceptor123");
 		TokenSaver.getTokensbyemail().put(emailNonAdmin, "tokenTestTokenInterceptor456");
 		
-		user = new AdvancedUserDto(1, "Daniel", "Balavoine", 0,
+		user = new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 0,
 				"dbalavoine@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", 0, null);
 	}
@@ -138,7 +138,7 @@ class TokenInterceptorTest {
 	
 	@Test
 	void shouldThrowExceptionWithNoAdminTryingOtherThanGet() throws Exception {
-		AdvancedUserDto userNonAdmin = new AdvancedUserDto(2, "Lucie", "Balavoine", 0,
+		AdvancedUserDto userNonAdmin = new AdvancedUserDto(2, 2, "Lucie", "Balavoine", 0,
 				"lbalavoine@dawan.fr", "testPassword2",
 				"FORMATEUR", "DAWAN", "", 0, null);
 		

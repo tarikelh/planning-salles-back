@@ -23,7 +23,6 @@ public interface InterventionMapper {
 	@Mapping(target = "masterInterventionId", source = "masterIntervention.id")
 	InterventionDto interventionToInterventionDto(Intervention intervention);
 
-	@Mapping(target = "idDg2", ignore = true)
 	@Mapping(target = "course", source = "courseId")
 	@Mapping(target = "location", source = "locationId")
 	@Mapping(target = "user", source = "userId")

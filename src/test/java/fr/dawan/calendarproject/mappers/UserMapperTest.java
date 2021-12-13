@@ -70,19 +70,19 @@ class UserMapperTest {
 		location = new Location(1, "paris", "#FFFFFF", 1);
 		location2 = new Location(4, "Lille", "#FFFFF1", 1);
 
-		advUserDto = new AdvancedUserDto(1, "advfirstname", "advlastname", 1, "advname@dawan.fr", "dsfghhrghzrazrfg",
+		advUserDto = new AdvancedUserDto(1, 1, "advfirstname", "advlastname", 1, "advname@dawan.fr", "dsfghhrghzrazrfg",
 				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png", 1, null);
 
-		userDto = new UserDto(2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
+		userDto = new UserDto(2, 2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
 				"DAWAN", "zfzfzh.pngé", 2);
 
 		userDG2Dto = new UserDG2Dto(2, "dtofustname", "dtolastname", 1, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
 				"DAWAN", "zfzfzh.pngé", skillsId, 0);
 
-		user = new User(3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
+		user = new User(3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", 1);
 
-		user2 = new User(5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
+		user2 = new User(5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png", 1);
 
 		usersSet.add(user);

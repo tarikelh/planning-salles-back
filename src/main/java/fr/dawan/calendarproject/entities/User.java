@@ -27,6 +27,9 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(unique = true)
+	private long idDg2;
 
 	@Column(nullable = false, length = 255)
 	private String firstName;
@@ -56,9 +59,6 @@ public class User {
 	@Column(nullable = true, columnDefinition = "TEXT")
 	private String imagePath;
 
-	@Column(unique = true)
-	private long idDg2;
-
 	@Version
 	private int version;
 
@@ -67,9 +67,10 @@ public class User {
 		setSkills(new HashSet<>());
 	}
 
-	public User(long id, String firstName, String lastName, Location location, String email, String password,
-			long idDg2, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+	public User(long id, long idDg2, String firstName, String lastName, Location location, String email, String password,
+			 Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
 		setId(id);
+		setIdDg2(idDg2);
 		setFirstName(firstName);
 		setLastName(lastName);
 		setLocation(location);
@@ -79,7 +80,6 @@ public class User {
 		setType(type);
 		setCompany(company);
 		setImagePath(imagePath);
-		setIdDg2(idDg2);
 		setVersion(version);
 	}
 

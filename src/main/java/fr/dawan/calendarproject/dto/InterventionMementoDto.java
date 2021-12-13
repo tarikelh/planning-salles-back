@@ -9,6 +9,10 @@ import javax.persistence.Embeddable;
 public class InterventionMementoDto implements Cloneable {
 
 	private long interventionId;
+	
+	private long idDg2;
+	
+	private String slug;
 
 	private String comment;
 
@@ -23,6 +27,8 @@ public class InterventionMementoDto implements Cloneable {
 	private long userId;
 
 	private String userFullName;
+	
+	private int attendeesCount;
 
 	private String type;
 
@@ -43,11 +49,14 @@ public class InterventionMementoDto implements Cloneable {
 	public InterventionMementoDto() {
 	}
 
-	public InterventionMementoDto(long interventionId, String comment, long locationId, String locationCity,
-			long courseId, String courseTitle, long userId, String userFullName, String type, boolean validated,
-			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId,
-			boolean isMaster) {
+	public InterventionMementoDto(long interventionId, long idDg2, String slug, String comment, long locationId,
+			String locationCity, long courseId, String courseTitle, long userId, String userFullName,
+			int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
+			LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
+		super();
 		this.interventionId = interventionId;
+		this.idDg2 = idDg2;
+		this.slug = slug;
 		this.comment = comment;
 		this.locationId = locationId;
 		this.locationCity = locationCity;
@@ -55,6 +64,7 @@ public class InterventionMementoDto implements Cloneable {
 		this.courseTitle = courseTitle;
 		this.userId = userId;
 		this.userFullName = userFullName;
+		this.attendeesCount = attendeesCount;
 		this.type = type;
 		this.validated = validated;
 		this.dateStart = dateStart;
@@ -65,6 +75,7 @@ public class InterventionMementoDto implements Cloneable {
 		this.isMaster = isMaster;
 	}
 
+	
 	public long getInterventionId() {
 		return interventionId;
 	}
@@ -193,6 +204,30 @@ public class InterventionMementoDto implements Cloneable {
 		this.timeEnd = timeEnd;
 	}
 
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
+	}
+
+	public String getSlug() {
+		return slug;
+	}
+
+	public void setSlug(String slug) {
+		this.slug = slug;
+	}
+
+	public int getAttendeesCount() {
+		return attendeesCount;
+	}
+
+	public void setAttendeesCount(int attendeesCount) {
+		this.attendeesCount = attendeesCount;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -201,36 +236,43 @@ public class InterventionMementoDto implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		builder.append("interventionId=");
 		builder.append(interventionId);
-		builder.append(";");
+		builder.append(", idDg2=");
+		builder.append(idDg2);
+		builder.append(", slug=");
+		builder.append(slug);
+		builder.append(", comment=");
 		builder.append(comment);
-		builder.append(";");
+		builder.append(", locationId=");
 		builder.append(locationId);
-		builder.append(";");
-		builder.append(locationCity); 
-		builder.append(";");
+		builder.append(", locationCity=");
+		builder.append(locationCity);
+		builder.append(", courseId=");
 		builder.append(courseId);
-		builder.append(";");
+		builder.append(", courseTitle=");
 		builder.append(courseTitle);
-		builder.append(";");
+		builder.append(", userId=");
 		builder.append(userId);
-		builder.append(";");
+		builder.append(", userFullName=");
 		builder.append(userFullName);
-		builder.append(";");
+		builder.append(", attendeesCount=");
+		builder.append(attendeesCount);
+		builder.append(", type=");
 		builder.append(type);
-		builder.append(";");
+		builder.append(", validated=");
 		builder.append(validated);
-		builder.append(";");
+		builder.append(", dateStart=");
 		builder.append(dateStart);
-		builder.append(";");
+		builder.append(", dateEnd=");
 		builder.append(dateEnd);
-		builder.append(";");
+		builder.append(", timeStart=");
 		builder.append(timeStart);
-		builder.append(";");
+		builder.append(", timeEnd=");
 		builder.append(timeEnd);
-		builder.append(";");
+		builder.append(", masterInterventionId=");
 		builder.append(masterInterventionId);
-		builder.append(";");
+		builder.append(", isMaster=");
 		builder.append(isMaster);
 		return builder.toString();
 	}

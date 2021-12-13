@@ -7,6 +7,8 @@ public class InterventionDto implements Cloneable {
 
 	private long id;
 	
+	private long idDg2;
+	
 	private String slug;
 
 	private String comment;
@@ -40,10 +42,12 @@ public class InterventionDto implements Cloneable {
 	public InterventionDto() {
 	}
 
-	public InterventionDto(long id, String slug, String comment, long locationId, long courseId, long userId,
-			int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
+	public InterventionDto(long id, long idDg2, String slug, String comment, long locationId, long courseId,
+			long userId, int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
 			LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster, int version) {
+		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.slug = slug;
 		this.comment = comment;
 		this.locationId = locationId;
@@ -61,12 +65,21 @@ public class InterventionDto implements Cloneable {
 		this.version = version;
 	}
 
+
 	public long getId() {
 		return id;
 	}
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public LocalDate getDateStart() {
@@ -198,11 +211,13 @@ public class InterventionDto implements Cloneable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + attendeesCount;
 		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		result = prime * result + (int) (courseId ^ (courseId >>> 32));
 		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
 		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (int) (idDg2 ^ (idDg2 >>> 32));
 		result = prime * result + (isMaster ? 1231 : 1237);
 		result = prime * result + (int) (locationId ^ (locationId >>> 32));
 		result = prime * result + (int) (masterInterventionId ^ (masterInterventionId >>> 32));
@@ -212,6 +227,7 @@ public class InterventionDto implements Cloneable {
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result + (int) (userId ^ (userId >>> 32));
 		result = prime * result + (validated ? 1231 : 1237);
+		result = prime * result + version;
 		return result;
 	}
 
@@ -224,6 +240,8 @@ public class InterventionDto implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		InterventionDto other = (InterventionDto) obj;
+		if (attendeesCount != other.attendeesCount)
+			return false;
 		if (comment == null) {
 			if (other.comment != null)
 				return false;
@@ -242,6 +260,8 @@ public class InterventionDto implements Cloneable {
 		} else if (!dateStart.equals(other.dateStart))
 			return false;
 		if (id != other.id)
+			return false;
+		if (idDg2 != other.idDg2)
 			return false;
 		if (isMaster != other.isMaster)
 			return false;
@@ -273,9 +293,10 @@ public class InterventionDto implements Cloneable {
 			return false;
 		if (validated != other.validated)
 			return false;
+		if (version != other.version)
+			return false;
 		return true;
 	}
-
 	
 }
 

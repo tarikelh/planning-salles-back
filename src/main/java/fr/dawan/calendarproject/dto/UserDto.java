@@ -3,6 +3,8 @@ package fr.dawan.calendarproject.dto;
 public class UserDto {
 
 	private long id;
+	
+	private long idDg2;
 
 	private String firstName;
 	
@@ -25,9 +27,11 @@ public class UserDto {
 	public UserDto() {
 	}
 
-	public UserDto(long id, String firstName, String lastName, long locationId, String email, String password,
-			String type, String company, String imagePath, int version) {
+	public UserDto(long id, long idDg2, String firstName, String lastName, long locationId, String email,
+			String password, String type, String company, String imagePath, int version) {
+		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.locationId = locationId;
@@ -45,6 +49,14 @@ public class UserDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getFirstName() {

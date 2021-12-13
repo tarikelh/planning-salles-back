@@ -57,10 +57,10 @@ class SkillMapperTest {
 	void before() {
 		location = new Location(1, "paris", "#32656", 1);
 
-		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		user2 = new User(2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null, UserType.FORMATEUR,
+		user2 = new User(2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null, UserType.FORMATEUR,
 				UserCompany.JEHANN, "./image/img.png", 0);
 
 		usersId.add(user.getId());

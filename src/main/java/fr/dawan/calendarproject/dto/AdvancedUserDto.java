@@ -11,9 +11,9 @@ public class AdvancedUserDto extends UserDto {
 		this.skillsId = new ArrayList<>();
 	}
 
-	public AdvancedUserDto(long id, String firstName, String lastName, long locationId, String email, String password,
+	public AdvancedUserDto(long id, long idDg2, String firstName, String lastName, long locationId, String email, String password,
 			String type, String company, String imagePath, int version, List<Long> skillsId) {
-		super(id, firstName, lastName, locationId, email, password, type, company, imagePath, version);
+		super(id, idDg2, firstName, lastName, locationId, email, password, type, company, imagePath, version);
 		this.skillsId = skillsId;
 	}
 

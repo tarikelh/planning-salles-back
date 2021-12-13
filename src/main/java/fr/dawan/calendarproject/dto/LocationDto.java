@@ -2,6 +2,8 @@ package fr.dawan.calendarproject.dto;
 
 public class LocationDto {
 	private long id;
+	
+	private long idDg2;
 
 	private String city;
 
@@ -12,8 +14,10 @@ public class LocationDto {
 	public LocationDto() {
 	}
 
-	public LocationDto(long id, String city, String color, int version) {
+	public LocationDto(long id, long idDg2, String city, String color, int version) {
+		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.city = city;
 		this.color = color;
 		this.version = version;
@@ -25,6 +29,14 @@ public class LocationDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getCity() {
