@@ -258,7 +258,7 @@ public class Intervention implements Cloneable {
 		result = prime * result + version;
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -268,69 +268,7 @@ public class Intervention implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Intervention other = (Intervention) obj;
-		if (attendeesCount != other.attendeesCount)
-			return false;
-		if (comment == null) {
-			if (other.comment != null)
-				return false;
-		} else if (!comment.equals(other.comment))
-			return false;
-		if (course == null) {
-			if (other.course != null)
-				return false;
-		} else if (!course.equals(other.course))
-			return false;
-		if (dateEnd == null) {
-			if (other.dateEnd != null)
-				return false;
-		} else if (!dateEnd.equals(other.dateEnd))
-			return false;
-		if (dateStart == null) {
-			if (other.dateStart != null)
-				return false;
-		} else if (!dateStart.equals(other.dateStart))
-			return false;
-		if (id != other.id)
-			return false;
 		if (idDg2 != other.idDg2)
-			return false;
-		if (isMaster != other.isMaster)
-			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (masterIntervention == null) {
-			if (other.masterIntervention != null)
-				return false;
-		} else if (!masterIntervention.equals(other.masterIntervention))
-			return false;
-		if (slug == null) {
-			if (other.slug != null)
-				return false;
-		} else if (!slug.equals(other.slug))
-			return false;
-		if (timeEnd == null) {
-			if (other.timeEnd != null)
-				return false;
-		} else if (!timeEnd.equals(other.timeEnd))
-			return false;
-		if (timeStart == null) {
-			if (other.timeStart != null)
-				return false;
-		} else if (!timeStart.equals(other.timeStart))
-			return false;
-		if (type != other.type)
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		if (validated != other.validated)
-			return false;
-		if (version != other.version)
 			return false;
 		return true;
 	}

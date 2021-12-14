@@ -35,6 +35,7 @@ public interface InterventionMapper {
 	List<Intervention> listInterventionDtoToListIntervention(List<InterventionDto> interventionDtos);
 
 	@Mapping(target = "idDg2", source = "id")
+	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "dateStart", source = "dateStart", dateFormat = "yyyy-MM-dd")
 	@Mapping(target = "dateEnd", source = "dateEnd", dateFormat = "yyyy-MM-dd")
