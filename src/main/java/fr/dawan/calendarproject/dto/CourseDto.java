@@ -3,6 +3,8 @@ package fr.dawan.calendarproject.dto;
 public class CourseDto {
 
 	private long id;
+	
+	private long idDg2;
 
 	private String title;
 
@@ -15,8 +17,9 @@ public class CourseDto {
 	public CourseDto() {
 	}
 
-	public CourseDto(long id, String title, String duration, String slug, int version) {
+	public CourseDto(long id, long idDg2, String title, String duration, String slug, int version) {
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.title = title;
 		this.duration = duration;
 		this.slug = slug;
@@ -29,6 +32,14 @@ public class CourseDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getTitle() {

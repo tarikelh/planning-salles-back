@@ -72,23 +72,23 @@ class EmailServiceTest {
 		
 		Location loc = new Location(1, "Paris", "red", 0);
 		
-		receiver = new User(1, "Daniel", "Balavoine", loc,
+		receiver = new User(1, 1, "Daniel", "Balavoine", loc,
 				"dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
 		
-		iList.add(new Intervention(1, "lambdaSlug", "I am lambda Intervention",
+		iList.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention",
 				loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
 				LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
 
-		Intervention masterDummy = new Intervention(2, "masterSlug", "I am a master Intervention",
+		Intervention masterDummy = new Intervention(2, 2, "masterSlug", "I am a master Intervention",
 				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0),
 				null, true, 0);
 		iList.add(masterDummy);
 
-		Intervention slaveDummy = new Intervention(3, "slaveSlug", "I am a slave Intervention",
+		Intervention slaveDummy = new Intervention(3, 3, "slaveSlug", "I am a slave Intervention",
 				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0),

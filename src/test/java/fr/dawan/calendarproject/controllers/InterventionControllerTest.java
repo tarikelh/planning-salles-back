@@ -93,11 +93,11 @@ class InterventionControllerTest {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn("test@testEmail.com");
 
-		intervs.add(new InterventionDto(1, "slug-1", "commentaire id 1", 1, 1, 1, 0, "SUR_MESURE", true,
+		intervs.add(new InterventionDto(1, 1, "slug-1", "commentaire id 1", 1, 1, 1, 1, 1, 0, "SUR_MESURE", true,
 				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
-		intervs.add(new InterventionDto(2, "slug-2", "commentaire id 2", 2, 2, 2, 0, "INTERN", true, LocalDate.now(),
+		intervs.add(new InterventionDto(2, 2, "slug-2", "commentaire id 2", 2, 2, 2, 2, 2, 0, "INTERN", true, LocalDate.now(),
 				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0));
-		intervs.add(new InterventionDto(3, "slug-3", "commentaire id 3", 3, 3, 3, 0, "INTERN", true,
+		intervs.add(new InterventionDto(3, 3, "slug-3", "commentaire id 3", 3, 3, 3, 3, 3, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, 0));
 	}
@@ -164,7 +164,7 @@ class InterventionControllerTest {
 	@Test
 	void shouldGetMasterInterventionById() throws Exception {
 		final long id = 2;
-		InterventionDto masterInterv = new InterventionDto(1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0,
+		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, true, 0);
 
@@ -177,7 +177,7 @@ class InterventionControllerTest {
 	@Test
 	void shouldThrowErrorWhenInterventionNotMaster() throws Exception {
 		final long id = 2;
-		InterventionDto masterInterv = new InterventionDto(1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0,
+		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, false, 0);
 
@@ -244,10 +244,10 @@ class InterventionControllerTest {
 
 	@Test
 	void shouldCreateNewIntervention() throws Exception {
-		InterventionDto interv = new InterventionDto(0, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
+		InterventionDto interv = new InterventionDto(0, 0, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
 				false, 0);
-		InterventionDto result = new InterventionDto(4, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
+		InterventionDto result = new InterventionDto(4, 4, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
 				false, 0);
 

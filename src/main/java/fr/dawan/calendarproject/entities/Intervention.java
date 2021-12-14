@@ -24,7 +24,7 @@ public class Intervention implements Cloneable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(unique = true)
+	@Column(nullable = true)
 	private long idDg2;
 
 	@Column(nullable = true, length = 255, unique = true)
@@ -78,7 +78,9 @@ public class Intervention implements Cloneable {
 			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
 			boolean isMaster, int version) {
+		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.slug = slug;
 		this.comment = comment;
 		this.location = location;
@@ -93,7 +95,6 @@ public class Intervention implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterIntervention = masterIntervention;
 		this.isMaster = isMaster;
-		this.idDg2 = idDg2;
 		this.version = version;
 	}
 
@@ -233,14 +234,31 @@ public class Intervention implements Cloneable {
 		this.attendeesCount = attendeesCount;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + attendeesCount;
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + ((course == null) ? 0 : course.hashCode());
+		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
+		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + (int) (idDg2 ^ (idDg2 >>> 32));
+		result = prime * result + (isMaster ? 1231 : 1237);
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((masterIntervention == null) ? 0 : masterIntervention.hashCode());
+		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
+		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
+		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + (validated ? 1231 : 1237);
+		result = prime * result + version;
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -255,68 +273,47 @@ public class Intervention implements Cloneable {
 		return true;
 	}
 
-	public boolean equalsDG2(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Intervention other = (Intervention) obj;
-		if (attendeesCount != other.attendeesCount)
-			return false;
-		if (course == null) {
-			if (other.course != null)
-				return false;
-		} else if (!course.equals(other.course))
-			return false;
-		if (dateEnd == null) {
-			if (other.dateEnd != null)
-				return false;
-		} else if (!dateEnd.equals(other.dateEnd))
-			return false;
-		if (dateStart == null) {
-			if (other.dateStart != null)
-				return false;
-		} else if (!dateStart.equals(other.dateStart))
-			return false;
-		if (id != other.id)
-			return false;
-		if (isMaster != other.isMaster)
-			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (masterIntervention == null) {
-			if (other.masterIntervention != null)
-				return false;
-		} else if (!masterIntervention.equals(other.masterIntervention))
-			return false;
-		if (slug == null) {
-			if (other.slug != null)
-				return false;
-		} else if (!slug.equals(other.slug))
-			return false;
-		if (type != other.type)
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		if (validated != other.validated)
-			return false;
-		return true;
-	}
-
 	@Override
 	public String toString() {
-		return "Intervention [id=" + id + ", comment=" + comment + ", location=" + location + ", course=" + course
-				+ ", user=" + user + ", type=" + type + ", validated=" + validated + ", dateStart=" + dateStart
-				+ ", dateEnd=" + dateEnd + ", version=" + version + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Intervention [id=");
+		builder.append(id);
+		builder.append(", idDg2=");
+		builder.append(idDg2);
+		builder.append(", slug=");
+		builder.append(slug);
+		builder.append(", comment=");
+		builder.append(comment);
+		builder.append(", location=");
+		builder.append(location);;
+		builder.append(", course=");
+		builder.append(course);
+		builder.append(", user=");
+		builder.append(user);
+		builder.append(", attendeesCount=");
+		builder.append(attendeesCount);
+		builder.append(", type=");
+		builder.append(type);
+		builder.append(", validated=");
+		builder.append(validated);
+		builder.append(", dateStart=");
+		builder.append(dateStart);
+		builder.append(", dateEnd=");
+		builder.append(dateEnd);
+		builder.append(", timeStart=");
+		builder.append(timeStart);
+		builder.append(", timeEnd=");
+		builder.append(timeEnd);
+		builder.append(", masterIntervention=");
+		builder.append(masterIntervention);
+		builder.append(", isMaster=");
+		builder.append(isMaster);
+		builder.append(", version=");
+		builder.append(version);
+		builder.append("]");
+		return builder.toString();
 	}
+
 
 	public String toContentString() {
 		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString()

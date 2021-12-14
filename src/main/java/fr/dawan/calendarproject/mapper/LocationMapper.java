@@ -10,7 +10,6 @@ import fr.dawan.calendarproject.entities.Location;
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
 
-	@Mapping(target = "idDg2", ignore = true)
 	Location locationDtoToLocation(LocationDto location);
 
 	LocationDto locationToLocationDto(Location location);

@@ -28,7 +28,7 @@ class LocationMapperTest {
 	@BeforeEach
 	void before() {
 		locationDG2Dto = new LocationDG2Dto(3, "ville", true);
-		locationDto = new LocationDto(1, "Paris", "#FFFFF", 0);
+		locationDto = new LocationDto(1, 1, "Paris", "#FFFFF", 0);
 		location = new Location(2, "Sirap", "#00000", 1);
 	}
 

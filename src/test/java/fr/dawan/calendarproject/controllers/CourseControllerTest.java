@@ -59,9 +59,9 @@ class CourseControllerTest {
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-		courses.add(new CourseDto(1, "Java", "5", "slug", 0));
-		courses.add(new CourseDto(2, ".Net", "5", "slug", 0));
-		courses.add(new CourseDto(3, "Android", "5", "slug", 0));
+		courses.add(new CourseDto(1, 1, "Java", "5", "slug", 0));
+		courses.add(new CourseDto(2, 2, ".Net", "5", "slug", 0));
+		courses.add(new CourseDto(3, 3, "Android", "5", "slug", 0));
 	}
 
 	@Test
@@ -131,8 +131,8 @@ class CourseControllerTest {
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-		CourseDto newCourse = new CourseDto(0, "Photoshop", "5", "slug", 0);
-		CourseDto resMock = new CourseDto(4, "Photoshop", "5", "slug", 0);
+		CourseDto newCourse = new CourseDto(0, 0, "Photoshop", "5", "slug", 0);
+		CourseDto resMock = new CourseDto(4, 4, "Photoshop", "5", "slug", 0);
 		String newCourseJson = objectMapper.writeValueAsString(newCourse);
 
 		when(courseService.saveOrUpdate(any(CourseDto.class))).thenReturn(resMock);
@@ -146,7 +146,7 @@ class CourseControllerTest {
 	@Test
 	void shouldUpdateCourse() throws Exception {
 
-		CourseDto updated = new CourseDto(courses.get(0).getId(), courses.get(0).getTitle(),
+		CourseDto updated = new CourseDto(courses.get(0).getId(), courses.get(0).getIdDg2(), courses.get(0).getTitle(),
 				courses.get(0).getDuration(), courses.get(0).getSlug(), courses.get(0).getVersion());
 
 		updated.setTitle("Java EE");
@@ -165,7 +165,7 @@ class CourseControllerTest {
 	@Test
 	void shouldReturn404WhenUpdateWithWrongId() throws Exception {
 
-		CourseDto newCourse = new CourseDto(120, "Photoshop", "5", "slug", 0);
+		CourseDto newCourse = new CourseDto(120, 120, "Photoshop", "5", "slug", 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String newCourseJson = objectMapper.writeValueAsString(newCourse);

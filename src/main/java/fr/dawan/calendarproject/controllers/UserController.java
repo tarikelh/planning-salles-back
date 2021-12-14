@@ -57,7 +57,7 @@ public class UserController {
 
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
-	public ResponseEntity<?> getById(@PathVariable("id") long id) {
+	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
 		AdvancedUserDto user = userService.getById(id);
 
 		if (user != null)
@@ -68,7 +68,7 @@ public class UserController {
 
 	// DELETE - supprimer
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable(value = "id") long id) {
+	public ResponseEntity<Object> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			userService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("User with id " + id + " Deleted");
@@ -85,7 +85,7 @@ public class UserController {
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<?> update(@RequestBody AdvancedUserDto user) {
+	public ResponseEntity<Object> update(@RequestBody AdvancedUserDto user) {
 		AdvancedUserDto u = userService.saveOrUpdate(user);
 
 		if (u != null)
@@ -96,7 +96,7 @@ public class UserController {
 
 	// FETCH Dawan webservice
 	@GetMapping(value = "/dg2", produces = "application/json")
-	public ResponseEntity<?> fetchAllDG2(@RequestHeader Map<String, String> headers) {
+	public ResponseEntity<Object> fetchAllDG2(@RequestHeader Map<String, String> headers) {
 		String userDG2 = headers.get("x-auth-token");
 		String[] splitUserDG2String = userDG2.split(":");
 

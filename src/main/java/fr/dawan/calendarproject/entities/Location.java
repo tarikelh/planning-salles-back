@@ -12,15 +12,15 @@ public class Location {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(nullable = true)
+	private long idDg2;
 
 	@Column(nullable = false, length = 255, unique = true)
 	private String city;
 
 	@Column(nullable = true, length = 9)
 	private String color;
-
-	@Column(unique = true)
-	private long idDg2;
 
 	@Version
 	private int version;

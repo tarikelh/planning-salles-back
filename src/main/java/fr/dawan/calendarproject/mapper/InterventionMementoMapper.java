@@ -20,8 +20,6 @@ public interface InterventionMementoMapper {
 	@Mapping(target = "type", source = "type")
 	InterventionMementoDto interventionToInterventionMementoDto(Intervention intervention);
 
-	@Mapping(target = "attendeesCount", ignore = true)
-	@Mapping(target = "slug", ignore = true)
 	@Mapping(target = "id", source = "interventionId")
 	@Mapping(target = "course.id", source = "courseId")
 	@Mapping(target = "location.id", source = "locationId")

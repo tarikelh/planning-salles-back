@@ -70,32 +70,32 @@ class InterventionMapperTest {
 	@BeforeEach
 	void before() {
 		location = new Location(1, "paris", "#32656", 1);
-		course = new Course(1, "C#", "5", "slug", 2);
+		course = new Course(1, 1, "C#", "5", "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
 		skills.add(new Skill(3, "java", null, 5));
 
-		user = new User(1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
+		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(5, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
+		masterIntervention = new Intervention(5, 5, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
 				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
 				0);
 
-		intervention = new Intervention(1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
+		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
 				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
 				masterIntervention, false, 0);
 
-		intervention2 = new Intervention(7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE,
+		intervention2 = new Intervention(7, 7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE,
 				false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
 				masterIntervention, false, 0);
 
-		interventionDto = new InterventionDto(5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0,
+		interventionDto = new InterventionDto(5, 5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, false, 0);
 
-		interventionDto2 = new InterventionDto(2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
+		interventionDto2 = new InterventionDto(2, 2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
 				"INTERN", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
 				0, false, 0);
 
