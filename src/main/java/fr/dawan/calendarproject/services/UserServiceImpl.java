@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
 
 		if (u != null && !currentPwd.equals(hashedPwd)) {
 
-			u.setPassword(reset.getPassword());
+			u.setPassword(hashedPwd);
 			userRepository.saveAndFlush(u);
 
 			return true;
