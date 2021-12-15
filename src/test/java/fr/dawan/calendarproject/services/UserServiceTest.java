@@ -318,7 +318,7 @@ class UserServiceTest {
 
 	@Test
 	void shouldReturnNullWhenFindUserWithWrongEmail() {
-		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
 		AdvancedUserDto result = userService.findByEmail("wrongEmail@dawan.fr");
 
@@ -552,7 +552,7 @@ class UserServiceTest {
 		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
 				.thenReturn(res);
 		when(userMapper.userDG2DtoToUser(any(UserDG2Dto.class))).thenReturn(userFromDG2);
-		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 		when(userRepository.saveAndFlush(any(User.class))).thenReturn(userFromDG2);
 
 		// assert
@@ -574,10 +574,10 @@ class UserServiceTest {
 	}
 
 	@Test
-	void shouldResetPasswordWhenUserNotFound() throws Exception {
+	void shouldNotResetPasswordWhenUserNotFound() throws Exception {
 
 		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
-		when(userRepository.findByEmail(email)).thenReturn(null);
+		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 		when(userRepository.saveAndFlush(any(User.class))).thenReturn(null);
 
 		boolean resetStatus = userService.resetPassword(resetResponse);
