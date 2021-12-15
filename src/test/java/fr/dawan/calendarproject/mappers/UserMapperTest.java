@@ -226,7 +226,7 @@ class UserMapperTest {
 		User mappedUser = userMapper.userDG2DtoToUser(userDG2Dto);
 
 		// assert
-		assertEquals(mappedUser.getId(), userDG2Dto.getId());
+		assertEquals(mappedUser.getIdDg2(), userDG2Dto.getId());
 		assertEquals(mappedUser.getFirstName(), userDG2Dto.getFirstName());
 		assertEquals(mappedUser.getLastName(), userDG2Dto.getLastName());
 		assertEquals(mappedUser.getFullname(), userDG2Dto.getFullName());

@@ -79,25 +79,25 @@ class InterventionMapperTest {
 		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		masterIntervention = new Intervention(5, 5, "slug-3", "com", location, course, user, 0, InterventionStatus.INTERN,
-				true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true,
-				0);
+		masterIntervention = new Intervention(5, 5, "slug-3", "com", location, course, user, 0,
+				InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0),
+				LocalTime.of(17, 0), null, true, 0);
 
-		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN, true,
-				LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
+		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN,
+				true, LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
 				masterIntervention, false, 0);
 
-		intervention2 = new Intervention(7, 7, "slug-7", "com7", location, course, user, 0, InterventionStatus.SUR_MESURE,
-				false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				masterIntervention, false, 0);
+		intervention2 = new Intervention(7, 7, "slug-7", "com7", location, course, user, 0,
+				InterventionStatus.SUR_MESURE, false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
+				LocalTime.of(17, 0), masterIntervention, false, 0);
 
-		interventionDto = new InterventionDto(5, 5, "slug-5", "coms5", location.getId(), course.getId(), user.getId(), 0,
-				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, false, 0);
+		interventionDto = new InterventionDto(5, 5, "slug-5", "coms5", location.getId(), location.getIdDg2(),
+				course.getId(), course.getIdDg2(), user.getId(), 0, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 
-		interventionDto2 = new InterventionDto(2, 2, "slug-2", "coms", location.getId(), course.getId(), user.getId(), 0,
-				"INTERN", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				0, false, 0);
+		interventionDto2 = new InterventionDto(2, 2, "slug-2", "coms", location.getId(), location.getIdDg2(),
+				course.getId(), course.getIdDg2(), user.getId(), 0, "INTERN", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
 
 		interventionDG2Dto = new InterventionDG2Dto(35, location.getId(), course.getId(), user.getId(),
 				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", true,
@@ -194,7 +194,7 @@ class InterventionMapperTest {
 		Intervention mappedIntervention = interventionMapper.interventionDG2DtoToIntervention(interventionDG2Dto);
 
 		// assert
-		assertEquals(mappedIntervention.getId(), interventionDG2Dto.getId());
+		assertEquals(mappedIntervention.getIdDg2(), interventionDG2Dto.getId());
 //		assertEquals(mappedIntervention.getLocation().getId(), interventionDG2Dto.getLocationId());
 //		assertEquals(mappedIntervention.getCourse().getId(), interventionDG2Dto.getCourseId());
 //		assertEquals(mappedIntervention.getUser().getId(), interventionDG2Dto.getUserId());

@@ -177,7 +177,7 @@ class InterventionControllerTest {
 	@Test
 	void shouldThrowErrorWhenInterventionNotMaster() throws Exception {
 		final long id = 2;
-		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0,
+		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, false, 0);
 
@@ -244,10 +244,10 @@ class InterventionControllerTest {
 
 	@Test
 	void shouldCreateNewIntervention() throws Exception {
-		InterventionDto interv = new InterventionDto(0, 0, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
+		InterventionDto interv = new InterventionDto(0, 0, "slug-4", "commentaire id 4", 4, 4, 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
 				false, 0);
-		InterventionDto result = new InterventionDto(4, 4, "slug-4", "commentaire id 4", 4, 4, 4, 0, "INTERN", true,
+		InterventionDto result = new InterventionDto(4, 4, "slug-4", "commentaire id 4", 4, 4, 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
 				false, 0);
 
