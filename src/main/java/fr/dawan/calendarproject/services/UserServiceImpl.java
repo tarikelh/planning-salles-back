@@ -366,18 +366,28 @@ public class UserServiceImpl implements UserService {
 
 				User user = userRepository.findByEmail(userImported.getEmail()).orElse(null);
 
-				if (user != null && !user.equals(userImported)) {
+				if (userImported.getSkills() == null) {
+					userImported.setSkills(new HashSet<>());
+				}
+
+				if (userImported.getPassword() == null) {
+					userImported.setPassword(
+							"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
+				}
+
+				if (user != null) {
 					if (userImported.getId() == 0)
 						userImported.setId(user.getId());
 
-					if (userImported.getSkills() == null) {
-						userImported.setSkills(new HashSet<>());
+					if (!user.equals(userImported)) {
+						userImported.setId(user.getId());
+						try {
+							userRepository.saveAndFlush(userImported);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-
-					if (userImported.getPassword() == null) {
-						userImported.setPassword(
-								"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
-					}
+				} else {
 					try {
 						userRepository.saveAndFlush(userImported);
 					} catch (Exception e) {

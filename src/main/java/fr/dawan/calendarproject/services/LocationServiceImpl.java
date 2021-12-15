@@ -235,6 +235,9 @@ public class LocationServiceImpl implements LocationService {
 					if (locationImport.getColor() == null) {
 						locationImport.setColor("#00cc99");
 					}
+					if (optLocation.isPresent())
+						locationImport.setId(optLocation.get().getId());
+
 					try {
 						locationRepository.saveAndFlush(locationImport);
 					} catch (Exception e) {
