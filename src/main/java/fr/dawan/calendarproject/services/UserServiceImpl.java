@@ -371,8 +371,14 @@ public class UserServiceImpl implements UserService {
 				}
 
 				if (userImported.getPassword() == null) {
-					userImported.setPassword(
-							"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
+					if (userImported.getType() == UserType.ADMINISTRATIF) {
+						userImported.setPassword(
+								"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
+
+					} else {
+						userImported.setPassword(
+								"1ccf2b75e2131f50f791b4589a9af59f4e69d9c2f6199f494a6207128f14d222d81f1db3b59cb94045ac1c71c4e008cfaffc9802e273cbe7d378eac0c1360e38");
+					}
 				}
 
 				if (user != null) {
