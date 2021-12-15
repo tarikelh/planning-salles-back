@@ -187,7 +187,9 @@ class UserMapperTest {
 		List<Long> mappedUserSkillsIds = userMapper.setUsersToListLong(usersSet);
 
 		// assert
-		assertEquals(mappedUserSkillsIds, usersId);
+		assertEquals(mappedUserSkillsIds.size(), usersSet.size());
+		assertThat(mappedUserSkillsIds.contains(user.getId())).isTrue();
+		assertThat(mappedUserSkillsIds.contains(user2.getId())).isTrue();
 	}
 
 	@Test
@@ -197,8 +199,8 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user));
-		assertThat(mappedUserSkillsIds.contains(user2));
+		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
+		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
 	}
 
 	@Test
@@ -212,8 +214,8 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user));
-		assertThat(mappedUserSkillsIds.contains(user2));
+		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
+		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
 	}
 
 	@Test
