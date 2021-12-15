@@ -364,9 +364,12 @@ public class UserServiceImpl implements UserService {
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
 
-				Optional<User> optUser = userRepository.findByEmail(userImported.getEmail());
+				User user = userRepository.findByEmail(userImported.getEmail()).orElse(null);
 
-				if (!optUser.isPresent() || !optUser.get().equals(userImported)) {
+				if (user != null && !user.equals(userImported)) {
+					if (userImported.getId() == 0)
+						userImported.setId(user.getId());
+
 					if (userImported.getSkills() == null) {
 						userImported.setSkills(new HashSet<>());
 					}
@@ -377,7 +380,6 @@ public class UserServiceImpl implements UserService {
 					}
 					try {
 						userRepository.saveAndFlush(userImported);
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -405,9 +407,10 @@ public class UserServiceImpl implements UserService {
 		}
 		String lowerCaseJob = job.toLowerCase();
 
-		if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant")
-				|| lowerCaseJob.contains("manager")) {
+		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager")) {
 			return UserType.ADMINISTRATIF.toString();
+		} else if (lowerCaseJob.contains("commercial")) {
+			return UserType.COMMERCIAL.toString();
 		} else if (lowerCaseJob.contains("format")) {
 			return UserType.FORMATEUR.toString();
 		} else {

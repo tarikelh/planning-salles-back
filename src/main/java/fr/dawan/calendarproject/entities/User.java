@@ -27,7 +27,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(nullable = true)
 	private long idDg2;
 
@@ -67,8 +67,8 @@ public class User {
 		setSkills(new HashSet<>());
 	}
 
-	public User(long id, long idDg2, String firstName, String lastName, Location location, String email, String password,
-			 Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+	public User(long id, long idDg2, String firstName, String lastName, Location location, String email,
+			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
 		setId(id);
 		setIdDg2(idDg2);
 		setFirstName(firstName);
@@ -200,6 +200,7 @@ public class User {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -216,6 +217,8 @@ public class User {
 			if (other.email != null)
 				return false;
 		} else if (!email.equals(other.email))
+			return false;
+		if (type != other.type)
 			return false;
 		return true;
 	}
