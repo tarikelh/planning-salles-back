@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.mapper.DoIgnore;
 
@@ -57,7 +56,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@DoIgnore
 	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
-	
+
 	Optional<Intervention> findByIdDg2(long idDg2);
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")

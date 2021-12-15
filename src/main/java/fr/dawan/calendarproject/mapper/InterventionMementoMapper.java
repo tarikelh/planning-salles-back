@@ -9,6 +9,8 @@ import fr.dawan.calendarproject.entities.Intervention;
 @Mapper(componentModel = "spring")
 public interface InterventionMementoMapper {
 
+	@Mapping(target = "locationIdDg2", source = "location.idDg2")
+	@Mapping(target = "courseIdDg2", source = "course.idDg2")
 	@Mapping(target = "interventionId", source = "id")
 	@Mapping(target = "courseId", source = "course.id")
 	@Mapping(target = "locationId", source = "location.id")

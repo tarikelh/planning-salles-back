@@ -17,6 +17,8 @@ import fr.dawan.calendarproject.repositories.UserRepository;
 		InterventionRepository.class })
 public interface InterventionMapper {
 
+	@Mapping(target = "locationIdDg2", source = "location.idDg2")
+	@Mapping(target = "courseIdDg2", source = "course.idDg2")
 	@Mapping(target = "courseId", source = "course.id")
 	@Mapping(target = "locationId", source = "location.id")
 	@Mapping(target = "userId", source = "user.id")
