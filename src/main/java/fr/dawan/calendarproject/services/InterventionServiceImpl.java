@@ -554,6 +554,9 @@ public class InterventionServiceImpl implements InterventionService {
 				}
 
 				newSplit.setId(range.getInterventionId());
+				newSplit.setSlug(String.format("%s-%s",
+						newSplit.getCourse().getTitle(),
+						range.getDateStart()));
 				newSplit.setDateStart(range.getDateStart());
 				newSplit.setDateEnd(range.getDateEnd());
 				newSplit.setTimeStart(range.getTimeStart());
@@ -743,22 +746,23 @@ public class InterventionServiceImpl implements InterventionService {
 							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 
 					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
+					
+	                if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
+	                	i.setId(alreadyInDb.get().getId());
+	                    i.setComment(alreadyInDb.get().getComment());
+	                    i.setTimeStart(alreadyInDb.get().getTimeStart());
+	                    i.setTimeEnd(alreadyInDb.get().getTimeEnd());
+	                    i.setVersion(alreadyInDb.get().getVersion());
+	                }
 
-					if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
-						i.setId(alreadyInDb.get().getId());
-						i.setComment(alreadyInDb.get().getComment());
-						i.setTimeStart(alreadyInDb.get().getTimeStart());
-						i.setTimeEnd(alreadyInDb.get().getTimeEnd());
-						i.setVersion(alreadyInDb.get().getVersion());
-					}
-
-					count++;
-					try {
-						interventionRepository.saveAndFlush(i);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+	                count++;
+	                try {
+	                    i = interventionRepository.saveAndFlush(i);
+	                    caretaker.addMemento(email, i);
+	                    
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
 				}
 
 			}

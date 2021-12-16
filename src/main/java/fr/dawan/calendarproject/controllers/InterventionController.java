@@ -223,6 +223,7 @@ public class InterventionController {
 			return ResponseEntity.status(HttpStatus.OK).body(
 					"Succeed to fetch data from the webservice DG2. " + count + " interventions imported or updated.");
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error while fetching data from the webservice");
 		}
