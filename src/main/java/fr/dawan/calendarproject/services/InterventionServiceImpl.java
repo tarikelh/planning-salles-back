@@ -549,6 +549,9 @@ public class InterventionServiceImpl implements InterventionService {
 				}
 
 				newSplit.setId(range.getInterventionId());
+				newSplit.setSlug(String.format("%s-%s",
+						newSplit.getCourse().getTitle(),
+						range.getDateStart()));
 				newSplit.setDateStart(range.getDateStart());
 				newSplit.setDateEnd(range.getDateEnd());
 				newSplit.setTimeStart(range.getTimeStart());
@@ -729,13 +732,14 @@ public class InterventionServiceImpl implements InterventionService {
 			for (InterventionDG2Dto iDG2 : lResJson) {
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
 				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
-				
-				if(c.isPresent()) {
+
+				if (c.isPresent()) {
 					i.setCourse(c.get());
 					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
 					i.setUser(userRepository.findByIdDg2(iDG2.getUserId()).orElse(null));
-					i.setMasterIntervention(interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
-					
+					i.setMasterIntervention(
+							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
+
 					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
 					
 	                if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
@@ -755,8 +759,7 @@ public class InterventionServiceImpl implements InterventionService {
 	                    e.printStackTrace();
 	                }
 				}
-					
-				
+
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");

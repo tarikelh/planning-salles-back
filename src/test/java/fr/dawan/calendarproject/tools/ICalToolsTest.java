@@ -34,23 +34,23 @@ class ICalToolsTest {
 		assertEquals(CalScale.GREGORIAN, calendar.getCalendarScale());
 	}
 
-	@Test
-	void testCreateVEvent() {
-		/*
-		Location mockedLoc = Mockito.mock(Location.class);
-		Course mockedCourse = Mockito.mock(Course.class);
-		User mockedUser = Mockito.mock(User.class);
-		
-		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
-		
-		Intervention intervention = new Intervention(1, "I am lambda Intervention", mockedLoc, mockedCourse, mockedUser,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), false, null, 0);
-		
-		VEvent result = ICalTools.createVEvent(intervention, timeZone);
-		*/
-	}
+//	@Test
+//	void testCreateVEvent() {
+//		
+//		Location mockedLoc = Mockito.mock(Location.class);
+//		Course mockedCourse = Mockito.mock(Course.class);
+//		User mockedUser = Mockito.mock(User.class);
+//		
+//		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+//		TimeZone timeZone = registry.getTimeZone("Europe/Berlin");
+//		
+//		Intervention intervention = new Intervention(1, "I am lambda Intervention", mockedLoc, mockedCourse, mockedUser,
+//				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
+//				LocalTime.of(17, 0), false, null, 0);
+//		
+//		VEvent result = ICalTools.createVEvent(intervention, timeZone);
+//		
+//	}
 
 	@Test
 	void shouldFormatLocalDate() {
