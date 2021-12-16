@@ -748,7 +748,8 @@ public class InterventionServiceImpl implements InterventionService {
 
 	                count++;
 	                try {
-	                    interventionRepository.saveAndFlush(i);
+	                    i = interventionRepository.saveAndFlush(i);
+	                    caretaker.addMemento(email, i);
 	                    
 	                } catch (Exception e) {
 	                    e.printStackTrace();
@@ -762,10 +763,5 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		return count;
-	}
-
-	private Course getCourseBySlug(InterventionDG2Dto iDG2) {
-		String slug = iDG2.getSlug().substring(0, iDG2.getSlug().length() - 10);
-		return courseRepository.findBySlug(slug).orElse(null);
 	}
 }
