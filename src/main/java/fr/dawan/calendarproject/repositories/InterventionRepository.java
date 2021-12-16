@@ -64,4 +64,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	Optional<Intervention> findBySlug(String slug);
 
+	@Query("FROM Intervention i WHERE i.slug LIKE %:slug%")
+	List<Intervention> findAllContainsSlug(String slug);
+
 }

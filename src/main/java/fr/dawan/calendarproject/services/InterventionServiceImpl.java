@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.services;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -236,6 +237,10 @@ public class InterventionServiceImpl implements InterventionService {
 			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
 		else
 			interv.setMasterIntervention(null);
+
+		if (interv.getSlug() == null) {
+			interv.setSlug(creatInterventionSlug(interv));
+		}
 
 		interv = interventionRepository.saveAndFlush(interv);
 
@@ -729,33 +734,33 @@ public class InterventionServiceImpl implements InterventionService {
 			for (InterventionDG2Dto iDG2 : lResJson) {
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
 				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
-				
-				if(c.isPresent()) {
+
+				if (c.isPresent()) {
 					i.setCourse(c.get());
 					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
 					i.setUser(userRepository.findByIdDg2(iDG2.getUserId()).orElse(null));
-					i.setMasterIntervention(interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
-					
-					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
-					
-	                if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
-	                	i.setId(alreadyInDb.get().getId());
-	                    i.setComment(alreadyInDb.get().getComment());
-	                    i.setTimeStart(alreadyInDb.get().getTimeStart());
-	                    i.setTimeEnd(alreadyInDb.get().getTimeEnd());
-	                    i.setVersion(alreadyInDb.get().getVersion());
-	                }
+					i.setMasterIntervention(
+							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 
-	                count++;
-	                try {
-	                    interventionRepository.saveAndFlush(i);
-	                    
-	                } catch (Exception e) {
-	                    e.printStackTrace();
-	                }
+					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
+
+					if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
+						i.setId(alreadyInDb.get().getId());
+						i.setComment(alreadyInDb.get().getComment());
+						i.setTimeStart(alreadyInDb.get().getTimeStart());
+						i.setTimeEnd(alreadyInDb.get().getTimeEnd());
+						i.setVersion(alreadyInDb.get().getVersion());
+					}
+
+					count++;
+					try {
+						interventionRepository.saveAndFlush(i);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-					
-				
+
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
@@ -767,5 +772,23 @@ public class InterventionServiceImpl implements InterventionService {
 	private Course getCourseBySlug(InterventionDG2Dto iDG2) {
 		String slug = iDG2.getSlug().substring(0, iDG2.getSlug().length() - 10);
 		return courseRepository.findBySlug(slug).orElse(null);
+	}
+
+	private String creatInterventionSlug(Intervention intervention) {
+		String slug = null;
+		List<Intervention> interventions;
+
+		if (intervention != null) {
+			slug = intervention.getCourse().getSlug();
+			slug += "-" + intervention.getDateStart().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+			interventions = interventionRepository.findAllContainsSlug(slug);
+
+			if (!interventions.isEmpty()) {
+				slug += "-" + (interventions.size() + 1);
+			}
+
+		}
+		return slug;
 	}
 }
