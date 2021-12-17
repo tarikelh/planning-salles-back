@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +104,25 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 		return intMementoRepository.saveAndFlush(memento);
 	}
+	
+	/**
+	 * Create historic for a list of intervention
+	 * 
+	 * @param List<Intervention> that we want to create a historic for each element in the list
+	 * @param email		from the user applying modification on interventions
+	 * 
+	 * @return List<InterventionMemento> historic created
+	 * 
+	 * @throws Exception can be throw by the method addMemento
+	 */
+	@Override
+	public List<InterventionMemento> saveListMemento(String email, List<Intervention> intervention) throws Exception {		
+		List<InterventionMemento> listMemento = new ArrayList<>();
+		for (Intervention i : intervention) {
+			listMemento.add(addMemento(email, i));
+		}
+		return listMemento;
+	}
 
 	/**
 	 * Restore an Intervention from an intervention history (InterventionMemento).
@@ -190,40 +210,86 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 		return null;
 	}
 
+	/**
+	 * Get list of historic saved in the database
+	 * 
+	 * @return List<InterventionMemento> list of memento (historic)
+	 */
 	@Override
 	public List<InterventionMemento> getAllMemento() {
 		return intMementoRepository.findAll();
 	}
 
+	/**
+	 * Get list of memento (historic) saved in the database depending of the page and size selected
+	 * 
+	 * @param page An integer representing the current page displaying memento.
+	 * @param size An integer defining the number of memento displayed by page.
+	 * 
+	 * @return List<InterventionMemento> list of memento (historic)
+	 */
 	@Override
 	public List<InterventionMemento> getAllMemento(int page, int size) {
 		return intMementoRepository.findAllByOrderByIdDesc(PageRequest.of(page, size));
 	}
 
+	/**
+	 * Get list of memento (historic) between the date start and the date end selected
+	 * 
+	 * @param dateStart LocalDate to know when to start to retrieve memento.
+	 * @param dateEnd LocalDate to know when to finish to retrieve memento.
+	 * 
+	 * @return List<InterventionMemento> list of memento (historic)
+	 */
 	@Override
 	public List<InterventionMemento> getAllMementoDates(LocalDate dateStart, LocalDate dateEnd) {
 		return intMementoRepository.findAllByDateCreatedStateBetween(dateStart.atStartOfDay(),
 				dateEnd.plusDays(1).atStartOfDay());
 	}
 
-	// To Delete
+	/**
+	 * Create a csv file with the list of memento (historic) saved in the database
+	 */
 	public void serializeInterventionMementosAsCSV() throws Exception {
 		String fileName = "interventionMementoDates.csv";
 		String path = storageFolder + "/" + fileName;
 		CsvToolsGeneric.toCsv(path, getAllMemento(), ";");
 	}
 
+	/**
+	 * Create a csv file with the list of memento (historic) between the date start and the date end selected
+	 * 
+	 * @param dateStart LocalDate to know when to start to retrieve memento.
+	 * @param dateEnd LocalDate to know when to finish to retrieve memento.
+	 * 
+	 * @return List<InterventionMemento> list of memento (historic)
+	 */
 	public void serializeInterventionMementosAsCSVByDates(LocalDate dateStart, LocalDate dateEnd) throws Exception {
 		String fileName = "interventionMementoDates.csv";
 		String path = storageFolder + "/" + fileName;
 		CsvToolsGeneric.toCsv(path, getAllMementoDates(dateStart, dateEnd), ";");
 	}
 
+	/**
+	 * Counts the number of memento (historic).
+	 * 
+	 * @return CountDto Returns an object with the number of memento
+	 */
 	@Override
 	public CountDto count() {
 		return new CountDto(intMementoRepository.count());
 	}
 
+	/**
+	 * Filter memento (historic) depending of the event selected & between the date start and the date end choosen.
+	 * 
+	 * @param interventionId Long representing the id of the event selected by the client
+	 * @param dateStart LocalDate to know when to start to retrieve memento.
+	 * @param dateEnd LocalDate to know when to finish to retrieve memento.
+	 * 
+	 * @return List<InterventionMemento> list of memento (historic)
+	 *
+	 */
 	@Override
 	public List<InterventionMemento> filterMemento(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd,
 			int page, int size) {
@@ -231,6 +297,16 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 				PageRequest.of(page, size));
 	}
 
+	/**
+	 * Counts the number of memento depending of the event selected & between the date start and the date end choosen.
+	 * 
+	 * @param interventionId Long representing the id of the event selected by the client
+	 * @param dateStart LocalDate to know when to start to retrieve memento.
+	 * @param dateEnd LocalDate to know when to finish to retrieve memento.
+	 * 
+	 * @return CountDto Returns an object with the number of memento
+	 *
+	 */
 	@Override
 	public CountDto countFilter(long interventionId, LocalDateTime dateStart, LocalDateTime dateEnd) {
 		return new CountDto(intMementoRepository.countFilter(interventionId, dateStart, dateEnd));

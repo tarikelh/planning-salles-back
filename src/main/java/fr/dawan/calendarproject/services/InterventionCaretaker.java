@@ -12,6 +12,8 @@ import fr.dawan.calendarproject.entities.InterventionMemento;
 public interface InterventionCaretaker {
 
 	InterventionMemento addMemento(String email, Intervention intervention) throws Exception;
+	
+	List<InterventionMemento> saveListMemento(String email, List<Intervention> intervention) throws Exception;
 
 	InterventionMemento getMementoById(long id);
 

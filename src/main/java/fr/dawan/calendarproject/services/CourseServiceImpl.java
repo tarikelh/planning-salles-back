@@ -109,7 +109,6 @@ public class CourseServiceImpl implements CourseService {
 	 *         criteria.
 	 *
 	 */
-
 	@Override
 	public CountDto count(String search) {
 		return new CountDto(courseRepository.countByTitleContaining(search));
