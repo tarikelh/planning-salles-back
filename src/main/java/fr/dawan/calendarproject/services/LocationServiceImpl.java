@@ -184,17 +184,15 @@ public class LocationServiceImpl implements LocationService {
 			String path = "/api/locations";
 
 			for (Location loc : duplicates) {
-				if (loc.getCity().equals(location.getCity()))
+				if (loc.getCity().equalsIgnoreCase(location.getCity()))
 					errors.add(new APIError(505, instanceClass, "City Name not Unique",
 							"Location with name " + location.getCity() + " already exists", path));
-				if (loc.getColor().equals(location.getColor()))
+				if (loc.getColor().equalsIgnoreCase(location.getColor()))
 					errors.add(new APIError(505, instanceClass, "Color not Unique",
 							"Location with color " + location.getColor() + " already exists", path));
 			}
-
 			throw new EntityFormatException(errors);
 		}
-
 		return true;
 	}
 
@@ -229,20 +227,20 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
-				Optional<Location> optLocation = locationRepository.findByCity(locationImport.getCity());
+				Optional<Location> optLocation = locationRepository.findByIdDg2(locationImport.getIdDg2());
 
-				if (!optLocation.isPresent() || !optLocation.get().equals(locationImport)) {
-					if (locationImport.getColor() == null) {
-						locationImport.setColor("#00cc99");
-					}
-					if (optLocation.isPresent())
+				if (optLocation.isPresent()) {
+					if (optLocation.get().equals(locationImport))
+						continue;
+					else if (!optLocation.get().equals(locationImport)) {
+						locationImport.setVersion(optLocation.get().getVersion());
 						locationImport.setId(optLocation.get().getId());
-
-					try {
-						locationRepository.saveAndFlush(locationImport);
-					} catch (Exception e) {
-						e.printStackTrace();
+						locationImport.setColor(optLocation.get().getColor());
 					}
+					locationRepository.saveAndFlush(locationImport);
+				} else {
+					locationImport.setColor("#00CC99");
+					locationRepository.saveAndFlush(locationImport);
 				}
 			}
 		} else {
