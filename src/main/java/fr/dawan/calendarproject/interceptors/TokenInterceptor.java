@@ -40,9 +40,6 @@ public class TokenInterceptor implements HandlerInterceptor {
 		// System.out.println("Header (authorization) :" +
 		// request.getHeader("Authorization"));
 		
-		String uri = request.getRequestURI();
-		logger.info(uri);
-		
 		if(!request.getMethod().equalsIgnoreCase("OPTIONS")){
 			if (!request.getRequestURI().equals("/authenticate")
 					&& !request.getRequestURI().equals("/forgot")
