@@ -158,7 +158,10 @@ public class InterventionCaretakerImpl implements InterventionCaretaker {
 
 		interventionService.checkIntegrity(interventionMapper.interventionToInterventionDto(intToRestore));
 
-		intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
+		//Check only when update and not delete
+		if(interventionRepository.existsById(intToRestore.getId()))
+			intToRestore.setVersion(interventionRepository.getOne(intToRestore.getId()).getVersion());
+		
 		interventionRepository.saveAndFlush(intToRestore);
 
 		newIMem.setId(0);
