@@ -61,6 +61,7 @@ public class ICalTools {
 		String mailTo = "mailto:" + i.getUser().getEmail();
 		List<String> attendeesMailTo = new ArrayList<>();
 
+		attendeesMailTo.add(mailTo);
 		for (String a : attendees) {
 			attendeesMailTo.add("mailto:" + a);
 		}
