@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,9 @@ public class Location {
 
 	@Column(nullable = false, length = 255, unique = true)
 	private String city;
+	
+	@Column(nullable = false, length = 4)
+	private String countryCode;
 
 	@Column(nullable = true, length = 9)
 	private String color;
@@ -28,19 +33,29 @@ public class Location {
 	public Location() {
 	}
 
-	public Location(long id, String city, String color, int version) {
+	public Location(long id, String city, String contryCode, String color, int version) {
 		setId(id);
 		setCity(city);
+		setCountryCode(contryCode);
 		setColor(color);
 		setVersion(version);
 	}
 
-	public Location(long id, String city, String color, long idDg2, int version) {
+	public Location(long id, String city, String contryCode, String color, long idDg2, int version) {
 		setId(id);
 		setCity(city);
+		setCountryCode(contryCode);
 		setColor(color);
 		setIdDg2(idDg2);
 		setVersion(version);
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String contryCode) {
+		this.countryCode = contryCode;
 	}
 
 	public long getId() {
@@ -90,10 +105,7 @@ public class Location {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
-		return result;
+		return Objects.hash(city, countryCode, idDg2);
 	}
 
 	@Override
@@ -105,11 +117,7 @@ public class Location {
 		if (getClass() != obj.getClass())
 			return false;
 		Location other = (Location) obj;
-		if (city == null) {
-			if (other.city != null)
-				return false;
-		} else if (!city.equals(other.city))
-			return false;
-		return true;
+		return Objects.equals(city, other.city) && Objects.equals(countryCode, other.countryCode)
+				&& idDg2 == other.idDg2;
 	}
 }

@@ -70,7 +70,7 @@ class EmailServiceTest {
 	public void beforeEach() {
 		Course mockedCourse = Mockito.mock(Course.class);
 		
-		Location loc = new Location(1, "Paris", "red", 0);
+		Location loc = new Location(1, "Paris", "red", "FR", 0);
 		
 		receiver = new User(1, 1, "Daniel", "Balavoine", loc,
 				"dbalavoine@dawan.fr", "testPassword", null,

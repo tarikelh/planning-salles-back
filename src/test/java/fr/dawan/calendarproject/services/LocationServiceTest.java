@@ -58,15 +58,15 @@ class LocationServiceTest {
 
 	@BeforeEach
 	void beforeEach() throws Exception {
-		lList.add(new Location(1, "Paris", "red", 0));
-		lList.add(new Location(2, "Nantes", "blue", 0));
-		lList.add(new Location(3, "Lyon", "pink", 0));
-		lList.add(new Location(4, "Montpellier", "green", 0));
+		lList.add(new Location(1, "Paris", "red", "FR", 0));
+		lList.add(new Location(2, "Nantes", "blue", "FR", 0));
+		lList.add(new Location(3, "Lyon", "pink", "FR", 0));
+		lList.add(new Location(4, "Montpellier", "green", "FR", 0));
 
-		lDtoList.add(new LocationDto(1, 1, "Paris", "red", 0));
-		lDtoList.add(new LocationDto(2, 2, "Nantes", "blue", 0));
-		lDtoList.add(new LocationDto(3, 3, "Lyon", "pink", 0));
-		lDtoList.add(new LocationDto(4, 4, "Montpellier", "green", 0));
+		lDtoList.add(new LocationDto(1, 1, "Paris", "red", "FR", 0));
+		lDtoList.add(new LocationDto(2, 2, "Nantes", "blue", "FR", 0));
+		lDtoList.add(new LocationDto(3, 3, "Lyon", "pink", "FR", 0));
+		lDtoList.add(new LocationDto(4, 4, "Montpellier", "green", "FR", 0));
 
 		opLocation = Optional.of(lList.get(0));
 	}
@@ -138,9 +138,9 @@ class LocationServiceTest {
 
 	@Test
 	void testSaveNewLocation() {
-		LocationDto toCreate = new LocationDto(0, 0, "Toulouse", "brown", 0);
-		Location repoReturn = new Location(5, "Toulouse", "brown", 0);
-		LocationDto expected = new LocationDto(5, 5, "Toulouse", "brown", 0);
+		LocationDto toCreate = new LocationDto(0, 0, "Toulouse", "brown", "FR", 0);
+		Location repoReturn = new Location(5, "Toulouse", "brown", "FR", 0);
+		LocationDto expected = new LocationDto(5, 5, "Toulouse", "brown", "FR", 0);
 
 		when(locationMapper.locationDtoToLocation(any(LocationDto.class))).thenReturn(repoReturn);
 		when(locationRepository.saveAndFlush(any(Location.class))).thenReturn(repoReturn);
@@ -154,7 +154,7 @@ class LocationServiceTest {
 
 	@Test
 	void ShouldReturnNullWhenUpdateLocationWithWrongId() {
-		LocationDto toUpdate = new LocationDto(1111, 1111, "Paris", "brown", 0);
+		LocationDto toUpdate = new LocationDto(1111, 1111, "Paris", "brown", "FR", 0);
 
 		when(locationRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
@@ -165,7 +165,7 @@ class LocationServiceTest {
 
 	@Test
 	void shouldReturnTrueWhenLocationIsUniq() {
-		LocationDto goodLocation = new LocationDto(5, 5, "Toulouse", "brown", 0);
+		LocationDto goodLocation = new LocationDto(5, 5, "Toulouse", "brown", "FR", 0);
 
 		when(locationRepository.findDuplicates(any(long.class), any(String.class), any(String.class)))
 				.thenReturn(new ArrayList<Location>());
@@ -181,7 +181,7 @@ class LocationServiceTest {
 		dupLoc.add(lList.get(0));
 		dupLoc.add(lList.get(1));
 
-		LocationDto badLocation = new LocationDto(1111, 1111, "Paris", "blue", 0);
+		LocationDto badLocation = new LocationDto(1111, 1111, "Paris", "blue", "FR", 0);
 
 		when(locationRepository.findDuplicates(any(long.class), any(String.class), any(String.class)))
 				.thenReturn(dupLoc);

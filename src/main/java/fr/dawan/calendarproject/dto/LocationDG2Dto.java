@@ -8,14 +8,16 @@ public class LocationDG2Dto {
 	private long id;
 	private String name;
 	private boolean published;
+	private String country;
 
 	public LocationDG2Dto() {
 	}
 
-	public LocationDG2Dto(long id, String name, boolean published) {
+	public LocationDG2Dto(long id, String name, boolean published, String country) {
 		this.id = id;
 		this.name = name;
 		this.published = published;
+		this.country = country;
 	}
 
 	public long getId() {
@@ -40,6 +42,14 @@ public class LocationDG2Dto {
 
 	public void setPublished(boolean published) {
 		this.published = published;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 }
