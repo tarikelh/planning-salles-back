@@ -55,7 +55,7 @@ class SkillMapperTest {
 
 	@BeforeEach
 	void before() {
-		location = new Location(1, "paris", "#32656", 1);
+		location = new Location(1, "paris", "#32656", "FR", 1);
 
 		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);

@@ -7,6 +7,8 @@ public class LocationDto {
 
 	private String city;
 
+	private String countryCode;
+	
 	private String color;
 	
 	private int version;
@@ -14,11 +16,12 @@ public class LocationDto {
 	public LocationDto() {
 	}
 
-	public LocationDto(long id, long idDg2, String city, String color, int version) {
+	public LocationDto(long id, long idDg2, String city, String contryCode, String color, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.city = city;
+		this.countryCode = contryCode;
 		this.color = color;
 		this.version = version;
 	}
@@ -61,6 +64,14 @@ public class LocationDto {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String contryCode) {
+		this.countryCode = contryCode;
 	}
 
 }

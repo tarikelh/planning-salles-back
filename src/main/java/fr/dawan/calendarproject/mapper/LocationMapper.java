@@ -16,6 +16,7 @@ public interface LocationMapper {
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "city", source = "name")
+	@Mapping(target = "countryCode", source = "country")
 	@Mapping(target = "color", ignore = true)
 	@Mapping(target = "idDg2", source = "id")
 	@Mapping(target = "version", ignore = true)

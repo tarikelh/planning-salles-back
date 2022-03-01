@@ -67,8 +67,8 @@ class UserMapperTest {
 		skillsId.add(skill.getId());
 		skills.add(skill);
 
-		location = new Location(1, "paris", "#FFFFFF", 1);
-		location2 = new Location(4, "Lille", "#FFFFF1", 1);
+		location = new Location(1, "paris", "#FFFFFF", "FR", 1);
+		location2 = new Location(4, "Lille", "#FFFFF1", "EN", 1);
 
 		advUserDto = new AdvancedUserDto(1, 1, "advfirstname", "advlastname", 1, "advname@dawan.fr", "dsfghhrghzrazrfg",
 				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png", 1, null);

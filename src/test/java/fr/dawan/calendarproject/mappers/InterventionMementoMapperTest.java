@@ -42,7 +42,7 @@ class InterventionMementoMapperTest {
 
 	@BeforeEach
 	void before() {
-		location = new Location(1, "paris", "#32656", 1);
+		location = new Location(1, "paris", "#32656", "FR", 1);
 		course = new Course(1, 1, "C#", "5", "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
