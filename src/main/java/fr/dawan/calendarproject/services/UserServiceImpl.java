@@ -363,12 +363,15 @@ public class UserServiceImpl implements UserService {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
+				
+				
+				try {
+					userImported.setSkills(stringToSkillList(cDG2.getSkills()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				User user = userRepository.findByEmail(userImported.getEmail()).orElse(null);
-
-				if (userImported.getSkills() == null) {
-					userImported.setSkills(new HashSet<>());
-				}
 
 				if (userImported.getPassword() == null) {
 					if (userImported.getType() == UserType.ADMINISTRATIF) {
@@ -479,5 +482,44 @@ public class UserServiceImpl implements UserService {
 			return UserCompany.JEHANN.toString();
 		else
 			return UserCompany.OTHER.toString();
+	}
+	
+	private Set<Skill> stringToSkillList(String skills) {
+		Set<Skill> skillsSet = new HashSet<>();
+		String[] splitedSkills = null;
+		
+		if (skills != null) {
+			if (skills.length() > 0) {
+				if (skills.contains(", ")) {
+					splitedSkills = skills.split(", ");
+				}else if (skills.contains(" / ")) {
+					splitedSkills = skills.split(" / ");
+					
+				}else if (skills.contains(" ")){
+					splitedSkills = skills.split(" ");
+				}else {
+					Optional<Skill> skillInDb = skillRepository.findByTitle(skills);
+					
+					if (skillInDb.isPresent()) {
+						skillsSet.add(skillInDb.get());
+					} else {
+						skillsSet.add(new Skill(0, skills, null, 0));
+					}
+				}
+				
+				if (splitedSkills != null) {
+					for (String skill : splitedSkills) {
+						Optional<Skill> skillInDb = skillRepository.findByTitle(skill);
+						
+						if (skillInDb.isPresent()) {
+							skillsSet.add(skillInDb.get());
+						} else {
+							skillsSet.add(new Skill(0, skill, null, 0));
+						}
+					}
+				}
+			}
+		}
+		return skillsSet;
 	}
 }

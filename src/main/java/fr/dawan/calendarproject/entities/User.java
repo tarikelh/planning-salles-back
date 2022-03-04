@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +48,7 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	@ManyToMany()
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<>();
 
@@ -197,11 +199,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
+		return Objects.hash(company, email, lastName, location, skills, type);
 	}
 
 	@Override
@@ -213,14 +211,9 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (type != other.type)
-			return false;
-		return true;
+		return company == other.company && Objects.equals(email, other.email)
+				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
+				&& Objects.equals(skills, other.skills) && type == other.type;
 	}
 
 	@Override
