@@ -404,9 +404,7 @@ public class UserServiceImpl implements UserService {
 					}
 				}
 			}
-		} else
-
-		{
+		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
