@@ -60,11 +60,13 @@ class UserMapperTest {
 	private Skill skill = new Skill();
 	private Location location = new Location();
 	private Location location2 = new Location();
+	private String stringSkills;
 
 	@BeforeEach
 	void before() {
 		skill = new Skill(2, "skill2", null, 1);
 		skillsId.add(skill.getId());
+		stringSkills = "PHP, MVC, .Net";
 		skills.add(skill);
 
 		location = new Location(1, "paris", "#FFFFFF", "FR", 1);
@@ -77,7 +79,7 @@ class UserMapperTest {
 				"DAWAN", "zfzfzh.pngé", 2);
 
 		userDG2Dto = new UserDG2Dto(2, "dtofustname", "dtolastname", 1, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
-				"DAWAN", "zfzfzh.pngé", skillsId, 0);
+				"DAWAN", "zfzfzh.pngé", stringSkills, 0);
 
 		user = new User(3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", 1);

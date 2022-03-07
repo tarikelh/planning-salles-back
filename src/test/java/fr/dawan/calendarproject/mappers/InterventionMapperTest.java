@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -205,4 +206,11 @@ class InterventionMapperTest {
 		assertEquals(mappedIntervention.isMaster(), interventionDG2Dto.isMaster());
 		assertEquals(null, mappedIntervention.getMasterIntervention());
 	}
+	
+	@Test
+	void should_map_listInterventionDG2DtotoListIntervention() {
+		fail();
+	}
+	
+	
 }
