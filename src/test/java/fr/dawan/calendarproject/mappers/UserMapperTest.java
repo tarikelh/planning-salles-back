@@ -111,7 +111,7 @@ class UserMapperTest {
 		assertEquals(mappedAdvancedUserDto.getLocationId(), user.getLocation().getId());
 		assertEquals(mappedAdvancedUserDto.getEmail(), user.getEmail());
 		assertEquals(mappedAdvancedUserDto.getPassword(), user.getPassword());
-		assertEquals(mappedAdvancedUserDto.getSkillsId(), skillsId);
+		assertEquals(mappedAdvancedUserDto.getSkills(), skillsId);
 		assertEquals(mappedAdvancedUserDto.getType(), user.getType().toString());
 		assertEquals(mappedAdvancedUserDto.getCompany(), user.getCompany().toString());
 		assertEquals(mappedAdvancedUserDto.getImagePath(), user.getImagePath());

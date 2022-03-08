@@ -214,8 +214,13 @@ public class UserServiceImpl implements UserService {
 
 		Set<Skill> skillsList = new HashSet<>();
 
-		if (user.getSkillsId() != null) {
-			user.getSkillsId().forEach(id -> skillsList.add(skillRepository.getOne(id)));
+		if (user.getSkills() != null) {
+			user.getSkills().forEach(skill -> {
+				
+			Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
+			if(skillinDb.isPresent())
+				skillsList.add(skillinDb.get());
+			});
 		}
 		u.setSkills(skillsList);
 
@@ -277,10 +282,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// IF Skill > Must EXIST
-		if (u.getSkillsId() != null) {
-			for (long skillId : u.getSkillsId()) {
-				if (!skillRepository.findById(skillId).isPresent()) {
-					String message = "Skill with id: " + skillId + " does not exist.";
+		if (u.getSkills() != null) {
+			for (String skill : u.getSkills()) {
+				if (!skillRepository.findByTitle(skill).isPresent()) {
+					String message = "Skill with id: " + skill + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}

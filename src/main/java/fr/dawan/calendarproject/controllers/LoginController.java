@@ -57,7 +57,7 @@ public class LoginController {
 			String message = "Login Error : incorrect username or password entered by " + loginObj.getEmail()
 					+ ". Date : " + LocalDateTime.now();
 			logger.error(message);
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Erreur : identifiant ou mot de passe incorrects !");
 		}
 	}

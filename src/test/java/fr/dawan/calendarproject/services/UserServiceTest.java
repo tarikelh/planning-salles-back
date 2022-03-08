@@ -230,15 +230,15 @@ class UserServiceTest {
 		Skill s3 = new Skill(3, "SQL", null, 0);
 		sList.add(s3);
 
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
-		skillIds.add(2L);
-		skillIds.add(3L);
+		List<String> skills = new ArrayList<>();
+		skills.add("DevOps");
+		skills.add("POO");
+		skills.add("SQL");
 
 		AdvancedUserDto toCreate = new AdvancedUserDto(0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+				"ADMINISTRATIF", "DAWAN", "", 0, skills);
 		AdvancedUserDto expected = new AdvancedUserDto(3, 3, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+				"ADMINISTRATIF", "DAWAN", "", 0, skills);
 		User repoReturn = new User(3, 3, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
 
@@ -256,7 +256,7 @@ class UserServiceTest {
 
 		assertThat(result).isNotNull();
 		assertEquals(expected, result);
-		assertEquals(sList.size(), result.getSkillsId().size());
+		assertEquals(sList.size(), result.getSkills().size());
 
 		if (!hashTools.isClosed())
 			hashTools.close();
@@ -397,11 +397,11 @@ class UserServiceTest {
 
 	@Test
 	void shouldThrowWhenUserHasBadSkill() {
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
+		List<String> skills = new ArrayList<>();
+		skills.add("SQL");
 
 		AdvancedUserDto badSkill = new AdvancedUserDto(0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -418,18 +418,18 @@ class UserServiceTest {
 		assertEquals("class fr.dawan.calendarproject.dto.AdvancedUserDto", result.getInstanceClass());
 		assertEquals("/api/users", result.getPath());
 		assertEquals("SkillNotFound", result.getType());
-		assertEquals("Skill with id: " + skillIds.get(0) + " does not exist.", result.getMessage());
+		assertEquals("Skill with id: " + skills.get(0) + " does not exist.", result.getMessage());
 	}
 
 	@Test
 	void shouldThrowWhenUserHasTooShortPassword() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
 
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
+		List<String> skills = new ArrayList<>();
+		skills.add("DevOps");
 
 		AdvancedUserDto shortPwd = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr", "short",
-				"ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+				"ADMINISTRATIF", "DAWAN", "", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -453,11 +453,11 @@ class UserServiceTest {
 	void shouldThrowWhenUserHasBadCompany() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
 
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
+		List<String> skills = new ArrayList<>();
+		skills.add("DevOps");
 
 		AdvancedUserDto badCompany = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "BADCOMPANY", "", 0, skillIds);
+				"newStrongPassword", "ADMINISTRATIF", "BADCOMPANY", "", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -481,11 +481,11 @@ class UserServiceTest {
 	void shouldThrowWhenUserHasBadType() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
 
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
+		List<String> skills = new ArrayList<>();
+		skills.add("DevOps");
 
 		AdvancedUserDto badType = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "BADTYPE", "DAWAN", "", 0, skillIds);
+				"newStrongPassword", "BADTYPE", "DAWAN", "", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -509,11 +509,11 @@ class UserServiceTest {
 	void shouldReturnTrueWhenUserIsCorrect() {
 		Skill s1 = new Skill(1, "DevOps", null, 0);
 
-		List<Long> skillIds = new ArrayList<Long>();
-		skillIds.add(1L);
+		List<String> skills = new ArrayList<>();
+		skills.add("DevOps");
 
 		AdvancedUserDto goodUser = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skillIds);
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);

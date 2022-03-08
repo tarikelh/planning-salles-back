@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -60,8 +61,8 @@ class SkillMapperTest {
 		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		user2 = new User(2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null, UserType.FORMATEUR,
-				UserCompany.JEHANN, "./image/img.png", 0);
+		user2 = new User(2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null,
+				UserType.FORMATEUR, UserCompany.JEHANN, "./image/img.png", 0);
 
 		usersId.add(user.getId());
 		usersId.add(user2.getId());
@@ -153,5 +154,10 @@ class SkillMapperTest {
 		assertEquals(mappedSkills.size(), skillsId.size());
 		assertThat(mappedSkills.contains(skill));
 		assertThat(mappedSkills.contains(skill2));
+	}
+
+	@Test
+	void should_map_SkillDtoToSkill() {
+		fail();
 	}
 }
