@@ -125,36 +125,36 @@ class SkillMapperTest {
 		assertThat(mappedSkillSet.contains(skill2));
 	}
 
-	@Test
-	void should_map_setSkillsToListLong() {
-		// mapping
-		List<Long> mappedLongList = skillMapper.setSkillsToListLong(skills);
+//	@Test
+//	void should_map_setSkillsToListLong() {
+//		// mapping
+//		List<Long> mappedLongList = skillMapper.setSkillsToListLong(skills);
+//
+//		List<Long> list = new ArrayList<Long>();
+//
+//		for (Skill skill : skills) {
+//			list.add(skill.getId());
+//		}
+//
+//		// assert
+//		assertEquals(mappedLongList.size(), skillsList.size());
+//		assertEquals(mappedLongList, list);
+//	}
 
-		List<Long> list = new ArrayList<Long>();
-
-		for (Skill skill : skills) {
-			list.add(skill.getId());
-		}
-
-		// assert
-		assertEquals(mappedLongList.size(), skillsList.size());
-		assertEquals(mappedLongList, list);
-	}
-
-	@Test
-	void should_map_listLongToSetSkills() {
-		// mocking
-		when(skillRepository.getOne(skill.getId())).thenReturn(skill);
-		when(skillRepository.getOne(skill2.getId())).thenReturn(skill2);
-
-		// mapping
-		Set<Skill> mappedSkills = skillMapper.listLongToSetSkills(skillsId);
-
-		// assert
-		assertEquals(mappedSkills.size(), skillsId.size());
-		assertThat(mappedSkills.contains(skill));
-		assertThat(mappedSkills.contains(skill2));
-	}
+//	@Test
+//	void should_map_listLongToSetSkills() {
+//		// mocking
+//		when(skillRepository.getOne(skill.getId())).thenReturn(skill);
+//		when(skillRepository.getOne(skill2.getId())).thenReturn(skill2);
+//
+//		// mapping
+//		Set<Skill> mappedSkills = skillMapper.listLongToSetSkills(skillsId);
+//
+//		// assert
+//		assertEquals(mappedSkills.size(), skillsId.size());
+//		assertThat(mappedSkills.contains(skill));
+//		assertThat(mappedSkills.contains(skill2));
+//	}
 
 	@Test
 	void should_map_SkillDtoToSkill() {

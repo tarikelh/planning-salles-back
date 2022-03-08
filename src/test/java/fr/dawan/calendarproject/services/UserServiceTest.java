@@ -243,7 +243,7 @@ class UserServiceTest {
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
-		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
+		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
 		when(userMapper.advancedUserDtoToUser(any(AdvancedUserDto.class))).thenReturn(repoReturn);
 		when(skillRepository.getOne(any(Long.class))).thenReturn(s1, s2, s3);
@@ -433,7 +433,7 @@ class UserServiceTest {
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
+		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
 
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(shortPwd);
@@ -461,7 +461,7 @@ class UserServiceTest {
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
+		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
 
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badCompany);
@@ -489,7 +489,7 @@ class UserServiceTest {
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
+		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
 
 		EntityFormatException resultException = assertThrows(EntityFormatException.class, () -> {
 			userService.checkIntegrity(badType);
@@ -517,7 +517,7 @@ class UserServiceTest {
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		when(skillRepository.findById(any(Long.class))).thenReturn(Optional.of(s1));
+		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
 
 		boolean result = userService.checkIntegrity(goodUser);
 
