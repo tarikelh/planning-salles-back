@@ -27,14 +27,15 @@ public interface UserMapper {
 
 	Set<User> listLongToSetUsers(List<Long> ids);
 
-	@Mapping(source = "skills", target = "skillsId")
+	
+	@Mapping(source = "skills", target = "skills")
 	@Mapping(source = "location.id", target = "locationId")
 	@Mapping(source = "enumType", target = "type")
 	@Mapping(source = "enumCompany", target = "company")
 	AdvancedUserDto userToAdvancedUserDto(User user);
 
 	@Mapping(source = "locationId", target = "location")
-	@Mapping(source = "skillsId", target = "skills")
+	@Mapping(source = "skills", target = "skills")
 	@Mapping(source = "type", target = "enumType")
 	@Mapping(source = "company", target = "enumCompany")
 	User advancedUserDtoToUser(AdvancedUserDto advUser);

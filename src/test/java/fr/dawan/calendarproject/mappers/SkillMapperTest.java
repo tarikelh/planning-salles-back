@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -60,8 +61,8 @@ class SkillMapperTest {
 		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
 
-		user2 = new User(2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null, UserType.FORMATEUR,
-				UserCompany.JEHANN, "./image/img.png", 0);
+		user2 = new User(2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null,
+				UserType.FORMATEUR, UserCompany.JEHANN, "./image/img.png", 0);
 
 		usersId.add(user.getId());
 		usersId.add(user2.getId());
@@ -124,34 +125,39 @@ class SkillMapperTest {
 		assertThat(mappedSkillSet.contains(skill2));
 	}
 
+//	@Test
+//	void should_map_setSkillsToListLong() {
+//		// mapping
+//		List<Long> mappedLongList = skillMapper.setSkillsToListLong(skills);
+//
+//		List<Long> list = new ArrayList<Long>();
+//
+//		for (Skill skill : skills) {
+//			list.add(skill.getId());
+//		}
+//
+//		// assert
+//		assertEquals(mappedLongList.size(), skillsList.size());
+//		assertEquals(mappedLongList, list);
+//	}
+
+//	@Test
+//	void should_map_listLongToSetSkills() {
+//		// mocking
+//		when(skillRepository.getOne(skill.getId())).thenReturn(skill);
+//		when(skillRepository.getOne(skill2.getId())).thenReturn(skill2);
+//
+//		// mapping
+//		Set<Skill> mappedSkills = skillMapper.listLongToSetSkills(skillsId);
+//
+//		// assert
+//		assertEquals(mappedSkills.size(), skillsId.size());
+//		assertThat(mappedSkills.contains(skill));
+//		assertThat(mappedSkills.contains(skill2));
+//	}
+
 	@Test
-	void should_map_setSkillsToListLong() {
-		// mapping
-		List<Long> mappedLongList = skillMapper.setSkillsToListLong(skills);
-
-		List<Long> list = new ArrayList<Long>();
-
-		for (Skill skill : skills) {
-			list.add(skill.getId());
-		}
-
-		// assert
-		assertEquals(mappedLongList.size(), skillsList.size());
-		assertEquals(mappedLongList, list);
-	}
-
-	@Test
-	void should_map_listLongToSetSkills() {
-		// mocking
-		when(skillRepository.getOne(skill.getId())).thenReturn(skill);
-		when(skillRepository.getOne(skill2.getId())).thenReturn(skill2);
-
-		// mapping
-		Set<Skill> mappedSkills = skillMapper.listLongToSetSkills(skillsId);
-
-		// assert
-		assertEquals(mappedSkills.size(), skillsId.size());
-		assertThat(mappedSkills.contains(skill));
-		assertThat(mappedSkills.contains(skill2));
+	void should_map_SkillDtoToSkill() {
+		fail();
 	}
 }

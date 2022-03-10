@@ -214,8 +214,13 @@ public class UserServiceImpl implements UserService {
 
 		Set<Skill> skillsList = new HashSet<>();
 
-		if (user.getSkillsId() != null) {
-			user.getSkillsId().forEach(id -> skillsList.add(skillRepository.getOne(id)));
+		if (user.getSkills() != null) {
+			user.getSkills().forEach(skill -> {
+				
+			Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
+			if(skillinDb.isPresent())
+				skillsList.add(skillinDb.get());
+			});
 		}
 		u.setSkills(skillsList);
 
@@ -277,10 +282,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// IF Skill > Must EXIST
-		if (u.getSkillsId() != null) {
-			for (long skillId : u.getSkillsId()) {
-				if (!skillRepository.findById(skillId).isPresent()) {
-					String message = "Skill with id: " + skillId + " does not exist.";
+		if (u.getSkills() != null) {
+			for (String skill : u.getSkills()) {
+				if (!skillRepository.findByTitle(skill).isPresent()) {
+					String message = "Skill with id: " + skill + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}
@@ -363,12 +368,15 @@ public class UserServiceImpl implements UserService {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
+				
+				
+				try {
+					userImported.setSkills(stringToSkillList(cDG2.getSkills()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				User user = userRepository.findByEmail(userImported.getEmail()).orElse(null);
-
-				if (userImported.getSkills() == null) {
-					userImported.setSkills(new HashSet<>());
-				}
 
 				if (userImported.getPassword() == null) {
 					if (userImported.getType() == UserType.ADMINISTRATIF) {
@@ -401,9 +409,7 @@ public class UserServiceImpl implements UserService {
 					}
 				}
 			}
-		} else
-
-		{
+		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 	}
@@ -479,5 +485,44 @@ public class UserServiceImpl implements UserService {
 			return UserCompany.JEHANN.toString();
 		else
 			return UserCompany.OTHER.toString();
+	}
+	
+	private Set<Skill> stringToSkillList(String skills) {
+		Set<Skill> skillsSet = new HashSet<>();
+		String[] splitedSkills = null;
+		
+		if (skills != null) {
+			if (skills.length() > 0) {
+				if (skills.contains(", ")) {
+					splitedSkills = skills.split(", ");
+				}else if (skills.contains(" / ")) {
+					splitedSkills = skills.split(" / ");
+					
+				}else if (skills.contains(" ")){
+					splitedSkills = skills.split(" ");
+				}else {
+					Optional<Skill> skillInDb = skillRepository.findByTitle(skills);
+					
+					if (skillInDb.isPresent()) {
+						skillsSet.add(skillInDb.get());
+					} else {
+						skillsSet.add(new Skill(0, skills, null, 0));
+					}
+				}
+				
+				if (splitedSkills != null) {
+					for (String skill : splitedSkills) {
+						Optional<Skill> skillInDb = skillRepository.findByTitle(skill);
+						
+						if (skillInDb.isPresent()) {
+							skillsSet.add(skillInDb.get());
+						} else {
+							skillsSet.add(new Skill(0, skill, null, 0));
+						}
+					}
+				}
+			}
+		}
+		return skillsSet;
 	}
 }

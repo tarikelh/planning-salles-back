@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
 	Page<Skill> findAllByTitleContaining(String title, Pageable pageable);
 
 	long countByTitleContaining(String title);
+	
+	Optional<Skill> findByTitle(String title);
 }

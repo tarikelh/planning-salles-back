@@ -1,8 +1,5 @@
 package fr.dawan.calendarproject.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -29,16 +26,16 @@ public class UserDG2Dto {
 
 	private String imagePath;
 
-	private List<Long> skillsId;
+	@JsonProperty("skill")
+	private String skills;
 
 	private int version;
 
 	public UserDG2Dto() {
-		setSkillsId(new ArrayList<Long>());
 	}
 
 	public UserDG2Dto(long id, String firstName, String lastName, long locationId, String email, String password,
-			String type, String company, String imagePath, List<Long> skillsId, int version) {
+			String type, String company, String imagePath, String skills, int version) {
 		setId(id);
 		setFirstName(firstName);
 		setLastName(lastName);
@@ -48,7 +45,7 @@ public class UserDG2Dto {
 		setType(type);
 		setCompany(company);
 		setImagePath(imagePath);
-		setSkillsId(skillsId);
+		setSkills(skills);
 		setVersion(version);
 	}
 
@@ -124,12 +121,12 @@ public class UserDG2Dto {
 		this.imagePath = imagePath;
 	}
 
-	public List<Long> getSkillsId() {
-		return skillsId;
+	public String getSkills() {
+		return skills;
 	}
 
-	public void setSkillsId(List<Long> skillsId) {
-		this.skillsId = skillsId;
+	public void setSkills(String skills) {
+		this.skills = skills;
 	}
 
 	public String getFullName() {

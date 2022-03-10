@@ -5,23 +5,23 @@ import java.util.List;
 
 public class AdvancedUserDto extends UserDto {
 
-	private List<Long> skillsId;
+	private List<String> skills;
 
 	public AdvancedUserDto() {
-		this.skillsId = new ArrayList<>();
+		this.skills = new ArrayList<>();
 	}
 
 	public AdvancedUserDto(long id, long idDg2, String firstName, String lastName, long locationId, String email, String password,
-			String type, String company, String imagePath, int version, List<Long> skillsId) {
+			String type, String company, String imagePath, int version, List<String> skills) {
 		super(id, idDg2, firstName, lastName, locationId, email, password, type, company, imagePath, version);
-		this.skillsId = skillsId;
+		setSkills(skills);
 	}
 
-	public List<Long> getSkillsId() {
-		return skillsId;
+	public List<String> getSkills() {
+		return skills;
 	}
 
-	public void setSkillsId(List<Long> skillsId) {
-		this.skillsId = skillsId;
+	public void setSkills(List<String> skills) {
+		this.skills = skills;
 	}
 }

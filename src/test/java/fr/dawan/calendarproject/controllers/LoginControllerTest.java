@@ -95,7 +95,7 @@ class LoginControllerTest {
 		when(userService.findByEmail(login.getEmail())).thenReturn(user);
 
 		mockMvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.accept(MediaType.APPLICATION_JSON).content(loginJson)).andExpect(status().is(422));
+				.accept(MediaType.APPLICATION_JSON).content(loginJson)).andExpect(status().is(404));
 	}
 
 	@Test
@@ -111,7 +111,7 @@ class LoginControllerTest {
 		when(jwtTokenUtil.doGenerateToken(Mockito.anyMap(), any(String.class))).thenReturn("testToken123");
 
 		mockMvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.accept(MediaType.APPLICATION_JSON).content(loginJson)).andExpect(status().is(422));
+				.accept(MediaType.APPLICATION_JSON).content(loginJson)).andExpect(status().is(404));
 
 		if (!hashTools.isClosed())
 			hashTools.close();

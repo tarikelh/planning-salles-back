@@ -13,15 +13,19 @@ import fr.dawan.calendarproject.repositories.SkillRepository;
 @Mapper(componentModel = "spring", uses = { SkillRepository.class, UserMapper.class })
 public interface SkillMapper {
 
-	List<Long> setSkillsToListLong(Set<Skill> skills);
+	@Mapping(source= ".", target = "title")
+	@Mapping(target="id", ignore = true)
+	@Mapping(target="users", ignore = true)
+	@Mapping(target="version", ignore = true)
+	Skill StringToSkill(String skill);
+	
+	default String skillToString(Skill skill) {
+		return skill.getTitle();
+	}
 
 	Set<Skill> listSkillsToSetSkills(List<Skill> skils);
 
-	default Long getSkillId(Skill skill) {
-		return skill.getId();
-	}
-
-	Set<Skill> listLongToSetSkills(List<Long> ids);
+	Set<Skill> listSkillDtoToSetSkills(List<String> skills);
 
 	@Mapping(source = "users", target = "usersId")
 	AdvancedSkillDto skillToAdvancedSkillDto(Skill skill);
