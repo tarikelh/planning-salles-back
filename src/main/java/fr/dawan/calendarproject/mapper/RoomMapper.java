@@ -9,14 +9,14 @@ import fr.dawan.calendarproject.repositories.SkillRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = { RoomRepository.class, RoomMapper.class })
+@Mapper(componentModel = "spring", uses = { RoomRepository.class })
 public interface RoomMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "fullCapacity", source = "fullCapacity")
     @Mapping(target = "partialCapacity", source = "partialCapacity")
-    @Mapping(target = "isAvailable", source = "isAvailable")
+    @Mapping(target = "isAvailable", source = "available")
     @Mapping(target = "locationId", source = "location.id")
     RoomDto roomToRoomDto(Room room);
 
@@ -24,8 +24,8 @@ public interface RoomMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "fullCapacity", source = "fullCapacity")
     @Mapping(target = "partialCapacity", source = "partialCapacity")
-    @Mapping(target = "isAvailable", source = "isAvailable")
-    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "available", source = "available")
+    @Mapping(target = "location.id", source = "locationId")
     Room roomDtoToRoom(RoomDto roomDto);
 
 }
