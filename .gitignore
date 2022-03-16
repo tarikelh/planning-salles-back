@@ -43,4 +43,4 @@ interventionMementoDates.csv
 applicationsDevelopment.txt
 applicationsProduction.txt
 
-.properties
+*.properties
