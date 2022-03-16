@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Room {
@@ -23,7 +24,7 @@ public class Room {
     @Version
     private int version;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -94,5 +95,31 @@ public class Room {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return id == room.id && fullCapacity == room.fullCapacity && partialCapacity == room.partialCapacity && isAvailable == room.isAvailable && version == room.version && name.equals(room.name) && location.equals(room.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, fullCapacity, partialCapacity, isAvailable, version, location);
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fullCapacity=" + fullCapacity +
+                ", partialCapacity=" + partialCapacity +
+                ", isAvailable=" + isAvailable +
+                ", version=" + version +
+                ", location=" + location +
+                '}';
     }
 }
