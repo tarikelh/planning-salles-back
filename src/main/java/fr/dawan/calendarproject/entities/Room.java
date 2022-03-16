@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Room {
