@@ -46,13 +46,16 @@ public class RoomDto {
 		return partialCapacity;
 	}
 
-	public void setPartialCapacity() {
-		this.partialCapacity = this.fullCapacity/2;
-		//to ask 
+	public void setPartialCapacity(long partialCapacity) {
+		this.partialCapacity = partialCapacity;
 	}
 
-	public boolean isIsAvailable() {
+	public boolean isAvailable() {
 		return IsAvailable;
+	}
+
+	public void setAvailable(boolean available) {
+		IsAvailable = available;
 	}
 
 	public void setIsAvailable(boolean isAvailable) {

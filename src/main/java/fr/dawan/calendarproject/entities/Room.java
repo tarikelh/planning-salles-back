@@ -1,6 +1,10 @@
 package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Room {
@@ -22,14 +26,18 @@ public class Room {
     @Version
     private int version;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "location_id")
     private Location location;
+
+    @ManyToMany
+    @JoinTable(name = "room_booking", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
+    private List<Booking> bookings;
 
     public Room() {
     }
 
-    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location) {
+    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location, List<Booking> bookings) {
         this.id = id;
         this.name = name;
         this.fullCapacity = fullCapacity;
@@ -37,6 +45,7 @@ public class Room {
         this.isAvailable = isAvailable;
         this.version = version;
         this.location = location;
+        this.bookings = bookings;
     }
 
     public Location getLocation() {
@@ -71,8 +80,9 @@ public class Room {
         return partialCapacity;
     }
 
-    public void setPartialCapacity() {
-        this.partialCapacity = this.fullCapacity / 2;
+    public void setPartialCapacity(long partialCapacity) {
+        partialCapacity = this.fullCapacity / 2;
+        this.partialCapacity = partialCapacity;
     }
 
     public boolean isAvailable() {
@@ -93,5 +103,39 @@ public class Room {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return id == room.id && fullCapacity == room.fullCapacity && partialCapacity == room.partialCapacity && isAvailable == room.isAvailable && version == room.version && name.equals(room.name) && location.equals(room.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, fullCapacity, partialCapacity, isAvailable, version, location);
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fullCapacity=" + fullCapacity +
+                ", partialCapacity=" + partialCapacity +
+                ", isAvailable=" + isAvailable +
+                ", version=" + version +
+                ", location=" + location +
+                '}';
     }
 }
