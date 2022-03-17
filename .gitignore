@@ -42,5 +42,3 @@ interventionMementoDates.csv
 ## DevSettings #12
 applicationsDevelopment.txt
 applicationsProduction.txt
-
-*.properties
