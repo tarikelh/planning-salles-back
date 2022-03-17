@@ -12,7 +12,7 @@ import io.github.classgraph.Resource;
 public interface ResourceRepository extends JpaRepository<Resource,Long> {
 
 	 @Query("FROM Resource r Where r.name = :name")
-	    List<Resource> findByname(@Param("name") String name);
+	    List<Resource> findByName(@Param("name") String name);
 	 
 
 }

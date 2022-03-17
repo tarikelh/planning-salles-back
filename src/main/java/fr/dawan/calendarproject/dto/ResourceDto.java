@@ -12,7 +12,6 @@ public class ResourceDto {
 	
 	private long roomId;
 	
-
 	public long getRoomId() {
 		return roomId;
 	}
