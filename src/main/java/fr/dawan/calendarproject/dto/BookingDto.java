@@ -6,7 +6,7 @@ public class BookingDto {
 	
 	private long id ;
 	
-	private long reference;
+	//private long reference;
 	
 	private LocalDate dateStart;
 	
@@ -69,7 +69,7 @@ public class BookingDto {
 			int version) {
 		super();
 		this.id = id;
-		this.reference = reference;
+		//this.reference = reference;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.roomId = roomId;
@@ -77,13 +77,13 @@ public class BookingDto {
 		this.version = version;
 	}
 
-	public long getReference() {
-		return reference;
-	}
-
-	public void setReference(long reference) {
-		this.reference = reference;
-	}
+//	//public long getReference() {
+//		return reference;
+//	}
+//
+//	public void setReference(long reference) {
+//		this.reference = reference;
+//	}
 
 	public BookingDto() {
 		super();
