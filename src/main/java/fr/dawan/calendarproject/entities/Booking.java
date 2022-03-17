@@ -9,8 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+import javax.persistence.JoinColumn;
 
 @Entity
 public class Booking {
@@ -19,7 +22,8 @@ public class Booking {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@ManyToOne(cascade= CascadeType.MERGE)
+	@ManyToMany
+	@JoinTable(name="room_booking", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
 	private Room room;
 	
 	@ManyToOne(cascade= CascadeType.MERGE)
