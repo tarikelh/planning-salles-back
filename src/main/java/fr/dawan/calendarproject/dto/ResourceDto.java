@@ -2,7 +2,7 @@ package fr.dawan.calendarproject.dto;
 
 public class ResourceDto {
 
-	private long id ;
+	private long Id ;
 	
 	private int version ;
 	
@@ -20,12 +20,14 @@ public class ResourceDto {
 		this.roomId = roomId;
 	}
 
+	
+
 	public long getId() {
-		return id;
+		return Id;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		Id = id;
 	}
 
 	public int getVersion() {
@@ -52,11 +54,9 @@ public class ResourceDto {
 		this.name = name;
 	}
 
-	
-
 	public ResourceDto(long id, int version, int quantity, String name, long roomId) {
 		super();
-		this.id = id;
+		Id = id;
 		this.version = version;
 		this.quantity = quantity;
 		this.name = name;
