@@ -34,8 +34,6 @@ public class Booking {
 	@Version
 	private int version;
 
-	
-	
 	public Booking() {
 		super();
 	}
