@@ -10,8 +10,6 @@ public class BookingDto {
 	
 	private LocalDate dateEnd;
 	
-	private long roomId;
-	
 	private long interventionId;
 	
 	private int version;
@@ -39,13 +37,9 @@ public class BookingDto {
 		this.dateEnd = dateEnd;
 	}
 
-	public long getRoomId() {
-		return roomId;
-	}
+	
 
-	public void setRoomId(long roomId) {
-		this.roomId = roomId;
-	}
+
 
 	public long getInterventionId() {
 		return interventionId;
@@ -63,13 +57,13 @@ public class BookingDto {
 		this.version = version;
 	}
 
-	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long roomId, long interventionId,
+	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long interventionId,
 			int version) {
 		super();
 		this.id = id;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
-		this.roomId = roomId;
+		
 		this.interventionId = interventionId;
 		this.version = version;
 	}
