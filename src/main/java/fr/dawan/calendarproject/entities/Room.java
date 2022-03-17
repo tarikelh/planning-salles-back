@@ -1,10 +1,8 @@
 package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Room {
@@ -31,7 +29,7 @@ public class Room {
     private Location location;
 
     @ManyToMany
-    @JoinTable(name = "room_booking", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
+    @JoinTable(name = "room_booking", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "booking_id"))
     private List<Booking> bookings;
 
     public Room() {
