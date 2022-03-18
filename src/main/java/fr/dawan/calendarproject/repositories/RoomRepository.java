@@ -24,7 +24,7 @@ public interface RoomRepository extends JpaRepository<Room,Long> {
     @Query("FROM Room r WHERE r.isAvailable = true")
     List<Room> findAvailableRoom();
 
-    @Query("FROM Room r Where r.fullCapacity = :capacity ")
+    @Query("FROM Room r Where r.fullCapacity = :capacity")
     List<Room> findByCapacity(@Param("capacity") long capacity);
 
     long countByLocation(String location);
