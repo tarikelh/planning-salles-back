@@ -12,7 +12,7 @@ import fr.dawan.calendarproject.entities.Booking;
 
 @Repository	
 public interface BookingRepository extends JpaRepository<Booking,Long>  {
-	@Query("FROM Booking b LEFT JOIN FETCH r.room WHERE b.dateStart BETWEEN :start AND :end OR b.dateEnd BETWEEN :start AND :end")
-	List<Booking> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
+	@Query("FROM Booking b WHERE b.beginDate BETWEEN :begin And :ending OR b.endingDate BETWEEN :begin AND :ending")
+	List<Booking> findAllByDateRange(@Param("begin") LocalDate beginDate, @Param("ending") LocalDate endingDate);
 
 }
