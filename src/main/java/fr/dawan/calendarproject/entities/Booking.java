@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -9,8 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+import javax.persistence.JoinColumn;
 
 @Entity
 public class Booking {
@@ -19,8 +23,9 @@ public class Booking {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@ManyToOne(cascade= CascadeType.MERGE)
-	private Room room;
+	@ManyToMany
+	@JoinTable(name="room_booking", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
+	private List<Room> rooms;
 	
 	@ManyToOne(cascade= CascadeType.MERGE)
 	private Intervention intervention;
@@ -39,16 +44,21 @@ public class Booking {
 	}
 
 
-	public Booking(long id, Room room, Intervention intervention, LocalDate beginDate, LocalDate endingDate,
+	
+
+	public Booking(long id, List<Room> rooms, Intervention intervention, LocalDate beginDate, LocalDate endingDate,
 			int version) {
 		super();
 		this.id = id;
-		this.room = room;
+		this.rooms = rooms;
 		this.intervention = intervention;
 		this.beginDate = beginDate;
 		this.endingDate = endingDate;
 		this.version = version;
 	}
+
+
+
 
 
 
@@ -63,16 +73,17 @@ public class Booking {
 	}
 
 
-
-	public Room getRoom() {
-		return room;
+	public List<Room> getRooms() {
+		return rooms;
 	}
 
 
 
-	public void setRoom(Room room) {
-		this.room = room;
+
+	public void setRooms(List<Room> rooms) {
+		this.rooms = rooms;
 	}
+
 
 
 
@@ -123,7 +134,6 @@ public class Booking {
 	}
 
 
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -135,15 +145,19 @@ public class Booking {
 		Booking other = (Booking) obj;
 		return Objects.equals(beginDate, other.beginDate) && Objects.equals(endingDate, other.endingDate)
 				&& id == other.id && Objects.equals(intervention, other.intervention)
-				&& Objects.equals(room, other.room) && version == other.version;
+				&& Objects.equals(rooms, other.rooms) && version == other.version;
 	}
+
+
 
 
 	@Override
 	public String toString() {
-		return "Booking [id=" + id + ", room=" + room + ", intervention=" + intervention + ", beginDate=" + beginDate
+		return "Booking [id=" + id + ", rooms=" + rooms + ", intervention=" + intervention + ", beginDate=" + beginDate
 				+ ", endingDate=" + endingDate + ", version=" + version + "]";
 	}
-	
+
+
+
 
 }
