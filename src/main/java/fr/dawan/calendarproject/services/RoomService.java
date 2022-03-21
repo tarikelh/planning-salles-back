@@ -17,7 +17,7 @@ public interface RoomService {
 
     void deleteById(long id);
 
-    RoomDto saveOrUpdate(RoomDto roomDto);
+    RoomDto saveOrUpdate(RoomDto room);
 
-    boolean checkUniqness(RoomDto roomDto);
+    boolean checkUniqness(RoomDto room);
 }
