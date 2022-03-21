@@ -1,10 +1,6 @@
 package fr.dawan.calendarproject.services;
 
-import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.CountDto;
-import fr.dawan.calendarproject.dto.CourseDto;
-import fr.dawan.calendarproject.dto.RoomDto;
-import fr.dawan.calendarproject.entities.Course;
+import fr.dawan.calendarproject.dto.*;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.RoomMapper;
@@ -13,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,13 +73,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public RoomDto saveOrUpdate(RoomDto roomDto) {
-        checkUniqness(roomDto);
+    public RoomDto saveOrUpdate(RoomDto room) {
+        checkUniqness(room);
 
-        if (roomDto.getId() > 0 && !roomRepository.findById(roomDto.getId()).isPresent())
+        if (room.getId() > 0 && !roomRepository.findById(room.getId()).isPresent())
             return null;
 
-        Room r = roomMapper.roomDtoToRoom(roomDto);
+        Room r = roomMapper.roomDtoToRoom(room);
 
         try {
             r = roomRepository.saveAndFlush(r);
@@ -96,14 +90,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean checkUniqness(RoomDto roomDto) {
-        Room duplicate = roomRepository.findByLocationIdAndRoomName(roomDto.getLocationId(),roomDto.getName());
+    public boolean checkUniqness(RoomDto room) {
+        Room duplicate = roomRepository.findByLocationIdAndRoomName(room.getLocationId(),room.getName());
 
         if (duplicate != null) {
             Set<APIError> errors = new HashSet<>();
             String instanceClass = duplicate.getClass().toString();
             errors.add(new APIError(505, instanceClass, "Room Not Unique",
-                    "Room with name " + roomDto.getName() + " already exists", "/api/rooms"));
+                    "Room with name " + room.getName() + " already exists", "/api/rooms"));
 
             throw new EntityFormatException(errors);
         }

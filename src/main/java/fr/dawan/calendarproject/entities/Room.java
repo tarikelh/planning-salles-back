@@ -1,8 +1,10 @@
 package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Room {
@@ -28,14 +30,10 @@ public class Room {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToMany
-    @JoinTable(name = "room_booking", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "booking_id"))
-    private List<Booking> bookings;
-
     public Room() {
     }
 
-    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location, List<Booking> bookings) {
+    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location) {
         this.id = id;
         this.name = name;
         this.fullCapacity = fullCapacity;
@@ -43,7 +41,6 @@ public class Room {
         this.isAvailable = isAvailable;
         this.version = version;
         this.location = location;
-        this.bookings = bookings;
     }
 
     public Location getLocation() {
@@ -103,20 +100,12 @@ public class Room {
         this.location = location;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return id == room.id && fullCapacity == room.fullCapacity && partialCapacity == room.partialCapacity && isAvailable == room.isAvailable && version == room.version && name.equals(room.name) && location.equals(room.location);
+        return id == room.id && fullCapacity == room.fullCapacity && partialCapacity == room.partialCapacity && isAvailable == room.isAvailable && version == room.version && Objects.equals(name, room.name) && Objects.equals(location, room.location);
     }
 
     @Override
@@ -132,7 +121,6 @@ public class Room {
                 ", fullCapacity=" + fullCapacity +
                 ", partialCapacity=" + partialCapacity +
                 ", isAvailable=" + isAvailable +
-                ", version=" + version +
                 ", location=" + location +
                 '}';
     }
