@@ -56,7 +56,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public CountDto count(String search) {
-        return new CountDto(roomRepository.countByLocation(search));
+        return new CountDto(roomRepository.countByLocationContaining(search));
     }
 
     @Override

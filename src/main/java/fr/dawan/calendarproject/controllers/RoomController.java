@@ -30,11 +30,6 @@ public class RoomController {
         return roomService.getAllRooms(page, max, search);
     }
 
-    @GetMapping(value = { "/count" }, produces = "application/json")
-    public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-        return roomService.count(search);
-    }
-
     @GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
         RoomDto room = roomService.getById(id);
