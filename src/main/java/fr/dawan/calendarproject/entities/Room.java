@@ -1,10 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Room {
@@ -12,6 +9,9 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = true)
+    private long idDg2;
 
     @Column(nullable = false)
     private String name;
@@ -33,8 +33,9 @@ public class Room {
     public Room() {
     }
 
-    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location) {
+    public Room(long id, long idDg2, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location) {
         this.id = id;
+        this.idDg2 = idDg2;
         this.name = name;
         this.fullCapacity = fullCapacity;
         this.partialCapacity = partialCapacity;
@@ -53,6 +54,14 @@ public class Room {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getIdDg2() {
+        return idDg2;
+    }
+
+    public void setIdDg2(long idDg2) {
+        this.idDg2 = idDg2;
     }
 
     public String getName() {
@@ -75,9 +84,8 @@ public class Room {
         return partialCapacity;
     }
 
-    public void setPartialCapacity(long partialCapacity) {
-        partialCapacity = this.fullCapacity / 2;
-        this.partialCapacity = partialCapacity;
+    public void setPartialCapacity() {
+        this.partialCapacity = this.fullCapacity / 2;
     }
 
     public boolean isAvailable() {

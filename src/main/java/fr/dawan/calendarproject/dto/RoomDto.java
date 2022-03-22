@@ -5,6 +5,8 @@ package fr.dawan.calendarproject.dto;
 public class RoomDto {
 	
 	private long id;
+
+	private long idDg2;
 	
 	private String name;
 	
@@ -24,6 +26,14 @@ public class RoomDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getName() {
@@ -78,10 +88,9 @@ public class RoomDto {
 		this.version = version;
 	}
 
-	public RoomDto(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, long locationId,
-			int version) {
-		super();
+	public RoomDto(long id, long idDg2, String name, long fullCapacity, long partialCapacity, boolean isAvailable, long locationId, int version) {
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.name = name;
 		this.fullCapacity = fullCapacity;
 		this.partialCapacity = partialCapacity;
