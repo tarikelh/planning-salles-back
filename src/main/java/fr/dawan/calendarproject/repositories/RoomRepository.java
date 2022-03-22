@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room,Long> {
 
-    @Query("FROM Room r WHERE r.location.id = :id AND r.name = :name")
-    Room findByLocationIdAndRoomName(@Param("id") long locationId, @Param("name") String name );
+    @Query("FROM Room r WHERE r.id = :roomId AND r.idDg2 = :idDg2 AND r.location.id = :locationId AND r.name = :name AND r.fullCapacity = :fullCapacity ")
+    Room findByIdAndIdDg2AndLocationIdAndRoomNameAndFullCapacity(@Param("roomId") long roomId,@Param("idDg2") long idDg2, @Param("locationId") long locationId, @Param("name") String name, @Param("fullCapacity") long fullCapacity );
 
     @Query("FROM Room r WHERE r.location.city LIKE :location")
     Page<Room> findAllByLocationNameContaining(@Param("location")String location, Pageable pageable);

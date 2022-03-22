@@ -11,22 +11,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = { RoomRepository.class, LocationRepository.class })
 public interface RoomMapper {
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "idDg2", source = "idDg2")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "fullCapacity", source = "fullCapacity")
-    @Mapping(target = "partialCapacity", source = "partialCapacity")
-    @Mapping(target = "available", source = "available")
     @Mapping(target = "locationId", source = "location.id")
     RoomDto roomToRoomDto(Room room);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "idDg2", source = "idDg2")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "fullCapacity", source = "fullCapacity")
-    @Mapping(target = "partialCapacity", source = "partialCapacity")
-    @Mapping(target = "available", source = "available")
-    @Mapping(target = "location", source = "locationId")
+    @Mapping(target = "location", ignore = true)
     Room roomDtoToRoom(RoomDto roomDto);
 
     /*
@@ -35,7 +23,6 @@ public interface RoomMapper {
     @Mapping(target = "idDg2", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "fullCapacity", source = "fullCapacity")
-    @Mapping(target = "partialCapacity", source = "partialCapacity")
     @Mapping(target = "available", source = "available")
     @Mapping(target = "location", source = "locationId")
     Room roomDG2ToRoom(RoomDG2Dto roomDG2Dto);

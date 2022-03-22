@@ -4,6 +4,7 @@ import fr.dawan.calendarproject.dto.*;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.RoomMapper;
+import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomMapper roomMapper;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Override
     public List<RoomDto> getAllRooms() {
@@ -79,6 +83,8 @@ public class RoomServiceImpl implements RoomService {
 
         Room r = roomMapper.roomDtoToRoom(room);
 
+        r.setLocation(locationRepository.findById(room.getLocationId()).orElse(null));
+
         try {
             r = roomRepository.saveAndFlush(r);
         } catch (Exception e) {
@@ -89,7 +95,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void checkUniqueness(RoomDto room) {
-        Room duplicate = roomRepository.findByLocationIdAndRoomName(room.getLocationId(),room.getName());
+        Room duplicate = roomRepository.findByIdAndIdDg2AndLocationIdAndRoomNameAndFullCapacity(room.getId(),room.getIdDg2() ,room.getLocationId(),room.getName(), room.getFullCapacity());
 
         if (duplicate != null) {
             Set<APIError> errors = new HashSet<>();
