@@ -19,5 +19,5 @@ public interface RoomService {
 
     RoomDto saveOrUpdate(RoomDto room);
 
-    boolean checkUniqness(RoomDto room);
+    void checkUniqueness(RoomDto room);
 }

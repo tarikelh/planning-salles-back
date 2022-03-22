@@ -13,13 +13,14 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = true, unique = true)
+    private long idDg2;
+
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private long fullCapacity;
-
-    private long partialCapacity;
 
     private boolean isAvailable;
 
@@ -33,11 +34,11 @@ public class Room {
     public Room() {
     }
 
-    public Room(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, int version, Location location) {
+    public Room(long id, long idDg2, String name, long fullCapacity , boolean isAvailable, int version, Location location) {
         this.id = id;
+        this.idDg2 = idDg2;
         this.name = name;
         this.fullCapacity = fullCapacity;
-        this.partialCapacity = partialCapacity;
         this.isAvailable = isAvailable;
         this.version = version;
         this.location = location;
@@ -53,6 +54,14 @@ public class Room {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getIdDg2() {
+        return idDg2;
+    }
+
+    public void setIdDg2(long idDg2) {
+        this.idDg2 = idDg2;
     }
 
     public String getName() {
@@ -72,12 +81,7 @@ public class Room {
     }
 
     public long getPartialCapacity() {
-        return partialCapacity;
-    }
-
-    public void setPartialCapacity(long partialCapacity) {
-        partialCapacity = this.fullCapacity / 2;
-        this.partialCapacity = partialCapacity;
+        return fullCapacity / 2;
     }
 
     public boolean isAvailable() {
@@ -105,21 +109,21 @@ public class Room {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return id == room.id && fullCapacity == room.fullCapacity && partialCapacity == room.partialCapacity && isAvailable == room.isAvailable && version == room.version && Objects.equals(name, room.name) && Objects.equals(location, room.location);
+        return id == room.id && idDg2 == room.idDg2 && fullCapacity == room.fullCapacity && isAvailable == room.isAvailable && version == room.version && Objects.equals(name, room.name) && Objects.equals(location, room.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, fullCapacity, partialCapacity, isAvailable, version, location);
+        return Objects.hash(id, idDg2, name, fullCapacity, isAvailable, version, location);
     }
 
     @Override
     public String toString() {
         return "Room{" +
                 "id=" + id +
+                ", idDg2=" + idDg2 +
                 ", name='" + name + '\'' +
                 ", fullCapacity=" + fullCapacity +
-                ", partialCapacity=" + partialCapacity +
                 ", isAvailable=" + isAvailable +
                 ", location=" + location +
                 '}';
