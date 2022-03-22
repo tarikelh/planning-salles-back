@@ -178,7 +178,7 @@ class CourseServiceTest {
 		Course savedCourse = new Course(4, 4, "Vue.js course for beginners", "5", "slug", 0);
 		CourseDto expectedCourse = new CourseDto(4, 4, "Vue.js course for beginners", "5", "slug", 0);
 
-		when(courseMapper.courseDtoToCouse(newCourseDto)).thenReturn(newCourse);
+		when(courseMapper.courseDtoToCourse(newCourseDto)).thenReturn(newCourse);
 		when(courseRepository.saveAndFlush(newCourse)).thenReturn(savedCourse);
 		when(courseMapper.courseToCourseDto(savedCourse)).thenReturn(expectedCourse);
 
@@ -198,7 +198,7 @@ class CourseServiceTest {
 		CourseDto expectedCourse = new CourseDto(3, 3, "Vue.js course for beginners", "5", "slug", 1);
 
 		when(courseRepository.findById(updatedCourse.getId())).thenReturn(Optional.of(beforeUpdateCourse));
-		when(courseMapper.courseDtoToCouse(updatedCourseDto)).thenReturn(updatedCourse);
+		when(courseMapper.courseDtoToCourse(updatedCourseDto)).thenReturn(updatedCourse);
 		when(courseRepository.saveAndFlush(updatedCourse)).thenReturn(savedCourse);
 		when(courseMapper.courseToCourseDto(savedCourse)).thenReturn(expectedCourse);
 

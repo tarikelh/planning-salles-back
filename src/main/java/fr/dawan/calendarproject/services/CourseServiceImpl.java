@@ -159,7 +159,7 @@ public class CourseServiceImpl implements CourseService {
 		if (courseDto.getId() > 0 && !courseRepository.findById(courseDto.getId()).isPresent())
 			return null;
 
-		Course c = courseMapper.courseDtoToCouse(courseDto);
+		Course c = courseMapper.courseDtoToCourse(courseDto);
 
 		try {
 			c = courseRepository.saveAndFlush(c);
