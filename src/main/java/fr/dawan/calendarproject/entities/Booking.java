@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
 @Entity
+
 public class Booking {
 
 	@Id

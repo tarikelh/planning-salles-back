@@ -16,15 +16,13 @@ public interface BookingMapper {
 	@Mapping(target="dateEnd", source="endingDate")
 	@Mapping(target="roomId", source="room.id")
 	@Mapping(target="interventionId", source="intervention.id")
-	@Mapping(target="version", ignore=true)
 	BookingDto bookingToBookingDto(Booking booking);
 	
 	
 	@Mapping(target="beginDate", source="dateStart")
 	@Mapping(target="endingDate", source="dateEnd")
-	@Mapping(target="room", source="roomId")
-	@Mapping(target="intervention", source="interventionId")
-	@Mapping(target="version", ignore=true)
+	@Mapping(target="room", ignore=true)
+	@Mapping(target="intervention", ignore=true)
 	Booking bookingDtoTobooking(BookingDto bookingDto);
 	
 	

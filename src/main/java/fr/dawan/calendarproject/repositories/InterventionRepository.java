@@ -19,7 +19,9 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@DoIgnore
 	@Override
 	List<Intervention> findAll();
-
+	
+	Optional<Intervention> findById(long id);
+	
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.course.id = :id")
 	List<Intervention> findByCourseId(@Param("id") long id);
 
