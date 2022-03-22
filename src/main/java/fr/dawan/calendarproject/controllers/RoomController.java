@@ -40,6 +40,12 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room with Id " + id + " Not Found");
     }
 
+    @GetMapping(value = { "/count" }, produces = "application/json")
+    public CountDto countFilter(@RequestParam(value = "search", defaultValue = "", required = false) String search) {
+        return roomService.count(search);
+    }
+
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
         try {

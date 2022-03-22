@@ -37,14 +37,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDto> getAllRooms(int page, int max, String search) {
-        Pageable pagination = null;
+        Pageable pagination;
 
         if (page > -1 && max > 0)
             pagination = PageRequest.of(page, max);
         else
             pagination = Pageable.unpaged();
 
-        List<Room> rooms = roomRepository.findAllByLocationContaining(search, pagination).get()
+        List<Room> rooms = roomRepository.findAllByLocationNameContaining("%" + search + "%", pagination).get()
                 .collect(Collectors.toList());
 
         List<RoomDto> result = new ArrayList<>();
@@ -56,15 +56,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public CountDto count(String search) {
-        return new CountDto(roomRepository.countByLocationContaining(search));
+        return new CountDto(roomRepository.countByLocationNameContaining("%" +search + "%"));
     }
 
     @Override
     public RoomDto getById(long id) {
         Optional<Room> r = roomRepository.findById(id);
-        if (r.isPresent())
-            return roomMapper.roomToRoomDto(r.get());
-        return null;
+        return r.map(room -> roomMapper.roomToRoomDto(room)).orElse(null);
     }
 
     @Override
@@ -74,7 +72,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto saveOrUpdate(RoomDto room) {
-        checkUniqness(room);
+        checkUniqueness(room);
 
         if (room.getId() > 0 && !roomRepository.findById(room.getId()).isPresent())
             return null;
@@ -90,18 +88,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean checkUniqness(RoomDto room) {
+    public void checkUniqueness(RoomDto room) {
         Room duplicate = roomRepository.findByLocationIdAndRoomName(room.getLocationId(),room.getName());
 
         if (duplicate != null) {
             Set<APIError> errors = new HashSet<>();
             String instanceClass = duplicate.getClass().toString();
             errors.add(new APIError(505, instanceClass, "Room Not Unique",
-                    "Room with name " + room.getName() + " already exists", "/api/rooms"));
+                    "Room with name " + duplicate.getName() + " already exists", "/api/rooms"));
 
             throw new EntityFormatException(errors);
         }
 
-        return true;
     }
 }

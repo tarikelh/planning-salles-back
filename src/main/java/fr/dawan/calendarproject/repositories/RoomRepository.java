@@ -13,10 +13,11 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room,Long> {
 
-    @Query("FROM Room r LEFT JOIN FETCH r.location WHERE r.location.id = :id AND r.name = :name")
+    @Query("FROM Room r WHERE r.location.id = :id AND r.name = :name")
     Room findByLocationIdAndRoomName(@Param("id") long locationId, @Param("name") String name );
 
-    Page<Room> findAllByLocationContaining(String location, Pageable pageable);
+    @Query("FROM Room r WHERE r.location.city LIKE :location")
+    Page<Room> findAllByLocationNameContaining(@Param("location")String location, Pageable pageable);
 
     @Query("FROM Room r WHERE r.id IS NOT :id AND r.name = :name")
     Room findByName(@Param("id") long id, @Param("name") String name);
@@ -27,6 +28,7 @@ public interface RoomRepository extends JpaRepository<Room,Long> {
     @Query("FROM Room r Where r.fullCapacity = :capacity")
     List<Room> findByCapacity(@Param("capacity") long capacity);
 
-   long countByLocationContaining(String location);
+    @Query("SELECT COUNT(*) FROM Room r WHERE r.location.city LIKE :location ")
+    long countByLocationNameContaining(@Param("location")String location);
 
 }
