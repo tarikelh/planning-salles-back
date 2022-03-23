@@ -49,7 +49,7 @@ class CourseMapperTest {
 	@Test
 	void should_map_courseDtoToCouse() {
 		// mapping
-		Course mappedCourse = courseMapper.courseDtoToCouse(courseDto);
+		Course mappedCourse = courseMapper.courseDtoToCourse(courseDto);
 
 		// assert
 		assertEquals(mappedCourse.getId(), courseDto.getId());

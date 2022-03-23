@@ -91,6 +91,10 @@ public class Resource {
 				+ version + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, quantity, room, version);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -101,8 +105,11 @@ public class Resource {
 		if (getClass() != obj.getClass())
 			return false;
 		Resource other = (Resource) obj;
-		return Id == other.Id && Objects.equals(name, other.name) && quantity == other.quantity
-				&& Objects.equals(room, other.room) && version == other.version;
+		return Objects.equals(name, other.name) && quantity == other.quantity && Objects.equals(room, other.room)
+				&& version == other.version;
 	}
+
+
+	
 	
 }

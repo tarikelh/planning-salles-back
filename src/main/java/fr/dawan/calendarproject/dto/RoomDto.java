@@ -1,16 +1,15 @@
 
 package fr.dawan.calendarproject.dto;
 
-@SuppressWarnings("serial")
 public class RoomDto {
 	
 	private long id;
+
+	private long idDg2;
 	
 	private String name;
 	
 	private long fullCapacity;
-	
-	private long partialCapacity;
 	
 	private boolean IsAvailable;
 	
@@ -18,12 +17,34 @@ public class RoomDto {
 	
 	private int version;
 
+	public RoomDto() {
+		super();
+	}
+
+	public RoomDto(long id, long idDg2, String name, long fullCapacity , boolean isAvailable, long locationId, int version) {
+		this.id = id;
+		this.idDg2 = idDg2;
+		this.name = name;
+		this.fullCapacity = fullCapacity;
+		IsAvailable = isAvailable;
+		this.locationId = locationId;
+		this.version = version;
+	}
+
 	public long getId() {
 		return id;
 	}
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public String getName() {
@@ -43,11 +64,7 @@ public class RoomDto {
 	}
 
 	public long getPartialCapacity() {
-		return partialCapacity;
-	}
-
-	public void setPartialCapacity(long partialCapacity) {
-		this.partialCapacity = partialCapacity;
+		return fullCapacity / 2;
 	}
 
 	public boolean isAvailable() {
@@ -78,21 +95,7 @@ public class RoomDto {
 		this.version = version;
 	}
 
-	public RoomDto(long id, String name, long fullCapacity, long partialCapacity, boolean isAvailable, long locationId,
-			int version) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.fullCapacity = fullCapacity;
-		this.partialCapacity = partialCapacity;
-		IsAvailable = isAvailable;
-		this.locationId = locationId;
-		this.version = version;
-	}
 
-	public RoomDto() {
-		super();
-	}
 	
 	
 
