@@ -20,5 +20,4 @@ public interface BookingService {
 	
 	BookingDto saveOrUpdate(BookingDto bookingDto);
 	
-	void checkUniqueness(BookingDto bookingDto);
 }

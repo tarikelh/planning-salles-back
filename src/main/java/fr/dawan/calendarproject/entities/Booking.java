@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
 @Entity
-
 public class Booking {
 
 	@Id
@@ -123,15 +122,10 @@ public class Booking {
 	}
 
 
-
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(beginDate, endingDate, id, intervention, room, version);
+		return Objects.hash(beginDate, endingDate, intervention, room, version);
 	}
-
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -143,12 +137,9 @@ public class Booking {
 			return false;
 		Booking other = (Booking) obj;
 		return Objects.equals(beginDate, other.beginDate) && Objects.equals(endingDate, other.endingDate)
-				&& id == other.id && Objects.equals(intervention, other.intervention)
-				&& Objects.equals(room, other.room);
+				&& Objects.equals(intervention, other.intervention) && Objects.equals(room, other.room)
+				&& version == other.version;
 	}
-
-
-
 
 	@Override
 	public String toString() {

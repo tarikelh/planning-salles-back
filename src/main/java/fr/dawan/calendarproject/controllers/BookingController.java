@@ -74,15 +74,25 @@ public class BookingController {
 	@PutMapping(consumes="application/json", produces="application/json")
 	public ResponseEntity<Object> updateBooking(@RequestBody BookingDto bookingDto){
 		
-		BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
 		
-		if(response != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		
-		} else {
+		if(bookingDto.getId() > 0) {
 			
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking with id : " + bookingDto.getId() + " not found");
+			// TODO Check if bookings already exists with different Id
+			// TODO Check if there is no conflit for selected room
+
+			BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
+			
+			if(response != null) {
+				return ResponseEntity.status(HttpStatus.OK).body(response);
+			
+			} else {
+				
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking with id : " + bookingDto.getId() + " not found");
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id must be superior than 0. Are you trying to update ? If so use POST method instead");
 		}
+		
 	}
 	
 	
@@ -90,16 +100,29 @@ public class BookingController {
 	@PostMapping(consumes="application/json", produces="application/json")
 	public ResponseEntity<Object> createBooking(@RequestBody BookingDto bookingDto){
 		
-		BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
 		
-		if(response != null) {
+		if(bookingDto.getId() == 0) {
 			
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+			// TODO Check if booking doesn't already exists 
+			// TODO Check if there is no conflit for selected room
+			
+			BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
+			
+			if(response != null) {
+				
+				return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+			} else {
+				
+				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Booking hasn't been created");
+			}
 		} else {
 			
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Booking hasn't been created");
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Booking hasn't been created, id must be 0. Are you trying to update ? If so use PUT method instead");
 		}
+			
+		
+		
 		
 	}
 	

@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.dto;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class BookingDto {
 	
@@ -78,6 +79,36 @@ public class BookingDto {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+
+	
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dateEnd, dateStart, interventionId, roomId, version);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BookingDto other = (BookingDto) obj;
+		return Objects.equals(dateEnd, other.dateEnd) && Objects.equals(dateStart, other.dateStart)
+				&& interventionId == other.interventionId && roomId == other.roomId && version == other.version;
+	}
+
+
+	@Override
+	public String toString() {
+		return "BookingDto [id=" + id + ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", roomId=" + roomId
+				+ ", interventionId=" + interventionId + ", version=" + version + "]";
 	}
 
 	

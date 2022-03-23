@@ -26,6 +26,6 @@ public interface BookingMapper {
 	Booking bookingDtoTobooking(BookingDto bookingDto);
 	
 	
-	// ?? TO-DO Booking to Dg2 ??
+	// ?? TODO Booking to Dg2 ??
 	
 }
