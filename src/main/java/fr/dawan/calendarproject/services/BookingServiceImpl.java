@@ -93,10 +93,11 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public BookingDto saveOrUpdate(BookingDto bookingDto) {
 
-		checkUniqueness(bookingDto);
 		
 		if(bookingDto.getId() > 0 && !bookingRepository.findById(bookingDto.getId()).isPresent())
 			return null;
+		
+		
 		
 		Booking b = bookingMapper.bookingDtoTobooking(bookingDto);
 		b.setRoom(roomRepository.findById(bookingDto.getRoomId()).orElse(null));
@@ -104,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
 		
 		
 		try {
-			bookingRepository.saveAndFlush(b);
+			b = bookingRepository.saveAndFlush(b);
 		}
 		catch (Exception e){
 			e.printStackTrace();
@@ -113,25 +114,5 @@ public class BookingServiceImpl implements BookingService {
 		return bookingMapper.bookingToBookingDto(b);
 	}
 
-	@Override
-	public void checkUniqueness(BookingDto bookingDto) {
-
-		Booking duplicate = bookingRepository.findByRoomIdAndInterventionId(bookingDto.getId(), 
-																			bookingDto.getInterventionId(), 
-																			bookingDto.getRoomId())
-																			.orElse(null);
-		
-		if( duplicate != null ) {
-			
-			Set<APIError> errors = new HashSet<>();
-			String instanceClass = duplicate.getClass().toString();
-			errors.add(new APIError(505, instanceClass, "Booking Not Unique",
-					"Booking with room name : " + duplicate.getRoom().getName() +
-					" or intervention : " + duplicate.getIntervention().getSlug() + 
-					" already exists", "/api/bookings"));
-
-			throw new EntityFormatException(errors);
-		}
-	}
 
 }
