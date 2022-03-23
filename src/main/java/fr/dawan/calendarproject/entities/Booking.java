@@ -1,7 +1,11 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -147,6 +151,13 @@ public class Booking {
 				+ ", endingDate=" + endingDate + ", version=" + version + "]";
 	}
 
+	public List<LocalDate> getRange() {
 
+		long numOfDaysBetween = ChronoUnit.DAYS.between(this.getBeginDate(), this.getEndingDate());
+		return IntStream.iterate(0, i -> i + 1)
+						.limit(numOfDaysBetween)
+						.mapToObj(i -> this.beginDate.plusDays(i))
+						.collect(Collectors.toList());
+	}
 
 }
