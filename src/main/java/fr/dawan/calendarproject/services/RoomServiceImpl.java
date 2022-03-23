@@ -4,6 +4,7 @@ import fr.dawan.calendarproject.dto.*;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.RoomMapper;
+import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomMapper roomMapper;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
     @Override
     public List<RoomDto> getAllRooms() {
         List<Room> rooms = roomRepository.findAll();
@@ -37,14 +41,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDto> getAllRooms(int page, int max, String search) {
-        Pageable pagination = null;
+        Pageable pagination;
 
         if (page > -1 && max > 0)
             pagination = PageRequest.of(page, max);
         else
             pagination = Pageable.unpaged();
 
-        List<Room> rooms = roomRepository.findAllByLocationContaining(search, pagination).get()
+        List<Room> rooms = roomRepository.findAllByLocationNameContaining("%" + search + "%", pagination).get()
                 .collect(Collectors.toList());
 
         List<RoomDto> result = new ArrayList<>();
@@ -56,15 +60,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public CountDto count(String search) {
-        return new CountDto(roomRepository.countByLocation(search));
+        return new CountDto(roomRepository.countByLocationNameContaining("%" +search + "%"));
     }
 
     @Override
     public RoomDto getById(long id) {
         Optional<Room> r = roomRepository.findById(id);
-        if (r.isPresent())
-            return roomMapper.roomToRoomDto(r.get());
-        return null;
+        return r.map(room -> roomMapper.roomToRoomDto(room)).orElse(null);
     }
 
     @Override
@@ -74,12 +76,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto saveOrUpdate(RoomDto room) {
-        checkUniqness(room);
+        checkUniqueness(room);
 
         if (room.getId() > 0 && !roomRepository.findById(room.getId()).isPresent())
             return null;
 
         Room r = roomMapper.roomDtoToRoom(room);
+
+        r.setLocation(locationRepository.findById(room.getLocationId()).orElse(null));
 
         try {
             r = roomRepository.saveAndFlush(r);
@@ -90,18 +94,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean checkUniqness(RoomDto room) {
-        Room duplicate = roomRepository.findByLocationIdAndRoomName(room.getLocationId(),room.getName());
+    public void checkUniqueness(RoomDto room) {
+        Room duplicate = roomRepository.findByIdAndIdDg2AndLocationIdAndRoomNameAndFullCapacity(room.getId(),room.getIdDg2() ,room.getLocationId(),room.getName(), room.getFullCapacity());
 
         if (duplicate != null) {
             Set<APIError> errors = new HashSet<>();
             String instanceClass = duplicate.getClass().toString();
             errors.add(new APIError(505, instanceClass, "Room Not Unique",
-                    "Room with name " + room.getName() + " already exists", "/api/rooms"));
+                    "Room with name " + duplicate.getName() + " already exists", "/api/rooms"));
 
             throw new EntityFormatException(errors);
         }
 
-        return true;
     }
 }
