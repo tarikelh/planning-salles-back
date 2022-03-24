@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public List<BookingDto> getAllBookings(LocalDate beginDate, LocalDate endingDate) {
 		
-		List<BookingDto> result = new ArrayList<BookingDto>();
+		List<BookingDto> result = new ArrayList<>();
 		
 		List<Booking> bookings = bookingRepository.findAllByDateRange(beginDate, endingDate);
 		
@@ -66,10 +66,10 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public BookingDto getById(long id) {
 		
-		Optional<Booking> booking = bookingRepository.findById(id);
-		if(booking.isPresent()) {
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if(booking != null) {
 			
-			return bookingMapper.bookingToBookingDto(booking.get());
+			return bookingMapper.bookingToBookingDto(booking);
 		
 		}
 		
