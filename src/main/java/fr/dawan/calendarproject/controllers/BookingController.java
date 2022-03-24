@@ -84,9 +84,6 @@ public class BookingController {
 		
 		if(bookingDto.getId() > 0) {
 			
-			// TODO Check if bookings already exists with different Id
-			// TODO Check if there is no conflit for selected room
-
 
 			BookingDto response = null;
 			try {
@@ -117,10 +114,7 @@ public class BookingController {
 		
 		if(bookingDto.getId() == 0) {
 			
-			// TODO Check if booking doesn't already exists 
-			
-			// TODO Check if there is no conflit for selected room
-			
+					
 			BookingDto response = null;
 			try {
 				response = bookingServiceImpl.saveOrUpdate(bookingDto);

@@ -138,12 +138,18 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public boolean checkBookingRangeEmpty(List<LocalDate> bookingRange, List<LocalDate> bookingsRange) {
+	public boolean checkBookingRangeEmpty(List<LocalDate> tempBookingRange, List<LocalDate> bookingsRange) {
 		
-		// TODO Modifier la condition de comparaison
-		return bookingsRange.containsAll(bookingRange);
+		
+		for (LocalDate localDate : tempBookingRange) {
+			
+			if(bookingsRange.contains(localDate)) {
+				return true;
+			}
+			
+		}
+		return false;
 
 	}
-
 
 }

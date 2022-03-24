@@ -155,7 +155,7 @@ public class Booking {
 
 		long numOfDaysBetween = ChronoUnit.DAYS.between(this.getBeginDate(), this.getEndingDate());
 		return IntStream.iterate(0, i -> i + 1)
-						.limit(numOfDaysBetween)
+						.limit(numOfDaysBetween + 1)
 						.mapToObj(i -> this.beginDate.plusDays(i))
 						.collect(Collectors.toList());
 	}

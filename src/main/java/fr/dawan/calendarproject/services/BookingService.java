@@ -14,8 +14,6 @@ public interface BookingService {
 	
 	List<BookingDto> getAllBookingsRoom(long roomId);
 	
-
-	
 	boolean checkBookingRangeEmpty(List<LocalDate> bookingRange, List<LocalDate> bookingsRange);
 	
 	BookingDto getById(long id);
