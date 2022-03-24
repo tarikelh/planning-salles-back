@@ -49,6 +49,13 @@ public class BookingController {
 	}
 	
 	//GET
+	@GetMapping(value="/roomBookings/{id}", produces="application/json")
+	public List<BookingDto> getBookingsForRoomId(@PathVariable("id") long roomId){
+		
+		return bookingServiceImpl.getAllBookingsRoom(roomId);
+	}
+	
+	//GET
 	@GetMapping(value="/count")
 	public long getNumberOfBookings() {
 		
@@ -77,10 +84,14 @@ public class BookingController {
 		
 		if(bookingDto.getId() > 0) {
 			
-			// TODO Check if bookings already exists with different Id
-			// TODO Check if there is no conflit for selected room
 
-			BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
+			BookingDto response = null;
+			try {
+				response = bookingServiceImpl.saveOrUpdate(bookingDto);
+			} catch (Exception e) {
+
+				return ResponseEntity.status(HttpStatus.CONFLICT).body("Dates conflit : the tharget date range is not available");
+			}
 			
 			if(response != null) {
 				return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -103,10 +114,14 @@ public class BookingController {
 		
 		if(bookingDto.getId() == 0) {
 			
-			// TODO Check if booking doesn't already exists 
-			// TODO Check if there is no conflit for selected room
-			
-			BookingDto response = bookingServiceImpl.saveOrUpdate(bookingDto);
+					
+			BookingDto response = null;
+			try {
+				response = bookingServiceImpl.saveOrUpdate(bookingDto);
+			} catch (Exception e) {
+
+				return ResponseEntity.status(HttpStatus.CONFLICT).body("Dates conflit : the tharget date range is not available");
+			}
 			
 			if(response != null) {
 				

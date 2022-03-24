@@ -12,10 +12,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.BookingDto;
 import fr.dawan.calendarproject.entities.Booking;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.BookingMapper;
 import fr.dawan.calendarproject.repositories.BookingRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -91,12 +89,24 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public BookingDto saveOrUpdate(BookingDto bookingDto) {
+	public BookingDto saveOrUpdate(BookingDto bookingDto) throws Exception {
 
+		Booking tempBooking = bookingMapper.bookingDtoTobooking(bookingDto);
+				
+		List<Booking> bookings = bookingRepository.findAllBookingsWithRoomIdExcludeBookingId(bookingDto.getRoomId(), bookingDto.getId());
 		
+		for (Booking booking : bookings) {
+			
+			if(this.checkBookingRangeEmpty(tempBooking.getRange(), booking.getRange())) {
+
+				throw new Exception("conflictual range");
+			}
+			
+		}
+
+				
 		if(bookingDto.getId() > 0 && !bookingRepository.findById(bookingDto.getId()).isPresent())
 			return null;
-		
 		
 		
 		Booking b = bookingMapper.bookingDtoTobooking(bookingDto);
@@ -114,5 +124,32 @@ public class BookingServiceImpl implements BookingService {
 		return bookingMapper.bookingToBookingDto(b);
 	}
 
+	@Override
+	public List<BookingDto> getAllBookingsRoom(long roomId) {
+
+		List<Booking> bookings = bookingRepository.findAllBookingsWithRoomIdExcludeBookingId(roomId, 0L);
+		List<BookingDto> result = new ArrayList<BookingDto>();
+		
+		for (Booking booking : bookings) {
+			result.add(bookingMapper.bookingToBookingDto(booking));
+		}
+		
+		return result;
+	}
+
+	@Override
+	public boolean checkBookingRangeEmpty(List<LocalDate> tempBookingRange, List<LocalDate> bookingsRange) {
+		
+		
+		for (LocalDate localDate : tempBookingRange) {
+			
+			if(bookingsRange.contains(localDate)) {
+				return true;
+			}
+			
+		}
+		return false;
+
+	}
 
 }
