@@ -1,7 +1,10 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import fr.dawan.calendarproject.dto.BookingDto;
 import fr.dawan.calendarproject.entities.Booking;
 import fr.dawan.calendarproject.entities.Intervention;
@@ -46,19 +50,21 @@ class BookingServiceTest {
 	private List<BookingDto> bDtoListBetween = new ArrayList<>();
 	private List<Booking> bListRoom = new ArrayList<>();
 	private List<BookingDto> bDtoListRoom = new ArrayList<>();
-	Booking booking1; 
-	Booking booking2; 
-	Booking booking3;
-	Booking booking4;
-	Booking booking5;
-	BookingDto bookingDto1;
-	BookingDto bookingDto2;
-	BookingDto bookingDto3;
-	BookingDto bookingDto4;
-	BookingDto bookingDto5;
-	Optional<Booking> optional;
-
-
+	private Booking booking1; 
+	private Booking booking2; 
+	private Booking booking3;
+	private Booking booking4;
+	private Booking booking5;
+	private BookingDto bookingDto1;
+	private BookingDto bookingDto2;
+	private BookingDto bookingDto3;
+	private BookingDto bookingDto4;
+	private BookingDto bookingDto5;
+	private Optional<Booking> optional;
+	
+	private Optional<Booking> nullBooking; 
+	
+	private long nonExistingId;
 	private long count;
 	private Room room1 = new Room();
 	private Room room2 = new Room();
@@ -84,6 +90,8 @@ class BookingServiceTest {
 		
 		count = 5;
 
+		nonExistingId = 6;
+		nullBooking = null;
 				
 		booking1 = new Booking( 1, room1, int1, LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 0 );
 		booking2 = new Booking( 2, room2, int2, LocalDate.parse("2022-05-01"), LocalDate.parse("2022-05-10"), 0 );
@@ -215,16 +223,13 @@ class BookingServiceTest {
 	void shouldFailToFindBooking() {
 		
 		// Mocking
-		
 		when(bookingRepository.findById(any(Long.class))).thenReturn(null);
-		
-		
+	
 		// Function execution		
-		BookingDto result = bookingService.getById(6L);
-		
+		BookingDto result = bookingService.getById(6);
 		
 		// Assert
-		assertThat(result.equals(null));
+		assertThat(result).isNull();
 		
 	}
 	
@@ -246,6 +251,7 @@ class BookingServiceTest {
 		assertEquals(count, result);
 		
 	}
+	
 	
 	
 	
