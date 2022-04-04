@@ -142,6 +142,10 @@ class BookingServiceTest {
 	
 	
 
+	@Test
+	void contextLoads() {
+		assertThat(bookingService).isNotNull();
+	}
 	
 	
 	@Test
@@ -151,12 +155,12 @@ class BookingServiceTest {
 		//--repo
 		when(bookingRepository.findAll()).thenReturn(bList);
 		//--mapper
-		when(bookingMapper.bookingToBookingDto(bList.get(0))).thenReturn(bDtoList.get(0));
-		when(bookingMapper.bookingToBookingDto(bList.get(1))).thenReturn(bDtoList.get(1));
-		when(bookingMapper.bookingToBookingDto(bList.get(2))).thenReturn(bDtoList.get(2));
-		when(bookingMapper.bookingToBookingDto(bList.get(3))).thenReturn(bDtoList.get(3));
-		when(bookingMapper.bookingToBookingDto(bList.get(4))).thenReturn(bDtoList.get(4));
-		
+		when(bookingMapper.bookingToBookingDto(any(Booking.class))).thenReturn(bDtoList.get(0), bDtoList.get(1),bDtoList.get(2), bDtoList.get(3), bDtoList.get(4));
+//		when(bookingMapper.bookingToBookingDto(bList.get(1))).thenReturn(bDtoList.get(1));
+//		when(bookingMapper.bookingToBookingDto(bList.get(2))).thenReturn(bDtoList.get(2));
+//		when(bookingMapper.bookingToBookingDto(bList.get(3))).thenReturn(bDtoList.get(3));
+//		when(bookingMapper.bookingToBookingDto(bList.get(4))).thenReturn(bDtoList.get(4));
+//		
 		//Function Execution
 		List<BookingDto> result = bookingService.getAllBookings();
 		
@@ -252,6 +256,11 @@ class BookingServiceTest {
 		
 	}
 	
+	
+	@Test
+	void ShouldDeleteByIdAndReturnNothing() {
+		
+	}
 	
 	
 	

@@ -3,7 +3,8 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class BookingDto {
+
+public class BookingDto implements Cloneable{
 	
 	private long id ;
 	
@@ -13,7 +14,7 @@ public class BookingDto {
 	
 	private long roomId;
 	
-	private long interventionId;
+	private long BookingDtoId;
 	
 	private int version;
 	
@@ -22,13 +23,13 @@ public class BookingDto {
 	}
 	
 
-	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long roomId, long interventionId, int version) {
+	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long roomId, long BookingDtoId, int version) {
 		super();
 		this.id = id;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.roomId = roomId;
-		this.interventionId = interventionId;
+		this.BookingDtoId = BookingDtoId;
 		this.version = version;
 	}
 
@@ -66,11 +67,11 @@ public class BookingDto {
 	}
 
 	public long getInterventionId() {
-		return interventionId;
+		return BookingDtoId;
 	}
 
-	public void setInterventionId(long interventionId) {
-		this.interventionId = interventionId;
+	public void setInterventionId(long BookingDtoId) {
+		this.BookingDtoId = BookingDtoId;
 	}
 
 	public int getVersion() {
@@ -87,7 +88,7 @@ public class BookingDto {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateEnd, dateStart, interventionId, roomId, version);
+		return Objects.hash(dateEnd, dateStart, BookingDtoId, roomId, version);
 	}
 
 
@@ -101,14 +102,31 @@ public class BookingDto {
 			return false;
 		BookingDto other = (BookingDto) obj;
 		return Objects.equals(dateEnd, other.dateEnd) && Objects.equals(dateStart, other.dateStart)
-				&& interventionId == other.interventionId && roomId == other.roomId && version == other.version;
+				&& BookingDtoId == other.BookingDtoId && roomId == other.roomId && version == other.version;
 	}
 
 
 	@Override
 	public String toString() {
 		return "BookingDto [id=" + id + ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", roomId=" + roomId
-				+ ", interventionId=" + interventionId + ", version=" + version + "]";
+				+ ", BookingDtoId=" + BookingDtoId + ", version=" + version + "]";
+	}
+
+
+	@Override
+	public BookingDto clone() {
+		
+		BookingDto BookingDto = null;
+		try {
+			BookingDto = (BookingDto) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		if (BookingDto != null) {
+			return BookingDto;
+		}
+		return BookingDto;
+
 	}
 
 	

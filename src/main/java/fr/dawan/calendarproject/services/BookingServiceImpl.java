@@ -39,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
 	public List<BookingDto> getAllBookings() {
 
 		List<BookingDto> result = new ArrayList<BookingDto>();
-		
+		 
 		List<Booking> bookings = bookingRepository.findAll();
 		for (Booking booking : bookings) {
 			
@@ -99,7 +99,7 @@ public class BookingServiceImpl implements BookingService {
 				
 		List<Booking> bookings = bookingRepository.findAllBookingsWithRoomIdExcludeBookingId(bookingDto.getRoomId(), bookingDto.getId());
 		
-		for (Booking booking : bookings) {
+		for (Booking booking : bookings) { 
 			
 			if(this.checkBookingRangeEmpty(tempBooking.getRange(), booking.getRange())) {
 
