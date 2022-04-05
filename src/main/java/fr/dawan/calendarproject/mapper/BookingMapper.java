@@ -23,6 +23,7 @@ public interface BookingMapper {
 	@Mapping(target="endingDate", source="dateEnd")
 	@Mapping(target="room", ignore=true)
 	@Mapping(target="intervention", ignore=true)
+	@Mapping(target="range", ignore=true)
 	Booking bookingDtoTobooking(BookingDto bookingDto);
 	
 	

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,6 +18,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -226,4 +228,77 @@ public class BookingControllerTest {
 //				.andExpect(status().isOk());
 	}
 	
+	@Test
+	void shouldFailToUpdateAndReturnExpectationFailed() throws Exception {
+		
+		BookingDto bookingUpdatedVersion = bookings.get(0).clone();
+		bookingUpdatedVersion.setRoomId(10);
+		bookingUpdatedVersion.setId(-1);
+		bookingUpdatedVersion.setVersion(bookingUpdatedVersion.getVersion() + 1 );
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String bookingJson = objectMapper.writeValueAsString(bookingUpdatedVersion);
+		
+		mockMvc.perform(put("/api/bookings")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose").content(bookingJson))
+				.andExpect(status().isExpectationFailed());
+				
+		
+	}
+	
+	@Test
+	void shouldFailToUpdateAndReturnConflict() throws Exception {
+		BookingDto bookingUpdatedVersion = bookings.get(0).clone();
+		bookingUpdatedVersion.setRoomId(10);
+		bookingUpdatedVersion.setVersion(bookingUpdatedVersion.getVersion() + 1 );
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String bookingJson = objectMapper.writeValueAsString(bookingUpdatedVersion);
+		
+		doThrow(PersistenceException.class).when(bookingService).saveOrUpdate(bookingUpdatedVersion);				
+		
+		mockMvc.perform(put("/api/bookings")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose").content(bookingJson))
+				.andExpect(status().isConflict());
+		
+	}
+	
+	@Test
+	void shouldFailToUpdateAndReturnNotFound() throws Exception{
+		
+		BookingDto bookingUpdatedVersion = bookings.get(0).clone();
+		bookingUpdatedVersion.setRoomId(10);
+		bookingUpdatedVersion.setVersion(bookingUpdatedVersion.getVersion() + 1 );
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String bookingJson = objectMapper.writeValueAsString(bookingUpdatedVersion);
+		
+		when(bookingService.saveOrUpdate(any(BookingDto.class))).thenReturn(null);
+		
+		
+		mockMvc.perform(put("/api/bookings")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose").content(bookingJson))
+				.andExpect(status().isNotFound());
+	}
+	
+	
+	@Test
+	void shouldFailToCreateAndReturnNotAcceptable() throws Exception{
+		
+		
+		BookingDto bookingToCreate = bookings.get(0).clone();
+		bookingToCreate.setId(10);
+		bookingToCreate.setRoomId(10);
+		
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		String bookingJson = objectMapper.writeValueAsString(bookingToCreate);
+		
+		mockMvc.perform(post("/api/bookings")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("Authorization", "Bearer testTokenForTestingPurpose").content(bookingJson))
+				.andExpect(status().isNotAcceptable());
+	}
 }

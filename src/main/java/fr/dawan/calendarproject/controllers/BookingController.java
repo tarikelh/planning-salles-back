@@ -101,7 +101,7 @@ public class BookingController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking with id : " + bookingDto.getId() + " not found");
 			}
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id must be superior than 0. Are you trying to update ? If so use POST method instead");
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Id must be superior than 0. Are you trying to update ? If so use POST method instead");
 		}
 		
 	}
@@ -133,7 +133,7 @@ public class BookingController {
 			}
 		} else {
 			
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Booking hasn't been created, id must be 0. Are you trying to update ? If so use PUT method instead");
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Booking hasn't been created, id must be 0. Are you trying to update ? If so use PUT method instead");
 		}
 			
 		
