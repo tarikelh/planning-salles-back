@@ -14,7 +14,7 @@ public class BookingDto implements Cloneable{
 	
 	private long roomId;
 	
-	private long BookingDtoId;
+	private long interventionId;
 	
 	private int version;
 	
@@ -23,13 +23,13 @@ public class BookingDto implements Cloneable{
 	}
 	
 
-	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long roomId, long BookingDtoId, int version) {
+	public BookingDto(long id, LocalDate dateStart, LocalDate dateEnd, long roomId, long interventionId, int version) {
 		super();
 		this.id = id;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.roomId = roomId;
-		this.BookingDtoId = BookingDtoId;
+		this.interventionId = interventionId;
 		this.version = version;
 	}
 
@@ -67,11 +67,11 @@ public class BookingDto implements Cloneable{
 	}
 
 	public long getInterventionId() {
-		return BookingDtoId;
+		return interventionId;
 	}
 
-	public void setInterventionId(long BookingDtoId) {
-		this.BookingDtoId = BookingDtoId;
+	public void setInterventionId(long interventionId) {
+		this.interventionId = interventionId;
 	}
 
 	public int getVersion() {
@@ -88,7 +88,7 @@ public class BookingDto implements Cloneable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateEnd, dateStart, BookingDtoId, roomId, version);
+		return Objects.hash(dateEnd, dateStart, interventionId, roomId, version);
 	}
 
 
@@ -102,14 +102,14 @@ public class BookingDto implements Cloneable{
 			return false;
 		BookingDto other = (BookingDto) obj;
 		return Objects.equals(dateEnd, other.dateEnd) && Objects.equals(dateStart, other.dateStart)
-				&& BookingDtoId == other.BookingDtoId && roomId == other.roomId && version == other.version;
+				&& interventionId == other.interventionId && roomId == other.roomId && version == other.version;
 	}
 
 
 	@Override
 	public String toString() {
 		return "BookingDto [id=" + id + ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", roomId=" + roomId
-				+ ", BookingDtoId=" + BookingDtoId + ", version=" + version + "]";
+				+ ", interventionId=" + interventionId + ", version=" + version + "]";
 	}
 
 
