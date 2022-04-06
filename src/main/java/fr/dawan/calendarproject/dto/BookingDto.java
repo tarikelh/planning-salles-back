@@ -3,7 +3,8 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class BookingDto {
+
+public class BookingDto implements Cloneable{
 	
 	private long id ;
 	
@@ -109,6 +110,23 @@ public class BookingDto {
 	public String toString() {
 		return "BookingDto [id=" + id + ", dateStart=" + dateStart + ", dateEnd=" + dateEnd + ", roomId=" + roomId
 				+ ", interventionId=" + interventionId + ", version=" + version + "]";
+	}
+
+
+	@Override
+	public BookingDto clone() {
+		
+		BookingDto BookingDto = null;
+		try {
+			BookingDto = (BookingDto) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		if (BookingDto != null) {
+			return BookingDto;
+		}
+		return BookingDto;
+
 	}
 
 	

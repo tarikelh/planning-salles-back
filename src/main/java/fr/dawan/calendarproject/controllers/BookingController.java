@@ -16,28 +16,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.BookingDto;
-import fr.dawan.calendarproject.services.BookingServiceImpl;
+import fr.dawan.calendarproject.services.BookingService;
 
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
 
 	@Autowired
-	private BookingServiceImpl bookingServiceImpl; 
+	private BookingService bookingService; 
 	
 	
 	//GET
 	@GetMapping(produces = "application/json")
 	public List<BookingDto> getAll(){
 		
-		return bookingServiceImpl.getAllBookings();
+		return bookingService.getAllBookings();
 	}
 	
 	//GET
 	@GetMapping(value ="/{startDate}/{endDate}", produces = "application/json")
 	public List<BookingDto> getAllWithDates(@PathVariable("startDate") String start, @PathVariable("endDate") String end){
 		
-		return bookingServiceImpl.getAllBookings(LocalDate.parse(start), LocalDate.parse(end));
+		return bookingService.getAllBookings(LocalDate.parse(start), LocalDate.parse(end));
 		
 	}
 	
@@ -45,21 +45,21 @@ public class BookingController {
 	@GetMapping(value="/{id}", produces="application/json")
 	public BookingDto getBookingById(@PathVariable("id") long id) {
 		
-		return bookingServiceImpl.getById(id);
+		return bookingService.getById(id);
 	}
 	
 	//GET
 	@GetMapping(value="/roomBookings/{id}", produces="application/json")
 	public List<BookingDto> getBookingsForRoomId(@PathVariable("id") long roomId){
 		
-		return bookingServiceImpl.getAllBookingsRoom(roomId);
+		return bookingService.getAllBookingsRoom(roomId);
 	}
 	
 	//GET
 	@GetMapping(value="/count")
 	public long getNumberOfBookings() {
 		
-		return bookingServiceImpl.count();
+		return bookingService.count();
 	}
 	
 	
@@ -68,7 +68,7 @@ public class BookingController {
 	public ResponseEntity<String> deleteBooking(@PathVariable("id") long id){
 		
 		try {
-			bookingServiceImpl.deleteById(id);
+			bookingService.deleteById(id);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Booking with id : " + id + " has been deleted");
 			
 		} catch (Exception e) {
@@ -87,12 +87,12 @@ public class BookingController {
 
 			BookingDto response = null;
 			try {
-				response = bookingServiceImpl.saveOrUpdate(bookingDto);
+				response = bookingService.saveOrUpdate(bookingDto);
 			} catch (Exception e) {
 
 				return ResponseEntity.status(HttpStatus.CONFLICT).body("Dates conflit : the tharget date range is not available");
 			}
-			
+			 
 			if(response != null) {
 				return ResponseEntity.status(HttpStatus.OK).body(response);
 			
@@ -101,7 +101,7 @@ public class BookingController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking with id : " + bookingDto.getId() + " not found");
 			}
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Id must be superior than 0. Are you trying to update ? If so use POST method instead");
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Id must be superior than 0. Are you trying to update ? If so use POST method instead");
 		}
 		
 	}
@@ -117,7 +117,7 @@ public class BookingController {
 					
 			BookingDto response = null;
 			try {
-				response = bookingServiceImpl.saveOrUpdate(bookingDto);
+				response = bookingService.saveOrUpdate(bookingDto);
 			} catch (Exception e) {
 
 				return ResponseEntity.status(HttpStatus.CONFLICT).body("Dates conflit : the tharget date range is not available");
@@ -133,7 +133,7 @@ public class BookingController {
 			}
 		} else {
 			
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Booking hasn't been created, id must be 0. Are you trying to update ? If so use PUT method instead");
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Booking hasn't been created, id must be 0. Are you trying to update ? If so use PUT method instead");
 		}
 			
 		
