@@ -1,41 +1,26 @@
-package fr.dawan.calendarproject.entities;
+package fr.dawan.calendarproject.dto;
 
-import java.time.LocalDateTime;
+public class CongeDto {
 
-import javax.persistence.*;
-
-import fr.dawan.calendarproject.enums.CongeType;
-
-@Entity
-public class Conge {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	private long idDg2;
 	private long employeeId;
-
 	private String slug;
-
-	@Enumerated(EnumType.STRING)
-	private CongeType type;
-
-	private LocalDateTime firstDay;
+	private String type;
+	private String firstDay;
 	private boolean startsAfternoon;
-	private LocalDateTime lastDay;
+	private String lastDay;
 	private boolean endsAfternoon;
 	private double days;
 	private String comments;
 
-	public Conge() {
+	public CongeDto() {
 		super();
 	}
 
-	public Conge(long id, long idDg2, long employeeId, String slug, CongeType type, LocalDateTime firstDay,
-			boolean startsAfternoon, LocalDateTime lastDay, boolean endsAfternoon, double days, String comments) {
+	public CongeDto(long id, long employeeId, String slug, String type, String firstDay, boolean startsAfternoon,
+                    String lastDay, boolean endsAfternoon, double days, String comments) {
 		super();
 		this.id = id;
-		this.idDg2 = idDg2;
 		this.employeeId = employeeId;
 		this.slug = slug;
 		this.type = type;
@@ -55,14 +40,6 @@ public class Conge {
 		this.id = id;
 	}
 
-	public long getIdDg2() {
-		return idDg2;
-	}
-
-	public void setIdDg2(long idDg2) {
-		this.idDg2 = idDg2;
-	}
-
 	public long getEmployeeId() {
 		return employeeId;
 	}
@@ -79,19 +56,19 @@ public class Conge {
 		this.slug = slug;
 	}
 
-	public CongeType getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(CongeType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
-	public LocalDateTime getFirstDay() {
+	public String getFirstDay() {
 		return firstDay;
 	}
 
-	public void setFirstDay(LocalDateTime firstDay) {
+	public void setFirstDay(String firstDay) {
 		this.firstDay = firstDay;
 	}
 
@@ -103,11 +80,11 @@ public class Conge {
 		this.startsAfternoon = startsAfternoon;
 	}
 
-	public LocalDateTime getLastDay() {
+	public String getLastDay() {
 		return lastDay;
 	}
 
-	public void setLastDay(LocalDateTime lastDay) {
+	public void setLastDay(String lastDay) {
 		this.lastDay = lastDay;
 	}
 
@@ -134,6 +111,5 @@ public class Conge {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
 
 }
