@@ -82,7 +82,7 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
                 LeavePeriod leavePeriodImport = leavePeriodMapper.leavePeriodDg2DtoToLeavePeriod(lpDg2);
                 Optional<List<LeavePeriod>> optLeavePeriod = leavePeriodRepository.findByUserEmployeeId(leavePeriodImport.getEmployeeId());
 
-                if ( !optLeavePeriod.get().contains(leavePeriodImport)) {
+                if ( !optLeavePeriod.isPresent() || !optLeavePeriod.get().contains(leavePeriodImport)) {
                     try {
                         leavePeriodRepository.saveAndFlush(leavePeriodImport);
                     } catch (Exception e) {
