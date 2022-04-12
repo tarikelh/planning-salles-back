@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
-public class CongeDg2Dto {
+public class LeavePeriodDg2Dto {
 
 	private long id;
 	private long employeeId;
@@ -13,11 +13,11 @@ public class CongeDg2Dto {
 	private double days;
 	private String comments;
 
-	public CongeDg2Dto() {
+	public LeavePeriodDg2Dto() {
 		super();
 	}
 
-	public CongeDg2Dto(long id, long employeeId, String slug, String type, String firstDay, boolean startsAfternoon,
+	public LeavePeriodDg2Dto(long id, long employeeId, String slug, String type, String firstDay, boolean startsAfternoon,
 			String lastDay, boolean endsAfternoon, double days, String comments) {
 		super();
 		this.id = id;

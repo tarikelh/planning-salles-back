@@ -1,26 +1,43 @@
-package fr.dawan.calendarproject.dto;
+package fr.dawan.calendarproject.entities;
 
-public class CongeDto {
+import java.time.LocalDateTime;
 
+import javax.persistence.*;
+
+import fr.dawan.calendarproject.enums.LeavePeriodType;
+
+@Entity
+public class LeavePeriod {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	private long idDg2;
 	private long employeeId;
+
 	private String slug;
-	private String type;
-	private String firstDay;
+
+	@Enumerated(EnumType.STRING)
+	private LeavePeriodType type;
+
+	private LocalDateTime firstDay;
 	private boolean startsAfternoon;
-	private String lastDay;
+	private LocalDateTime lastDay;
 	private boolean endsAfternoon;
 	private double days;
+	
+	@Column(nullable = true, length = 5000)
 	private String comments;
 
-	public CongeDto() {
+	public LeavePeriod() {
 		super();
 	}
 
-	public CongeDto(long id, long employeeId, String slug, String type, String firstDay, boolean startsAfternoon,
-                    String lastDay, boolean endsAfternoon, double days, String comments) {
+	public LeavePeriod(long id, long idDg2, long employeeId, String slug, LeavePeriodType type, LocalDateTime firstDay,
+			boolean startsAfternoon, LocalDateTime lastDay, boolean endsAfternoon, double days, String comments) {
 		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.employeeId = employeeId;
 		this.slug = slug;
 		this.type = type;
@@ -40,6 +57,14 @@ public class CongeDto {
 		this.id = id;
 	}
 
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
+	}
+
 	public long getEmployeeId() {
 		return employeeId;
 	}
@@ -56,19 +81,19 @@ public class CongeDto {
 		this.slug = slug;
 	}
 
-	public String getType() {
+	public LeavePeriodType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(LeavePeriodType type) {
 		this.type = type;
 	}
 
-	public String getFirstDay() {
+	public LocalDateTime getFirstDay() {
 		return firstDay;
 	}
 
-	public void setFirstDay(String firstDay) {
+	public void setFirstDay(LocalDateTime firstDay) {
 		this.firstDay = firstDay;
 	}
 
@@ -80,11 +105,11 @@ public class CongeDto {
 		this.startsAfternoon = startsAfternoon;
 	}
 
-	public String getLastDay() {
+	public LocalDateTime getLastDay() {
 		return lastDay;
 	}
 
-	public void setLastDay(String lastDay) {
+	public void setLastDay(LocalDateTime lastDay) {
 		this.lastDay = lastDay;
 	}
 
@@ -111,5 +136,6 @@ public class CongeDto {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
+	
 
 }
