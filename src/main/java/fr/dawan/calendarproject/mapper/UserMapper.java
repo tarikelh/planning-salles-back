@@ -58,6 +58,7 @@ public interface UserMapper {
 	@Mapping(target = "location", ignore = true)
 	@Mapping(target = "skills", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "idDg2", source = "id")
+	@Mapping(target = "idDg2", source = "personId")
+	@Mapping(target = "employeeIdDg2", source = "employeeId")
 	User userDG2DtoToUser(UserDG2Dto cDG2);
 }

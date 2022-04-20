@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
-			List<User> users = userRepository.findAllByType(userType);
+			List<User> users = userRepository.findAllByTypeAndEndDateIsNull(userType);
 
 			for (User u : users) {
 				result.add(userMapper.userToAdvancedUserDto(u));
@@ -359,6 +359,11 @@ public class UserServiceImpl implements UserService {
 				for (UserDG2Dto userDG2Dto : lResJson) {
 					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
 					userDG2Dto.setCompany(userDG2CompanyToUserCompanyString(userDG2Dto.getCompany()));
+					if(userDG2Dto.getEndDate() == "")
+						userDG2Dto.setEndDate(null);
+					else {
+						userDG2Dto.setEndDate(userDG2Dto.getEndDate().split("T")[0]);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

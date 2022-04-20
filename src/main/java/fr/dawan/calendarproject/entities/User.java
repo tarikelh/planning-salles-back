@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.entities;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,6 +33,9 @@ public class User {
 
 	@Column(nullable = true)
 	private long idDg2;
+	
+	@Column(nullable = true)
+	private long employeeIdDg2;
 
 	@Column(nullable = false, length = 255)
 	private String firstName;
@@ -60,6 +64,9 @@ public class User {
 
 	@Column(nullable = true, columnDefinition = "TEXT")
 	private String imagePath;
+	
+	@Column(nullable = true)
+	private LocalDate endDate;
 
 	@Version
 	private int version;
@@ -69,10 +76,11 @@ public class User {
 		setSkills(new HashSet<>());
 	}
 
-	public User(long id, long idDg2, String firstName, String lastName, Location location, String email,
-			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, int version) {
+	public User(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, Location location, String email,
+			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, int version) {
 		setId(id);
 		setIdDg2(idDg2);
+		setEmployeeIdDg2(employeeIdDg2);
 		setFirstName(firstName);
 		setLastName(lastName);
 		setLocation(location);
@@ -82,7 +90,24 @@ public class User {
 		setType(type);
 		setCompany(company);
 		setImagePath(imagePath);
+		setEndDate(endDate);
 		setVersion(version);
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+
+	public long getEmployeeIdDg2() {
+		return employeeIdDg2;
+	}
+
+	public void setEmployeeIdDg2(long employeeIdDg2) {
+		this.employeeIdDg2 = employeeIdDg2;
 	}
 
 	public Location getLocation() {
