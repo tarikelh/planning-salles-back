@@ -4,6 +4,7 @@ public class LeavePeriodDto {
 
 	private long id;
 	private long employeeId;
+	private String employeeFullName;
 	private String slug;
 	private String type;
 	private String firstDay;
@@ -17,11 +18,11 @@ public class LeavePeriodDto {
 		super();
 	}
 
-	public LeavePeriodDto(long id, long employeeId, String slug, String type, String firstDay, boolean startsAfternoon,
+	public LeavePeriodDto(long id, long employeeId, String employeeFullName, String slug, String type, String firstDay, boolean startsAfternoon,
                     String lastDay, boolean endsAfternoon, double days, String comments) {
-		super();
 		this.id = id;
 		this.employeeId = employeeId;
+		this.employeeFullName = employeeFullName;
 		this.slug = slug;
 		this.type = type;
 		this.firstDay = firstDay;
@@ -46,6 +47,14 @@ public class LeavePeriodDto {
 
 	public void setEmployeeId(long employeeId) {
 		this.employeeId = employeeId;
+	}
+
+	public String getEmployeeFullName() {
+		return employeeFullName;
+	}
+
+	public void setEmployeeFullName(String employeeFullName) {
+		this.employeeFullName = employeeFullName;
 	}
 
 	public String getSlug() {

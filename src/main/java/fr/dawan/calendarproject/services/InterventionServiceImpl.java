@@ -740,7 +740,7 @@ public class InterventionServiceImpl implements InterventionService {
 				if (c.isPresent()) {
 					i.setCourse(c.get());
 					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
-					i.setUser(userRepository.findByIdDg2(iDG2.getUserId()).orElse(null));
+					i.setUser(userRepository.findByIdDg2(iDG2.getPersonId()).orElse(null));
 					i.setMasterIntervention(
 							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 

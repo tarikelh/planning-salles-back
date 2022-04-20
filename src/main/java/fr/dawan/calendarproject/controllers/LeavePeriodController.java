@@ -1,14 +1,22 @@
 package fr.dawan.calendarproject.controllers;
 
-import fr.dawan.calendarproject.dto.LeavePeriodDto;
-import fr.dawan.calendarproject.services.LeavePeriodService;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import fr.dawan.calendarproject.dto.LeavePeriodDto;
+import fr.dawan.calendarproject.services.LeavePeriodService;
 
 @RestController
 @RequestMapping("/api/leave-periods")
@@ -20,6 +28,12 @@ public class LeavePeriodController {
 	@GetMapping(produces = "application/json")
 	public List<LeavePeriodDto> getAll() {
 		return leavePeriodService.getAllLeavePeriods();
+	}
+	
+	@GetMapping(value = "/between", produces = "application/json")
+	public List<LeavePeriodDto> getBetween(@RequestParam("type") String type,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
+		return leavePeriodService.getBetween(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
 	@GetMapping(value = "/{employeeId}", produces = { "application/json", "application/xml" })

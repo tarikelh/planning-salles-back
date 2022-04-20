@@ -6,7 +6,7 @@ public class InterventionDG2Dto {
 	private long id;
 	private long locationId;
 	private long courseId;
-	private long userId;
+	private long personId;
 	private String dateStart;
 	private String dateEnd;
 	private String slug;
@@ -20,13 +20,13 @@ public class InterventionDG2Dto {
 	public InterventionDG2Dto() {
 	}
 
-	public InterventionDG2Dto(long id, long locationId, long courseId, long userId, String dateStart, String dateEnd,
+	public InterventionDG2Dto(long id, long locationId, long courseId, long personId, String dateStart, String dateEnd,
 			String slug, String type, boolean validated, long masterInterventionId, boolean isMaster,
 			int attendeesCount) {
 		this.id = id;
 		this.locationId = locationId;
 		this.courseId = courseId;
-		this.userId = userId;
+		this.personId = personId;
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.slug = slug;
@@ -61,12 +61,12 @@ public class InterventionDG2Dto {
 		this.courseId = courseId;
 	}
 
-	public long getUserId() {
-		return userId;
+	public long getPersonId() {
+		return personId;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setPersonId(long personId) {
+		this.personId = personId;
 	}
 
 	public String getDateStart() {

@@ -5,6 +5,8 @@ public class UserDto {
 	private long id;
 	
 	private long idDg2;
+	
+	private long employeeIdDg2;
 
 	private String firstName;
 	
@@ -22,16 +24,19 @@ public class UserDto {
 	
 	private String imagePath;
 	
+	private String endDate;
+	
 	private int version;
 
 	public UserDto() {
 	}
 
-	public UserDto(long id, long idDg2, String firstName, String lastName, long locationId, String email,
-			String password, String type, String company, String imagePath, int version) {
+	public UserDto(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, long locationId,
+			String email, String password, String type, String company, String imagePath, String endDate, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
+		this.employeeIdDg2 = employeeIdDg2;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.locationId = locationId;
@@ -40,6 +45,7 @@ public class UserDto {
 		this.type = type;
 		this.company = company;
 		this.imagePath = imagePath;
+		this.endDate = endDate;
 		this.version = version;
 	}
 
@@ -59,14 +65,22 @@ public class UserDto {
 		this.idDg2 = idDg2;
 	}
 
+	public long getEmployeeIdDg2() {
+		return employeeIdDg2;
+	}
+
+	public void setEmployeeIdDg2(long employeeIdDg2) {
+		this.employeeIdDg2 = employeeIdDg2;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirstName(String name) {
-		this.firstName = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	
+
 	public String getLastName() {
 		return lastName;
 	}
@@ -89,6 +103,14 @@ public class UserDto {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getType() {
@@ -115,24 +137,24 @@ public class UserDto {
 		this.imagePath = imagePath;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getEndDate() {
+		return endDate;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
-	public String getFullName() {
-		return firstName + " "+ lastName;
-	}
-	
 	public int getVersion() {
 		return version;
 	}
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+	
+	public String getFullName() {
+		return getFirstName() + " " + getLastName();
 	}
 
 }

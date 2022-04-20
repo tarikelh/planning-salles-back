@@ -27,6 +27,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("FROM User u WHERE u.email = :email")
 	Optional<User> findByEmail(@Param("email") String email);
+	
+	@Query("FROM User u WHERE u.employeeIdDg2 = :employeeId")
+	Optional<User> findByEmployeeIdDg2(@Param("employeeId") long employeeId);
 
 	@Query("FROM User u WHERE u.email = :email AND u.id <> :id")
 	User findDuplicateEmail(@Param("email") String email, @Param("id") long id);
@@ -36,5 +39,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	List<User> findAllByType(@Param("type") UserType type);
 
 	Optional<User> findByIdDg2(long userId);
+	
+	// Verifier si le le group by id pose PB ?
+	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type AND u.endDate IS NULL ORDER BY u.lastName ASC")
+	List<User> findAllByTypeAndEndDateIsNull(@Param("type") UserType type);
 
 }

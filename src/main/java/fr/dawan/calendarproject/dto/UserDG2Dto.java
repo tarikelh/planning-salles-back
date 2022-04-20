@@ -6,17 +6,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDG2Dto {
 
-	private long id;
+	@JsonProperty("id")
+	private long employeeId;
+	
+	private long personId;
 
-	private String FirstName;
+	private String firstName;
 
-	private String LastName;
+	private String lastName;
 
 	private long locationId;
 
 	private String email;
-
-	private String password;
 
 	@JsonProperty("job")
 	private String type;
@@ -24,53 +25,61 @@ public class UserDG2Dto {
 	@JsonProperty("name")
 	private String company;
 
-	private String imagePath;
-
 	@JsonProperty("skill")
 	private String skills;
+
+	private String endDate;
 
 	private int version;
 
 	public UserDG2Dto() {
 	}
 
-	public UserDG2Dto(long id, String firstName, String lastName, long locationId, String email, String password,
-			String type, String company, String imagePath, String skills, int version) {
-		setId(id);
-		setFirstName(firstName);
-		setLastName(lastName);
-		setLocationId(locationId);
-		setEmail(email);
-		setPassword(password);
-		setType(type);
-		setCompany(company);
-		setImagePath(imagePath);
-		setSkills(skills);
-		setVersion(version);
+	public UserDG2Dto(long employeeId, long personId, String firstName, String lastName, long locationId, String email,
+			String type, String company, String skills, String endDate, int version) {
+		this.employeeId = employeeId;
+		this.personId = personId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.locationId = locationId;
+		this.email = email;
+		this.type = type;
+		this.company = company;
+		this.skills = skills;
+		this.endDate = endDate;
+		this.version = version;
 	}
 
-	public long getId() {
-		return id;
+	public long getEmployeeId() {
+		return employeeId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setEmployeeId(long employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public long getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(long personId) {
+		this.personId = personId;
 	}
 
 	public String getFirstName() {
-		return FirstName;
+		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
-		FirstName = firstName;
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public long getLocationId() {
@@ -89,14 +98,6 @@ public class UserDG2Dto {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -113,14 +114,6 @@ public class UserDG2Dto {
 		this.company = company;
 	}
 
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
-
 	public String getSkills() {
 		return skills;
 	}
@@ -129,8 +122,12 @@ public class UserDG2Dto {
 		this.skills = skills;
 	}
 
-	public String getFullName() {
-		return getFirstName() + " " + getLastName();
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 	public int getVersion() {
@@ -140,5 +137,4 @@ public class UserDG2Dto {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-
 }
