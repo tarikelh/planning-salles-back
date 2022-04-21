@@ -41,7 +41,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByIdDg2(long userId);
 	
 	// Verifier si le le group by id pose PB ?
-	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type AND u.endDate IS NULL ORDER BY u.lastName ASC")
+	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.location LEFT JOIN FETCH u.skills s WHERE u.type = :type AND (u.endDate IS NULL OR u.endDate > CURRENT_DATE)  ORDER BY u.location.idDg2, u.lastName ASC")
 	List<User> findAllByTypeAndEndDateIsNull(@Param("type") UserType type);
 
 }

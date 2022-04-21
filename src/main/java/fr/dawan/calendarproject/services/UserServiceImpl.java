@@ -438,7 +438,7 @@ public class UserServiceImpl implements UserService {
 			return UserType.ADMINISTRATIF.toString();
 		} else if (lowerCaseJob.contains("commercial")) {
 			return UserType.COMMERCIAL.toString();
-		} else if (lowerCaseJob.contains("format")) {
+		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
 		} else {
 			return UserType.APPRENTI.toString();

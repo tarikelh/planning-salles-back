@@ -76,6 +76,9 @@ public class InterventionServiceImpl implements InterventionService {
 	private InterventionMapper interventionMapper;
 
 	@Autowired
+	private LeavePeriodService leavePeriodService;
+
+	@Autowired
 	private RestTemplate restTemplate;
 
 	/**
@@ -697,27 +700,43 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {
+		int res = fetchDG2InterventionsOnly(false, email, pwd, start, end);
+
+		leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
+
+		// import options
+		int res2 = fetchDG2InterventionsOnly(true, email, pwd, start, end);
+
+		return res + res2;
+
+	}
+
+	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
+			throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<InterventionDG2Dto> lResJson;
 		List<Intervention> interventionsToSave = new ArrayList<>();
 		int count = 0;
 
-		URI url = new URI(
-				String.format("https://dawan.org/api2/planning/interventions/%s/%s", start.toString(), end.toString()));
+		String endPoint = (optionsOnly) ? "options" : "interventions";
+
+		URI url = new URI(String.format("https://dawan.org/api2/planning/" + endPoint + "/%s/%s", start.toString(),
+				end.toString()));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
 
-		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers),
+				String.class);
 
-		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+		if (repWs.getStatusCode() == HttpStatus.OK) { // 527ms
 
-		if (repWs.getStatusCode() == HttpStatus.OK) {
 			String json = repWs.getBody();
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
 			Set<Long> masterIds = new HashSet<>();
+
 			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
 
 			lResJson.forEach(i -> {
@@ -727,13 +746,14 @@ public class InterventionServiceImpl implements InterventionService {
 				String type = i.getType().equals("shared") ? "SUR_MESURE" : "INTERN";
 				i.setType(type);
 
-				i.setValidated(i.getAttendeesCount() > 0);
+				i.setValidated(i.getAttendeesCount() > 0 && !optionsOnly);
 
 				i.setDateStart(i.getDateStart().substring(0, 10));
 				i.setDateEnd(i.getDateEnd().substring(0, 10));
 			});
 
 			for (InterventionDG2Dto iDG2 : lResJson) {
+
 				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
 				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
 
@@ -762,7 +782,6 @@ public class InterventionServiceImpl implements InterventionService {
 						e.printStackTrace();
 					}
 				}
-
 			}
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
