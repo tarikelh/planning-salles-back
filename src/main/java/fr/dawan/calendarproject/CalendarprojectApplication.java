@@ -48,7 +48,7 @@ public class CalendarprojectApplication {
 			// INTERCEPTORS
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {
-				//registry.addInterceptor(tokenInterceptor);
+				registry.addInterceptor(tokenInterceptor);
 			}
 
 			// MATRIX
