@@ -30,4 +30,6 @@ public interface UserService {
 
 	boolean resetPassword(ResetResponse reset) throws Exception;
 
+	List<AdvancedUserDto> insertNotAssigned();
+
 }

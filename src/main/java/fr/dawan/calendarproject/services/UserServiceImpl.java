@@ -216,10 +216,10 @@ public class UserServiceImpl implements UserService {
 
 		if (user.getSkills() != null) {
 			user.getSkills().forEach(skill -> {
-				
-			Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
-			if(skillinDb.isPresent())
-				skillsList.add(skillinDb.get());
+
+				Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
+				if (skillinDb.isPresent())
+					skillsList.add(skillinDb.get());
 			});
 		}
 		u.setSkills(skillsList);
@@ -359,7 +359,7 @@ public class UserServiceImpl implements UserService {
 				for (UserDG2Dto userDG2Dto : lResJson) {
 					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
 					userDG2Dto.setCompany(userDG2CompanyToUserCompanyString(userDG2Dto.getCompany()));
-					if(userDG2Dto.getEndDate() == "")
+					if (userDG2Dto.getEndDate() == "")
 						userDG2Dto.setEndDate(null);
 					else {
 						userDG2Dto.setEndDate(userDG2Dto.getEndDate().split("T")[0]);
@@ -373,8 +373,7 @@ public class UserServiceImpl implements UserService {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
-				
-				
+
 				try {
 					userImported.setSkills(stringToSkillList(cDG2.getSkills()));
 				} catch (Exception e) {
@@ -491,34 +490,34 @@ public class UserServiceImpl implements UserService {
 		else
 			return UserCompany.OTHER.toString();
 	}
-	
+
 	private Set<Skill> stringToSkillList(String skills) {
 		Set<Skill> skillsSet = new HashSet<>();
 		String[] splitedSkills = null;
-		
+
 		if (skills != null) {
 			if (skills.length() > 0) {
 				if (skills.contains(", ")) {
 					splitedSkills = skills.split(", ");
-				}else if (skills.contains(" / ")) {
+				} else if (skills.contains(" / ")) {
 					splitedSkills = skills.split(" / ");
-					
-				}else if (skills.contains(" ")){
+
+				} else if (skills.contains(" ")) {
 					splitedSkills = skills.split(" ");
-				}else {
+				} else {
 					Optional<Skill> skillInDb = skillRepository.findByTitle(skills);
-					
+
 					if (skillInDb.isPresent()) {
 						skillsSet.add(skillInDb.get());
 					} else {
 						skillsSet.add(new Skill(0, skills, null, 0));
 					}
 				}
-				
+
 				if (splitedSkills != null) {
 					for (String skill : splitedSkills) {
 						Optional<Skill> skillInDb = skillRepository.findByTitle(skill);
-						
+
 						if (skillInDb.isPresent()) {
 							skillsSet.add(skillInDb.get());
 						} else {
@@ -529,5 +528,37 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return skillsSet;
+	}
+
+	@Override
+	public List<AdvancedUserDto> insertNotAssigned() {
+		List<AdvancedUserDto> result = new ArrayList<>();
+
+		locationRepository.findAll().forEach(lo -> {
+			try {
+
+				User u = new User();
+				u.setIdDg2(-1 * lo.getId());
+				
+				if (!userRepository.findByIdDg2(u.getId()).isPresent()) {
+					u.setLocation(lo);
+					u.setEmail("not-assigned-" + lo.getCity() + "@dawan.fr");
+					u.setPassword(HashTools.hashSHA512("NoTaSsIgNeDdAwAn!"));
+					u.setSkills(null);
+					u.setCompany(UserCompany.DAWAN);
+					u.setType(UserType.INTERV_NOT_ASSIGN);
+					u.setFirstName("NOT ASSIGNED");
+					u.setLastName(lo.getCity());
+					u.setEmployeeIdDg2(-1 * lo.getId());
+					
+					u = userRepository.saveAndFlush(u);
+					result.add(userMapper.userToAdvancedUserDto(u));
+
+				}
+			} catch (Exception e) {
+			}
+		});
+
+		return result;
 	}
 }

@@ -35,6 +35,12 @@ public class UserController {
 	}
 
 	// GET
+	@GetMapping(value = {"/insert-not-assigned"}, produces = "application/json")
+	public List<AdvancedUserDto> insertNotAssigned() {
+		return userService.insertNotAssigned();
+	}
+	
+	// GET
 	@GetMapping(value = { "/pagination" }, produces = "application/json")
 	public List<AdvancedUserDto> getAllPagination(
 			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,

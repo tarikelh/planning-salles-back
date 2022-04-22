@@ -35,6 +35,7 @@ import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -760,7 +761,17 @@ public class InterventionServiceImpl implements InterventionService {
 				if (c.isPresent()) {
 					i.setCourse(c.get());
 					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
-					i.setUser(userRepository.findByIdDg2(iDG2.getPersonId()).orElse(null));
+					User u = userRepository.findByIdDg2(iDG2.getPersonId()).orElse(null);
+					if(u == null)
+					{
+						try {
+							u = userRepository.findByIdDg2(-1 * iDG2.getLocationId()).orElse(null);
+						} catch (Exception e) {
+						}
+					}
+						
+					i.setUser(u);
+					
 					i.setMasterIntervention(
 							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 
