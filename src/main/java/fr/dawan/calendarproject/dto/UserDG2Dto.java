@@ -35,7 +35,8 @@ public class UserDG2Dto {
 	public UserDG2Dto() {
 	}
 
-	public UserDG2Dto(long employeeId, long personId, String firstName, String lastName, long locationId, String email,
+	public UserDG2Dto(long employeeId, long personId, String firstName,
+			String lastName, long locationId, String email,
 			String type, String company, String skills, String endDate, int version) {
 		this.employeeId = employeeId;
 		this.personId = personId;

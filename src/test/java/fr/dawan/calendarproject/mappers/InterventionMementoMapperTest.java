@@ -48,9 +48,11 @@ class InterventionMementoMapperTest {
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
 		skills.add(new Skill(3, "java", null, 5));
-
-		user = new User(1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png", 0);
+		
+		LocalDate date = LocalDate.now();
+		
+		user = new User(1, 1,  1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date, 0);
 
 		masterIntervention = new Intervention(3, 3, "slug-3", "com", location, course, user, 0,
 				InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0),
