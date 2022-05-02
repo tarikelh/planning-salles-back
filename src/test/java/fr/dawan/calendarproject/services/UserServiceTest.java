@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,36 +92,41 @@ class UserServiceTest {
 
 		Location loc = Mockito.mock(Location.class);
 
-		uList.add(new User(1, 1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0));
+		LocalDate date = LocalDate.now();
 
-		uList.add(new User(2, 2, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", "testPasswordPolnareff", null,
-				UserType.COMMERCIAL, UserCompany.JEHANN, "", 0));
+		uList.add(new User(1, 1, 1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0));
 
-		uList.add(new User(3, 3, "Charles", "Aznavour", loc, "caznavour@dawan.fr", "testPasswordAznav", null,
-				UserType.FORMATEUR, UserCompany.JEHANN, "", 0));
+		uList.add(new User(2, 2, 2, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", "testPasswordPolnareff", null,
+				UserType.COMMERCIAL, UserCompany.JEHANN, "",date, 0));
 
-		uDtoList.add(new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr", null, "ADMINISTRATIF",
-				"DAWAN", "", 0, null));
+		uList.add(new User(3, 3, 3, "Charles", "Aznavour", loc, "caznavour@dawan.fr", "testPasswordAznav", null,
+				UserType.FORMATEUR, UserCompany.JEHANN, "",date, 0));
 
-		uDtoList.add(new AdvancedUserDto(2, 2, "Michel", "Polnareff", 0, "mpolnareff@dawan.fr", "testPasswordPolnareff",
-				"COMMERCIAL", "JEHANN", "", 0, null));
+		uDtoList.add(new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0,
+				"dbalavoine@dawan.fr", null, "ADMINISTRATIF",
+				"DAWAN", "","2022-12-31", 0, null));
 
-		uDtoList.add(new AdvancedUserDto(3, 3, "Charles", "Aznavour", 0, "caznavour@dawan.fr", "testPasswordAznav",
-				"FORMATEUR", "JEHANN", "", 0, null));
+		uDtoList.add(new AdvancedUserDto(2, 2, 2, "Michel", "Polnareff", 0, "mpolnareff@dawan.fr", "testPasswordPolnareff",
+				"COMMERCIAL", "JEHANN", "","2022-12-31", 0, null));
 
-		userFromDG2 = new User(4, 4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.FORMATEUR,
-				UserCompany.JEHANN, "", 0);
+		uDtoList.add(new AdvancedUserDto(3, 3, 3, "Charles", "Aznavour", 0, "caznavour@dawan.fr", "testPasswordAznav",
+				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null));
+
+		userFromDG2 = new User(4, 4,4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.FORMATEUR,
+				UserCompany.JEHANN, "",date, 0);
 		
-		userAdminFromDG2 = new User(4, 4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.ADMINISTRATIF,
-				UserCompany.JEHANN, "", 0);
+		userAdminFromDG2 = new User(4, 4,4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.ADMINISTRATIF,
+				UserCompany.JEHANN, "",date, 0);
 		
-		usersDG2.add(new UserDG2Dto(4, "zcrijze", "ecqiuv", 1, "zdokpcopi@dawan.fr", null, "FORMATEUR", "JEHANN",
-				"repoil.png", null, 0));
-		usersDG2.add(new UserDG2Dto(9, "erzoiuevi", "azkczpo", 1, "zflkzlkzf@dawan.fr", null, "ADMINISTRATIF", "DAWAN",
-				"vrdio.png", null, 0));
-		usersDG2.add(new UserDG2Dto(5, "seqepo", "qiuhfokazd", 1, "csqhuzaoi@dawan.fr", null, "APPRENTI", "JEHANN",
-				"vn.png", null, 0));
+		usersDG2.add(new UserDG2Dto(4, 4, "zcrijze", "ecqiuv",
+				1, "zdokpcopi@dawan.fr", "FORMATEUR", "JEHANN",
+				"c#", "2022-12-31", 0));
+		usersDG2.add(new UserDG2Dto(9, 9, "erzoiuevi", "azkczpo", 1,
+				"zflkzlkzf@dawan.fr", "ADMINISTRATIF", "DAWAN",
+				"Java", "2022-12-31", 0));
+		usersDG2.add(new UserDG2Dto(5, 5, "seqepo", "qiuhfokazd", 1, "csqhuzaoi@dawan.fr", "APPRENTI", "JEHANN",
+				"Spring", "2022-12-31", 0));
 	}
 
 	@Test
@@ -235,12 +241,14 @@ class UserServiceTest {
 		skills.add("POO");
 		skills.add("SQL");
 
-		AdvancedUserDto toCreate = new AdvancedUserDto(0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skills);
-		AdvancedUserDto expected = new AdvancedUserDto(3, 3, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, skills);
-		User repoReturn = new User(3, 3, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
+		LocalDate date = LocalDate.now();
+
+		AdvancedUserDto toCreate = new AdvancedUserDto(0, 0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
+				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skills);
+		AdvancedUserDto expected = new AdvancedUserDto(0, 0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
+				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skills);
+		User repoReturn = new User(3, 3, 3, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",date, 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
@@ -264,8 +272,8 @@ class UserServiceTest {
 
 	@Test
 	void ShouldReturnNullWhenUpdateUserWithWrongId() {
-		AdvancedUserDto toUpdate = new AdvancedUserDto(222, 222, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null);
+		AdvancedUserDto toUpdate = new AdvancedUserDto(222, 222, 222, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
+				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
 
 		when(skillRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
@@ -278,16 +286,16 @@ class UserServiceTest {
 	void ShouldHashWhenPasswordHasChanged() {
 		MockedStatic<HashTools> hashTools = Mockito.mockStatic(HashTools.class);
 		Location mockedLoc = Mockito.mock(Location.class);
-		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
-		User newPwd = new User(1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "newStrongPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		User oldPwd = new User(1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		User newHashed = new User(1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "hashedNewStrongPassword",
-				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
-		AdvancedUserDto expected = new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
-				"hashedNewStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
+		User newPwd = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "newStrongPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN,"", LocalDate.now(), 0);
+		User oldPwd = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), 0);
+		User newHashed = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "hashedNewStrongPassword",
+				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), 0);
+		AdvancedUserDto expected = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
+				"hashedNewStrongPassword", "ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -331,8 +339,8 @@ class UserServiceTest {
 
 	@Test
 	void shouldThrowWhenUserHasDuplicateEmail() {
-		AdvancedUserDto alreadyExistingEmail = new AdvancedUserDto(0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+		AdvancedUserDto alreadyExistingEmail = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(uList.get(0));
@@ -353,8 +361,8 @@ class UserServiceTest {
 
 	@Test
 	void shouldThrowWhenUserHasBadEmail() {
-		AdvancedUserDto badEmail = new AdvancedUserDto(0, 0, "Daniel", "Balavoine2", 12, "dbalavoinedawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+		AdvancedUserDto badEmail = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine2", 12, "dbalavoinedawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -375,8 +383,8 @@ class UserServiceTest {
 
 	@Test
 	void shouldThrowWhenUserHasBadLocationId() {
-		AdvancedUserDto badLocId = new AdvancedUserDto(0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, null);
+		AdvancedUserDto badLocId = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -400,8 +408,8 @@ class UserServiceTest {
 		List<String> skills = new ArrayList<>();
 		skills.add("SQL");
 
-		AdvancedUserDto badSkill = new AdvancedUserDto(0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skills);
+		AdvancedUserDto badSkill = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine2", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -428,8 +436,8 @@ class UserServiceTest {
 		List<String> skills = new ArrayList<>();
 		skills.add("DevOps");
 
-		AdvancedUserDto shortPwd = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr", "short",
-				"ADMINISTRATIF", "DAWAN", "", 0, skills);
+		AdvancedUserDto shortPwd = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr", "short",
+				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -456,8 +464,8 @@ class UserServiceTest {
 		List<String> skills = new ArrayList<>();
 		skills.add("DevOps");
 
-		AdvancedUserDto badCompany = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "BADCOMPANY", "", 0, skills);
+		AdvancedUserDto badCompany = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "BADCOMPANY", "", "2022-12-31", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -484,8 +492,8 @@ class UserServiceTest {
 		List<String> skills = new ArrayList<>();
 		skills.add("DevOps");
 
-		AdvancedUserDto badType = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "BADTYPE", "DAWAN", "", 0, skills);
+		AdvancedUserDto badType = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "BADTYPE", "DAWAN", "", "2022-12-31", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
@@ -512,8 +520,8 @@ class UserServiceTest {
 		List<String> skills = new ArrayList<>();
 		skills.add("DevOps");
 
-		AdvancedUserDto goodUser = new AdvancedUserDto(0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
-				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", 0, skills);
+		AdvancedUserDto goodUser = new AdvancedUserDto(0, 0, 0, "Daniel", "Balavoine", 12, "dbalavoine@dawan.fr",
+				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skills);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(Mockito.mock(Location.class)));
 		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);

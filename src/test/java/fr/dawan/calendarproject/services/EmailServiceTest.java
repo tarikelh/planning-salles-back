@@ -71,10 +71,12 @@ class EmailServiceTest {
 		Course mockedCourse = Mockito.mock(Course.class);
 		
 		Location loc = new Location(1, "Paris", "red", "FR", 0);
+
+		LocalDate date = LocalDate.now();
 		
-		receiver = new User(1, 1, "Daniel", "Balavoine", loc,
+		receiver = new User(1, 1, 1, "Daniel", "Balavoine", loc,
 				"dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
 		
 		iList.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention",
 				loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
