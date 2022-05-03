@@ -137,6 +137,28 @@ class ResourceServiceTest {
 	}
 
 	@Test
+	void shouldGetResourceByQuantityRange() {
+		when(resourceRepository.findByQuantityRange(any(int.class),any(int.class))).thenReturn(rList);
+		when(resourceMapper.resourceToResourceDto(any(Resource.class))).thenReturn(rDtoList.get(1));
+
+		List<ResourceDto> result = resourceService.getResourceByQuantityRange(8,12);
+
+		assertThat(result).isNotNull();
+		assertEquals(rDtoList.get(1), result.get(1));
+	}
+
+	@Test
+	void shouldGetResourceByRoomAvailability() {
+		when(resourceRepository.findByRoomAvailability(any(boolean.class))).thenReturn(rList);
+		when(resourceMapper.resourceToResourceDto(any(Resource.class))).thenReturn(rDtoList.get(1));
+
+		List<ResourceDto> result = resourceService.getResourceByRoomAvailability(true);
+
+		assertThat(result).isNotNull();
+		assertEquals(rDtoList.get(1), result.get(1));
+	}
+
+	@Test
 	void shouldReturnNullWhenResourceIdIsUnknown() {
 		when(resourceRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
