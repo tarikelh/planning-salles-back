@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,9 @@ public interface ResourceRepository extends JpaRepository<Resource,Long> {
 
 	 @Query("FROM Resource r WHERE r.name LIKE :name")
 	 List<Resource> findByName(@Param("name") String name);
+	 
+	 @Query("FROM Resource r WHERE r.id IS NOT :id AND (r.name = :name OR r.roomId = :roomId)")
+	 List<Resource> findDuplicateByName(@Param("id") long id, @Param("name") String name, @Param("roomId") long roomId );
 	 
 	 @Query("FROM Resource r WHERE r.room.isAvailable = :availability")
 	 List<Resource> findByRoomAvailability(@Param("availability") boolean  availability);

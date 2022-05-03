@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -128,15 +129,15 @@ class InterventionServiceTest {
 				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), masterDummy, false, 0);
 		interventions.add(slaveDummy);
 
-		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 0, 0, 0, 0, 0, 1, "SUR_MESURE",
+		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", any(Long.class), 1, 1, 1, 1, 1, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
 				0));
 
-		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 0, 0, 0, 0, 0, 1, "INTERN",
+		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", any(Long.class), 1, 1, 1, 1, 1, "INTERN",
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, true, 0));
 
-		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", 0, 0, 0, 0, 0, 1, "INTERN", true,
+		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", any(Long.class), 1, 1, 1, 1, 1, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, 0));
 	}
@@ -543,7 +544,7 @@ class InterventionServiceTest {
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
 				any(LocalDate.class))).thenReturn(new ArrayList<Intervention>());
 
-		assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
+		Assertions.assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
 	}
 
 	@Test
