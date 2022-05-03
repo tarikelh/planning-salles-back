@@ -1,8 +1,10 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -213,7 +215,7 @@ class ResourceServiceTest {
 
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	void shouldThrowWhenResourceIsNotUniq() {
+	void shouldReturnFalseWhenResourceIsNotUniq() {
 		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
 		
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
@@ -223,12 +225,10 @@ class ResourceServiceTest {
 
 		ResourceDto badResource = new ResourceDto(1111, 0, 10, "Casque", room.getId());
 
-		when(resourceRepository.findDuplicateByName(any(Long.class), any(String.class), any(Long.class)))
+		when(resourceRepository.findDuplicateByName(any(Long.class), any(Long.class), any(String.class)))
 				.thenReturn(dupRes);
 
-		assertThrows(EntityFormatException.class, () -> {
-			rList.get(0).equals(badResource);
-		});
+		assertFalse(rList.get(0).equals(badResource));
 	}
 
 	@Test

@@ -18,8 +18,8 @@ public interface ResourceRepository extends JpaRepository<Resource,Long> {
 	 @Query("FROM Resource r WHERE r.name LIKE :name")
 	 List<Resource> findByName(@Param("name") String name);
 	 
-	 @Query("FROM Resource r WHERE r.id IS NOT :id AND (r.name = :name OR r.roomId = :roomId)")
-	 List<Resource> findDuplicateByName(@Param("id") long id, @Param("name") String name, @Param("roomId") long roomId );
+	 @Query("FROM Resource r JOIN FETCH r.room AS room WHERE r.id IS NOT :id AND (r.name = :name OR room.id = :roomId)")
+	 List<Resource> findDuplicateByName(@Param("id") long id, @Param("roomId") long roomId, @Param("name") String name );
 	 
 	 @Query("FROM Resource r WHERE r.room.isAvailable = :availability")
 	 List<Resource> findByRoomAvailability(@Param("availability") boolean  availability);
