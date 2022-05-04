@@ -18,6 +18,4 @@ public interface RoomService {
     void deleteById(long id);
 
     RoomDto saveOrUpdate(RoomDto room);
-
-    void checkUniqueness(RoomDto room);
 }

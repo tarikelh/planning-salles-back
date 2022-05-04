@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -22,17 +21,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.client.RestTemplate;
 
-import fr.dawan.calendarproject.dto.ResourceDto;
 import fr.dawan.calendarproject.dto.RoomDto;
 import fr.dawan.calendarproject.entities.Location;
-import fr.dawan.calendarproject.entities.Resource;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.mapper.RoomMapper;
 import fr.dawan.calendarproject.repositories.RoomRepository;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
-public class RoomServiceTest {
+class RoomServiceTest {
 	
 	@Autowired
 	private RoomService roomService;
@@ -47,7 +44,7 @@ public class RoomServiceTest {
 	private RestTemplate restTemplate;
 	
 	private List<Room> rList = new ArrayList<Room>();
-	private List<RoomDto> rDtoList =new ArrayList<RoomDto>();
+	private List<RoomDto> rDtoList = new ArrayList<RoomDto>();
 	
 	private Optional<Room> opRoom;
 	
@@ -66,22 +63,25 @@ public class RoomServiceTest {
 		
 		opRoom = Optional.of(rList.get(0));
 	}
+
 	@Test
 	void contextLoads() {
 		assertThat(roomService).isNotNull();
 	}
+
 	@Test
 	void shouldFetchAllResourceAndReturnDtos() {
 		when(roomRepository.findAll()).thenReturn(rList);
 		when(roomMapper.roomToRoomDto(any(Room.class))).thenReturn(rDtoList.get(0), rDtoList.get(1),
 				rDtoList.get(2));
 
-		List<RoomDto> result = roomService.getAllRooms();
+		List<RoomDto> result =  roomService.getAllRooms();
 
 		assertThat(result).isNotNull();
 		assertEquals(rDtoList.size(), result.size());
-		assertEquals(rDtoList, result);
+		assertEquals(result, rDtoList);
 	}
+
 	@Test 
 	void shouldFetchAllRoomAndReturnPaginatedDtos() {
 		Page<Room> p1 = new PageImpl<Room>(rList.subList(0, 2));
