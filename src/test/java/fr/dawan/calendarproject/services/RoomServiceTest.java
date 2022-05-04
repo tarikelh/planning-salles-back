@@ -1,8 +1,10 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.client.RestTemplate;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.RoomDto;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Room;
@@ -119,5 +122,52 @@ class RoomServiceTest {
 		assertThat(result).isNotNull();
 		assertEquals(rDtoList.get(1), result);
 	}
+	
+	@Test
+	void testSaveNewResource() {
+
+		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		
+		RoomDto toCreate = new RoomDto(0,4,"Room 4",25,true,1,0);
+		Room repoReturn = new Room(4,4,"Room 4",25,true,0, location );
+		RoomDto expected = new RoomDto(4,4,"Room 4",25,true,1,0);
+
+		when(roomMapper.roomDtoToRoom(any(RoomDto.class))).thenReturn(repoReturn);
+		when(roomRepository.saveAndFlush(any(Room.class))).thenReturn(repoReturn);
+		when(roomMapper.roomToRoomDto(any(Room.class))).thenReturn(expected);
+
+		RoomDto result = roomService.saveOrUpdate(toCreate);
+
+		assertThat(result).isNotNull();
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	void shouldReturnCount() {
+		when(roomRepository.countByLocationNameContaining(any(String.class))).thenReturn((long) rList.size());
+
+		CountDto result = roomService.count("");
+
+		assertEquals(rList.size(), result.getNb());
+	}
+	
+	@Test 
+	void testDeletRoom() {
+		doNothing().when(roomRepository).deleteById(any(Long.class));
+
+		assertDoesNotThrow(() -> roomService.deleteById(any(Long.class)));
+
+	}
+	@Test
+	void ShouldReturnNullWhenUpdateResourceWithWrongId() {
+		RoomDto toUpdate = new RoomDto(1,1,"Room 1",25,true,1,0);
+
+		when(roomRepository.findById(any(long.class))).thenReturn(Optional.empty());
+
+		RoomDto result = roomService.saveOrUpdate(toUpdate);
+
+		assertThat(result).isNull();
+	}
+	
 }
 			
