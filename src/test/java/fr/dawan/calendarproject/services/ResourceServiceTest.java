@@ -27,7 +27,6 @@ import org.springframework.web.client.RestTemplate;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.ResourceDto;
 import fr.dawan.calendarproject.entities.Resource;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.ResourceMapper;
 import fr.dawan.calendarproject.repositories.ResourceRepository;
 
