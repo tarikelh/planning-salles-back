@@ -58,15 +58,15 @@ class LocationServiceTest {
 
 	@BeforeEach
 	void beforeEach() throws Exception {
-		lList.add(new Location(1, "Paris", "red", "FR", 0));
-		lList.add(new Location(2, "Nantes", "blue", "FR", 0));
-		lList.add(new Location(3, "Lyon", "pink", "FR", 0));
-		lList.add(new Location(4, "Montpellier", "green", "FR", 0));
+		lList.add(new Location(1, "Paris", "FR", "red", 0));
+		lList.add(new Location(2, "Nantes", "FR", "blue", 0));
+		lList.add(new Location(3, "Lyon", "FR", "pink", 0));
+		lList.add(new Location(4, "Montpellier", "FR", "green", 0));
 
-		lDtoList.add(new LocationDto(1, 1, "Paris", "red", "FR", 0));
-		lDtoList.add(new LocationDto(2, 2, "Nantes", "blue", "FR", 0));
-		lDtoList.add(new LocationDto(3, 3, "Lyon", "pink", "FR", 0));
-		lDtoList.add(new LocationDto(4, 4, "Montpellier", "green", "FR", 0));
+		lDtoList.add(new LocationDto(1, 1, "Paris", "FR", "red", 0));
+		lDtoList.add(new LocationDto(2, 2, "Nantes", "FR", "blue", 0));
+		lDtoList.add(new LocationDto(3, 3, "Lyon", "FR", "pink", 0));
+		lDtoList.add(new LocationDto(4, 4, "Montpellier", "FR", "green", 0));
 
 		opLocation = Optional.of(lList.get(0));
 	}
@@ -116,7 +116,7 @@ class LocationServiceTest {
 		assertEquals(lList.size(), result.size());
 	}
 
-	/*@Test
+	@Test
 	void shouldGetLocationById() {
 		when(locationRepository.findById(any(long.class))).thenReturn(Optional.of(lList.get(1)));
 		when(locationMapper.locationToLocationDto(any(Location.class))).thenReturn(lDtoList.get(1));
@@ -125,7 +125,7 @@ class LocationServiceTest {
 
 		assertThat(result).isNotNull();
 		assertEquals(lDtoList.get(1), result);
-	}*/
+	}
 
 	@Test
 	void shouldReturnNullWhenLocationIdIsUnknown() {
