@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import fr.dawan.calendarproject.enums.UserCompany;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,13 +107,16 @@ class InterventionServiceTest {
 	private MockedStatic<ICalTools> mICalTools;
 	private Course course;
 
-	@BeforeEach()
-	public void beforeEach() throws Exception {
+	@BeforeEach
+	void beforeEach() throws Exception {
 		mICalTools = Mockito.mockStatic(ICalTools.class);
 
-		Location mockedLoc = Mockito.mock(Location.class);
-		Course mockedCourse = Mockito.mock(Course.class);
-		User mockedUser = Mockito.mock(User.class);
+		LocalDate date = LocalDate.now();
+
+		Location mockedLoc = new Location(1, "Paris", "red", "FR", 0);
+		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
+		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
 		course = new Course(2, 548, "C#", "5", "slug", 0);
 
 		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", mockedLoc, mockedCourse,
@@ -129,15 +133,15 @@ class InterventionServiceTest {
 				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), masterDummy, false, 0);
 		interventions.add(slaveDummy);
 
-		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", any(Long.class), 1, 1, 1, 1, 1, "SUR_MESURE",
+		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 1, 1, 1, 1, 1, 1, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
 				0));
 
-		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", any(Long.class), 1, 1, 1, 1, 1, "INTERN",
+		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 1, 1, 1, 1, 1, 1, "INTERN",
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, true, 0));
 
-		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", any(Long.class), 1, 1, 1, 1, 1, "INTERN", true,
+		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", 1, 1, 1, 1, 1, 1, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, 0));
 	}
@@ -532,17 +536,23 @@ class InterventionServiceTest {
 
 	@Test
 	void shouldReturnTrueWhenInterventionHasNoError() {
-		Optional<User> optUser = Optional.of(Mockito.mock(User.class));
-		when(userRepository.findById(any(Long.class))).thenReturn(optUser);
+		LocalDate date = LocalDate.now();
 
-		Optional<Course> optCourse = Optional.of(Mockito.mock(Course.class));
-		when(courseRepository.findById(any(Long.class))).thenReturn(optCourse);
+		Location mockedLoc = new Location(1, "Paris", "FR", "red", 0);
+		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
+		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
 
-		Optional<Location> optLoc = Optional.of(Mockito.mock(Location.class));
-		when(locationRepository.findById(any(Long.class))).thenReturn(optLoc);
+		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
+
+		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
-				any(LocalDate.class))).thenReturn(new ArrayList<Intervention>());
+				any(LocalDate.class))).thenReturn(interventions);
+
+		when(interventionMapper.interventionToInterventionDto(interventions.get(0))).thenReturn(iDtos.get(0));
 
 		Assertions.assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
 	}
