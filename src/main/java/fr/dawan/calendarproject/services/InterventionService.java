@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -52,4 +53,6 @@ public interface InterventionService {
 	List<InterventionDto> getSubByMasterId(long id);
 
 	int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception;
+	
+	List<AdvancedInterventionDto> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
 }
