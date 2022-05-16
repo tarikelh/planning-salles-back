@@ -56,8 +56,8 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("SELECT COUNT(*) FROM Intervention i WHERE i.isMaster = false AND i.user.type= :type")
 	long countByUserTypeNoMaster(@Param("type") UserType type);
 
-	@DoIgnore
-	List<Intervention> findByMasterInterventionIdOrderByDateStart(long id);
+	@Query("FROM Intervention i JOIN FETCH i.masterIntervention as masterI WHERE masterI = :masterId ORDER BY i.dateStart")
+	List<Intervention> findByMasterInterventionIdOrderByDateStart(@Param("masterId") long masterId);
 
 	Optional<Intervention> findByIdDg2(long idDg2);
 
@@ -68,5 +68,8 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.slug LIKE %:slug%")
 	List<Intervention> findAllContainsSlug(String slug);
+
+	@Query("FROM Intervention i JOIN FETCH i.masterIntervention as masterI WHERE masterI = :masterId")
+	Optional<Intervention> findByMasterId(@Param("masterId") long masterId);
 
 }
