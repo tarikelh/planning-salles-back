@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -105,7 +106,7 @@ public class InterventionController {
 	}
 	
 	@GetMapping(value = "/adv-sub", produces = "application/json")
-	public List<AdvancedInterventionDto> getSubAdvInterventions(@RequestParam("type") String type,
+	public List<AdvancedInterventionDto2> getSubAdvInterventions(@RequestParam("type") String type,
 			@RequestParam("start") String start, @RequestParam("end") String end) {
 		return interventionService.getAdvSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}

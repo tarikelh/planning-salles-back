@@ -38,12 +38,13 @@ public class AdvancedInterventionDto {
 
 	private boolean isMaster;
 	
+	
+	
 	private int version;
 	
-	
+
 
 	public AdvancedInterventionDto() {
-		super();
 	}
 
 

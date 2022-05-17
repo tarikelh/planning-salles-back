@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
@@ -406,15 +407,23 @@ public class InterventionServiceImpl implements InterventionService {
 	
 	
 	@Override
-	public List<AdvancedInterventionDto> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
-		List<AdvancedInterventionDto> iDtos = new ArrayList<>();
+	public List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
+		List<AdvancedInterventionDto2> iDtos = new ArrayList<>();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
 					dateStart, dateEnd);
-			for (Intervention i : interventions)
-				iDtos.add(interventionMapper.interventionToAdvInterventionDto(i));
-
+			for (Intervention i : interventions) {
+				
+				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
+				
+				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(), i.getDateStart(), i.getDateEnd(), i.getId());
+				
+				result.setEventSiblings(interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+				
+				iDtos.add(result);
+			}
+				
 			return iDtos;
 		} else {
 			return iDtos;
