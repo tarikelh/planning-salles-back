@@ -68,10 +68,11 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 	}
 
 	@Override
-	public void fetchAllDG2LeavePeriods(String email, String password, String firstDay, String lastDay)
+	public int fetchAllDG2LeavePeriods(String email, String password, String firstDay, String lastDay)
 			throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<LeavePeriodDg2Dto> lResJson;
+		int count = 0;
 
 		String uri = "https://dawan.org/api2/planning/leave-periods/" + firstDay + "/" + lastDay;
 		URI url = new URI(uri);
@@ -98,6 +99,7 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 						.findByUserEmployeeId(lpDg2.getEmployeeId());
 
 				if (!optLeavePeriod.contains(leavePeriodImport)) {
+					count++;
 					try {
 						leavePeriodImport.setUser(userRepository.findByEmployeeIdDg2(lpDg2.getEmployeeId()).orElse(null));
 						leavePeriodRepository.saveAndFlush(leavePeriodImport);
@@ -107,6 +109,7 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 				}
 			}
 		}
+		return count;
 	}
 
 	@Override

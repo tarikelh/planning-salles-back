@@ -12,7 +12,7 @@ public interface LeavePeriodService {
 
 	List<LeavePeriodDto> getAllLeavePeriodsByEmployeeId(long id);
 
-	void fetchAllDG2LeavePeriods(String email, String password, String firstDay, String lastDay) throws Exception;
+	int fetchAllDG2LeavePeriods(String email, String password, String firstDay, String lastDay) throws Exception;
 
 	List<LeavePeriodDto> getBetween(String type, LocalDate localDate, LocalDate localDate2);
 }

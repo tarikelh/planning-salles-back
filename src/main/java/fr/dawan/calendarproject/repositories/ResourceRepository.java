@@ -29,7 +29,7 @@ public interface ResourceRepository extends JpaRepository<Resource,Long> {
 	 
 	 //List<Resource> findByQuantityContaining(int quantity);
 	 
-	 @Query("FROM Resource r WHERE r.quantity BETWEEN :value1 AND :value2")
+	 @Query("FROM Resource r WHERE r.quantity >= :value1 AND r.quantity <= :value2")
 	 List<Resource> findByQuantityRange(@Param("value1") int value1, @Param("value2") int value2);
 	 
 	 Page<Resource> findAllByNameContaining(String name, Pageable pageable);
