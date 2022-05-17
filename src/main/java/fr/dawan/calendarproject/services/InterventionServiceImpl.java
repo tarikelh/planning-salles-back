@@ -417,7 +417,7 @@ public class InterventionServiceImpl implements InterventionService {
 				
 				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
 				
-				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(), i.getDateStart(), i.getDateEnd(), i.getId());
+				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(), i.getDateStart(), i.getDateEnd(), i.getId(), i.getUser().getId());
 				
 				result.setEventSiblings(interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
 				
