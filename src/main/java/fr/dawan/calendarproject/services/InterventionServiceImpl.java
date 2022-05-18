@@ -29,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
 import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
@@ -222,7 +221,7 @@ public class InterventionServiceImpl implements InterventionService {
 	 */
 
 	@Override
-	public InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception {
+	public AdvancedInterventionDto2 saveOrUpdate(InterventionDto intervention, String email) throws Exception {
 		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
 			return null;
 
@@ -252,7 +251,19 @@ public class InterventionServiceImpl implements InterventionService {
 
 		caretaker.addMemento(email, interv);
 
-		return interventionMapper.interventionToInterventionDto(interv);
+		AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(interv);
+		result.setEventSiblings(
+				interventionMapper.listInterventionToListAdvInterventionDto(
+						interventionRepository.findSibblings(
+								interv.getCourse().getId(), 
+								interv.getDateStart(), 
+								interv.getDateEnd(), 
+								interv.getId(), 
+								interv.getUser().getId()
+						)
+				)
+		);
+		return result;
 	}
 
 	/**
