@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Intervention;
@@ -13,7 +16,7 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { CourseRepository.class, LocationRepository.class, UserRepository.class,
+@Mapper(componentModel = "spring", uses = { UserMapper.class, CourseRepository.class, LocationRepository.class, UserRepository.class,
 		InterventionRepository.class })
 public interface InterventionMapper {
 
@@ -24,6 +27,21 @@ public interface InterventionMapper {
 	@Mapping(target = "userId", source = "user.id")
 	@Mapping(target = "masterInterventionId", source = "masterIntervention.id")
 	InterventionDto interventionToInterventionDto(Intervention intervention);
+	
+	@Named("interventionToAdvInterventionDto")
+	@Mapping(target = "user", source="user", qualifiedByName = "userToUserDto")
+	AdvancedInterventionDto interventionToAdvInterventionDto(Intervention intervention);
+	
+	@Mapping(qualifiedByName="interventionToAdvInterventionDto", target = ".")
+	List<AdvancedInterventionDto> listInterventionToListAdvInterventionDto(List<Intervention> interventions);
+	
+	
+	@Mapping(target = "eventSiblings", ignore=true)
+	AdvancedInterventionDto2 interventionToAdvInterventionDto2(Intervention intervention);
+
+	
+	List<AdvancedInterventionDto2> listInterventionToListAdvInterventionDto2(List<Intervention> interventions);
+	
 
 	@Mapping(target = "course", source = "courseId")
 	@Mapping(target = "location", source = "locationId")
