@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import fr.dawan.calendarproject.dto.*;
 import fr.dawan.calendarproject.enums.UserCompany;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -40,13 +40,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.CountDto;
-import fr.dawan.calendarproject.dto.DateRangeDto;
-import fr.dawan.calendarproject.dto.InterventionDG2Dto;
-import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
-import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionMemento;
@@ -113,6 +106,9 @@ class InterventionServiceTest {
 	private MockedStatic<ICalTools> mICalTools;
 	private Course course;
 	private String email = "admin@dawan.fr";
+	private String pwd = "testPassword";
+	private String start = "2012-05-01";
+	private String end = "2012-05-02";
 
 	@BeforeEach
 	void beforeEach() throws Exception {
@@ -855,34 +851,53 @@ class InterventionServiceTest {
 		assertEquals("/api/interventions", result.getPath());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void shouldImportNewInterventionsFromDG2() throws Exception {
-		String email = "test@dawan.fr";
-		String pwd = "testPassword";
-		String start = "2012-05-01";
-		String end = "2012-05-02";
-		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1},{\"id\":551268,\"locationId\":17,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"agile-scrum-initiation-04-01-2021\",\"courseId\":100281,\"type\":\"shared\",\"masterInterventionId\":551267,\"personId\":null,\"nbParticipants\":1},{\"id\":545368,\"locationId\":3,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-05T00:00:00+00:00\",\"slug\":\"informatique-pour-les-debutants-office-04-01-2021\",\"courseId\":100137,\"type\":\"shared\",\"masterInterventionId\":545367,\"personId\":null,\"nbParticipants\":1}]";
+	void shouldGetInterventionsFromDG2() throws Exception {
+		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1}]";
 
-		URI url = new URI(String.format("https://dawan.org/api2/planning/interventions/%s/%s", start, end));
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
-
-		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> res = new ResponseEntity<>(body,HttpStatus.OK);
 
 		when(courseRepository.findByIdDg2(any(Long.class))).thenReturn(Optional.of(course));
-		when(restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class))
-				.thenReturn(ResponseEntity.status(HttpStatus.OK).body(body));
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+				.thenReturn(res);
 		when(interventionMapper.interventionDG2DtoToIntervention(any(InterventionDG2Dto.class)))
 				.thenReturn(Mockito.mock(Intervention.class));
 		when(interventionRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 		when(interventionRepository.saveAndFlush(any(Intervention.class))).thenReturn(Mockito.mock(Intervention.class));
-		doNothing().when(leavePeriodService).fetchAllDG2LeavePeriods(email,pwd,start,end);
 
-		int result = interventionService.fetchDG2Interventions(email, pwd, LocalDate.parse(start),
-				LocalDate.parse(end));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(true,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(false,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+	}
 
-		assertThat(result).isEqualTo(3);
+	//TODO: shouldFetchUpdateInterventionFromDg2
+	/*@SuppressWarnings("unchecked")
+	@Test
+	void shouldGetUpdateInterventionsFromDG2() throws Exception {
+		Location mockedLoc = Mockito.mock(Location.class);
+		Course mockedCourse = Mockito.mock(Course.class);
+		User mockedUser = Mockito.mock(User.class);
+
+		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1}]";
+		Intervention fromDg2 = new Intervention(551256, 551256, "", "I am lambda Intervention", mockedLoc, mockedCourse,
+				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), null,
+				null, null, false, 0);
+
+		Intervention inDb = new Intervention(551256, 551256, "lambdaSlug", "I am lambda Intervention", mockedLoc,
+				mockedCourse, mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0);
+
+		ResponseEntity<String> res = new ResponseEntity<>(body,HttpStatus.OK);
+
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+				.thenReturn(res);
+		when(interventionMapper.interventionDG2DtoToIntervention(any(InterventionDG2Dto.class)))
+				.thenReturn(fromDg2);
+		when(interventionRepository.findById(551256L)).thenReturn(Optional.of(inDb));
+		when(interventionRepository.saveAndFlush(any(Intervention.class))).thenReturn(Mockito.mock(Intervention.class));
+
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(true,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(false,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
 	}
 
 	@Test
@@ -924,7 +939,7 @@ class InterventionServiceTest {
 				LocalDate.parse(end));
 
 		assertThat(result).isEqualTo(3);
-	}
+	}*/
 
 	@Test
 	void shouldThrowWhenDG2StatusIsNotOk() throws Exception {

@@ -712,6 +712,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	}
 
+	@Override
 	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
 			throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();

@@ -52,4 +52,7 @@ public interface InterventionService {
 	List<InterventionDto> getSubByMasterId(long id);
 
 	int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception;
+
+	int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
+			throws Exception;
 }

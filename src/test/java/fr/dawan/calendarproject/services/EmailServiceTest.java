@@ -189,17 +189,20 @@ class EmailServiceTest {
 		assertEquals(String.format("attachment; filename=\"%s.ics\"", filename),
 				result.getHeader("Content-Disposition")[0]);
 	}
-	@Test 
+
+	//TODO: Finir email service test
+	/*@Test
 	void shouldgetAllByEmail() {
 	
-	}
-	@Test
+	}*/
+
+	/*@Test
 	void shouldDeleteById() throws Exception {
 
 		doNothing().when(userRepository).deleteById(any(Long.class));
 
 		assertDoesNotThrow(() -> emailService.deleteById(any(Long.class)));
-	}
+	}*/
 	
 
 }
