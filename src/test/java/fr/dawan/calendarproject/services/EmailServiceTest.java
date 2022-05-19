@@ -203,6 +203,5 @@ class EmailServiceTest {
 
 		assertDoesNotThrow(() -> emailService.deleteById(any(Long.class)));
 	}*/
-	
 
 }
