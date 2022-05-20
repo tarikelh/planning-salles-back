@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDG2Dto;
@@ -220,7 +221,7 @@ public class InterventionServiceImpl implements InterventionService {
 	 */
 
 	@Override
-	public InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception {
+	public AdvancedInterventionDto2 saveOrUpdate(InterventionDto intervention, String email) throws Exception {
 		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
 			return null;
 
@@ -250,7 +251,19 @@ public class InterventionServiceImpl implements InterventionService {
 
 		caretaker.addMemento(email, interv);
 
-		return interventionMapper.interventionToInterventionDto(interv);
+		AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(interv);
+		result.setEventSiblings(
+				interventionMapper.listInterventionToListAdvInterventionDto(
+						interventionRepository.findSibblings(
+								interv.getCourse().getId(), 
+								interv.getDateStart(), 
+								interv.getDateEnd(), 
+								interv.getId(), 
+								interv.getUser().getId()
+						)
+				)
+		);
+		return result;
 	}
 
 	/**
@@ -397,6 +410,31 @@ public class InterventionServiceImpl implements InterventionService {
 			for (Intervention i : interventions)
 				iDtos.add(interventionMapper.interventionToInterventionDto(i));
 
+			return iDtos;
+		} else {
+			return iDtos;
+		}
+	}
+	
+	
+	@Override
+	public List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
+		List<AdvancedInterventionDto2> iDtos = new ArrayList<>();
+		if (UserType.contains(type)) {
+			UserType userType = UserType.valueOf(type);
+			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
+					dateStart, dateEnd);
+			for (Intervention i : interventions) {
+				
+				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
+				
+				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(), i.getDateStart(), i.getDateEnd(), i.getId(), i.getUser().getId());
+				
+				result.setEventSiblings(interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+				
+				iDtos.add(result);
+			}
+				
 			return iDtos;
 		} else {
 			return iDtos;

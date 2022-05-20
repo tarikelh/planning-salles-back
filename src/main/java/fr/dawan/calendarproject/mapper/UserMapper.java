@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
@@ -46,6 +47,7 @@ public interface UserMapper {
 	@Mapping(source = "company", target = "enumCompany")
 	User userDtoToUser(UserDto userDto);
 
+	@Named("userToUserDto")
 	@Mapping(source = "location.id", target = "locationId")
 	@Mapping(source = "enumType", target = "type")
 	@Mapping(source = "enumCompany", target = "company")

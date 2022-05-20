@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -26,7 +27,7 @@ public interface InterventionService {
 
 	void deleteById(long id, String email);
 
-	InterventionDto saveOrUpdate(InterventionDto intervention, String email) throws Exception;
+	AdvancedInterventionDto2 saveOrUpdate(InterventionDto intervention, String email) throws Exception;
 
 	List<InterventionDto> getByCourseId(long id);
 
@@ -52,7 +53,8 @@ public interface InterventionService {
 	List<InterventionDto> getSubByMasterId(long id);
 
 	int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception;
+	
+	List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
+	
 
-	int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
-			throws Exception;
 }

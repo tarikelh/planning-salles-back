@@ -68,6 +68,9 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.slug LIKE %:slug%")
 	List<Intervention> findAllContainsSlug(String slug);
+	
+	@Query("FROM Intervention i LEFT JOIN FETCH i.course LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.course.id =:courseId AND i.dateStart <= :start AND i.dateEnd >= :end AND i.id != :interventionId AND i.user.id = :userId ")
+	List<Intervention> findSibblings(@Param("courseId") long courseId , @Param("start") LocalDate start , @Param("end") LocalDate end, @Param("interventionId") long interventionId, @Param("userId") long userId);
 
 	@Query("FROM Intervention i JOIN FETCH i.masterIntervention as masterI WHERE masterI = :masterId")
 	Optional<Intervention> findByMasterId(@Param("masterId") long masterId);

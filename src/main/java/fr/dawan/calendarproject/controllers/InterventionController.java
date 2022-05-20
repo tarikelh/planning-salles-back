@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
@@ -102,6 +103,13 @@ public class InterventionController {
 			@RequestParam("start") String start, @RequestParam("end") String end) {
 		return interventionService.getSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
+	
+	@GetMapping(value = "/adv-sub", produces = "application/json")
+	public List<AdvancedInterventionDto2> getSubAdvInterventions(@RequestParam("type") String type,
+			@RequestParam("start") String start, @RequestParam("end") String end) {
+		return interventionService.getAdvSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
+	}
+
 
 	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
 	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
@@ -130,7 +138,7 @@ public class InterventionController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionDto save(@Valid @RequestBody InterventionDto intervention,
+	public AdvancedInterventionDto2 save(@Valid @RequestBody InterventionDto intervention,
 			@RequestHeader(value = "Authorization") String token) throws Exception {
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		return interventionService.saveOrUpdate(intervention, email);
@@ -143,7 +151,7 @@ public class InterventionController {
 
 		String email = jwtTokenUtil.getUsernameFromToken(token.substring(7));
 
-		InterventionDto i = interventionService.saveOrUpdate(intervention, email);
+		AdvancedInterventionDto2 i = interventionService.saveOrUpdate(intervention, email);
 
 		if (i != null)
 			return ResponseEntity.ok(i);
