@@ -3,10 +3,10 @@ package fr.dawan.calendarproject.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import fr.dawan.calendarproject.dto.*;
+import fr.dawan.calendarproject.enums.UserCompany;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -37,13 +40,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.CountDto;
-import fr.dawan.calendarproject.dto.DateRangeDto;
-import fr.dawan.calendarproject.dto.InterventionDG2Dto;
-import fr.dawan.calendarproject.dto.InterventionDto;
-import fr.dawan.calendarproject.dto.InterventionMementoDto;
-import fr.dawan.calendarproject.dto.MementoMessageDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionMemento;
@@ -72,6 +68,9 @@ class InterventionServiceTest {
 
 	@Autowired
 	private InterventionService interventionService;
+
+	@Autowired
+	private LeavePeriodService leavePeriodService;
 
 	@MockBean
 	private InterventionRepository interventionRepository;
@@ -102,18 +101,39 @@ class InterventionServiceTest {
 
 	private List<Intervention> interventions = new ArrayList<Intervention>();
 	private List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
+	private List<InterventionMementoDto> intMementoDtos = new ArrayList<InterventionMementoDto>();
+	private List<InterventionMemento> interventionMementos = new ArrayList<InterventionMemento>();
+	private List<AdvancedInterventionDto> advInterventions = new ArrayList<AdvancedInterventionDto>();
 	private MockedStatic<ICalTools> mICalTools;
 	private Course course;
+	
+	LocalDate date = LocalDate.now();
 
-	@BeforeEach()
-	public void beforeEach() throws Exception {
+	Location location = new Location(1, "Paris", "FR", "red", 0);
+	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", 0);
+	CourseDto courseDto = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
+	UserDto userDto = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
+			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
+
+	private String email = "admin@dawan.fr";
+	private String pwd = "testPassword";
+	private String start = "2012-05-01";
+	private String end = "2012-05-02";
+
+	@BeforeEach
+	void beforeEach() throws Exception {
 		mICalTools = Mockito.mockStatic(ICalTools.class);
 
-		Location mockedLoc = Mockito.mock(Location.class);
-		Course mockedCourse = Mockito.mock(Course.class);
-		User mockedUser = Mockito.mock(User.class);
-		course = new Course(2, 548, "C#", "5", "slug", 0);
+		LocalDate date = LocalDate.now();
 
+		Location mockedLoc = new Location(1, "Paris", "red", "FR", 0);
+		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
+		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
+		course = new Course(2, 548, "C#", "5", "slug", 0);
+		
+		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
+		
 		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", mockedLoc, mockedCourse,
 				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
@@ -128,17 +148,33 @@ class InterventionServiceTest {
 				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), masterDummy, false, 0);
 		interventions.add(slaveDummy);
 
-		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 0, 0, 0, 0, 0, 1, "SUR_MESURE",
+		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 1, 1, 1, 1, 1, 1, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
 				0));
 
-		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 0, 0, 0, 0, 0, 1, "INTERN",
+		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 1, 1, 1, 1, 1, 1, "INTERN",
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), 0, true, 0));
 
-		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", 0, 0, 0, 0, 0, 1, "INTERN", true,
+		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", 1, 1, 1, 1, 1, 1, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, 0));
+
+		intMementoDtos.add(new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Paris", 1, 1,
+				"Java for intermediate level", 1, 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+
+		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0),
+				new MementoMessageDto(1, " has been created by ", email, ""), 0));
+		
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+
 	}
 
 	@AfterEach
@@ -275,6 +311,8 @@ class InterventionServiceTest {
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
 				any(LocalDate.class))).thenReturn(new ArrayList<Intervention>());
+		when(interventionRepository.findSibblings(any(Long.class), any(LocalDate.class), any(LocalDate.class), any(Long.class), any(Long.class))).thenReturn(interventions);
+		when(interventionMapper.listInterventionToListAdvInterventionDto(interventions)).thenReturn(advInterventions);
 
 		when(interventionMapper.interventionDtoToIntervention(any(InterventionDto.class))).thenReturn(newInterv);
 
@@ -288,7 +326,7 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expectedInterv);
@@ -331,17 +369,16 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
-
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 		// System.out.println(result.toString());
 
 		assertThat(result).isNotNull();
 		assertEquals(expectedInterv, result);
 		assertEquals(5L, result.getId());
 		assertEquals(true, result.isMaster());
-		assertEquals(0, result.getUserId());
-		assertEquals(0, result.getCourseId());
-		assertEquals(0, result.getLocationId());
+		assertEquals(0, result.getUser().getId());
+		assertEquals(0, result.getCourse().getId());
+		assertEquals(0, result.getLocation().getId());
 	}
 
 	@Test
@@ -390,13 +427,13 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
-
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
+		
 		assertThat(result).isNotNull();
 		assertEquals(expectedInterv, result);
 		assertEquals(5L, result.getId());
 		assertEquals(false, result.isMaster());
-		assertEquals(2L, result.getMasterInterventionId());
+		assertEquals(2L, result.getMasterIntervention().getId());
 	}
 
 	@Test
@@ -516,7 +553,7 @@ class InterventionServiceTest {
 
 		assertThat(calendar).isNotNull();
 		assertEquals("-//Dawan Calendar//iCal4j 1.0//FR", calendar.getProductId().getValue());
-		assertEquals("nullnull", calendar.getProperty("X-CALNAME").getValue());
+		assertEquals("BalavoineDaniel", calendar.getProperty("X-CALNAME").getValue());
 		assertEquals(3, calendar.getComponents("VEVENT").size());
 
 	}
@@ -531,19 +568,25 @@ class InterventionServiceTest {
 
 	@Test
 	void shouldReturnTrueWhenInterventionHasNoError() {
-		Optional<User> optUser = Optional.of(Mockito.mock(User.class));
-		when(userRepository.findById(any(Long.class))).thenReturn(optUser);
+		LocalDate date = LocalDate.now();
 
-		Optional<Course> optCourse = Optional.of(Mockito.mock(Course.class));
-		when(courseRepository.findById(any(Long.class))).thenReturn(optCourse);
+		Location mockedLoc = new Location(1, "Paris", "FR", "red", 0);
+		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
+		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
 
-		Optional<Location> optLoc = Optional.of(Mockito.mock(Location.class));
-		when(locationRepository.findById(any(Long.class))).thenReturn(optLoc);
+		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
+
+		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
+
+		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
-				any(LocalDate.class))).thenReturn(new ArrayList<Intervention>());
+				any(LocalDate.class))).thenReturn(interventions);
 
-		assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
+		when(interventionMapper.interventionToInterventionDto(interventions.get(0))).thenReturn(iDtos.get(0));
+
+		Assertions.assertTrue(interventionService.checkIntegrity(iDtos.get(0)));
 	}
 
 	@Test
@@ -632,18 +675,19 @@ class InterventionServiceTest {
 		assertThat(result).isEmpty();
 	}
 
-	@Test
-	void shouldGetSubInterventionWithMasterId() {
-		when(interventionRepository.findById(any(Long.class))).thenReturn(Optional.of(interventions.get(1)));
-		when(interventionRepository.findByMasterInterventionIdOrderByDateStart(interventions.get(1).getId()))
-				.thenReturn(interventions.subList(2, 3));
-		when(interventionMapper.interventionToInterventionDto(any(Intervention.class))).thenReturn(iDtos.get(2));
-
-		List<InterventionDto> result = interventionService.getSubByMasterId(2);
-
-		assertThat(result).isNotNull();
-		assertEquals(iDtos.get(2), result.get(0));
-	}
+//	@Test
+//	void shouldGetSubInterventionWithMasterId() {
+//		when(interventionRepository.findByMasterId(interventions.get(1).getId()))
+//				.thenReturn(Optional.of(interventions.get(2)));
+//		when(interventionRepository.findByMasterInterventionIdOrderByDateStart(interventions.get(1).getId()))
+//				.thenReturn();
+//		when(interventionMapper.interventionToInterventionDto(any(Intervention.class))).thenReturn(iDtos.get(2));
+//
+//		List<InterventionDto> result = interventionService.getSubByMasterId(2);
+//
+//		assertThat(result).isNotNull();
+//		assertEquals(iDtos.get(2), result.get(0));
+//	}
 
 	@Test
 	void shouldReturnEmptyListWhenInterventionIsNotMaster() {
@@ -829,33 +873,53 @@ class InterventionServiceTest {
 		assertEquals("/api/interventions", result.getPath());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void shouldImportNewInterventionsFromDG2() throws Exception {
-		String email = "test@dawan.fr";
-		String pwd = "testPassword";
-		String start = "2012-05-01";
-		String end = "2012-05-02";
-		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"userId\":null,\"nbParticipants\":1},{\"id\":551268,\"locationId\":17,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"agile-scrum-initiation-04-01-2021\",\"courseId\":100281,\"type\":\"shared\",\"masterInterventionId\":551267,\"userId\":null,\"nbParticipants\":1},{\"id\":545368,\"locationId\":3,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-05T00:00:00+00:00\",\"slug\":\"informatique-pour-les-debutants-office-04-01-2021\",\"courseId\":100137,\"type\":\"shared\",\"masterInterventionId\":545367,\"userId\":null,\"nbParticipants\":1}]";
+	void shouldGetInterventionsFromDG2() throws Exception {
+		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1}]";
 
-		URI url = new URI(String.format("https://dawan.org/api2/planning/interventions/%s/%s", start, end));
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
-
-		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+		ResponseEntity<String> res = new ResponseEntity<>(body,HttpStatus.OK);
 
 		when(courseRepository.findByIdDg2(any(Long.class))).thenReturn(Optional.of(course));
-		when(restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class))
-				.thenReturn(ResponseEntity.status(HttpStatus.OK).body(body));
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+				.thenReturn(res);
 		when(interventionMapper.interventionDG2DtoToIntervention(any(InterventionDG2Dto.class)))
 				.thenReturn(Mockito.mock(Intervention.class));
 		when(interventionRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 		when(interventionRepository.saveAndFlush(any(Intervention.class))).thenReturn(Mockito.mock(Intervention.class));
 
-		int result = interventionService.fetchDG2Interventions(email, pwd, LocalDate.parse(start),
-				LocalDate.parse(end));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(true,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(false,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+	}
 
-		assertThat(result).isEqualTo(3);
+	//TODO: shouldFetchUpdateInterventionFromDg2
+	/*@SuppressWarnings("unchecked")
+	@Test
+	void shouldGetUpdateInterventionsFromDG2() throws Exception {
+		Location mockedLoc = Mockito.mock(Location.class);
+		Course mockedCourse = Mockito.mock(Course.class);
+		User mockedUser = Mockito.mock(User.class);
+
+		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1}]";
+		Intervention fromDg2 = new Intervention(551256, 551256, "", "I am lambda Intervention", mockedLoc, mockedCourse,
+				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), null,
+				null, null, false, 0);
+
+		Intervention inDb = new Intervention(551256, 551256, "lambdaSlug", "I am lambda Intervention", mockedLoc,
+				mockedCourse, mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0);
+
+		ResponseEntity<String> res = new ResponseEntity<>(body,HttpStatus.OK);
+
+		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+				.thenReturn(res);
+		when(interventionMapper.interventionDG2DtoToIntervention(any(InterventionDG2Dto.class)))
+				.thenReturn(fromDg2);
+		when(interventionRepository.findById(551256L)).thenReturn(Optional.of(inDb));
+		when(interventionRepository.saveAndFlush(any(Intervention.class))).thenReturn(Mockito.mock(Intervention.class));
+
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(true,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
+		assertDoesNotThrow(() -> interventionService.fetchDG2InterventionsOnly(false,email,pwd,LocalDate.parse(start),LocalDate.parse(end)));
 	}
 
 	@Test
@@ -868,7 +932,7 @@ class InterventionServiceTest {
 		String pwd = "testPassword";
 		String start = "2012-05-01";
 		String end = "2012-05-02";
-		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"userId\":null,\"nbParticipants\":1},{\"id\":551268,\"locationId\":17,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"agile-scrum-initiation-04-01-2021\",\"courseId\":100281,\"type\":\"shared\",\"masterInterventionId\":551267,\"userId\":null,\"nbParticipants\":1},{\"id\":545368,\"locationId\":3,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-05T00:00:00+00:00\",\"slug\":\"informatique-pour-les-debutants-office-04-01-2021\",\"courseId\":100137,\"type\":\"shared\",\"masterInterventionId\":545367,\"userId\":null,\"nbParticipants\":1}]";
+		String body = "[{\"id\":551256,\"locationId\":1,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"word-initiation-04-01-2021\",\"courseId\":1143,\"type\":\"shared\",\"masterInterventionId\":551255,\"personId\":null,\"nbParticipants\":1},{\"id\":551268,\"locationId\":17,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-04T00:00:00+00:00\",\"slug\":\"agile-scrum-initiation-04-01-2021\",\"courseId\":100281,\"type\":\"shared\",\"masterInterventionId\":551267,\"personId\":null,\"nbParticipants\":1},{\"id\":545368,\"locationId\":3,\"dateStart\":\"2021-01-04T00:00:00+00:00\",\"dateEnd\":\"2021-01-05T00:00:00+00:00\",\"slug\":\"informatique-pour-les-debutants-office-04-01-2021\",\"courseId\":100137,\"type\":\"shared\",\"masterInterventionId\":545367,\"personId\":null,\"nbParticipants\":1}]";
 
 		URI url = new URI(String.format("https://dawan.org/api2/planning/interventions/%s/%s", start, end));
 
@@ -897,7 +961,7 @@ class InterventionServiceTest {
 				LocalDate.parse(end));
 
 		assertThat(result).isEqualTo(3);
-	}
+	}*/
 
 	@Test
 	void shouldThrowWhenDG2StatusIsNotOk() throws Exception {
@@ -919,4 +983,18 @@ class InterventionServiceTest {
 		assertThrows(Exception.class, () -> interventionService.fetchDG2Interventions(email, pwd,
 				LocalDate.parse(start), LocalDate.parse(end)));
 	}
+
+	@Test
+	void shouldDoNothingWhenInterventionDeleted() throws Exception {
+		when(interventionRepository.findById(any(Long.class))).thenReturn(Optional.of(interventions.get(0)));
+
+		doNothing().when(interventionRepository).deleteById(any(Long.class));
+
+		when(caretaker.addMemento(any(String.class), any(Intervention.class))).thenReturn(interventionMementos.get(0));
+
+		assertDoesNotThrow(() -> interventionService.deleteById(any(Long.class), email));
+/*
+		assertThrows(Exception.class, () -> interventionService.deleteById(interventions.get(0).getId(), email));*/
+	}
+	
 }

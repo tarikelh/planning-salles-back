@@ -3,10 +3,11 @@ package fr.dawan.calendarproject.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
+import net.fortuna.ical4j.model.DateRange;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +28,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import ch.qos.logback.core.joran.conditional.IfAction;
 import fr.dawan.calendarproject.dto.BookingDto;
+import fr.dawan.calendarproject.dto.BookingDto;
 import fr.dawan.calendarproject.entities.Booking;
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.Booking;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.mapper.BookingMapper;
 import fr.dawan.calendarproject.repositories.BookingRepository;
@@ -255,14 +260,50 @@ class BookingServiceTest {
 		assertEquals(count, result);
 		
 	}
-	
-	
+
+
 	@Test
-	void ShouldDeleteByIdAndReturnNothing() {
-		
+	void shouldDeleteCourse() throws Exception {
+
+		doNothing().when(bookingRepository).deleteById(any(Long.class));
+
+		assertDoesNotThrow(() -> bookingService.deleteById(any(Long.class)));
 	}
 	
+	@Test
+	void testSaveNewBooking() throws Exception {
+		BookingDto toCreate = new BookingDto(0,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 1, 1, 0);
+		Booking repoReturn = new Booking(5, room1, int1, LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 0);
+		BookingDto expected = new BookingDto(5,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 1, 1, 0);
+
+		when(bookingMapper.bookingDtoTobooking(any(BookingDto.class))).thenReturn(repoReturn);
+		when(bookingRepository.saveAndFlush(any(Booking.class))).thenReturn(repoReturn);
+		when(bookingMapper.bookingToBookingDto(any(Booking.class))).thenReturn(expected);
+
+		BookingDto result = bookingService.saveOrUpdate(toCreate);
+
+		assertThat(result).isNotNull();
+		assertEquals(expected, result);
+	}
 	
-	
-	
+	/*@Test
+	void shouldThrowWhenCheckBookingRangeEmpty () throws Exception {
+		BookingDto toCreate1 = new BookingDto(6,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 1, 1, 0);
+		BookingDto toCreate2 = new BookingDto(6,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 1, 1, 0);
+		Booking repoReturn = new Booking(6, room1, int1,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 0);
+		BookingDto expected = new BookingDto(6,  LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 1, 1, 0);
+
+		when(bookingMapper.bookingDtoTobooking(any(BookingDto.class))).thenReturn(repoReturn);
+		when(bookingRepository.saveAndFlush(any(Booking.class))).thenReturn(repoReturn);
+		when(bookingMapper.bookingToBookingDto(any(Booking.class))).thenReturn(expected);
+
+		BookingDto result1 = bookingService.saveOrUpdate(toCreate1);
+		BookingDto result2 = bookingService.saveOrUpdate(toCreate2);
+
+		assertThrows(Exception.class, () -> {
+			bookingService.saveOrUpdate(result1);
+			bookingService.saveOrUpdate(result2);
+		});
+	}*/
+
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -71,21 +72,26 @@ class UserMapperTest {
 
 		location = new Location(1, "paris", "#FFFFFF", "FR", 1);
 		location2 = new Location(4, "Lille", "#FFFFF1", "EN", 1);
+		
+		LocalDate date = LocalDate.now();
+		
+		advUserDto = new AdvancedUserDto(1, 1, 1, "advfirstname", "advlastname", 1, "advname@dawan.fr",
+				"dsfghhrghzrazrfg",
+				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png","2022-12-31", 1, null);
 
-		advUserDto = new AdvancedUserDto(1, 1, "advfirstname", "advlastname", 1, "advname@dawan.fr", "dsfghhrghzrazrfg",
-				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png", 1, null);
+		userDto = new UserDto(2, 2, 2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr",
+				"opfdvkzfpdv","COMMERCIAL",
+				"DAWAN", "zfzfzh.pngé","2022-12-31", 2);
 
-		userDto = new UserDto(2, 2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
-				"DAWAN", "zfzfzh.pngé", 2);
+		userDG2Dto = new UserDG2Dto(2,2, "dtofustname", "dtolastname", 
+				1, "dtoname@dawan.fr","COMMERCIAL",
+				"DAWAN",stringSkills,"2022-12-31",0);
 
-		userDG2Dto = new UserDG2Dto(2, "dtofustname", "dtolastname", 1, "dtoname@dawan.fr", "dfdghhereqq", "COMMERCIAL",
-				"DAWAN", "zfzfzh.pngé", stringSkills, 0);
+		user = new User(3, 3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
+				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png",date, 1);
 
-		user = new User(3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", 1);
-
-		user2 = new User(5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png", 1);
+		user2 = new User(5, 5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
+				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png",date, 1);
 
 		usersSet.add(user);
 		usersSet.add(user2);
@@ -230,10 +236,9 @@ class UserMapperTest {
 		User mappedUser = userMapper.userDG2DtoToUser(userDG2Dto);
 
 		// assert
-		assertEquals(mappedUser.getIdDg2(), userDG2Dto.getId());
+		assertEquals(mappedUser.getIdDg2(), userDG2Dto.getEmployeeId());
 		assertEquals(mappedUser.getFirstName(), userDG2Dto.getFirstName());
 		assertEquals(mappedUser.getLastName(), userDG2Dto.getLastName());
-		assertEquals(mappedUser.getFullname(), userDG2Dto.getFullName());
 		// assertEquals(mappedUser.getLocation().getId(), userDG2Dto.getLocationId());
 		assertEquals(mappedUser.getEmail(), userDG2Dto.getEmail());
 		assertEquals(mappedUser.getType().toString(), userDG2Dto.getType());

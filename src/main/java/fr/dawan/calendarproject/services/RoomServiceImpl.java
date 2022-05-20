@@ -76,7 +76,6 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto saveOrUpdate(RoomDto room) {
-        checkUniqueness(room);
 
         if (room.getId() > 0 && !roomRepository.findById(room.getId()).isPresent())
             return null;
@@ -93,18 +92,4 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.roomToRoomDto(r);
     }
 
-    @Override
-    public void checkUniqueness(RoomDto room) {
-        Room duplicate = roomRepository.findByIdAndIdDg2AndLocationIdAndRoomNameAndFullCapacity(room.getId(),room.getIdDg2() ,room.getLocationId(),room.getName(), room.getFullCapacity());
-
-        if (duplicate != null) {
-            Set<APIError> errors = new HashSet<>();
-            String instanceClass = duplicate.getClass().toString();
-            errors.add(new APIError(505, instanceClass, "Room Not Unique",
-                    "Room with name " + duplicate.getName() + " already exists", "/api/rooms"));
-
-            throw new EntityFormatException(errors);
-        }
-
-    }
 }

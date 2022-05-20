@@ -705,12 +705,12 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubByMasterId(long id) {
-		Optional<Intervention> master = interventionRepository.findById(id);
+		Optional<Intervention> master = interventionRepository.findByMasterId(id);
 		List<Intervention> iList;
 		List<InterventionDto> iListDto = new ArrayList<>();
 
 		if (master.isPresent() && master.get().isMaster()) {
-			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(id);
+			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(master.get().getId());
 
 			for (Intervention intervention : iList) {
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
@@ -750,6 +750,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	}
 
+	@Override
 	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
 			throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();

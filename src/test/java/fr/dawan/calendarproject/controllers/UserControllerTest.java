@@ -59,17 +59,17 @@ class UserControllerTest {
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-		users.add(new AdvancedUserDto(1, 1, "Daniel", "Balavoine", 1,
+		users.add(new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 1,
 				"dbalavoine@dawan.fr", "testPassword",
-				"ADMINISTRATIF", "DAWAN", "", 0, null));
+				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null));
 		
-		users.add(new AdvancedUserDto(2, 2, "Michel", "Polnareff", 1,
+		users.add(new AdvancedUserDto(2, 2, 2, "Michel", "Polnareff", 1,
 				"mpolnareff@dawan.fr", "testPasswordPolnareff",
-				"COMMERCIAL", "JEHANN", "", 0, null));
+				"COMMERCIAL", "JEHANN", "", "2022-12-31", 0, null));
 		
-		users.add(new AdvancedUserDto(3, 3, "Charles", "Aznavour", 1,
+		users.add(new AdvancedUserDto(3, 3, 3, "Charles", "Aznavour", 1,
 				"caznavour@dawan.fr", "testPasswordAznav",
-				"FORMATEUR", "JEHANN", "", 0, null));
+				"FORMATEUR", "JEHANN", "", "2022-12-31", 0, null));
 	}
 	
 	@Test
@@ -162,12 +162,12 @@ class UserControllerTest {
 	
 	@Test
 	void shouldCreateNewUser() throws Exception {
-		AdvancedUserDto newUser = new AdvancedUserDto(0, 0, "Françis", "Cabrel", 1,
+		AdvancedUserDto newUser = new AdvancedUserDto(0, 0, 0, "Françis", "Cabrel", 1,
 				"fcabrel@dawan.fr", "testPasswordCabrel",
-				"FORMATEUR", "JEHANN", "", 0, null);
-		AdvancedUserDto resUser = new AdvancedUserDto(4, 4, "Françis", "Cabrel", 1,
+				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null);
+		AdvancedUserDto resUser = new AdvancedUserDto(4, 4, 4, "Françis", "Cabrel", 1,
 				"fcabrel@dawan.fr", "testPasswordCabrel",
-				"FORMATEUR", "JEHANN", "", 0, null);
+				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String newUserJson = objectMapper.writeValueAsString(newUser);
@@ -218,9 +218,9 @@ class UserControllerTest {
 	@Test
 	public void shouldReturn404WhenUpdateWithWrongId() throws Exception {
 		
-		AdvancedUserDto wrongIdUser = new AdvancedUserDto(150, 150, "Françis", "Cabrel", 1,
+		AdvancedUserDto wrongIdUser = new AdvancedUserDto(150, 150, 150, "Françis", "Cabrel", 1,
 				"fcabrel@dawan.fr", "testPasswordCabrel",
-				"FORMATEUR", "JEHANN", "", 0, null);
+				"FORMATEUR", "JEHANN", "", "2022-12-31", 0, null);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String wrongIdLocJson = objectMapper.writeValueAsString(wrongIdUser);
