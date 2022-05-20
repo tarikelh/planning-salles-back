@@ -43,10 +43,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.CourseDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
 import fr.dawan.calendarproject.dto.InterventionDto;
+import fr.dawan.calendarproject.dto.LocationDto;
 import fr.dawan.calendarproject.dto.MailingListDto;
+import fr.dawan.calendarproject.dto.UserDto;
+import fr.dawan.calendarproject.entities.Location;
+import fr.dawan.calendarproject.enums.UserCompany;
+import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.EmailService;
 import fr.dawan.calendarproject.services.InterventionService;
@@ -87,11 +95,24 @@ class InterventionControllerTest {
 	private EmailService emailService;
 
 	private List<InterventionDto> intervs = new ArrayList<InterventionDto>();
+	
+	private List<AdvancedInterventionDto2> advIntervs = new ArrayList<AdvancedInterventionDto2>();
+	private List<AdvancedInterventionDto> eventSiblings = new ArrayList<AdvancedInterventionDto>();
+
+	LocalDate date = LocalDate.now();
+
+	Location location = new Location(1, "Paris", "FR", "red", 0);
+	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", 0);
+	CourseDto course = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
+	UserDto user = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
+			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn("test@testEmail.com");
+
+		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
 
 		intervs.add(new InterventionDto(1, 1, "slug-1", "commentaire id 1", 1, 1, 1, 1, 1, 0, "SUR_MESURE", true,
 				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
@@ -100,6 +121,10 @@ class InterventionControllerTest {
 		intervs.add(new InterventionDto(3, 3, "slug-3", "commentaire id 3", 3, 3, 3, 3, 3, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, 0));
+		
+		advIntervs.add(new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",locationDto,
+				course,user,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1,eventSiblings));
 	}
 
 	@Test
@@ -247,9 +272,10 @@ class InterventionControllerTest {
 		InterventionDto interv = new InterventionDto(0, 0, "slug-4", "commentaire id 4", 4, 4, 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
 				false, 0);
-		InterventionDto result = new InterventionDto(4, 4, "slug-4", "commentaire id 4", 4, 4, 4, 4, 4, 0, "INTERN", true,
-				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
-				false, 0);
+		
+		AdvancedInterventionDto2 result = new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",locationDto,
+				course,user,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interv,true,1,eventSiblings);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
@@ -259,13 +285,13 @@ class InterventionControllerTest {
 		mockMvc.perform(
 				post("/api/interventions").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("Authorization", "Bearer testTokenForTestingPurpose").content(intervJson))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.id", is(4))).andExpect(jsonPath("$.courseId", is(4)))
-				.andExpect(jsonPath("$.userId", is(4))).andExpect(jsonPath("$.locationId", is(4)));
+				.andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.courseId", is(1)))
+				.andExpect(jsonPath("$.userId", is(1))).andExpect(jsonPath("$.locationId", is(1)));
 	}
 
 	@Test
 	void shouldUpdateIntervention() throws Exception {
-		InterventionDto updatedInterv = intervs.get(0);
+		AdvancedInterventionDto2 updatedInterv = advIntervs.get(0);
 
 		String oldComment = updatedInterv.getComment();
 		String newComment = "This is a new Comment";

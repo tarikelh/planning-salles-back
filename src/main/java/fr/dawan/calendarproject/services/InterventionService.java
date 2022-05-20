@@ -55,6 +55,8 @@ public interface InterventionService {
 	int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception;
 	
 	List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd);
+
+	int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end) throws Exception;
 	
 
 }

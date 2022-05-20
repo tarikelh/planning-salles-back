@@ -103,8 +103,18 @@ class InterventionServiceTest {
 	private List<InterventionDto> iDtos = new ArrayList<InterventionDto>();
 	private List<InterventionMementoDto> intMementoDtos = new ArrayList<InterventionMementoDto>();
 	private List<InterventionMemento> interventionMementos = new ArrayList<InterventionMemento>();
+	private List<AdvancedInterventionDto> advInterventions = new ArrayList<AdvancedInterventionDto>();
 	private MockedStatic<ICalTools> mICalTools;
 	private Course course;
+	
+	LocalDate date = LocalDate.now();
+
+	Location location = new Location(1, "Paris", "FR", "red", 0);
+	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", 0);
+	CourseDto courseDto = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
+	UserDto userDto = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
+			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
+
 	private String email = "admin@dawan.fr";
 	private String pwd = "testPassword";
 	private String start = "2012-05-01";
@@ -121,7 +131,9 @@ class InterventionServiceTest {
 		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
 		course = new Course(2, 548, "C#", "5", "slug", 0);
-
+		
+		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
+		
 		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", mockedLoc, mockedCourse,
 				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
@@ -154,6 +166,15 @@ class InterventionServiceTest {
 
 		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0),
 				new MementoMessageDto(1, " has been created by ", email, ""), 0));
+		
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+
 	}
 
 	@AfterEach
@@ -290,6 +311,8 @@ class InterventionServiceTest {
 		when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedCourse));
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
 				any(LocalDate.class))).thenReturn(new ArrayList<Intervention>());
+		when(interventionRepository.findSibblings(any(Long.class), any(LocalDate.class), any(LocalDate.class), any(Long.class), any(Long.class))).thenReturn(interventions);
+		when(interventionMapper.listInterventionToListAdvInterventionDto(interventions)).thenReturn(advInterventions);
 
 		when(interventionMapper.interventionDtoToIntervention(any(InterventionDto.class))).thenReturn(newInterv);
 
@@ -303,7 +326,7 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 
 		assertThat(result).isNotNull();
 		assertEquals(result, expectedInterv);
@@ -346,17 +369,16 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
-
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
 		// System.out.println(result.toString());
 
 		assertThat(result).isNotNull();
 		assertEquals(expectedInterv, result);
 		assertEquals(5L, result.getId());
 		assertEquals(true, result.isMaster());
-		assertEquals(0, result.getUserId());
-		assertEquals(0, result.getCourseId());
-		assertEquals(0, result.getLocationId());
+		assertEquals(0, result.getUser().getId());
+		assertEquals(0, result.getCourse().getId());
+		assertEquals(0, result.getLocation().getId());
 	}
 
 	@Test
@@ -405,13 +427,13 @@ class InterventionServiceTest {
 
 		when(interventionMapper.interventionToInterventionDto(savedInterv)).thenReturn(expectedInterv);
 
-		InterventionDto result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
-
+		AdvancedInterventionDto2 result = interventionService.saveOrUpdate(newIntervDto, "admin@dawan.fr");
+		
 		assertThat(result).isNotNull();
 		assertEquals(expectedInterv, result);
 		assertEquals(5L, result.getId());
 		assertEquals(false, result.isMaster());
-		assertEquals(2L, result.getMasterInterventionId());
+		assertEquals(2L, result.getMasterIntervention().getId());
 	}
 
 	@Test
@@ -531,7 +553,7 @@ class InterventionServiceTest {
 
 		assertThat(calendar).isNotNull();
 		assertEquals("-//Dawan Calendar//iCal4j 1.0//FR", calendar.getProductId().getValue());
-		assertEquals("nullnull", calendar.getProperty("X-CALNAME").getValue());
+		assertEquals("BalavoineDaniel", calendar.getProperty("X-CALNAME").getValue());
 		assertEquals(3, calendar.getComponents("VEVENT").size());
 
 	}
