@@ -439,8 +439,14 @@ public class UserServiceImpl implements UserService {
 			return UserType.COMMERCIAL.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
-		} else {
+		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
+			return UserType.INDEPENDANT.toString();
+		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("apprentie")) {
 			return UserType.APPRENTI.toString();
+		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("apprentie")) {
+			return UserType.APPRENTI.toString();
+		} else {
+			return UserType.NOT_FOUND.toString();
 		}
 	}
 
