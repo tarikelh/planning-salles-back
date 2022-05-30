@@ -1,7 +1,7 @@
 package fr.dawan.calendarproject.enums;
 
 public enum InterventionStatus {
-	INTERN, SUR_MESURE;
+	INTERN, INTRA, POE, TP, SOUS_TRAITANT;
 
 	public static boolean contains(String value) {
 		for (InterventionStatus item : InterventionStatus.values()) {

@@ -78,9 +78,6 @@ public class InterventionServiceImpl implements InterventionService {
 	private InterventionMapper interventionMapper;
 
 	@Autowired
-	private LeavePeriodService leavePeriodService;
-
-	@Autowired
 	private RestTemplate restTemplate;
 
 	/**
@@ -741,7 +738,8 @@ public class InterventionServiceImpl implements InterventionService {
 	public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {
 		int res = fetchDG2InterventionsOnly(false, email, pwd, start, end);
 
-		leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
+		// ??? why this line ???
+//		leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
 
 		// import options
 		int res2 = fetchDG2InterventionsOnly(true, email, pwd, start, end);
@@ -783,8 +781,32 @@ public class InterventionServiceImpl implements InterventionService {
 				if (masterIds.contains(i.getId()))
 					i.setMaster(true);
 
-				String type = i.getType().equals("shared") ? "SUR_MESURE" : "INTERN";
-				i.setType(type);
+				String typeDg2 = i.getType();
+				
+				InterventionStatus type;
+				switch(typeDg2) {
+					
+					case "private":
+						type = InterventionStatus.INTRA;
+						break;
+						
+					case "shared":
+						type = InterventionStatus.INTERN;
+						break;
+					
+					case "tp":
+						type = InterventionStatus.TP;
+						break;
+					
+					case "poe":
+						type = InterventionStatus.POE;
+						break;
+					default:
+						type = null;
+						break;
+				}
+				
+				i.setType(type.toString());
 
 				i.setValidated(i.getAttendeesCount() > 0 && !optionsOnly);
 
