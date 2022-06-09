@@ -435,16 +435,25 @@ public class UserServiceImpl implements UserService {
 
 		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager")) {
 			return UserType.ADMINISTRATIF.toString();
-		} else if (lowerCaseJob.contains("commercial")) {
-			return UserType.COMMERCIAL.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
+		} else if (lowerCaseJob.contains("commercial")) {
+			return UserType.COMMERCIAL.toString();
+		
 		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
 			return UserType.INDEPENDANT.toString();
 		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("apprentie")) {
 			return UserType.APPRENTI.toString();
-		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("apprentie")) {
+		} else if (lowerCaseJob.contains("IT")){
 			return UserType.APPRENTI.toString();
+		} else if (lowerCaseJob.contains("CONTA")){
+			return UserType.APPRENTI.toString();
+		} else if (lowerCaseJob.contains("RH")){
+			return UserType.APPRENTI.toString();
+		
+		} else if (lowerCaseJob.contains("UI")){
+			return UserType.APPRENTI.toString();
+			
 		} else {
 			return UserType.NOT_FOUND.toString();
 		}
