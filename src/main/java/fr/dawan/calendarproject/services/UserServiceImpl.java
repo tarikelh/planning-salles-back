@@ -433,30 +433,30 @@ public class UserServiceImpl implements UserService {
 		}
 		String lowerCaseJob = job.toLowerCase();
 
-		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager")) {
+		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager") || lowerCaseJob.contains("Assistante Administrative")) {
 			return UserType.ADMINISTRATIF.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
-		} else if (lowerCaseJob.contains("commercial")) {
+		} else if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("Assistant Commercial") || lowerCaseJob.contains("Commerciale Export")) {
 			return UserType.COMMERCIAL.toString();
 		
 		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
 			return UserType.INDEPENDANT.toString();
-		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("apprentie")) {
+		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("Technicien support") || lowerCaseJob.contains("Concepteur développeur d'applications")
+			|| lowerCaseJob.contains("Concepteur UI")){
 			return UserType.APPRENTI.toString();
-		} else if (lowerCaseJob.contains("IT")){
-			return UserType.APPRENTI.toString();
-		} else if (lowerCaseJob.contains("CONTA")){
-			return UserType.APPRENTI.toString();
-		} else if (lowerCaseJob.contains("RH")){
-			return UserType.APPRENTI.toString();
-		
-		} else if (lowerCaseJob.contains("UI")){
-			return UserType.APPRENTI.toString();
-			
-		} else {
+		} else if (lowerCaseJob.contains("IT") || lowerCaseJob.contains("Administrateur Systèmes et Réseaux") || lowerCaseJob.contains("Administrateur Systèmes et Réseaux, Développeur")) {
+			return UserType.IT.toString();
+		} else if (lowerCaseJob.contains("COMPT") || lowerCaseJob.contains("Comptable")){
+			return UserType.COMPTABLE.toString();
+		} else if (lowerCaseJob.contains("RH") || lowerCaseJob.contains("Assistante RH CFA") || lowerCaseJob.contains("Responsable Recrutement et Formation")
+				|| lowerCaseJob.contains("consultant") || lowerCaseJob.contains("Assistant administratif recrutement et formation")
+				|| lowerCaseJob.contains("Assistante Emploi Formation") || lowerCaseJob.contains("Conseillère Emploi Formation")){
+			return UserType.RH.toString();
+		} else if (lowerCaseJob.contains("null")) {
 			return UserType.NOT_FOUND.toString();
 		}
+		return lowerCaseJob;
 	}
 
 	/**
