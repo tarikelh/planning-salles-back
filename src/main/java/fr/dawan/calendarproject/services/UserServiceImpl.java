@@ -437,26 +437,25 @@ public class UserServiceImpl implements UserService {
 			return UserType.ADMINISTRATIF.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
-		} else if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("Assistant Commercial") || lowerCaseJob.contains("Commerciale Export")) {
+		} else if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("assistant commercial") || lowerCaseJob.contains("commerciale export")) {
 			return UserType.COMMERCIAL.toString();
 		
 		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
 			return UserType.INDEPENDANT.toString();
-		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("Technicien support") || lowerCaseJob.contains("Concepteur développeur d'applications")
-			|| lowerCaseJob.contains("Concepteur UI")){
+		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("technicien support") || lowerCaseJob.contains("concepteur développeur d'applications")
+			|| lowerCaseJob.contains("concepteur UI")){
 			return UserType.APPRENTI.toString();
-		} else if (lowerCaseJob.contains("IT") || lowerCaseJob.contains("Administrateur Systèmes et Réseaux") || lowerCaseJob.contains("Administrateur Systèmes et Réseaux, Développeur")) {
+		} else if (lowerCaseJob.contains("it") || lowerCaseJob.contains("administrateur systèmes et réseaux") || lowerCaseJob.contains("administrateur systèmes et réseaux, développeur")) {
 			return UserType.IT.toString();
-		} else if (lowerCaseJob.contains("COMPT") || lowerCaseJob.contains("Comptable")){
+		} else if (lowerCaseJob.contains("compt") || lowerCaseJob.contains("comptable")){
 			return UserType.COMPTABLE.toString();
-		} else if (lowerCaseJob.contains("RH") || lowerCaseJob.contains("Assistante RH CFA") || lowerCaseJob.contains("Responsable Recrutement et Formation")
-				|| lowerCaseJob.contains("consultant") || lowerCaseJob.contains("Assistant administratif recrutement et formation")
-				|| lowerCaseJob.contains("Assistante Emploi Formation") || lowerCaseJob.contains("Conseillère Emploi Formation")){
+		} else if (lowerCaseJob.contains("rh") || lowerCaseJob.contains("assistante rh cfa") || lowerCaseJob.contains("responsable recrutement et formation")
+				|| lowerCaseJob.contains("consultant") || lowerCaseJob.contains("assistant administratif recrutement et formation")
+				|| lowerCaseJob.contains("assistante emploi formation") || lowerCaseJob.contains("conseillère emploi formation")){
 			return UserType.RH.toString();
-		} else if (lowerCaseJob.contains("null")) {
+		} else {
 			return UserType.NOT_FOUND.toString();
-		}
-		return lowerCaseJob;
+		}		
 	}
 
 	/**
