@@ -533,14 +533,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<AdvancedUserDto> insertNotAssigned() {
 		List<AdvancedUserDto> result = new ArrayList<>();
+		
 
 		locationRepository.findAll().forEach(lo -> {
 			try {
-
+				
 				User u = new User();
 				u.setIdDg2(-1 * lo.getId());
 				
-				if (!userRepository.findByIdDg2(u.getId()).isPresent()) {
+				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
 					u.setEmail("not-assigned-" + lo.getCity() + "@dawan.fr");
 					u.setPassword(HashTools.hashSHA512("NoTaSsIgNeDdAwAn!"));
@@ -552,10 +553,12 @@ public class UserServiceImpl implements UserService {
 					u.setEmployeeIdDg2(-1 * lo.getId());
 					
 					u = userRepository.saveAndFlush(u);
+					System.out.println(u.toString());
 					result.add(userMapper.userToAdvancedUserDto(u));
 
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 

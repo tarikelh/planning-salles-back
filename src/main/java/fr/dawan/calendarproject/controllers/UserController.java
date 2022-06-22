@@ -108,6 +108,7 @@ public class UserController {
 
 		try {
 			userService.fetchAllDG2Users(splitUserDG2String[0], splitUserDG2String[1]);
+			userService.insertNotAssigned();
 			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
