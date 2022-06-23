@@ -154,7 +154,7 @@ public class UserDto {
 	}
 	
 	public String getFullName() {
-		return getFirstName() + " " + getLastName();
+		return getLastName() + " " + getFirstName();
 	}
 
 }

@@ -372,6 +372,7 @@ public class UserServiceImpl implements UserService {
 			for (UserDG2Dto cDG2 : lResJson) {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
+				userImported.setLastName(userImported.getLastName().toUpperCase());
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
 
 				try {
