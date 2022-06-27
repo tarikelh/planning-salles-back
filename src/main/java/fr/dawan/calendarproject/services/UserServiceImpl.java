@@ -554,7 +554,6 @@ public class UserServiceImpl implements UserService {
 					u.setEmployeeIdDg2(-1 * lo.getId());
 					
 					u = userRepository.saveAndFlush(u);
-					System.out.println(u.toString());
 					result.add(userMapper.userToAdvancedUserDto(u));
 
 				}
