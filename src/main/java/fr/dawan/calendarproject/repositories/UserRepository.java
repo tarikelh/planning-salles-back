@@ -16,7 +16,7 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.skills LEFT JOIN FETCH u.location ORDER BY u.lastName ASC")
+	@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.skills LEFT JOIN FETCH u.location ORDER BY u.location.idDg2, u.lastName ASC")
 	List<User> findAll();
 
 	long countByFirstNameContainingOrLastNameContainingOrEmailContaining(String firstName, String lastName,
