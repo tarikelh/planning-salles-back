@@ -695,12 +695,12 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubByMasterId(long id) {
-		Optional<Intervention> master = interventionRepository.findByMasterId(id);
+		Intervention master = interventionRepository.findByMasterId(id).orElse(null);
 		List<Intervention> iList;
 		List<InterventionDto> iListDto = new ArrayList<>();
 
-		if (master.isPresent() && master.get().isMaster()) {
-			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(master.get().getId());
+		if (master != null && master.isMaster()) {
+			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(master.getId());
 
 			for (Intervention intervention : iList) {
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));

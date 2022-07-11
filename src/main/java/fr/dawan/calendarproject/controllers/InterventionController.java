@@ -96,6 +96,18 @@ public class InterventionController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Master Intervention with id " + id + " does not exists or is not a master intervention.");
 	}
+	
+	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
+	@GetMapping(value = "/masters/{id}/sub", produces = "application/json")
+	public ResponseEntity<Object> getSubInterventionsByMasterId(@PathVariable("id") long id) {
+		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
+
+		if (iList != null)
+			return ResponseEntity.ok(iList);
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body("Master intervention  with id " + id + " does not exists.");
+	}
 
 	// GET - NO Masters Interventions && verify UserType && between two dates
 	@GetMapping(value = "/sub", produces = "application/json")
@@ -108,19 +120,6 @@ public class InterventionController {
 	public List<AdvancedInterventionDto2> getSubAdvInterventions(@RequestParam("type") String type,
 			@RequestParam("start") String start, @RequestParam("end") String end) {
 		return interventionService.getAdvSubInterventions(type, LocalDate.parse(start), LocalDate.parse(end));
-	}
-
-
-	// GET SUB INTERVENTIONS FROM MASTER INTERVENTION ID
-	@GetMapping(value = "/sub/{masterId}", produces = "application/json")
-	public ResponseEntity<Object> getSubInterventionsByMasterId(@PathVariable("masterId") long id) {
-		List<InterventionDto> iList = interventionService.getSubByMasterId(id);
-
-		if (iList != null)
-			return ResponseEntity.ok(iList);
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body("Master intervention  with id " + id + " does not exists.");
 	}
 
 	// DELETE - supprimer
