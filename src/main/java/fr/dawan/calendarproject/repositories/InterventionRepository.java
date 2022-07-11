@@ -49,7 +49,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	// get events without master (children and orphan) by UserType and between a
 	// range of Dates
-	@Query("FROM Intervention i LEFT JOIN FETCH i.user LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user LEFT JOIN FETCH i.course WHERE i.isMaster = false AND i.user.type= :type AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
+	@Query("FROM Intervention i LEFT JOIN FETCH i.user LEFT JOIN FETCH i.location LEFT JOIN FETCH i.course WHERE i.isMaster = false AND i.user.type= :type AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
 	List<Intervention> getAllChildrenByUserTypeAndDates(@Param("type") UserType type,
 			@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 

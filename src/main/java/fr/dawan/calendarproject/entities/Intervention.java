@@ -67,6 +67,9 @@ public class Intervention implements Cloneable {
 	private Intervention masterIntervention;
 
 	private boolean isMaster;
+	
+	private long masterInterventionIdTemp;
+
 
 	@Version
 	private int version;
@@ -132,6 +135,14 @@ public class Intervention implements Cloneable {
 
 	public User getUser() {
 		return user;
+	}
+
+	public long getMasterInterventionIdTemp() {
+		return masterInterventionIdTemp;
+	}
+
+	public void setMasterInterventionIdTemp(long masterInterventionIdTemp) {
+		this.masterInterventionIdTemp = masterInterventionIdTemp;
 	}
 
 	public void setUser(User user) {
