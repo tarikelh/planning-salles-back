@@ -44,7 +44,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	// get only master event
 	@DoIgnore
-	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user u LEFT JOIN FETCH i.course LEFT JOIN FETCH u.skills s WHERE i.isMaster = true")
+	@Query("FROM Intervention i WHERE i.isMaster = true")
 	List<Intervention> getMasterIntervention();
 
 	// get events without master (children and orphan) by UserType and between a
