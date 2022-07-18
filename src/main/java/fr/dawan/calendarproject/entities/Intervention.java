@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,7 +70,9 @@ public class Intervention implements Cloneable {
 	private boolean isMaster;
 	
 	private long masterInterventionIdTemp;
-
+	
+	@Column(columnDefinition = "TEXT")
+	private String customers;
 
 	@Version
 	private int version;
@@ -80,7 +83,7 @@ public class Intervention implements Cloneable {
 	public Intervention(long id, long idDg2, String slug, String comment, Location location, Course course, User user,
 			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
-			boolean isMaster, int version) {
+			boolean isMaster, String customers, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
@@ -98,6 +101,7 @@ public class Intervention implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterIntervention = masterIntervention;
 		this.isMaster = isMaster;
+		this.customers = customers;
 		this.version = version;
 	}
 
@@ -244,32 +248,21 @@ public class Intervention implements Cloneable {
 	public void setAttendeesCount(int attendeesCount) {
 		this.attendeesCount = attendeesCount;
 	}
+	
+	public String getCustomers() {
+		return customers;
+	}
 
+	public void setCustomers(String customers) {
+		this.customers = customers;
+	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + attendeesCount;
-		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		result = prime * result + ((course == null) ? 0 : course.hashCode());
-		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
-		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + (int) (idDg2 ^ (idDg2 >>> 32));
-		result = prime * result + (isMaster ? 1231 : 1237);
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((masterIntervention == null) ? 0 : masterIntervention.hashCode());
-		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
-		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
-		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + (validated ? 1231 : 1237);
-		result = prime * result + version;
-		return result;
+		return Objects.hash(comment, course, customers, dateEnd, dateStart, idDg2, location, masterIntervention,
+				masterInterventionIdTemp, slug, type, user, validated, version);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -279,9 +272,14 @@ public class Intervention implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Intervention other = (Intervention) obj;
-		if (idDg2 != other.idDg2)
-			return false;
-		return true;
+		return Objects.equals(comment, other.comment) && Objects.equals(course, other.course)
+				&& Objects.equals(customers, other.customers) && Objects.equals(dateEnd, other.dateEnd)
+				&& Objects.equals(dateStart, other.dateStart) && idDg2 == other.idDg2
+				&& Objects.equals(location, other.location)
+				&& Objects.equals(masterIntervention, other.masterIntervention)
+				&& masterInterventionIdTemp == other.masterInterventionIdTemp && Objects.equals(slug, other.slug)
+				&& type == other.type && Objects.equals(user, other.user) && validated == other.validated
+				&& version == other.version;
 	}
 
 	@Override

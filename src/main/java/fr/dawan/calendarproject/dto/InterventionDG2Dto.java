@@ -1,5 +1,8 @@
 package fr.dawan.calendarproject.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class InterventionDG2Dto {
@@ -16,13 +19,15 @@ public class InterventionDG2Dto {
 	private boolean isMaster;
 	@JsonProperty("nbParticipants")
 	private int attendeesCount;
+	private List<CustomerDto> customers;
 
 	public InterventionDG2Dto() {
+		this.customers = new ArrayList<>();
 	}
 
 	public InterventionDG2Dto(long id, long locationId, long courseId, long personId, String dateStart, String dateEnd,
 			String slug, String type, boolean validated, long masterInterventionId, boolean isMaster,
-			int attendeesCount) {
+			int attendeesCount, List<CustomerDto> customers) {
 		this.id = id;
 		this.locationId = locationId;
 		this.courseId = courseId;
@@ -35,6 +40,7 @@ public class InterventionDG2Dto {
 		this.masterInterventionId = masterInterventionId;
 		this.isMaster = isMaster;
 		this.attendeesCount = attendeesCount;
+		this.customers = customers;
 	}
 
 	public long getId() {
@@ -132,4 +138,13 @@ public class InterventionDG2Dto {
 	public void setMaster(boolean isMaster) {
 		this.isMaster = isMaster;
 	}
+
+	public List<CustomerDto> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<CustomerDto> customers) {
+		this.customers = customers;
+	}
+	
 }

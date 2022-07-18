@@ -79,6 +79,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private LeavePeriodService leavePeriodService;
 
 	/**
 	 * Fetches all of the existing interventions.
@@ -422,6 +425,8 @@ public class InterventionServiceImpl implements InterventionService {
 				result.setEventSiblings(
 						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
 
+				result.setCustomers(i.getCustomers());
+				
 				iDtos.add(result);
 			}
 
@@ -732,12 +737,12 @@ public class InterventionServiceImpl implements InterventionService {
 		int res = fetchDG2InterventionsOnly(false, email, pwd, start, end);
 
 		// ??? why this line ???
-//		leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
+		int res1 = leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
 
 		// import options
 		int res2 = fetchDG2InterventionsOnly(true, email, pwd, start, end);
 
-		return res + res2;
+		return res + res1 + res2;
 
 	}
 
@@ -948,16 +953,13 @@ public class InterventionServiceImpl implements InterventionService {
 					}
 
 					interv.setUser(u);
+					
+					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
 
+					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
 
-					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(interv.getSlug());
-
-					if (alreadyInDb.isPresent() && alreadyInDb.get().equals(interv)) {
-						interv.setId(alreadyInDb.get().getId());
-						interv.setComment(alreadyInDb.get().getComment());
-						interv.setTimeStart(alreadyInDb.get().getTimeStart());
-						interv.setTimeEnd(alreadyInDb.get().getTimeEnd());
-						interv.setVersion(alreadyInDb.get().getVersion());
+					if (alreadyInDb != null && !alreadyInDb.equals(interv)) {
+						interv.setId(alreadyInDb.getId());
 					}
 
 					count++;
