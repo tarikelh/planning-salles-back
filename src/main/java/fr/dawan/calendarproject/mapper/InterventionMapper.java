@@ -1,6 +1,5 @@
 package fr.dawan.calendarproject.mapper;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.mapstruct.Mapper;

@@ -10,6 +10,8 @@ public class AdvancedInterventionDto {
 	private long idDg2;
 
 	private String slug;
+	
+	private String optionSlug;
 
 	private String comment;
 
@@ -44,7 +46,7 @@ public class AdvancedInterventionDto {
 	public AdvancedInterventionDto() {
 	}
 
-	public AdvancedInterventionDto(long id, long idDg2, String slug, String comment, LocationDto location,
+	public AdvancedInterventionDto(long id, long idDg2, String slug, String optionSlug, String comment, LocationDto location,
 			CourseDto course, UserDto user, int attendeesCount, String type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, InterventionDto masterIntervention,
 			boolean isMaster, String customers, int version) {
@@ -52,6 +54,7 @@ public class AdvancedInterventionDto {
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
+		this.optionSlug = optionSlug;
 		this.comment = comment;
 		this.location = location;
 		this.course = course;
@@ -91,6 +94,14 @@ public class AdvancedInterventionDto {
 
 	public void setSlug(String slug) {
 		this.slug = slug;
+	}
+
+	public String getOptionSlug() {
+		return optionSlug;
+	}
+
+	public void setOptionSlug(String optionSlug) {
+		this.optionSlug = optionSlug;
 	}
 
 	public String getComment() {

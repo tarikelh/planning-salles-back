@@ -13,6 +13,7 @@ public class InterventionDG2Dto {
 	private String dateStart;
 	private String dateEnd;
 	private String slug;
+	private String optionSlug;
 	private String type;
 	private boolean validated;
 	private long masterInterventionId;
@@ -26,7 +27,7 @@ public class InterventionDG2Dto {
 	}
 
 	public InterventionDG2Dto(long id, long locationId, long courseId, long personId, String dateStart, String dateEnd,
-			String slug, String type, boolean validated, long masterInterventionId, boolean isMaster,
+			String slug, String optionSlug, String type, boolean validated, long masterInterventionId, boolean isMaster,
 			int attendeesCount, List<CustomerDto> customers) {
 		this.id = id;
 		this.locationId = locationId;
@@ -35,6 +36,7 @@ public class InterventionDG2Dto {
 		this.dateStart = dateStart;
 		this.dateEnd = dateEnd;
 		this.slug = slug;
+		this.optionSlug = optionSlug;
 		this.type = type;
 		this.validated = validated;
 		this.masterInterventionId = masterInterventionId;
@@ -97,6 +99,14 @@ public class InterventionDG2Dto {
 
 	public void setSlug(String slug) {
 		this.slug = slug;
+	}
+
+	public String getOptionSlug() {
+		return optionSlug;
+	}
+
+	public void setOptionSlug(String optionSlug) {
+		this.optionSlug = optionSlug;
 	}
 
 	public String getType() {

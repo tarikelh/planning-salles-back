@@ -31,6 +31,9 @@ public class Intervention implements Cloneable {
 	@Column(nullable = true, length = 255, unique = true)
 	private String slug;
 
+	@Column(nullable = true, length = 255, unique = true)
+	private String optionSlug;
+	
 	@Column(nullable = true, length = 255)
 	private String comment;
 
@@ -80,14 +83,14 @@ public class Intervention implements Cloneable {
 	public Intervention() {
 	}
 
-	public Intervention(long id, long idDg2, String slug, String comment, Location location, Course course, User user,
+	public Intervention(long id, long idDg2, String slug, String optionSlug, String comment, Location location, Course course, User user,
 			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
 			boolean isMaster, String customers, int version) {
-		super();
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
+		this.optionSlug = optionSlug;
 		this.comment = comment;
 		this.location = location;
 		this.course = course;
@@ -241,6 +244,14 @@ public class Intervention implements Cloneable {
 		this.slug = slug;
 	}
 
+	public String getOptionSlug() {
+		return optionSlug;
+	}
+
+	public void setOptionSlug(String optionSlug) {
+		this.optionSlug = optionSlug;
+	}
+
 	public int getAttendeesCount() {
 		return attendeesCount;
 	}
@@ -284,45 +295,14 @@ public class Intervention implements Cloneable {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Intervention [id=");
-		builder.append(id);
-		builder.append(", idDg2=");
-		builder.append(idDg2);
-		builder.append(", slug=");
-		builder.append(slug);
-		builder.append(", comment=");
-		builder.append(comment);
-		builder.append(", location=");
-		builder.append(location);;
-		builder.append(", course=");
-		builder.append(course);
-		builder.append(", user=");
-		builder.append(user);
-		builder.append(", attendeesCount=");
-		builder.append(attendeesCount);
-		builder.append(", type=");
-		builder.append(type);
-		builder.append(", validated=");
-		builder.append(validated);
-		builder.append(", dateStart=");
-		builder.append(dateStart);
-		builder.append(", dateEnd=");
-		builder.append(dateEnd);
-		builder.append(", timeStart=");
-		builder.append(timeStart);
-		builder.append(", timeEnd=");
-		builder.append(timeEnd);
-		builder.append(", masterIntervention=");
-		builder.append(masterIntervention);
-		builder.append(", isMaster=");
-		builder.append(isMaster);
-		builder.append(", version=");
-		builder.append(version);
-		builder.append("]");
-		return builder.toString();
+		return "Intervention [id=" + id + ", idDg2=" + idDg2 + ", slug=" + slug + ", optionSlug=" + optionSlug
+				+ ", comment=" + comment + ", location=" + location + ", course=" + course + ", user=" + user
+				+ ", attendeesCount=" + attendeesCount + ", type=" + type + ", validated=" + validated + ", dateStart="
+				+ dateStart + ", dateEnd=" + dateEnd + ", timeStart=" + timeStart + ", timeEnd=" + timeEnd
+				+ ", masterIntervention=" + masterIntervention + ", isMaster=" + isMaster
+				+ ", masterInterventionIdTemp=" + masterInterventionIdTemp + ", customers=" + customers + ", version="
+				+ version + "]";
 	}
-
 
 	public String toContentString() {
 		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString()

@@ -25,4 +25,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 	Optional<Location> findByCity(String city);
 
 	Optional<Location> findByIdDg2(long locationId);
+
+	@Query("FROM Location l WHERE l.published=true")
+	List<Location> findAllPublished();
 }

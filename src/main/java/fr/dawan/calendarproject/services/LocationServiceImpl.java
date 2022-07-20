@@ -55,7 +55,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public List<LocationDto> getAllLocations() {
-		List<Location> locations = locationRepository.findAll();
+		List<Location> locations = locationRepository.findAllPublished();
 
 		List<LocationDto> result = new ArrayList<>();
 		for (Location l : locations) {
@@ -227,6 +227,8 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
+				locationImport.setPublished(lDG2.isPublished());
+				
 				Optional<Location> optLocation = locationRepository.findByIdDg2(locationImport.getIdDg2());
 
 				if (optLocation.isPresent()) {

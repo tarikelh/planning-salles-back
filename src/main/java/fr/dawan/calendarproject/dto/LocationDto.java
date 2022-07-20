@@ -11,18 +11,21 @@ public class LocationDto {
 	
 	private String color;
 	
+	private boolean published;
+	
 	private int version;
 
 	public LocationDto() {
 	}
 
-	public LocationDto(long id, long idDg2, String city, String contryCode, String color, int version) {
+	public LocationDto(long id, long idDg2, String city, String contryCode, String color, boolean published, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.city = city;
 		this.countryCode = contryCode;
 		this.color = color;
+		this.published = published;
 		this.version = version;
 	}
 
@@ -58,6 +61,14 @@ public class LocationDto {
 		this.color = color;
 	}
 	
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
+	}
+
 	public int getVersion() {
 		return version;
 	}

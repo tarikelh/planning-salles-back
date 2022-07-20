@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
 import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
@@ -79,7 +80,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private LeavePeriodService leavePeriodService;
 
@@ -416,17 +417,26 @@ public class InterventionServiceImpl implements InterventionService {
 			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
 					dateStart, dateEnd);
 			for (Intervention i : interventions) {
-
 				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
+				result.setOptionSlug(i.getOptionSlug());
 
 				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(),
 						i.getDateStart(), i.getDateEnd(), i.getId(), i.getUser().getId());
 
-				result.setEventSiblings(
-						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+
+				List<AdvancedInterventionDto> eventSiblings = new ArrayList<>();
+				for(Intervention interv : interventionSibllings) {
+					AdvancedInterventionDto eventSib = interventionMapper.interventionToAdvInterventionDto2(interv);
+					eventSib.setOptionSlug(interv.getOptionSlug());
+					eventSiblings.add(eventSib);
+				}
+				
+				result.setEventSiblings(eventSiblings);
+//				result.setEventSiblings(
+//						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
 
 				result.setCustomers(i.getCustomers());
-				
+
 				iDtos.add(result);
 			}
 
@@ -746,7 +756,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	}
 
-	@Override
+//	@Override
 //	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
 //			throws Exception {
 //		ObjectMapper objectMapper = new ObjectMapper();
@@ -890,11 +900,7 @@ public class InterventionServiceImpl implements InterventionService {
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
-//			
-//			Set<Long> masterIds = new HashSet<>();
-//
-//			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
-//
+
 			for (InterventionDG2Dto i : lResJson) {
 				String typeDg2 = i.getType();
 
@@ -929,21 +935,20 @@ public class InterventionServiceImpl implements InterventionService {
 				i.setDateEnd(i.getDateEnd().substring(0, 10));
 
 				Intervention interv = interventionMapper.interventionDG2DtoToIntervention(i);
-				
+				interv.setOptionSlug(i.getOptionSlug());
 				interv.setMasterInterventionIdTemp(i.getMasterInterventionId());
-				
+
 				Optional<Course> c = courseRepository.findByIdDg2(i.getCourseId());
 
 				if (c.isPresent()) {
 					interv.setCourse(c.get());
 					interv.setLocation(locationRepository.findByIdDg2(i.getLocationId()).orElse(null));
 					User u = userRepository.findByIdDg2(i.getPersonId()).orElse(null);
-					
+
 					if (i.getPersonId() == 51642) {
 						System.out.println(u);
 					}
-					
-					
+
 					if (u == null) {
 						try {
 							u = userRepository.findByIdDg2(-1 * i.getLocationId()).orElse(null);
@@ -953,13 +958,19 @@ public class InterventionServiceImpl implements InterventionService {
 					}
 
 					interv.setUser(u);
-					
+
 					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
 
 					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
 
 					if (alreadyInDb != null && !alreadyInDb.equals(interv)) {
-						interv.setId(alreadyInDb.getId());
+
+						if (endPoint.equals("options")) {
+							interv.setSlug(i.getSlug() + "-option");
+						} else if (endPoint.equals("interventions")) {
+							interv.setId(alreadyInDb.getId());
+						}
+
 					}
 
 					count++;
@@ -982,27 +993,26 @@ public class InterventionServiceImpl implements InterventionService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// association intervention master
-		
+
 		for (Intervention interv : interventionsToSave) {
 			if (interv.getMasterInterventionIdTemp() != 0) {
-				Intervention mInterv = interventionRepository.findByIdDg2(interv.getMasterInterventionIdTemp()).orElse(null);
-				
-				if (mInterv != null) {
+				Intervention mInterv = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
+
+				if (mInterv != null && !mInterv.equals(interv)) {
 					mInterv.setMaster(true);
 					interventionRepository.saveAndFlush(mInterv);
-					
+
 					interv.setMasterIntervention(mInterv);
-					if ((interv.getUser() == null || interv.getUser().getIdDg2() < 0) && (mInterv.getUser() !=null && mInterv.getUser().getIdDg2() > 0)) {
+					if ((interv.getUser() == null || interv.getUser().getIdDg2() < 0)
+							&& (mInterv.getUser() != null && mInterv.getUser().getIdDg2() > 0)) {
 						interv.setUser(mInterv.getUser());
 					}
-					interventionRepository.saveAndFlush(interv);	
+					interventionRepository.saveAndFlush(interv);
 				}
 			}
 		}
-
-		
 
 		return count;
 	}
