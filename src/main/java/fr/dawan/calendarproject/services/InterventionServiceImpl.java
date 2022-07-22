@@ -420,6 +420,7 @@ public class InterventionServiceImpl implements InterventionService {
 				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
 				result.setOptionSlug(i.getOptionSlug());
 
+				// TODO: need optimisation !!
 				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(),
 						i.getDateStart(), i.getDateEnd(), i.getId(), i.getUser().getId());
 
@@ -428,12 +429,13 @@ public class InterventionServiceImpl implements InterventionService {
 				for(Intervention interv : interventionSibllings) {
 					AdvancedInterventionDto eventSib = interventionMapper.interventionToAdvInterventionDto2(interv);
 					eventSib.setOptionSlug(interv.getOptionSlug());
+					eventSib.setCustomers(interv.getCustomers());
 					eventSiblings.add(eventSib);
 				}
 				
 				result.setEventSiblings(eventSiblings);
-//				result.setEventSiblings(
-//						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+				result.setEventSiblings(
+						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
 
 				result.setCustomers(i.getCustomers());
 
@@ -964,7 +966,6 @@ public class InterventionServiceImpl implements InterventionService {
 					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
 
 					if (alreadyInDb != null && !alreadyInDb.equals(interv)) {
-
 						if (endPoint.equals("options")) {
 							interv.setSlug(i.getSlug() + "-option");
 						} else if (endPoint.equals("interventions")) {
@@ -975,8 +976,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 					count++;
 					try {
-						interventionsToSave.add(interv);
-
+						interv = interventionRepository.saveAndFlush(interv);	
+						interventionsToSave.add(interv);						
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -988,7 +990,7 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 
 		try {
-			interventionsToSave = interventionRepository.saveAll(interventionsToSave);
+			//interventionsToSave = interventionRepository.saveAll(interventionsToSave);
 			caretaker.saveListMemento(email, interventionsToSave);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -997,19 +999,37 @@ public class InterventionServiceImpl implements InterventionService {
 		// association intervention master
 
 		for (Intervention interv : interventionsToSave) {
+			
 			if (interv.getMasterInterventionIdTemp() != 0) {
-				Intervention mInterv = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
+				System.out.println("MASTER ID >>"+interv.getMasterInterventionIdTemp());
+				List<Intervention> mIntervLst = interventionRepository.findAllByIdDg2(interv.getMasterInterventionIdTemp());
+				for (Intervention mInterv : mIntervLst) {
+					if (mInterv != null && !mInterv.equals(interv)) {
+						mInterv.setMaster(true);
+						interventionRepository.saveAndFlush(mInterv);
 
-				if (mInterv != null && !mInterv.equals(interv)) {
-					mInterv.setMaster(true);
-					interventionRepository.saveAndFlush(mInterv);
-
-					interv.setMasterIntervention(mInterv);
-					if ((interv.getUser() == null || interv.getUser().getIdDg2() < 0)
-							&& (mInterv.getUser() != null && mInterv.getUser().getIdDg2() > 0)) {
-						interv.setUser(mInterv.getUser());
+						interv.setMasterIntervention(mInterv);
+						if ((interv.getUser() == null || interv.getUser().getIdDg2() < 0)
+								&& (mInterv.getUser() != null && mInterv.getUser().getIdDg2() > 0)) {
+							interv.setUser(mInterv.getUser());
+						}
+						interv = interventionRepository.saveAndFlush(interv);
 					}
-					interventionRepository.saveAndFlush(interv);
+				}
+			}
+		}
+		
+		//TODO ((VERIF)) si fille non affectée et master affectée => user de la fille=user de la master
+		for (Intervention interv : interventionsToSave) {
+			if(!interv.isMaster() 
+					&& (interv.getUser()==null || interv.getUser().getEmployeeIdDg2()<0)
+					&& interv.getMasterInterventionIdTemp()!=0) {
+				List<Intervention> mIntervLst = interventionRepository.findAllByIdDg2(interv.getMasterInterventionIdTemp());
+				for (Intervention masterInterv : mIntervLst) {
+					if(masterInterv.getUser()!=null) {
+						interv.setUser(masterInterv.getUser());
+						interv = interventionRepository.saveAndFlush(interv);
+					}
 				}
 			}
 		}

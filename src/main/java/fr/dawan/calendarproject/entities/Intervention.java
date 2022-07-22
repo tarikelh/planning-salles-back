@@ -268,10 +268,12 @@ public class Intervention implements Cloneable {
 		this.customers = customers;
 	}
 
+
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(comment, course, customers, dateEnd, dateStart, idDg2, location, masterIntervention,
-				masterInterventionIdTemp, slug, type, user, validated, version);
+		return Objects.hash(attendeesCount, course, customers, dateEnd, dateStart, isMaster, location, optionSlug, slug,
+				timeEnd, timeStart, type, user, validated, version);
 	}
 
 	@Override
@@ -283,14 +285,13 @@ public class Intervention implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Intervention other = (Intervention) obj;
-		return Objects.equals(comment, other.comment) && Objects.equals(course, other.course)
+		return attendeesCount == other.attendeesCount && Objects.equals(course, other.course)
 				&& Objects.equals(customers, other.customers) && Objects.equals(dateEnd, other.dateEnd)
-				&& Objects.equals(dateStart, other.dateStart) && idDg2 == other.idDg2
-				&& Objects.equals(location, other.location)
-				&& Objects.equals(masterIntervention, other.masterIntervention)
-				&& masterInterventionIdTemp == other.masterInterventionIdTemp && Objects.equals(slug, other.slug)
-				&& type == other.type && Objects.equals(user, other.user) && validated == other.validated
-				&& version == other.version;
+				&& Objects.equals(dateStart, other.dateStart) && isMaster == other.isMaster
+				&& Objects.equals(location, other.location) && Objects.equals(optionSlug, other.optionSlug)
+				&& Objects.equals(slug, other.slug) && Objects.equals(timeEnd, other.timeEnd)
+				&& Objects.equals(timeStart, other.timeStart) && type == other.type && Objects.equals(user, other.user)
+				&& validated == other.validated && version == other.version;
 	}
 
 	@Override

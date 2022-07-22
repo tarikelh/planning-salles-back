@@ -21,4 +21,7 @@ public interface LeavePeriodRepository extends JpaRepository<LeavePeriod, Long> 
 	List<LeavePeriod> getAllByUserTypeAndDates(@Param("type") UserType type,
 			@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 
+	@Query("SELECT COUNT(*) FROM LeavePeriod i WHERE i.user.type= :type")
+	long countByUserType(UserType type);
+
 }
