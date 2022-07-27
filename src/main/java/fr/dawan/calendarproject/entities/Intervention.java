@@ -16,9 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
+@BatchSize(size = 100)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
 public class Intervention implements Cloneable {
 
 	@Id

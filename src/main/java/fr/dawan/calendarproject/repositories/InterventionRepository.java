@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+import javax.persistence.QueryHint;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -49,6 +51,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	// get events without master (children and orphan) by UserType and between a
 	// range of Dates
+	@QueryHints(value = @QueryHint(name = "org.hibernate.cacheable", value="true" ))
 	@Query("FROM Intervention i LEFT JOIN FETCH i.user LEFT JOIN FETCH i.location LEFT JOIN FETCH i.course WHERE i.isMaster = false AND i.user.type= :type AND (i.dateStart BETWEEN :start AND :end OR i.dateEnd BETWEEN :start AND :end)")
 	List<Intervention> getAllChildrenByUserTypeAndDates(@Param("type") UserType type,
 			@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
@@ -69,6 +72,7 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i WHERE i.slug LIKE %:slug%")
 	List<Intervention> findAllContainsSlug(String slug);
 	
+	@QueryHints(value = @QueryHint(name = "org.hibernate.cacheable", value="true" ))
 	@Query("FROM Intervention i LEFT JOIN FETCH i.course LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.course.id =:courseId AND i.dateStart <= :start AND i.dateEnd >= :end AND i.id != :interventionId AND i.user.id = :userId ")
 	List<Intervention> findSibblings(@Param("courseId") long courseId , @Param("start") LocalDate start , @Param("end") LocalDate end, @Param("interventionId") long interventionId, @Param("userId") long userId);
 
