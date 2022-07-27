@@ -74,5 +74,10 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 
 	@Query("FROM Intervention i WHERE i.id= :masterId")
 	Optional<Intervention> findByMasterId(@Param("masterId") long masterId);
+	
+	@Query("FROM Intervention i WHERE i.masterInterventionIdTemp= :masterIdTmp")
+	List<Intervention> findByMasterIdTmp(@Param("masterIdTmp") long masterIdTmp);
+	
+	List<Intervention> findAllByIdDg2(long idDg2);
 
 }

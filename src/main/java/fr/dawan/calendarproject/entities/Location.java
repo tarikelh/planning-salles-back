@@ -27,28 +27,31 @@ public class Location {
 	@Column(nullable = true, length = 9)
 	private String color;
 
+	private boolean published;
+	
 	@Version
 	private int version;
 
 	public Location() {
 	}
 
-	public Location(long id, String city, String contryCode, String color, int version) {
+	public Location(long id, String city, String contryCode, String color, boolean published,  int version) {
 		setId(id);
 		setCity(city);
 		setCountryCode(contryCode);
 		setColor(color);
+		setPublished(published);
 		setVersion(version);
 	}
 
-	public Location(long id, String city, String contryCode, String color, long idDg2, int version) {
-		setId(id);
-		setCity(city);
-		setCountryCode(contryCode);
-		setColor(color);
-		setIdDg2(idDg2);
-		setVersion(version);
-	}
+//	public Location(long id, String city, String contryCode, String color, long idDg2, int version) {
+//		setId(id);
+//		setCity(city);
+//		setCountryCode(contryCode);
+//		setColor(color);
+//		setIdDg2(idDg2);
+//		setVersion(version);
+//	}
 
 	public String getCountryCode() {
 		return countryCode;
@@ -68,6 +71,14 @@ public class Location {
 
 	public int getVersion() {
 		return version;
+	}
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
 	}
 
 	public void setVersion(int version) {
@@ -105,7 +116,7 @@ public class Location {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(city, countryCode, idDg2);
+		return Objects.hash(city, color, countryCode, idDg2, published, version);
 	}
 
 	@Override
@@ -117,7 +128,10 @@ public class Location {
 		if (getClass() != obj.getClass())
 			return false;
 		Location other = (Location) obj;
-		return Objects.equals(city, other.city) && Objects.equals(countryCode, other.countryCode)
-				&& idDg2 == other.idDg2;
+		return Objects.equals(city, other.city) && Objects.equals(color, other.color)
+				&& Objects.equals(countryCode, other.countryCode) && idDg2 == other.idDg2
+				&& published == other.published && version == other.version;
 	}
+
+
 }
