@@ -47,6 +47,7 @@ public interface InterventionMapper {
 	@Mapping(target = "masterIntervention", source = "masterInterventionId")
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "masterInterventionIdTemp", ignore = true)
+	@Mapping(target = "optionSlug", ignore = true)
 	Intervention interventionDtoToIntervention(InterventionDto intervention);
 
 	List<InterventionDto> listInterventionToListInterventionDto(List<Intervention> interventions);
