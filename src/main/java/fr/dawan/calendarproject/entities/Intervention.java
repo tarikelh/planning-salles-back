@@ -274,7 +274,13 @@ public class Intervention implements Cloneable {
 		this.customers = customers;
 	}
 
-
+	public long getCourseId() {
+		return getCourse().getId();
+	}
+	
+	public long getUserId() {
+		return getUser().getId();
+	}
 
 	@Override
 	public int hashCode() {
@@ -328,5 +334,17 @@ public class Intervention implements Cloneable {
 			return intervention;
 		}
 		return intervention;
+	}
+
+	public String getUserLastName() {
+		return getUser().getLastName();
+	}
+
+	public String getUserFirstName() {
+		return getUser().getFirstName();
+	}
+	
+	public String getUserFullName() {
+		return getUser().getFullname();
 	}
 }
