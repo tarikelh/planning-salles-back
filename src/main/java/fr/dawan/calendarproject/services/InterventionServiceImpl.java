@@ -49,7 +49,6 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.XProperty;
 
@@ -378,7 +377,6 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
 		List<AdvancedInterventionDto2> iDtos = new ArrayList<>();
-		List<AdvancedInterventionDto> eventSiblings = new ArrayList<>();
 
 		if (UserType.contains(type)) {
 			List<Intervention> interventions = interventionRepository
@@ -391,13 +389,8 @@ public class InterventionServiceImpl implements InterventionService {
 				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourseId(),
 						i.getDateStart(), i.getDateEnd(), i.getId(), i.getUserId());
 
-				for (Intervention interv : interventionSibllings) {
-					eventSiblings.add(interventionMapper.interventionToAdvInterventionDto2(interv));
-				}
-
-				result.setEventSiblings(eventSiblings);
-//				result.setEventSiblings(
-//						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+				result.setEventSiblings(
+						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
 
 				iDtos.add(result);
 			}
