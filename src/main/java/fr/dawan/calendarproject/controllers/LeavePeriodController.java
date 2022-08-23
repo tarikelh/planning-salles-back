@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LeavePeriodDto;
 import fr.dawan.calendarproject.services.LeavePeriodService;
 
@@ -43,6 +43,11 @@ public class LeavePeriodController {
 			return ResponseEntity.status(HttpStatus.OK).body(lpDto);
 		else
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Leave Period with employee id : " + employeeId + " Not Found");
+	}
+	
+	@GetMapping(value = "/count", produces = "application/json")
+	public CountDto countByUserTypeNoMaster(@RequestParam("type") String type) {
+		return leavePeriodService.count(type);
 	}
 	
 	@GetMapping(value = "/dg2/{firstDay}/{lastDay}", produces = "application/json")

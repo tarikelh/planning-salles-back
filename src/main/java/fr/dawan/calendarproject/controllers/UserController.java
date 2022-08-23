@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.HistoricDto;
 import fr.dawan.calendarproject.services.UserService;
 
 @RestController
@@ -110,6 +111,23 @@ public class UserController {
 			userService.fetchAllDG2Users(splitUserDG2String[0], splitUserDG2String[1]);
 			userService.insertNotAssigned();
 			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error while fetching data from the webservice");
+		}
+	}
+	
+	// FETCH Dawan webservice
+	@GetMapping(value = "/historic/{userIdDg2}", produces = "application/json")
+	public ResponseEntity<Object> fetchUserHistoric(@PathVariable(value = "userIdDg2") long userIdDg2,@RequestHeader Map<String, String> headers) {
+		String userDG2 = headers.get("x-auth-token");
+		String[] splitUserDG2String = userDG2.split(":");
+		
+		HistoricDto userHistoric = null;
+		
+		try {
+			userHistoric = userService.fetchUserHistoric(userIdDg2, splitUserDG2String[0], splitUserDG2String[1]);
+			return ResponseEntity.status(HttpStatus.OK).body(userHistoric);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error while fetching data from the webservice");

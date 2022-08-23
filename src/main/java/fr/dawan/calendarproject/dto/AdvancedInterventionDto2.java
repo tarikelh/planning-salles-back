@@ -14,12 +14,12 @@ public class AdvancedInterventionDto2 extends AdvancedInterventionDto {
 		this.eventSiblings = new ArrayList<>();
 	}
 
-	public AdvancedInterventionDto2(long id, long idDg2, String slug, String comment, LocationDto location,
+	public AdvancedInterventionDto2(long id, long idDg2, String slug, String optionSlug, String comment, LocationDto location,
 			CourseDto course, UserDto user, int attendeesCount, String type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, InterventionDto masterIntervention,
-			boolean isMaster, int version, List<AdvancedInterventionDto> eventSiblings) {
-		super(id, idDg2, slug, comment, location, course, user, attendeesCount, type, validated, dateStart, dateEnd,
-				timeStart, timeEnd, masterIntervention, isMaster, version);
+			boolean isMaster, String customers, int version, List<AdvancedInterventionDto> eventSiblings) {
+		super(id, idDg2, slug, optionSlug, comment, location, course, user, attendeesCount, type, validated, dateStart, dateEnd,
+				timeStart, timeEnd, masterIntervention, isMaster, customers, version);
 		this.eventSiblings = eventSiblings;
 	}
 

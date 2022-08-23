@@ -13,7 +13,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
 public class Skill {
 
 	@Id

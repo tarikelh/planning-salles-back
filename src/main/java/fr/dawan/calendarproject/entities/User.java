@@ -22,10 +22,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

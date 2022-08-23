@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,9 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import fr.dawan.calendarproject.enums.InterventionStatus;
 
 @Entity
+@BatchSize(size = 100)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
 public class Intervention implements Cloneable {
 
 	@Id
@@ -30,6 +37,9 @@ public class Intervention implements Cloneable {
 	@Column(nullable = true, length = 255, unique = true)
 	private String slug;
 
+	@Column(nullable = true, length = 255, unique = true)
+	private String optionSlug;
+	
 	@Column(nullable = true, length = 255)
 	private String comment;
 
@@ -69,7 +79,9 @@ public class Intervention implements Cloneable {
 	private boolean isMaster;
 	
 	private long masterInterventionIdTemp;
-
+	
+	@Column(columnDefinition = "TEXT")
+	private String customers;
 
 	@Version
 	private int version;
@@ -77,14 +89,14 @@ public class Intervention implements Cloneable {
 	public Intervention() {
 	}
 
-	public Intervention(long id, long idDg2, String slug, String comment, Location location, Course course, User user,
+	public Intervention(long id, long idDg2, String slug, String optionSlug, String comment, Location location, Course course, User user,
 			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
 			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
-			boolean isMaster, int version) {
-		super();
+			boolean isMaster, String customers, int version) {
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
+		this.optionSlug = optionSlug;
 		this.comment = comment;
 		this.location = location;
 		this.course = course;
@@ -98,6 +110,7 @@ public class Intervention implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterIntervention = masterIntervention;
 		this.isMaster = isMaster;
+		this.customers = customers;
 		this.version = version;
 	}
 
@@ -237,6 +250,14 @@ public class Intervention implements Cloneable {
 		this.slug = slug;
 	}
 
+	public String getOptionSlug() {
+		return optionSlug;
+	}
+
+	public void setOptionSlug(String optionSlug) {
+		this.optionSlug = optionSlug;
+	}
+
 	public int getAttendeesCount() {
 		return attendeesCount;
 	}
@@ -244,32 +265,29 @@ public class Intervention implements Cloneable {
 	public void setAttendeesCount(int attendeesCount) {
 		this.attendeesCount = attendeesCount;
 	}
+	
+	public String getCustomers() {
+		return customers;
+	}
 
+	public void setCustomers(String customers) {
+		this.customers = customers;
+	}
+
+	public long getCourseId() {
+		return getCourse().getId();
+	}
+	
+	public long getUserId() {
+		return getUser().getId();
+	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + attendeesCount;
-		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		result = prime * result + ((course == null) ? 0 : course.hashCode());
-		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
-		result = prime * result + ((dateStart == null) ? 0 : dateStart.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + (int) (idDg2 ^ (idDg2 >>> 32));
-		result = prime * result + (isMaster ? 1231 : 1237);
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((masterIntervention == null) ? 0 : masterIntervention.hashCode());
-		result = prime * result + ((slug == null) ? 0 : slug.hashCode());
-		result = prime * result + ((timeEnd == null) ? 0 : timeEnd.hashCode());
-		result = prime * result + ((timeStart == null) ? 0 : timeStart.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + (validated ? 1231 : 1237);
-		result = prime * result + version;
-		return result;
+		return Objects.hash(attendeesCount, course, customers, dateEnd, dateStart, isMaster, location, optionSlug, slug,
+				timeEnd, timeStart, type, user, validated, version);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -279,52 +297,25 @@ public class Intervention implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Intervention other = (Intervention) obj;
-		if (idDg2 != other.idDg2)
-			return false;
-		return true;
+		return attendeesCount == other.attendeesCount && Objects.equals(course, other.course)
+				&& Objects.equals(customers, other.customers) && Objects.equals(dateEnd, other.dateEnd)
+				&& Objects.equals(dateStart, other.dateStart) && isMaster == other.isMaster
+				&& Objects.equals(location, other.location) && Objects.equals(optionSlug, other.optionSlug)
+				&& Objects.equals(slug, other.slug) && Objects.equals(timeEnd, other.timeEnd)
+				&& Objects.equals(timeStart, other.timeStart) && type == other.type && Objects.equals(user, other.user)
+				&& validated == other.validated && version == other.version;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Intervention [id=");
-		builder.append(id);
-		builder.append(", idDg2=");
-		builder.append(idDg2);
-		builder.append(", slug=");
-		builder.append(slug);
-		builder.append(", comment=");
-		builder.append(comment);
-		builder.append(", location=");
-		builder.append(location);;
-		builder.append(", course=");
-		builder.append(course);
-		builder.append(", user=");
-		builder.append(user);
-		builder.append(", attendeesCount=");
-		builder.append(attendeesCount);
-		builder.append(", type=");
-		builder.append(type);
-		builder.append(", validated=");
-		builder.append(validated);
-		builder.append(", dateStart=");
-		builder.append(dateStart);
-		builder.append(", dateEnd=");
-		builder.append(dateEnd);
-		builder.append(", timeStart=");
-		builder.append(timeStart);
-		builder.append(", timeEnd=");
-		builder.append(timeEnd);
-		builder.append(", masterIntervention=");
-		builder.append(masterIntervention);
-		builder.append(", isMaster=");
-		builder.append(isMaster);
-		builder.append(", version=");
-		builder.append(version);
-		builder.append("]");
-		return builder.toString();
+		return "Intervention [id=" + id + ", idDg2=" + idDg2 + ", slug=" + slug + ", optionSlug=" + optionSlug
+				+ ", comment=" + comment + ", location=" + location + ", course=" + course + ", user=" + user
+				+ ", attendeesCount=" + attendeesCount + ", type=" + type + ", validated=" + validated + ", dateStart="
+				+ dateStart + ", dateEnd=" + dateEnd + ", timeStart=" + timeStart + ", timeEnd=" + timeEnd
+				+ ", masterIntervention=" + masterIntervention + ", isMaster=" + isMaster
+				+ ", masterInterventionIdTemp=" + masterInterventionIdTemp + ", customers=" + customers + ", version="
+				+ version + "]";
 	}
-
 
 	public String toContentString() {
 		return "Intervention " + course.getTitle() + " du " + dateStart.toString() + " au " + dateEnd.toString()
@@ -343,5 +334,17 @@ public class Intervention implements Cloneable {
 			return intervention;
 		}
 		return intervention;
+	}
+
+	public String getUserLastName() {
+		return getUser().getLastName();
+	}
+
+	public String getUserFirstName() {
+		return getUser().getFirstName();
+	}
+	
+	public String getUserFullName() {
+		return getUser().getFullname();
 	}
 }
