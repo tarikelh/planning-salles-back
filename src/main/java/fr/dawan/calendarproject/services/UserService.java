@@ -4,7 +4,10 @@ import java.util.List;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.CourseDG2Dto;
+import fr.dawan.calendarproject.dto.HistoricDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
+import fr.dawan.calendarproject.dto.TrainingDG2Dto;
 
 public interface UserService {
 
@@ -32,4 +35,8 @@ public interface UserService {
 
 	List<AdvancedUserDto> insertNotAssigned();
 
+	HistoricDto fetchUserHistoric(long id, String email, String password);
+
+	List<CourseDG2Dto> fetchAnimatedTraning(long id, String email, String password) throws Exception;
+	List<TrainingDG2Dto> fetchFollowedTraning(long id, String email, String password) throws Exception;
 }
