@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
 		List<AdvancedUserDto> result = new ArrayList<>();
-
+		type = type.toUpperCase();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByTypeAndEndDateIsNull(userType);
