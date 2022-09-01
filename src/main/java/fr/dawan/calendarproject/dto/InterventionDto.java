@@ -41,6 +41,8 @@ public class InterventionDto implements Cloneable {
 
 	private boolean isMaster;
 	
+	private String customers;
+	
 	private int version;
 
 	public InterventionDto() {
@@ -49,8 +51,7 @@ public class InterventionDto implements Cloneable {
 	public InterventionDto(long id, long idDg2, String slug, String comment, long locationId, long locationIdDg2,
 			long courseId, long courseIdDg2, long userId, int attendeesCount, String type, boolean validated,
 			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId,
-			boolean isMaster, int version) {
-		super();
+			boolean isMaster, String customers, int version) {
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
@@ -69,6 +70,7 @@ public class InterventionDto implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterInterventionId = masterInterventionId;
 		this.isMaster = isMaster;
+		this.customers = customers;
 		this.version = version;
 	}
 
@@ -222,6 +224,14 @@ public class InterventionDto implements Cloneable {
 
 	public void setAttendeesCount(int attendeesCount) {
 		this.attendeesCount = attendeesCount;
+	}
+
+	public String getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(String customers) {
+		this.customers = customers;
 	}
 
 	@Override

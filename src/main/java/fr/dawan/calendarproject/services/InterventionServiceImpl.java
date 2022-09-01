@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
+import fr.dawan.calendarproject.dto.AdvancedInterventionDto;
 import fr.dawan.calendarproject.dto.AdvancedInterventionDto2;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.DateRangeDto;
@@ -48,7 +49,6 @@ import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.XProperty;
 
@@ -79,6 +79,9 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private LeavePeriodService leavePeriodService;
 
 	/**
 	 * Fetches all of the existing interventions.
@@ -115,11 +118,7 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getAllInterventions(int page, int max) {
 		List<Intervention> interventions = interventionRepository.findAll(PageRequest.of(page, max)).get()
 				.collect(Collectors.toList());
-		List<InterventionDto> interventionsDto = new ArrayList<>();
-		for (Intervention intervention : interventions) {
-			interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
-		}
-		return interventionsDto;
+		return interventionMapper.listInterventionToListInterventionDto(interventions);
 	}
 
 	/**
@@ -153,15 +152,11 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap) {
 		List<InterventionDto> interventionsDto = new ArrayList<>();
-
 		// verify if user exists
 		if (userRepository.findById(userId).isPresent()) {
 			// search filtered interventions from the user selected
-			List<Intervention> interventions = interventionCustomRepository.searchBy(userId, paramsMap);
-			for (Intervention intervention : interventions) {
-				interventionsDto.add(interventionMapper.interventionToInterventionDto(intervention));
-			}
-			return interventionsDto;
+			interventionsDto = interventionMapper
+					.listInterventionToListInterventionDto(interventionCustomRepository.searchBy(userId, paramsMap));
 		}
 		return interventionsDto;
 	}
@@ -177,10 +172,12 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public InterventionDto getById(long id) {
-		Optional<Intervention> intervention = interventionRepository.findById(id);
-		if (intervention.isPresent())
-			return interventionMapper.interventionToInterventionDto(intervention.get());
-		return null;
+		Intervention intervention = interventionRepository.findById(id).orElse(null);
+		InterventionDto dto = null;
+
+		if (intervention != null)
+			dto = interventionMapper.interventionToInterventionDto(intervention);
+		return dto;
 	}
 
 	/**
@@ -193,13 +190,13 @@ public class InterventionServiceImpl implements InterventionService {
 	@Override
 	public void deleteById(long id, String email) {
 		// Memento creation and save
-		Optional<Intervention> intToDelete = interventionRepository.findById(id);
+		Intervention intToDelete = interventionRepository.findById(id).orElse(null);
 
-		if (intToDelete.isPresent()) {
+		if (intToDelete != null) {
 			interventionRepository.deleteById(id);
 
 			try {
-				caretaker.addMemento(email, intToDelete.get());
+				caretaker.addMemento(email, intToDelete);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -219,48 +216,41 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public AdvancedInterventionDto2 saveOrUpdate(InterventionDto intervention, String email) throws Exception {
-		if (intervention.getId() > 0 && !interventionRepository.existsById(intervention.getId()))
-			return null;
+		AdvancedInterventionDto2 advancedInterventionDto2 = null;
 
-		checkIntegrity(intervention);
-		Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
+		if (intervention.getId() > 0 && interventionRepository.existsById(intervention.getId())) {
+			checkIntegrity(intervention);
+			Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
 
-		if (!intervention.isMaster()) {
-			interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
-			interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
-			interv.setUser(userRepository.getOne(intervention.getUserId()));
-		} else {
-			interv.setLocation(null);
-			interv.setCourse(null);
-			interv.setUser(null);
+			if (intervention.isMaster()) {
+				interv.setLocation(null);
+				interv.setCourse(null);
+				interv.setUser(null);
+			} else {
+				interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
+				interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
+				interv.setUser(userRepository.getOne(intervention.getUserId()));
+			}
+
+			if (intervention.getMasterInterventionId() > 0)
+				interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
+			else
+				interv.setMasterIntervention(null);
+
+			if (interv.getSlug() == null) {
+				interv.setSlug(creatInterventionSlug(interv));
+			}
+
+			interv = interventionRepository.saveAndFlush(interv);
+
+			caretaker.addMemento(email, interv);
+
+			advancedInterventionDto2 = interventionMapper.interventionToAdvInterventionDto2(interv);
+			advancedInterventionDto2.setEventSiblings(interventionMapper
+					.listInterventionToListAdvInterventionDto(interventionRepository.findSibblings(interv.getCourseId(),
+							interv.getDateStart(), interv.getDateEnd(), interv.getId(), interv.getUserId())));
 		}
-
-		if (intervention.getMasterInterventionId() > 0)
-			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
-		else
-			interv.setMasterIntervention(null);
-
-		if (interv.getSlug() == null) {
-			interv.setSlug(creatInterventionSlug(interv));
-		}
-
-		interv = interventionRepository.saveAndFlush(interv);
-
-		caretaker.addMemento(email, interv);
-
-		AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(interv);
-		result.setEventSiblings(
-				interventionMapper.listInterventionToListAdvInterventionDto(
-						interventionRepository.findSibblings(
-								interv.getCourse().getId(), 
-								interv.getDateStart(), 
-								interv.getDateEnd(), 
-								interv.getId(), 
-								interv.getUser().getId()
-						)
-				)
-		);
-		return result;
+		return advancedInterventionDto2;
 	}
 
 	/**
@@ -270,20 +260,14 @@ public class InterventionServiceImpl implements InterventionService {
 	 * @param id An unique Integer used to identify each the interventions involving
 	 *           a specific course.
 	 * 
-	 * @return iDtos Returns a list of interventions.
+	 * @return Returns a list of InterventionDto.
 	 *
 	 */
 
 	// Search
 	@Override
 	public List<InterventionDto> getByCourseId(long id) {
-		List<Intervention> interventions = interventionRepository.findByCourseId(id);
-		List<InterventionDto> iDtos = new ArrayList<>();
-
-		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
-
-		return iDtos;
+		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.findByCourseId(id));
 	}
 
 	/**
@@ -292,19 +276,15 @@ public class InterventionServiceImpl implements InterventionService {
 	 * 
 	 * @param title A String referring to a Course's title.
 	 * 
-	 * @return iDto Returns a list of interventions.
+	 * @return Returns a list of InterventionDto.
 	 *
 	 */
 
 	// Search
 	@Override
 	public List<InterventionDto> getByCourseTitle(String title) {
-		List<Intervention> interventions = interventionRepository.findByCourseTitle(title);
-		List<InterventionDto> iDtos = new ArrayList<>();
-		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
-
-		return iDtos;
+		return interventionMapper
+				.listInterventionToListInterventionDto(interventionRepository.findByCourseTitle(title));
 	}
 
 	/**
@@ -316,17 +296,14 @@ public class InterventionServiceImpl implements InterventionService {
 	 * @param start  A LocalDate referring to the starting date.
 	 * @param end    A LocalDate referring to the end date.
 	 * 
-	 * @return iDtos Returns a list of interventions.
+	 * @return Returns a list of InterventionDto.
 	 *
 	 */
 
 	@Override
 	public List<InterventionDto> getFromUserByDateRange(long userId, LocalDate start, LocalDate end) {
-		List<Intervention> interventions = interventionRepository.findFromUserByDateRange(userId, start, end);
-		List<InterventionDto> iDtos = new ArrayList<>();
-		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
-		return iDtos;
+		return interventionMapper.listInterventionToListInterventionDto(
+				interventionRepository.findFromUserByDateRange(userId, start, end));
 	}
 
 	/**
@@ -335,16 +312,13 @@ public class InterventionServiceImpl implements InterventionService {
 	 * @param start A LocalDate referring to the starting date.
 	 * @param end   A LocalDate referring to the end date.
 	 * 
-	 * @return iDtos Returns a list of interventions.
+	 * @return Returns a list of InterventionDto.
 	 *
 	 */
 
 	public List<InterventionDto> getAllByDateRange(LocalDate start, LocalDate end) {
-		List<Intervention> interventions = interventionRepository.findAllByDateRange(start, end);
-		List<InterventionDto> iDtos = new ArrayList<>();
-		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
-		return iDtos;
+		return interventionMapper
+				.listInterventionToListInterventionDto(interventionRepository.findAllByDateRange(start, end));
 	}
 
 	/**
@@ -359,30 +333,23 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public CountDto count(String type) {
+		CountDto countDto = new CountDto();
 		if (UserType.contains(type)) {
-			UserType userType = UserType.valueOf(type);
-			return new CountDto(interventionRepository.countByUserTypeNoMaster(userType));
+			countDto.setNb(interventionRepository.countByUserTypeNoMaster(UserType.valueOf(type)));
 		}
-
-		return null; // Exception
+		return countDto; // Exception
 	}
 
 	/**
 	 * Fetches all master interventions.
 	 * 
-	 * @return iDtos Returns a list of all master interventions.
+	 * @return Returns a list of all master InterventionDto.
 	 *
 	 */
 
 	@Override
 	public List<InterventionDto> getMasterIntervention() {
-		List<Intervention> interventions = interventionRepository.getMasterIntervention();
-		List<InterventionDto> iDtos = new ArrayList<>();
-
-		for (Intervention i : interventions)
-			iDtos.add(interventionMapper.interventionToInterventionDto(i));
-
-		return iDtos;
+		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getMasterIntervention());
 	}
 
 	/**
@@ -393,7 +360,7 @@ public class InterventionServiceImpl implements InterventionService {
 	 * @param start A LocalDate referring to the starting date.
 	 * @param end   A LocalDate referring to the end date.
 	 * 
-	 * @return iDtos Returns a list of sub-interventions.
+	 * @return Returns a list of sub-InterventionDto.
 	 *
 	 */
 
@@ -401,41 +368,34 @@ public class InterventionServiceImpl implements InterventionService {
 	public List<InterventionDto> getSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
 		List<InterventionDto> iDtos = new ArrayList<>();
 		if (UserType.contains(type)) {
-			UserType userType = UserType.valueOf(type);
-			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
-					dateStart, dateEnd);
-			for (Intervention i : interventions)
-				iDtos.add(interventionMapper.interventionToInterventionDto(i));
-
-			return iDtos;
-		} else {
-			return iDtos;
+			iDtos = interventionMapper.listInterventionToListInterventionDto(interventionRepository
+					.getAllChildrenByUserTypeAndDates(UserType.valueOf(type), dateStart, dateEnd));
 		}
+		return iDtos;
 	}
-	
-	
+
 	@Override
 	public List<AdvancedInterventionDto2> getAdvSubInterventions(String type, LocalDate dateStart, LocalDate dateEnd) {
 		List<AdvancedInterventionDto2> iDtos = new ArrayList<>();
+
 		if (UserType.contains(type)) {
-			UserType userType = UserType.valueOf(type);
-			List<Intervention> interventions = interventionRepository.getAllChildrenByUserTypeAndDates(userType,
-					dateStart, dateEnd);
+			List<Intervention> interventions = interventionRepository
+					.getAllChildrenByUserTypeAndDates(UserType.valueOf(type), dateStart, dateEnd);
+
 			for (Intervention i : interventions) {
-				
 				AdvancedInterventionDto2 result = interventionMapper.interventionToAdvInterventionDto2(i);
-				
-				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourse().getId(), i.getDateStart(), i.getDateEnd(), i.getId(), i.getUser().getId());
-				
-				result.setEventSiblings(interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
-				
+
+				// TODO: need optimisation !!
+				List<Intervention> interventionSibllings = interventionRepository.findSibblings(i.getCourseId(),
+						i.getDateStart(), i.getDateEnd(), i.getId(), i.getUserId());
+
+				result.setEventSiblings(
+						interventionMapper.listInterventionToListAdvInterventionDto(interventionSibllings));
+
 				iDtos.add(result);
 			}
-				
-			return iDtos;
-		} else {
-			return iDtos;
 		}
+		return iDtos;
 	}
 
 	/**
@@ -449,20 +409,17 @@ public class InterventionServiceImpl implements InterventionService {
 
 	public Calendar exportCalendarAsICal(long userId) {
 		List<Intervention> lst = interventionRepository.findByUserId(userId);
+		Calendar calendar = new Calendar();
 
-		if (lst == null || lst.isEmpty())
-			return null;
+		if (lst != null && lst.size() > 0) {
+			calendar = ICalTools.createCalendar("-//Dawan Planning//iCal4j 1.0//FR");
+			calendar.getProperties().add(new XProperty("X-CALNAME", lst.get(0).getUserFullName()));
+			VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
 
-		Calendar calendar = ICalTools.createCalendar("-//Dawan Planning//iCal4j 1.0//FR");
-		String calName = lst.get(0).getUser().getLastName() + lst.get(0).getUser().getFirstName();
-		calendar.getProperties().add(new XProperty("X-CALNAME", calName));
-		VTimeZone tz = ICalTools.getTimeZone("Europe/Berlin");
-
-		for (Intervention intervention : lst) {
-			VEvent event = ICalTools.createVEvent(intervention, tz);
-			calendar.getComponents().add(event);
+			for (Intervention intervention : lst) {
+				calendar.getComponents().add(ICalTools.createVEvent(intervention, tz));
+			}
 		}
-
 		return calendar;
 	}
 
@@ -702,12 +659,12 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public List<InterventionDto> getSubByMasterId(long id) {
-		Optional<Intervention> master = interventionRepository.findByMasterId(id);
+		Intervention master = interventionRepository.findByMasterId(id).orElse(null);
 		List<Intervention> iList;
 		List<InterventionDto> iListDto = new ArrayList<>();
 
-		if (master.isPresent() && master.get().isMaster()) {
-			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(master.get().getId());
+		if (master != null && master.isMaster()) {
+			iList = interventionRepository.findByMasterInterventionIdOrderByDateStart(master.getId());
 
 			for (Intervention intervention : iList) {
 				iListDto.add(interventionMapper.interventionToInterventionDto(intervention));
@@ -739,16 +696,135 @@ public class InterventionServiceImpl implements InterventionService {
 		int res = fetchDG2InterventionsOnly(false, email, pwd, start, end);
 
 		// ??? why this line ???
-//		leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
+		int res1 = leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
 
 		// import options
 		int res2 = fetchDG2InterventionsOnly(true, email, pwd, start, end);
 
-		return res + res2;
+		return res + res1 + res2;
 
 	}
 
-	@Override
+//	@Override
+//	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
+//			throws Exception {
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		List<InterventionDG2Dto> lResJson;
+//		List<Intervention> interventionsToSave = new ArrayList<>();
+//		int count = 0;
+//
+//		String endPoint = (optionsOnly) ? "options" : "interventions";
+//
+//		URI url = new URI(String.format("https://dawan.org/api2/planning/" + endPoint + "/%s/%s", start.toString(),
+//				end.toString()));
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("X-AUTH-TOKEN", email + ":" + pwd);
+//
+//		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers),
+//				String.class);
+//
+//		if (repWs.getStatusCode() == HttpStatus.OK) { // 527ms
+//
+//			String json = repWs.getBody();
+//			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
+//
+//			lResJson = Arrays.asList(resArray);
+//			Set<Long> masterIds = new HashSet<>();
+//
+//			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
+//
+//			lResJson.forEach(i -> {
+//				if (masterIds.contains(i.getId()))
+//					i.setMaster(true);
+//
+//				String typeDg2 = i.getType();
+//				
+//				InterventionStatus type;
+//				switch(typeDg2) {
+//					
+//					case "private":
+//						type = InterventionStatus.INTRA;
+//						break;
+//						
+//					case "shared":
+//						type = InterventionStatus.INTERN;
+//						break;
+//					
+//					case "tp":
+//						type = InterventionStatus.TP;
+//						break;
+//					
+//					case "poe":
+//						type = InterventionStatus.POE;
+//						break;
+//					default:
+//						type = null;
+//						break;
+//				}
+//				
+//				i.setType(type.toString());
+//
+//				i.setValidated(i.getAttendeesCount() > 0 && !optionsOnly);
+//
+//				i.setDateStart(i.getDateStart().substring(0, 10));
+//				i.setDateEnd(i.getDateEnd().substring(0, 10));
+//			});
+//
+//			for (InterventionDG2Dto iDG2 : lResJson) {
+//
+//				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
+//				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
+//
+//				if (c.isPresent()) {
+//					i.setCourse(c.get());
+//					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
+//					User u = userRepository.findByIdDg2(iDG2.getPersonId()).orElse(null);
+//					if(u == null)
+//					{
+//						try {
+//							u = userRepository.findByIdDg2(-1 * iDG2.getLocationId()).orElse(null);
+//						} catch (Exception e) {
+//						}
+//					}
+//						
+//					i.setUser(u);
+//					
+//					i.setMasterIntervention(
+//							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
+//
+//					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
+//
+//					if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
+//						i.setId(alreadyInDb.get().getId());
+//						i.setComment(alreadyInDb.get().getComment());
+//						i.setTimeStart(alreadyInDb.get().getTimeStart());
+//						i.setTimeEnd(alreadyInDb.get().getTimeEnd());
+//						i.setVersion(alreadyInDb.get().getVersion());
+//					}
+//
+//					count++;
+//					try {
+//						interventionsToSave.add(i);
+//
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		} else {
+//			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
+//		}
+//
+//		try {
+//			interventionsToSave = interventionRepository.saveAll(interventionsToSave);
+//			caretaker.saveListMemento(email, interventionsToSave);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return count;
+//	}
+
 	public int fetchDG2InterventionsOnly(boolean optionsOnly, String email, String pwd, LocalDate start, LocalDate end)
 			throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -773,98 +849,140 @@ public class InterventionServiceImpl implements InterventionService {
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
-			Set<Long> masterIds = new HashSet<>();
 
-			lResJson.forEach(i -> masterIds.add(i.getMasterInterventionId()));
-
-			lResJson.forEach(i -> {
-				if (masterIds.contains(i.getId()))
-					i.setMaster(true);
-
+			for (InterventionDG2Dto i : lResJson) {
 				String typeDg2 = i.getType();
-				
+
 				InterventionStatus type;
-				switch(typeDg2) {
-					
-					case "private":
-						type = InterventionStatus.INTRA;
-						break;
-						
-					case "shared":
-						type = InterventionStatus.INTERN;
-						break;
-					
-					case "tp":
-						type = InterventionStatus.TP;
-						break;
-					
-					case "poe":
-						type = InterventionStatus.POE;
-						break;
-					default:
-						type = null;
-						break;
+				switch (typeDg2) {
+
+				case "private":
+					type = InterventionStatus.INTRA;
+					break;
+
+				case "shared":
+					type = InterventionStatus.INTERN;
+					break;
+
+				case "tp":
+					type = InterventionStatus.TP;
+					break;
+
+				case "poe":
+					type = InterventionStatus.POE;
+					break;
+				default:
+					type = null;
+					break;
 				}
-				
+
 				i.setType(type.toString());
 
 				i.setValidated(i.getAttendeesCount() > 0 && !optionsOnly);
 
 				i.setDateStart(i.getDateStart().substring(0, 10));
 				i.setDateEnd(i.getDateEnd().substring(0, 10));
-			});
 
-			for (InterventionDG2Dto iDG2 : lResJson) {
+				Intervention interv = interventionMapper.interventionDG2DtoToIntervention(i);
+				interv.setOptionSlug(i.getOptionSlug());
+				interv.setMasterInterventionIdTemp(i.getMasterInterventionId());
 
-				Intervention i = interventionMapper.interventionDG2DtoToIntervention(iDG2);
-				Optional<Course> c = courseRepository.findByIdDg2(iDG2.getCourseId());
+				Optional<Course> c = courseRepository.findByIdDg2(i.getCourseId());
 
 				if (c.isPresent()) {
-					i.setCourse(c.get());
-					i.setLocation(locationRepository.findByIdDg2(iDG2.getLocationId()).orElse(null));
-					User u = userRepository.findByIdDg2(iDG2.getPersonId()).orElse(null);
-					if(u == null)
-					{
+					interv.setCourse(c.get());
+					interv.setLocation(locationRepository.findByIdDg2(i.getLocationId()).orElse(null));
+					User u = userRepository.findByIdDg2(i.getPersonId()).orElse(null);
+
+					if (i.getPersonId() == 51642) {
+						System.out.println(u);
+					}
+
+					if (u == null) {
 						try {
-							u = userRepository.findByIdDg2(-1 * iDG2.getLocationId()).orElse(null);
+							u = userRepository.findByIdDg2(-1 * i.getLocationId()).orElse(null);
 						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-						
-					i.setUser(u);
-					
-					i.setMasterIntervention(
-							interventionRepository.findByIdDg2(iDG2.getMasterInterventionId()).orElse(null));
 
-					Optional<Intervention> alreadyInDb = interventionRepository.findBySlug(i.getSlug());
+					interv.setUser(u);
 
-					if (alreadyInDb.isPresent() && alreadyInDb.get().equals(i)) {
-						i.setId(alreadyInDb.get().getId());
-						i.setComment(alreadyInDb.get().getComment());
-						i.setTimeStart(alreadyInDb.get().getTimeStart());
-						i.setTimeEnd(alreadyInDb.get().getTimeEnd());
-						i.setVersion(alreadyInDb.get().getVersion());
+					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
+
+					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
+
+					if (alreadyInDb != null && !alreadyInDb.equals(interv)) {
+						if (endPoint.equals("options")) {
+							interv.setSlug(i.getSlug() + "-option");
+						} else if (endPoint.equals("interventions")) {
+							interv.setId(alreadyInDb.getId());
+						}
+
 					}
 
 					count++;
 					try {
-						interventionsToSave.add(i);
+						interv = interventionRepository.saveAndFlush(interv);
+						interventionsToSave.add(interv);
 
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
+
 		} else {
 			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
 
 		try {
-			interventionsToSave = interventionRepository.saveAll(interventionsToSave);
+			// interventionsToSave = interventionRepository.saveAll(interventionsToSave);
 			caretaker.saveListMemento(email, interventionsToSave);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// association intervention master
+
+		for (Intervention interv : interventionsToSave) {
+
+			if (interv.getMasterInterventionIdTemp() != 0) {
+				System.out.println("MASTER ID >>" + interv.getMasterInterventionIdTemp());
+				List<Intervention> mIntervLst = interventionRepository
+						.findAllByIdDg2(interv.getMasterInterventionIdTemp());
+				for (Intervention mInterv : mIntervLst) {
+					if (mInterv != null && !mInterv.equals(interv)) {
+						mInterv.setMaster(true);
+						interventionRepository.saveAndFlush(mInterv);
+
+						interv.setMasterIntervention(mInterv);
+						if ((interv.getUser() == null || interv.getUser().getIdDg2() < 0)
+								&& (mInterv.getUser() != null && mInterv.getUser().getIdDg2() > 0)) {
+							interv.setUser(mInterv.getUser());
+						}
+						interv = interventionRepository.saveAndFlush(interv);
+					}
+				}
+			}
+		}
+
+		// TODO ((VERIF)) si fille non affectée et master affectée => user de la
+		// fille=user de la master
+		for (Intervention interv : interventionsToSave) {
+			if (!interv.isMaster() && (interv.getUser() == null || interv.getUser().getEmployeeIdDg2() < 0)
+					&& interv.getMasterInterventionIdTemp() != 0) {
+				List<Intervention> mIntervLst = interventionRepository
+						.findAllByIdDg2(interv.getMasterInterventionIdTemp());
+				for (Intervention masterInterv : mIntervLst) {
+					if (masterInterv.getUser() != null) {
+						interv.setUser(masterInterv.getUser());
+						interv = interventionRepository.saveAndFlush(interv);
+					}
+				}
+			}
+		}
+
 		return count;
 	}
 

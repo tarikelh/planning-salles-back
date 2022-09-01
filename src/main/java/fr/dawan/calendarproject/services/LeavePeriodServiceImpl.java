@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LeavePeriodDg2Dto;
 import fr.dawan.calendarproject.dto.LeavePeriodDto;
 import fr.dawan.calendarproject.entities.LeavePeriod;
@@ -65,6 +66,16 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 		}
 
 		return result;
+	}
+	
+	@Override
+	public CountDto count(String type) {
+		if (UserType.contains(type)) {
+			UserType userType = UserType.valueOf(type);
+			return new CountDto(leavePeriodRepository.countByUserType(userType));
+		}
+
+		return null; // Exception
 	}
 
 	@Override

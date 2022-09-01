@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.services;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.CourseDG2Dto;
+import fr.dawan.calendarproject.dto.HistoricDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
+import fr.dawan.calendarproject.dto.TrainingDG2Dto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
@@ -372,6 +376,7 @@ public class UserServiceImpl implements UserService {
 			for (UserDG2Dto cDG2 : lResJson) {
 
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
+				userImported.setLastName(userImported.getLastName().toUpperCase());
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
 
 				try {
@@ -553,8 +558,8 @@ public class UserServiceImpl implements UserService {
 
 				User u = new User();
 				u.setIdDg2(-1 * lo.getId());
-				
-				if (!userRepository.findByIdDg2(u.getId()).isPresent()) {
+
+				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
 					u.setEmail("not-assigned-" + lo.getCity() + "@dawan.fr");
 					u.setPassword(HashTools.hashSHA512("NoTaSsIgNeDdAwAn!"));
@@ -564,15 +569,74 @@ public class UserServiceImpl implements UserService {
 					u.setFirstName("NOT ASSIGNED");
 					u.setLastName(lo.getCity());
 					u.setEmployeeIdDg2(-1 * lo.getId());
-					
+
 					u = userRepository.saveAndFlush(u);
 					result.add(userMapper.userToAdvancedUserDto(u));
 
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 
 		return result;
+	}
+
+	@Override
+	public HistoricDto fetchUserHistoric(long id, String email, String password) {
+		HistoricDto historic = null;
+		try {
+			historic = new HistoricDto(fetchAnimatedTraning(id, email, password),
+					fetchFollowedTraning(id, email, password));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return historic;
+	}
+
+	@Override
+	public List<CourseDG2Dto> fetchAnimatedTraning(long id, String email, String password) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<CourseDG2Dto> courseDG2Dtos = new ArrayList<>();
+
+		URI url = new URI("https://dawan.org/api2/planning/animated-trainings/" + id);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
+			String json = repWs.getBody();
+
+			courseDG2Dtos = objectMapper.readValue(json, new TypeReference<List<CourseDG2Dto>>() {
+			});
+		}
+		return courseDG2Dtos;
+	}
+
+	@Override
+	public List<TrainingDG2Dto> fetchFollowedTraning(long id, String email, String password) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<TrainingDG2Dto> trainingDG2Dtos = new ArrayList<>();
+
+		URI url = new URI("https://dawan.org/api2/planning/trainings-followed/" + id);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+
+		HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+		if (repWs.getStatusCode() == HttpStatus.OK) {
+			String json = repWs.getBody();
+
+			trainingDG2Dtos = objectMapper.readValue(json, new TypeReference<List<TrainingDG2Dto>>() {
+			});
+		}
+		return trainingDG2Dtos;
 	}
 }

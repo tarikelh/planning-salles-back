@@ -22,10 +22,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import fr.dawan.calendarproject.enums.UserCompany;
 import fr.dawan.calendarproject.enums.UserType;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -244,7 +248,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", location=" + location
-				+ ", email=" + email + ", password=" + password + ", skills=" + skills + ", type=" + type + ", company="
+				+ ", email=" + email + ", password=" + password + ", type=" + type + ", company="
 				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
 	}
 
