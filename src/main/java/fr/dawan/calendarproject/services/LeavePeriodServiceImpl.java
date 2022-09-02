@@ -44,40 +44,73 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 	@Autowired
 	private UserRepository userRepository;
 
+	/**
+	 * Fetches all of the existing leave periods.
+	 * 
+	 * @return result Returns a list of leave periods.
+	 *
+	 */
+	
 	@Override
 	public List<LeavePeriodDto> getAllLeavePeriods() {
-		List<LeavePeriod> leavePeriod = leavePeriodRepository.findAll();
 
-		List<LeavePeriodDto> result = new ArrayList<>();
-
-		for (LeavePeriod lp : leavePeriod) {
-			result.add(leavePeriodMapper.leavePeriodToLeavePeriodDto(lp));
-		}
-		return result;
+		return leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(leavePeriodRepository.findAll());
 	}
 
+	/**
+	 * Fetches all of the existing leave periods for a single user.
+	 * 
+	 * @param id An unique Integer used to identify each the leave periods
+	 *               involving a specific user.
+	 * 
+	 * @return List<LeavePeriodDto> Returns a list of leave periods.
+	 *
+	 */
+	
 	@Override
 	public List<LeavePeriodDto> getAllLeavePeriodsByEmployeeId(long id) {
-		List<LeavePeriod> leavePeriod = leavePeriodRepository.findByUserEmployeeId(id);
 
-		List<LeavePeriodDto> result = new ArrayList<>();
-		for (LeavePeriod lp : leavePeriod) {
-			result.add(leavePeriodMapper.leavePeriodToLeavePeriodDto(lp));
-		}
-
-		return result;
+		return leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(leavePeriodRepository.findByUserEmployeeId(id));
 	}
+	
+	/**
+	 * Counts the number of leave periods for a specific type of user.
+	 * 
+	 * @param type A String representing the user's type to search for a
+	 *               specific leave period.
+	 * 
+	 * @return CountDto Returns the number of leave periods, according to the type
+	 *         of user.
+	 *
+	 */
 	
 	@Override
 	public CountDto count(String type) {
+		CountDto countDto;
 		if (UserType.contains(type)) {
-			UserType userType = UserType.valueOf(type);
-			return new CountDto(leavePeriodRepository.countByUserType(userType));
+			countDto = new CountDto(leavePeriodRepository.countByUserType(UserType.valueOf(type)));
 		}
-
-		return null; // Exception
+		else {
+			countDto = null;
+		}
+		return countDto;
 	}
 
+	/**
+	 * Fetches all leave periods in the Dawan API for an interval [firstDay, lastDay].
+	 * 
+	 * @param email A String defining a user's email.
+	 * @param pwd   A String defining a user's password.
+	 * @param firstDay A String defining the first day of the interval.
+	 * @param lastDay   A String defining the last day the interval.
+	 * 
+	 * @exception Exception Returns an exception if the request fails.
+	 * 
+	 * @return count An integer the number of leave periods 
+	 * 			fetched form Dawan API if there isn't an exception
+	 *
+	 */
+	
 	@Override
 	public int fetchAllDG2LeavePeriods(String email, String password, String firstDay, String lastDay)
 			throws Exception {
@@ -123,20 +156,26 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 		return count;
 	}
 
+	/**
+	 * Fetches all leave periods for an type of user and an interval [dateStart, dateEnd].
+	 * 
+	 * @param type		A String defining the type of user.
+	 * @param dateStart A LocalDate defining the start day of the leave period.
+	 * @param dateEnd   A LocalDate defining the end day of the leave period.
+	 * 
+	 * @return List<LeavePeriodDto> Returns a list of leave periods
+	 *
+	 */
+	
 	@Override
 	public List<LeavePeriodDto> getBetween(String type, LocalDate dateStart, LocalDate dateEnd) {
 		List<LeavePeriodDto> iDtos = new ArrayList<>();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<LeavePeriod> leavePeriods = leavePeriodRepository.getAllByUserTypeAndDates(userType, dateStart,
-					dateEnd);
-			for (LeavePeriod i : leavePeriods)
-				iDtos.add(leavePeriodMapper.leavePeriodToLeavePeriodDto(i));
-
-			return iDtos;
-		} else {
-			return iDtos;
+				dateEnd);
+			iDtos = leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(leavePeriods);
 		}
-
+		return iDtos;
 	}
 }
