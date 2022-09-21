@@ -20,6 +20,8 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
+	private long taskIdDg2;
+	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@Column(nullable= true)
 	private User user;
@@ -48,10 +50,11 @@ public class Task {
 
 
 
-	public Task(long id, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate,
+	public Task(long id, long taskIdDg2, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate,
 			int version) {
 		super();
 		this.id = id;
+		this.taskIdDg2 = taskIdDg2;
 		this.user = user;
 		this.intervention = intervention;
 		this.slug = slug;
@@ -73,6 +76,15 @@ public class Task {
 	}
 
 
+	public long getTaskIdDg2() {
+		return taskIdDg2;
+	}
+
+
+
+	public void setTaskIdDg2(long taskIdDg2) {
+		this.taskIdDg2 = taskIdDg2;
+	}
 
 	public User getUser() {
 		return user;
@@ -148,7 +160,7 @@ public class Task {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(beginDate, endDate, id, intervention, slug, user, version);
+		return Objects.hash(beginDate, endDate, id, intervention, slug, taskIdDg2, user, version);
 	}
 
 
@@ -164,16 +176,22 @@ public class Task {
 		Task other = (Task) obj;
 		return Objects.equals(beginDate, other.beginDate) && Objects.equals(endDate, other.endDate) && id == other.id
 				&& Objects.equals(intervention, other.intervention) && Objects.equals(slug, other.slug)
-				&& Objects.equals(user, other.user) && version == other.version;
+				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(user, other.user) && version == other.version;
 	}
 
 
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", user=" + user + ", intervention=" + intervention + ", slug=" + slug
-				+ ", beginDate=" + beginDate + ", endDate=" + endDate + ", version=" + version + "]";
+		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", user=" + user + ", intervention=" + intervention
+				+ ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", version=" + version + "]";
 	}
+
+
+
+	
+
+
 
 	
 	

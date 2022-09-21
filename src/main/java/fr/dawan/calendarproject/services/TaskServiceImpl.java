@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.services;
 
+import java.net.URI;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,10 +11,19 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.TaskDg2Dto;
 import fr.dawan.calendarproject.dto.TaskDto;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -30,6 +41,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private TaskMapper taskMapper;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	
 	/**
@@ -182,7 +196,7 @@ public class TaskServiceImpl implements TaskService{
 	/**
 	 * Checks whether a newly registered task is valid and throws an exception if not
 	 * 
-	 * @param l An object representing an Task.
+	 * @param taskDto An object representing a Task.
 	 * 
 	 */
 	public void checkUniqueness(TaskDto taskDto) {
@@ -204,5 +218,36 @@ public class TaskServiceImpl implements TaskService{
 			
 		}
 		
+	}
+
+	/**
+	 * Fetches all tasks from dawan API and persists them into the database
+	 * 
+	 * @Param email A string defining a user email
+	 * @Param pwd A string defining a user password
+	 * 
+	 * @exception Exception returns an exception if the request fails
+	 */
+	@Override
+	public void fetchAllDG2Task(String email, String password, LocalDate dateStart, LocalDate dateEnd) throws Exception {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		URI url = new URI(String.format("https://dawan.org/api2/planning/tasks/+" + "%s/%s", dateStart.toString(), dateEnd.toString() ));
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X-AUTH-TOKEN", email + ":" + password);
+		
+		ResponseEntity<String> repWs = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		
+		
+		if(repWs.getStatusCode() == HttpStatus.OK) {
+			
+			String json = repWs.getBody();
+			TaskDg2Dto[] responseArray = objectMapper.readValue(json, TaskDg2Dto[].class);
+			
+			
+			
+		}
 	}
 }
