@@ -27,5 +27,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	List<Task> findAllBySlugContaining(String slug);
 	
+	List<Task> findAllBySlugEquals(String slug);
+	
 	
 }

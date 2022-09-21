@@ -16,7 +16,7 @@ public interface TaskService {
 	
 	List<TaskDto> getAllBySlugLike(String search);
 	
-	TaskDto getTaskById();
+	TaskDto getTaskById(long id);
 	
 	CountDto count(String search);
 	
