@@ -26,10 +26,14 @@ import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.TaskDg2Dto;
 import fr.dawan.calendarproject.dto.TaskDto;
+import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
+import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.TaskMapper;
+import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
+import fr.dawan.calendarproject.repositories.UserRepository;
 
 @Service
 @Transactional
@@ -42,6 +46,12 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private TaskMapper taskMapper;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private InterventionRepository interventionRepository;
 	
 	@Autowired
 	private RestTemplate restTemplate;
@@ -229,6 +239,7 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 * @exception Exception returns an exception if the request fails
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public int fetchAllDG2Task(String email, String password, LocalDate dateStart, LocalDate dateEnd) throws Exception {
 		
@@ -254,9 +265,25 @@ public class TaskServiceImpl implements TaskService{
 			
 			
 			for(TaskDg2Dto taskDg2 : tasksResultJson) {
-				
-				
+			
+				taskDg2.setBeginAt(taskDg2.getBeginAt().substring(0, 10));
+				taskDg2.setFinishAt(taskDg2.getFinishAt().substring(0, 10));
+					
 				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
+				
+				
+				Optional<List<Intervention>> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
+				
+				if(inter.isPresent()) {
+					task.setIntervention(inter.get().get(0));
+				}
+				 
+				Optional<User> user = userRepository.findByEmployeeIdDg2(taskDg2.getEmployeeId());
+				
+				if(user.isPresent()) {
+					task.setUser(user.get());
+				}
+
 				
 				Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
 				

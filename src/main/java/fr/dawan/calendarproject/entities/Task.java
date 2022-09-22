@@ -23,11 +23,9 @@ public class Task {
 	private long taskIdDg2;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@Column(nullable= true)
 	private User user;
 
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@Column(nullable = true)
 	private Intervention intervention;
 	
 	@Column(nullable = false)

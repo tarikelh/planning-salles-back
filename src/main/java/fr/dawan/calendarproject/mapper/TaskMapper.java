@@ -7,9 +7,10 @@ import fr.dawan.calendarproject.dto.TaskDg2Dto;
 import fr.dawan.calendarproject.dto.TaskDto;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class })
+@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class, TaskRepository.class })
 public interface TaskMapper {
 
 	
@@ -20,8 +21,8 @@ public interface TaskMapper {
 	
 	@Mapping(target="user", ignore=true )
 	@Mapping(target="intervention", ignore=true )
-	@Mapping(target = "beginDate", source = "beginDate", dateFormat = "yyyy-MM-dd")
-	@Mapping(target = "endDate", source = "endDate", dateFormat = "yyyy-MM-dd")
+//	@Mapping(target="beginDate", source = "beginDate", dateFormat = "yyyy-MM-dd")
+//	@Mapping(target="endDate", source = "endDate", dateFormat = "yyyy-MM-dd")
 	Task taskDtoToTask(TaskDto taskDto);
 	
 	
@@ -30,6 +31,8 @@ public interface TaskMapper {
 	@Mapping(target="user", ignore = true)
 	@Mapping(target="intervention", ignore = true)
 	@Mapping(target="slug", source="registrationSlug")
+//	@Mapping(target="beginDate", source="beginAt")
+//	@Mapping(target="endDate", source="finishAt")
 	@Mapping(target="beginDate", source="beginAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="endDate", source="finishAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="version", ignore = true)

@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @SuppressWarnings("serial")
 public class TaskDg2Dto implements Serializable{
@@ -15,9 +14,9 @@ public class TaskDg2Dto implements Serializable{
 	
 	private String registrationSlug;
 	
-	private LocalDate beginAt;
+	private String beginAt;
 	
-	private LocalDate finishAt;
+	private String finishAt;
 	
 	private long interventionId;
 	
@@ -26,8 +25,8 @@ public class TaskDg2Dto implements Serializable{
 	public TaskDg2Dto() {
 	}
 
-	public TaskDg2Dto(long taskId, long employeeId, long personId, String registrationSlug, LocalDate beginAt,
-			LocalDate finishAt, long interventionId) {
+	public TaskDg2Dto(long taskId, long employeeId, long personId, String registrationSlug, String beginAt,
+			String finishAt, long interventionId) {
 		super();
 		this.taskId = taskId;
 		this.employeeId = employeeId;
@@ -70,19 +69,19 @@ public class TaskDg2Dto implements Serializable{
 		this.registrationSlug = registrationSlug;
 	}
 
-	public LocalDate getBeginAt() {
+	public String getBeginAt() {
 		return beginAt;
 	}
 
-	public void setBeginAt(LocalDate beginAt) {
+	public void setBeginAt(String beginAt) {
 		this.beginAt = beginAt;
 	}
 
-	public LocalDate getFinishAt() {
+	public String getFinishAt() {
 		return finishAt;
 	}
 
-	public void setFinishAt(LocalDate finishAt) {
+	public void setFinishAt(String finishAt) {
 		this.finishAt = finishAt;
 	}
 
