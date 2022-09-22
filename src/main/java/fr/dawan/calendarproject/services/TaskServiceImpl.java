@@ -215,7 +215,7 @@ public class TaskServiceImpl implements TaskService{
 		Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
 		
 		
-		if(duplicates.isPresent()) {
+		if(duplicates.isPresent() && taskDto.getId() == 0) {
 			
 			Set<APIError> errors = new HashSet<>();
 		
