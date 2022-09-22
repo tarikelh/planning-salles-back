@@ -18,6 +18,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	Optional<Task> findById(long id);
 	
+	Optional<Task> findByTaskIdDg2(long taskIdDg2);
+	
 	List<Task> findByUserId(long userId);
 	
 	List<Task> findByInterventionId(long interventionId);
@@ -27,7 +29,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	List<Task> findAllBySlugContaining(String slug);
 	
-	List<Task> findAllBySlugEquals(String slug);
+	Optional<List<Task>> findBySlugOrTaskIdDg2(String slug, long taskIdDg2);
 	
 	
 }

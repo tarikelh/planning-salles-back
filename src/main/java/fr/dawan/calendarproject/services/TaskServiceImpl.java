@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.TaskDg2Dto;
@@ -201,14 +202,14 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	public void checkUniqueness(TaskDto taskDto) {
 		
-		List<Task> duplicates = taskRepository.findAllBySlugEquals(taskDto.getSlug());
+		Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
 		
 		
-		if(!duplicates.isEmpty()) {
+		if(duplicates.isPresent()) {
 			
 			Set<APIError> errors = new HashSet<>();
 		
-			String instanceClass = duplicates.get(0).getClass().toString();
+			String instanceClass = duplicates.get().get(0).getClass().toString();
 			String path = "api/task";
 			
 			
@@ -229,7 +230,10 @@ public class TaskServiceImpl implements TaskService{
 	 * @exception Exception returns an exception if the request fails
 	 */
 	@Override
-	public void fetchAllDG2Task(String email, String password, LocalDate dateStart, LocalDate dateEnd) throws Exception {
+	public int fetchAllDG2Task(String email, String password, LocalDate dateStart, LocalDate dateEnd) throws Exception {
+		
+		List<TaskDg2Dto> tasksResultJson;
+		int count = 0;
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
@@ -246,8 +250,34 @@ public class TaskServiceImpl implements TaskService{
 			String json = repWs.getBody();
 			TaskDg2Dto[] responseArray = objectMapper.readValue(json, TaskDg2Dto[].class);
 			
+			tasksResultJson = Arrays.asList(responseArray);
 			
 			
+			for(TaskDg2Dto taskDg2 : tasksResultJson) {
+				
+				
+				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
+				
+				Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
+				
+				if(!duplicates.isPresent()) {
+					
+					try {
+						taskRepository.saveAndFlush(task);
+						count++;
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}
+			
+		}else {
+			throw new Exception("ResponseEntity from the webservice WDG2 not correct");
 		}
+		
+		return count;
 	}
 }
