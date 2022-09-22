@@ -237,7 +237,7 @@ public class TaskServiceImpl implements TaskService{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		
-		URI url = new URI(String.format("https://dawan.org/api2/planning/tasks/+" + "%s/%s", dateStart.toString(), dateEnd.toString() ));
+		URI url = new URI(String.format("https://dawan.org/api2/planning/tasks/" + "%s/%s", dateStart.toString(), dateEnd.toString() ));
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + password);
