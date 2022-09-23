@@ -17,6 +17,8 @@ public interface TaskService {
 	
 	List<TaskDto> getAllBySlugLike(String search);
 	
+	List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId);
+	
 	int fetchAllDG2Task(String email, String password, LocalDate dateStart, LocalDate dateEnd) throws Exception;
 	
 	TaskDto getTaskById(long id);

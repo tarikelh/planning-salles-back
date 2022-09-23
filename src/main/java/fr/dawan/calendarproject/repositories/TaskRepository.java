@@ -27,9 +27,12 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	@Query("FROM Task t WHERE t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end")
 	List<Task> getAllBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 	
+	@Query("FROM Task t WHERE (t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end) AND t.user.id = :userId")
+	List<Task> getAllByUserIdBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd, @Param("userId") long userId);
+	
 	List<Task> findAllBySlugContaining(String slug);
 	
-	Optional<List<Task>> findBySlugOrTaskIdDg2(String slug, long taskIdDg2);
+	List<Task> findBySlugOrTaskIdDg2(String slug, long taskIdDg2);
 	
 	
 }

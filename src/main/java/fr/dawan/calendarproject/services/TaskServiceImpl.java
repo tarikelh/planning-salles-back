@@ -212,14 +212,14 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	public void checkUniqueness(TaskDto taskDto) {
 		
-		Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
+		List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
 		
 		
-		if(duplicates.isPresent() && taskDto.getId() == 0) {
+		if(!duplicates.isEmpty () && taskDto.getId() == 0) {
 			
 			Set<APIError> errors = new HashSet<>();
 		
-			String instanceClass = duplicates.get().get(0).getClass().toString();
+			String instanceClass = duplicates.get(0).getClass().toString();
 			String path = "api/task";
 			
 			
@@ -272,10 +272,10 @@ public class TaskServiceImpl implements TaskService{
 				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
 				
 				
-				Optional<List<Intervention>> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
+				List<Intervention> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
 				
-				if(inter.isPresent()) {
-					task.setIntervention(inter.get().get(0));
+				if(inter.isEmpty()) {
+					task.setIntervention(inter.get(0));
 				}
 				 
 				Optional<User> user = userRepository.findByEmployeeIdDg2(taskDg2.getEmployeeId());
@@ -285,9 +285,9 @@ public class TaskServiceImpl implements TaskService{
 				}
 
 				
-				Optional<List<Task>> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
+				List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
 				
-				if(!duplicates.isPresent()) {
+				if(!duplicates.isEmpty()) {
 					
 					try {
 						taskRepository.saveAndFlush(task);
@@ -306,5 +306,26 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		return count;
+	}
+
+
+	/**
+	 * Fetches all tasks from dawan API and persists them into the database
+	 * 
+	 * @Param start A string defining a user email
+	 * @Param end A string defining a user password
+	 * @Param userId A long 
+	 * 
+	 * @exception Exception returns an exception if the request fails
+	 */
+	@Override
+	public List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId ) {
+		
+		if(userId != 0) {
+			return convertTaskListToTaskDtoList(taskRepository.getAllByUserIdBetweenDates(start, end, userId));
+		}else{
+			return convertTaskListToTaskDtoList(taskRepository.getAllBetweenDates(start, end));
+		}
+					
 	}
 }
