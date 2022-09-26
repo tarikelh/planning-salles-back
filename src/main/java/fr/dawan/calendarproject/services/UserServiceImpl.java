@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.services;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
