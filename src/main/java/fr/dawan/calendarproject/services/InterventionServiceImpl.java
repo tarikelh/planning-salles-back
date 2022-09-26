@@ -728,7 +728,7 @@ public class InterventionServiceImpl implements InterventionService {
 			InterventionDG2Dto[] resArray = objectMapper.readValue(json, InterventionDG2Dto[].class);
 
 			lResJson = Arrays.asList(resArray);
-
+			//TODO Enum.parse of String instead of test case on String
 			for (InterventionDG2Dto i : lResJson) {
 				String typeDg2 = i.getType();
 
