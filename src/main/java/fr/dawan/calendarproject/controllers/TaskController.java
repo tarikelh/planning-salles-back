@@ -1,6 +1,7 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,12 +42,15 @@ public class TaskController {
 	@GetMapping( value = "/{id}", produces = "application/json")
 	public ResponseEntity<Object> getById(@PathVariable(value = "id") long id){
 
+		ResponseEntity<Object> result = null;
+
 		TaskDto task = taskService.getTaskById(id);
 		if(task != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(task);
+			result = ResponseEntity.status(HttpStatus.OK).body(task);
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task with id : " + id + " not found");
+			result = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task with id : " + id + " not found");
 		}
+		return result; 
 		
 	}
 	
@@ -88,26 +92,36 @@ public class TaskController {
 	@PostMapping(consumes="application/json" , produces= "application/json")
 	public ResponseEntity<Object> saveTask(@RequestBody TaskDto taskDto){
 		
+		ResponseEntity<Object> result = null;
+
+		
 		TaskDto response = taskService.saveOrUpdate(taskDto);
 
 		if(response != null) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+			result = ResponseEntity.status(HttpStatus.CREATED).body(response);
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task cannot be created. Either it already exists or fields are incorrectly filled");
+			result = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task cannot be created. Either it already exists or fields are incorrectly filled");
 		}
+		
+		return result;
 	}
 	
 	//PUT
 	@PutMapping(consumes="application/json", produces="application/json")
 	public ResponseEntity<Object> updateTask(@RequestBody TaskDto taskDto) {
 		
+		ResponseEntity<Object> result = null;
+
+		
 		TaskDto response = taskService.saveOrUpdate(taskDto);
 
 		if(response != null) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+			result = ResponseEntity.status(HttpStatus.CREATED).body(response);
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not update selected task");
+			result =  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not update selected task");
 		}
+
+		return result;
 		
 	}
 	
@@ -115,12 +129,16 @@ public class TaskController {
 	@DeleteMapping(value= "/{id}")
 	public ResponseEntity<String> deleteById(@PathVariable("id") long id){
 		
+		ResponseEntity<String> result = null;
+
 		try {
 			taskService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.OK).body("Task with id : " + id + " succesfully deleted");
+			result = ResponseEntity.status(HttpStatus.OK).body("Task with id : " + id + " succesfully deleted");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task with id : " + id );
+			result = ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find task with id : " + id );
 		}
+		
+		return result;
 	}
 	
 	
@@ -130,17 +148,21 @@ public class TaskController {
 													@PathVariable("start") String start, 
 													@PathVariable("end") String end  ){
 		
+		ResponseEntity<String> result = null;
+		
 		String auth = headers.get("x-auth-token");
 		try {
 			
 			int count = taskService.fetchAllDG2Task(auth.split(":")[0], auth.split(":")[1] , LocalDate.parse(start), LocalDate.parse(end));
-			return ResponseEntity.status(HttpStatus.OK).body("Successfully imported " + count + " tasks ");
+			result = ResponseEntity.status(HttpStatus.OK).body("Successfully imported " + count + " tasks ");
 			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while fetching data from the webservice");
 		}
+		
+		return result;
 	}
 	
 	//GET
@@ -149,12 +171,14 @@ public class TaskController {
 															@PathVariable("end") String end, 
 															@PathVariable(value="userId", required=false) Optional<Long> userId){
 		
-		if(userId.isPresent()) {
-			return taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), userId.get());
-		}else {
-			return taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), 0);
-		}
+		List<TaskDto> result = new ArrayList<>();
 		
+		if(userId.isPresent()) {
+			result = taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), userId.get());
+		}else {
+			result = taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), 0);
+		}
+		return result;
 	}
 	
 	

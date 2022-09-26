@@ -252,7 +252,9 @@ public class TaskServiceImpl implements TaskService{
 				
 				List<Intervention> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
 				
-				if(inter.isEmpty()) {
+				
+				//TODO Ask for Slug of the intervention associated to the task
+				if(!inter.isEmpty()) {
 					task.setIntervention(inter.get(0));
 				}
 				 
@@ -265,7 +267,7 @@ public class TaskServiceImpl implements TaskService{
 				
 				List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
 				
-				if(!duplicates.isEmpty()) {
+				if(duplicates.isEmpty()) {
 					
 					try {
 						taskRepository.saveAndFlush(task);
