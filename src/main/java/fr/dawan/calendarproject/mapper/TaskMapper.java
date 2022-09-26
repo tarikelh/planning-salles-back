@@ -1,5 +1,8 @@
 package fr.dawan.calendarproject.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -21,8 +24,6 @@ public interface TaskMapper {
 	
 	@Mapping(target="user", ignore=true )
 	@Mapping(target="intervention", ignore=true )
-//	@Mapping(target="beginDate", source = "beginDate", dateFormat = "yyyy-MM-dd")
-//	@Mapping(target="endDate", source = "endDate", dateFormat = "yyyy-MM-dd")
 	Task taskDtoToTask(TaskDto taskDto);
 	
 	
@@ -31,10 +32,12 @@ public interface TaskMapper {
 	@Mapping(target="user", ignore = true)
 	@Mapping(target="intervention", ignore = true)
 	@Mapping(target="slug", source="registrationSlug")
-//	@Mapping(target="beginDate", source="beginAt")
-//	@Mapping(target="endDate", source="finishAt")
 	@Mapping(target="beginDate", source="beginAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="endDate", source="finishAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="version", ignore = true)
 	Task taskDg2DtoToTask( TaskDg2Dto taskDg2Dto );
+	
+	
+	List<TaskDto> taskListToTaskDtoList(List<Task> tasks);
+	
 }

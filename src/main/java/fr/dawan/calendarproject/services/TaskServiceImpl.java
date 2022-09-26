@@ -64,10 +64,8 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	@Override
 	public List<TaskDto> getAllTask() {
-
-		List<Task> tasks = taskRepository.findAll();
 		
-		return convertTaskListToTaskDtoList(tasks);			
+		return taskMapper.taskListToTaskDtoList(taskRepository.findAll());			
 
 	}
 	
@@ -80,10 +78,8 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	@Override
 	public List<TaskDto> getAllTaskForUserId(long userId) {
-
-		List<Task> tasks = taskRepository.findByUserId(userId);
 		
-		return convertTaskListToTaskDtoList(tasks);			
+		return taskMapper.taskListToTaskDtoList(taskRepository.findByUserId(userId));			
 	}
 	
 	
@@ -95,10 +91,8 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	@Override
 	public List<TaskDto> getAllTaskForInternventionId(long interventionId) {
-
-		List<Task> tasks = taskRepository.findByInterventionId(interventionId);
 		
-		return convertTaskListToTaskDtoList(tasks);			
+		return taskMapper.taskListToTaskDtoList(taskRepository.findByInterventionId(interventionId));			
 	}
 	
 	
@@ -111,9 +105,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public List<TaskDto> getAllBySlugLike(String search) {
 
-		List<Task> tasks = taskRepository.findAllBySlugContaining(search);
-
-		return convertTaskListToTaskDtoList(tasks);
+		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContaining(search));
 	}
 	
 	
@@ -187,21 +179,7 @@ public class TaskServiceImpl implements TaskService{
 		taskRepository.deleteById(id);
 	}
 	
-	/**
-	 * Converts a list of Task to a list of TaskDto
-	 * 
-	 * @param tasks : List of Task to be converted
-	 * @return List<TaskDto> : List of converted TaskDto
-	 */
-	public List<TaskDto> convertTaskListToTaskDtoList(List<Task> tasks){
-		
-		List<TaskDto> result = new ArrayList<>(); 
-		for (Task task : tasks) {
-			
-			result.add(taskMapper.taskToTaskDto(task));
-		}
-		return result;
-	}
+	
 
 	
 	/**
@@ -321,11 +299,15 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId ) {
 		
+		List<TaskDto> result = new ArrayList<>();
+		
 		if(userId != 0) {
-			return convertTaskListToTaskDtoList(taskRepository.getAllByUserIdBetweenDates(start, end, userId));
+			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllByUserIdBetweenDates(start, end, userId));
 		}else{
-			return convertTaskListToTaskDtoList(taskRepository.getAllBetweenDates(start, end));
+			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllBetweenDates(start, end));
 		}
+		
+		return result;
 					
 	}
 }
