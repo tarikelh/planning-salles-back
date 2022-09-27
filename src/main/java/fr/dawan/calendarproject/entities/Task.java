@@ -37,6 +37,9 @@ public class Task {
 	@Column(nullable= false, columnDefinition="DATE")
 	private LocalDate endDate;
 	
+	@Column(nullable=false)
+	private double duration;
+	
 	@Version
 	private int version;
 	
@@ -48,7 +51,7 @@ public class Task {
 
 
 
-	public Task(long id, long taskIdDg2, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate,
+	public Task(long id, long taskIdDg2, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate, double duration, 
 			int version) {
 		super();
 		this.id = id;
@@ -58,6 +61,7 @@ public class Task {
 		this.slug = slug;
 		this.beginDate = beginDate;
 		this.endDate = endDate;
+		this.duration = duration;
 		this.version = version;
 	}
 
@@ -143,6 +147,15 @@ public class Task {
 	}
 
 
+	public double getDuration() {
+		return duration;
+	}
+
+	public void setDuration(double duration) {
+		this.duration = duration;
+	}
+
+
 
 	public int getVersion() {
 		return version;
@@ -154,13 +167,10 @@ public class Task {
 		this.version = version;
 	}
 
-
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(beginDate, endDate, id, intervention, slug, taskIdDg2, user, version);
+		return Objects.hash(beginDate, duration, endDate, id, intervention, slug, taskIdDg2, user, version);
 	}
-
 
 
 	@Override
@@ -172,29 +182,19 @@ public class Task {
 		if (getClass() != obj.getClass())
 			return false;
 		Task other = (Task) obj;
-		return Objects.equals(beginDate, other.beginDate) && Objects.equals(endDate, other.endDate) && id == other.id
+		return Objects.equals(beginDate, other.beginDate)
+				&& Double.doubleToLongBits(duration) == Double.doubleToLongBits(other.duration)
+				&& Objects.equals(endDate, other.endDate) && id == other.id
 				&& Objects.equals(intervention, other.intervention) && Objects.equals(slug, other.slug)
 				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(user, other.user) && version == other.version;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", user=" + user + ", intervention=" + intervention
-				+ ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", version=" + version + "]";
+				+ ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", duration=" + duration
+				+ ", version=" + version + "]";
 	}
-
-
-
-	
-
-
-
-	
-	
-	
-	
 
 		
 }

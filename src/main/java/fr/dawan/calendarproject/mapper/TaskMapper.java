@@ -12,13 +12,10 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class, TaskRepository.class })
+@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class, TaskRepository.class, UserMapper.class })
 public interface TaskMapper {
-
 	
-	@Mapping(target="userId", source="user.id" )
 	@Mapping(target="interventionId", source="intervention.id" )
-	@Mapping(target="employeeIdDg2", source="user.employeeIdDg2")
 	TaskDto taskToTaskDto(Task task);
 	
 	
@@ -35,6 +32,7 @@ public interface TaskMapper {
 	@Mapping(target="beginDate", source="beginAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="endDate", source="finishAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="version", ignore = true)
+	@Mapping(target="duration", ignore = true)
 	Task taskDg2DtoToTask( TaskDg2Dto taskDg2Dto );
 	
 	

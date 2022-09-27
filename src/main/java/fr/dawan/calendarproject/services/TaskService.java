@@ -25,6 +25,8 @@ public interface TaskService {
 	
 	CountDto count(String search);
 	
+	CountDto countByUserType(String type);
+	
 	TaskDto saveOrUpdate(TaskDto taskDto);
 	
 	void deleteById(long id);

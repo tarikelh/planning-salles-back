@@ -182,4 +182,12 @@ public class TaskController {
 	}
 	
 	
+	//GET
+	@GetMapping( value = "/count/userType/{type}", produces = "application/json")
+	public CountDto getCountByUserType(@PathVariable(value="type") String type) {
+		
+		return taskService.countByUserType(type);
+	}
+		
+	
 }

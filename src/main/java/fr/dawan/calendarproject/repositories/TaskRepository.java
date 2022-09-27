@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Task;
+import fr.dawan.calendarproject.enums.UserType;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
@@ -29,6 +30,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	@Query("FROM Task t WHERE (t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end) AND t.user.id = :userId")
 	List<Task> getAllByUserIdBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd, @Param("userId") long userId);
+	
+	List<Task> findByUserType(UserType type);
 	
 	List<Task> findAllBySlugContaining(String slug);
 	

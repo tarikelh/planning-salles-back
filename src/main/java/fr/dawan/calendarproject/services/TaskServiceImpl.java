@@ -2,6 +2,7 @@ package fr.dawan.calendarproject.services;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import fr.dawan.calendarproject.dto.TaskDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.entities.User;
+import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.TaskMapper;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -134,7 +136,7 @@ public class TaskServiceImpl implements TaskService{
 	 * Counts the number of Tasks containing the value passed in String search
 	 * 
 	 * @param Search : A string of the value which is searched
-	 * @return CountDto : Returns the number of locations that match with the search word
+	 * @return CountDto : Returns the number of tasks that match with the search word
 	 * 
 	 */
 	@Override
@@ -246,7 +248,7 @@ public class TaskServiceImpl implements TaskService{
 			
 				taskDg2.setBeginAt(taskDg2.getBeginAt().substring(0, 10));
 				taskDg2.setFinishAt(taskDg2.getFinishAt().substring(0, 10));
-					
+				
 				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
 				
 				
@@ -263,6 +265,10 @@ public class TaskServiceImpl implements TaskService{
 				if(user.isPresent()) {
 					task.setUser(user.get());
 				}
+				
+				long duration = ChronoUnit.DAYS.between(task.getBeginDate(), task.getEndDate());
+				task.setDuration(duration == 0 ? 1 : duration);
+				
 
 				
 				List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
@@ -312,4 +318,21 @@ public class TaskServiceImpl implements TaskService{
 		return result;
 					
 	}
+
+	/**
+	 * 
+	 * Counts the number of Tasks having User type passed as parameter
+	 * 
+	 * @param type : UserType value that corresponds to the type of users we want to count tasks
+	 * @return CountDto : Returns the number of tasks that have the UserType passed
+	 * 
+	 */
+	@Override
+	public CountDto countByUserType(String type) {
+		
+		UserType userType = Enum.valueOf(UserType.class, type);
+		
+		return new CountDto(taskRepository.findByUserType(userType).size());
+	}
+	
 }
