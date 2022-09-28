@@ -75,7 +75,7 @@ public class User {
 	
 	//ToDo check if we need getter and setter on dto
 	@OneToMany(mappedBy = "student")
-	Set<InterventionsFollowed> interventionsFollowed;
+	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version
 	private int version;
@@ -87,7 +87,7 @@ public class User {
 
 	public User(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, Location location, String email,
 			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, 
-			Set<InterventionsFollowed> interventionsFollowed, int version) {
+			Set<InterventionFollowed> interventionsFollowed, int version) {
 		setId(id);
 		setIdDg2(idDg2);
 		setEmployeeIdDg2(employeeIdDg2);
@@ -233,11 +233,11 @@ public class User {
 		this.type = UserType.valueOf(type);
 	}
 
-	public Set<InterventionsFollowed> getInterventionsFollowed() {
+	public Set<InterventionFollowed> getInterventionsFollowed() {
 		return interventionsFollowed;
 	}
 
-	public void setInterventionsFollowed(Set<InterventionsFollowed> interventionsFollowed) {
+	public void setInterventionsFollowed(Set<InterventionFollowed> interventionsFollowed) {
 		this.interventionsFollowed = interventionsFollowed;
 	}
 
@@ -280,14 +280,6 @@ public class User {
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
 				&& Objects.equals(skills, other.skills) && type == other.type;
 	}
-
-	
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", location=" + location
-//				+ ", email=" + email + ", password=" + password + ", type=" + type + ", company="
-//				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
-//	}
 
 	@Override
 	public String toString() {

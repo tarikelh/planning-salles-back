@@ -87,7 +87,7 @@ public class Intervention implements Cloneable {
 	
 	//ToDo check if we need getter and setter on dto
 	@OneToMany(mappedBy = "intervention")
-	Set<InterventionsFollowed> interventionsFollowed;
+	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version
 	private int version;
@@ -99,7 +99,7 @@ public class Intervention implements Cloneable {
 			Course course, User user, int attendeesCount, @NotNull InterventionStatus type, boolean validated,
 			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd,
 			Intervention masterIntervention, boolean isMaster, long masterInterventionIdTemp, String customers,
-			Set<InterventionsFollowed> interventionsFollowed, int version) {
+			Set<InterventionFollowed> interventionsFollowed, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
@@ -293,11 +293,11 @@ public class Intervention implements Cloneable {
 		return getUser().getId();
 	}
 	
-	public Set<InterventionsFollowed> getInterventionsFollowed() {
+	public Set<InterventionFollowed> getInterventionsFollowed() {
 		return interventionsFollowed;
 	}
 
-	public void setInterventionsFollowed(Set<InterventionsFollowed> interventionsFollowed) {
+	public void setInterventionsFollowed(Set<InterventionFollowed> interventionsFollowed) {
 		this.interventionsFollowed = interventionsFollowed;
 	}
 

@@ -63,6 +63,9 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	List<Intervention> findByMasterInterventionIdOrderByDateStart(@Param("masterId") long masterId);
 
 	List<Intervention> findByIdDg2(long idDg2);
+	
+	@Query("FROM Intervention i WHERE i.validated=true AND i.idDg2=:idDg2")
+	Optional<Intervention> findByIdDg2WithOutOption(@Param("idDg2") long idDg2);
 
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")
 	List<Intervention> getAllByUserId(@Param("userId") long userId);
