@@ -31,9 +31,12 @@ public class InterventionFollowed {
 	@Version
 	private int version;
 
+	
+	public InterventionFollowed() {
+	}
+
 	public InterventionFollowed(long id, User student, Intervention intervention, String registrationSlug,
 			int version) {
-		super();
 		this.id = id;
 		this.student = student;
 		this.intervention = intervention;

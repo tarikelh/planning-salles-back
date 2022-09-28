@@ -8,10 +8,11 @@ import org.mapstruct.Mapping;
 import fr.dawan.calendarproject.dto.InterventionFollowedDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionFollowedDto;
 import fr.dawan.calendarproject.entities.InterventionFollowed;
+import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class })
+@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class, InterventionFollowedRepository.class })
 public interface InterventionFollowedMapper {
 
 
@@ -19,8 +20,8 @@ public interface InterventionFollowedMapper {
 	@Mapping(target = "studentId", source = "student.id")
 	InterventionFollowedDto interventionFollowedToInterventionFollowedDto(InterventionFollowed interventionFollowed);
 	
-	@Mapping(target = "intervention.id", source = "interventionId")
-	@Mapping(target = "student.id", source = "studentId")
+	@Mapping(target = "intervention", ignore = true)
+	@Mapping(target = "student", ignore = true)
 	InterventionFollowed interventionFollowedDtoToInterventionFollowed(InterventionFollowedDto interventionFollowedDto);
 	
 	@Mapping(target = "interventionId", source = "intervention.id")

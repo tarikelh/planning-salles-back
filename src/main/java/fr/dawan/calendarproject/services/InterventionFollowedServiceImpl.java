@@ -124,7 +124,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 	public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) {
 		InterventionFollowedDto intervFollDto = null;
 		if (interventionsFollowed.getId() <= 0
-				&& intervFolloRepository.findById(interventionsFollowed.getId()).isPresent()) {
+				|| intervFolloRepository.findById(interventionsFollowed.getId()).isPresent()) {
 			InterventionFollowed i = intervFolloMapper
 					.interventionFollowedDtoToInterventionFollowed(interventionsFollowed);
 
@@ -178,8 +178,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 	 */
 	@Override
 	public List<InterventionFollowedDto> findAllByDateRange(LocalDate start, LocalDate end) {
-		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(
-				intervFolloRepository.findAllByDateRange(start, end));
+		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(intervFolloRepository.findAllByDateRange(start, end));
 	}
 
 	/**
