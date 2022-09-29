@@ -787,7 +787,14 @@ public class InterventionServiceImpl implements InterventionService {
 					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
 
 					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
-
+					Intervention alreadyInDbOption = interventionRepository.findBySlug(interv.getSlug() + "-option").orElse(null);
+					
+					if(alreadyInDbOption != null) {
+						interv.setId(alreadyInDbOption.getId());
+						interv.setVersion(alreadyInDbOption.getVersion());
+						interv.setSlug(i.getSlug());
+					}
+					
 					if (alreadyInDb != null) {
 						interv.setId(alreadyInDb.getId());
 						interv.setVersion(alreadyInDb.getVersion());
