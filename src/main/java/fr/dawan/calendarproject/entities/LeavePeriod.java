@@ -1,7 +1,7 @@
 package fr.dawan.calendarproject.entities;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

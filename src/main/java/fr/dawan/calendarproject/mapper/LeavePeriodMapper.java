@@ -1,5 +1,7 @@
 package fr.dawan.calendarproject.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -21,4 +23,11 @@ public interface LeavePeriodMapper {
 	@Mapping(target = "firstDay", source = "firstDay")
 	@Mapping(target = "lastDay", source = "lastDay")
 	LeavePeriod leavePeriodDg2DtoToLeavePeriod(LeavePeriodDg2Dto leavePeriodDg2Dto);
+	
+	@Mapping(target = "employeeId", source = "user.employeeIdDg2")
+	@Mapping(target = "employeeFullName", source = "user.fullname")
+	List<LeavePeriodDto> listLeavePeriodToListLeavePeriodDto(List<LeavePeriod> leavePeriods);
+
+	@Mapping(target = "user", ignore = true)
+	List<LeavePeriod> listLeavePeriodDtoToListLeavePeriod(List<LeavePeriodDto> leavePeriodsDtos);
 }
