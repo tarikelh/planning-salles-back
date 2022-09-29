@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
@@ -71,6 +72,10 @@ public class User {
 	
 	@Column(nullable = true)
 	private LocalDate endDate;
+	
+	//ToDo check if we need getter and setter on dto
+	@OneToMany(mappedBy = "student")
+	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version
 	private int version;
@@ -81,7 +86,8 @@ public class User {
 	}
 
 	public User(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, Location location, String email,
-			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, int version) {
+			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, 
+			Set<InterventionFollowed> interventionsFollowed, int version) {
 		setId(id);
 		setIdDg2(idDg2);
 		setEmployeeIdDg2(employeeIdDg2);
@@ -95,6 +101,7 @@ public class User {
 		setCompany(company);
 		setImagePath(imagePath);
 		setEndDate(endDate);
+		setInterventionsFollowed(interventionsFollowed);
 		setVersion(version);
 	}
 
@@ -226,9 +233,37 @@ public class User {
 		this.type = UserType.valueOf(type);
 	}
 
+	public Set<InterventionFollowed> getInterventionsFollowed() {
+		return interventionsFollowed;
+	}
+
+	public void setInterventionsFollowed(Set<InterventionFollowed> interventionsFollowed) {
+		this.interventionsFollowed = interventionsFollowed;
+	}
+
+	
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(company, email, lastName, location, skills, type);
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		User other = (User) obj;
+//		return company == other.company && Objects.equals(email, other.email)
+//				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
+//				&& Objects.equals(skills, other.skills) && type == other.type;
+//	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(company, email, lastName, location, skills, type);
+		return Objects.hash(company, email, interventionsFollowed, lastName, location, skills, type);
 	}
 
 	@Override
@@ -241,15 +276,18 @@ public class User {
 			return false;
 		User other = (User) obj;
 		return company == other.company && Objects.equals(email, other.email)
+				&& Objects.equals(interventionsFollowed, other.interventionsFollowed)
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
 				&& Objects.equals(skills, other.skills) && type == other.type;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", location=" + location
-				+ ", email=" + email + ", password=" + password + ", type=" + type + ", company="
-				+ company + ", imagePath=" + imagePath + ", version=" + version + "]";
+		return "User [id=" + id + ", idDg2=" + idDg2 + ", employeeIdDg2=" + employeeIdDg2 + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", location=" + location + ", email=" + email + ", password=" + password
+				+ ", skills=" + skills + ", type=" + type + ", company=" + company + ", imagePath=" + imagePath
+				+ ", endDate=" + endDate + ", interventionsFollowed=" + interventionsFollowed + ", version=" + version
+				+ "]";
 	}
 
 	static public boolean emailIsValid(String email) {
