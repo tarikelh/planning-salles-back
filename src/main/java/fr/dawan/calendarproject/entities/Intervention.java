@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.entities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -82,17 +84,23 @@ public class Intervention implements Cloneable {
 	
 	@Column(columnDefinition = "TEXT")
 	private String customers;
+	
+	//ToDo check if we need getter and setter on dto
+	@OneToMany(mappedBy = "intervention")
+	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version
 	private int version;
 
 	public Intervention() {
 	}
-
-	public Intervention(long id, long idDg2, String slug, String optionSlug, String comment, Location location, Course course, User user,
-			int attendeesCount, @NotNull InterventionStatus type, boolean validated, LocalDate dateStart,
-			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, Intervention masterIntervention,
-			boolean isMaster, String customers, int version) {
+	
+	public Intervention(long id, long idDg2, String slug, String optionSlug, String comment, Location location,
+			Course course, User user, int attendeesCount, @NotNull InterventionStatus type, boolean validated,
+			LocalDate dateStart, LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd,
+			Intervention masterIntervention, boolean isMaster, long masterInterventionIdTemp, String customers,
+			Set<InterventionFollowed> interventionsFollowed, int version) {
+		super();
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.slug = slug;
@@ -110,13 +118,16 @@ public class Intervention implements Cloneable {
 		this.timeEnd = timeEnd;
 		this.masterIntervention = masterIntervention;
 		this.isMaster = isMaster;
+		this.masterInterventionIdTemp = masterInterventionIdTemp;
 		this.customers = customers;
+		this.interventionsFollowed = interventionsFollowed;
 		this.version = version;
 	}
 
 	public long getId() {
 		return id;
 	}
+
 
 	public void setId(long id) {
 		this.id = id;
@@ -281,11 +292,19 @@ public class Intervention implements Cloneable {
 	public long getUserId() {
 		return getUser().getId();
 	}
-
 	
+	public Set<InterventionFollowed> getInterventionsFollowed() {
+		return interventionsFollowed;
+	}
+
+	public void setInterventionsFollowed(Set<InterventionFollowed> interventionsFollowed) {
+		this.interventionsFollowed = interventionsFollowed;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(comment, course, customers, dateEnd, dateStart, location, slug, type, user, validated);
+		return Objects.hash(comment, course, customers, dateEnd, dateStart, interventionsFollowed, location, slug, type,
+				user, validated);
 	}
 
 	@Override
@@ -299,10 +318,12 @@ public class Intervention implements Cloneable {
 		Intervention other = (Intervention) obj;
 		return Objects.equals(comment, other.comment) && Objects.equals(course, other.course)
 				&& Objects.equals(customers, other.customers) && Objects.equals(dateEnd, other.dateEnd)
-				&& Objects.equals(dateStart, other.dateStart) && Objects.equals(location, other.location)
-				&& Objects.equals(slug, other.slug) && type == other.type && Objects.equals(user, other.user)
-				&& validated == other.validated;
+				&& Objects.equals(dateStart, other.dateStart)
+				&& Objects.equals(interventionsFollowed, other.interventionsFollowed)
+				&& Objects.equals(location, other.location) && Objects.equals(slug, other.slug) && type == other.type
+				&& Objects.equals(user, other.user) && validated == other.validated;
 	}
+
 
 	@Override
 	public String toString() {
@@ -311,8 +332,8 @@ public class Intervention implements Cloneable {
 				+ ", attendeesCount=" + attendeesCount + ", type=" + type + ", validated=" + validated + ", dateStart="
 				+ dateStart + ", dateEnd=" + dateEnd + ", timeStart=" + timeStart + ", timeEnd=" + timeEnd
 				+ ", masterIntervention=" + masterIntervention + ", isMaster=" + isMaster
-				+ ", masterInterventionIdTemp=" + masterInterventionIdTemp + ", customers=" + customers + ", version="
-				+ version + "]";
+				+ ", masterInterventionIdTemp=" + masterInterventionIdTemp + ", customers=" + customers
+				+ ", interventionsFollowed=" + interventionsFollowed + ", version=" + version + "]";
 	}
 
 	public String toContentString() {
