@@ -33,7 +33,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	List<Task> findByUserType(UserType type);
 	
-	List<Task> findAllBySlugContaining(String slug);
+	List<Task> findAllBySlugContainingOrTitleContaining(String slug, String title);
 	
 	List<Task> findBySlugOrTaskIdDg2(String slug, long taskIdDg2);
 	

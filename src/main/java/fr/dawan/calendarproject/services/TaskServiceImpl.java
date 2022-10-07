@@ -105,9 +105,9 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllBySlugLike(String search) {
+	public List<TaskDto> getAllBySlugLikeOrTitleLike(String search) {
 
-		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContaining(search));
+		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContainingOrTitleContaining(search, search));
 	}
 	
 	
@@ -142,7 +142,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public CountDto count(String search) {
 
-		return new CountDto(taskRepository.findAllBySlugContaining(search).size());
+		return new CountDto(taskRepository.findAllBySlugContainingOrTitleContaining(search, search).size());
 
 	}
 

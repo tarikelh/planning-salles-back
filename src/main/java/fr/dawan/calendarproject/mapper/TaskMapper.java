@@ -28,7 +28,7 @@ public interface TaskMapper {
 	@Mapping(target="taskIdDg2", source="taskId" )
 	@Mapping(target="user", ignore = true)
 	@Mapping(target="intervention", ignore = true)
-	@Mapping(target="slug", source="registrationSlug")
+	@Mapping(target="slug", source="taskSlug")
 	@Mapping(target="beginDate", source="beginAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="endDate", source="finishAt", dateFormat = "yyyy-MM-dd")
 	@Mapping(target="version", ignore = true)

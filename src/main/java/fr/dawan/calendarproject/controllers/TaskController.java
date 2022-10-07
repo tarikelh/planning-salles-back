@@ -73,9 +73,9 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/search/{search}", produces= "application/json")
-	public List<TaskDto> getAllBySlugLike(@PathVariable(value= "search") String search){
+	public List<TaskDto> getAllBySlugLikeOrTitleLike(@PathVariable(value= "search") String search){
 		
-		return taskService.getAllBySlugLike(search);
+		return taskService.getAllBySlugLikeOrTitleLike(search);
 	}
 	
 	

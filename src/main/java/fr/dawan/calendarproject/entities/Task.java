@@ -22,6 +22,8 @@ public class Task {
 	
 	private long taskIdDg2;
 	
+	private String title;
+	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
 
@@ -49,13 +51,12 @@ public class Task {
 
 	}
 
-
-
-	public Task(long id, long taskIdDg2, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate, double duration, 
-			int version) {
+	public Task(long id, long taskIdDg2, String title, User user, Intervention intervention, String slug,
+			LocalDate beginDate, LocalDate endDate, double duration, int version) {
 		super();
 		this.id = id;
 		this.taskIdDg2 = taskIdDg2;
+		this.title = title;
 		this.user = user;
 		this.intervention = intervention;
 		this.slug = slug;
@@ -64,7 +65,6 @@ public class Task {
 		this.duration = duration;
 		this.version = version;
 	}
-
 
 
 	public long getId() {
@@ -82,11 +82,18 @@ public class Task {
 		return taskIdDg2;
 	}
 
-
-
 	public void setTaskIdDg2(long taskIdDg2) {
 		this.taskIdDg2 = taskIdDg2;
 	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 
 	public User getUser() {
 		return user;
@@ -169,9 +176,8 @@ public class Task {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(beginDate, duration, endDate, id, intervention, slug, taskIdDg2, user, version);
+		return Objects.hash(beginDate, duration, endDate, id, intervention, slug, taskIdDg2, title, user, version);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -186,15 +192,18 @@ public class Task {
 				&& Double.doubleToLongBits(duration) == Double.doubleToLongBits(other.duration)
 				&& Objects.equals(endDate, other.endDate) && id == other.id
 				&& Objects.equals(intervention, other.intervention) && Objects.equals(slug, other.slug)
-				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(user, other.user) && version == other.version;
+				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(title, other.title)
+				&& Objects.equals(user, other.user) && version == other.version;
 	}
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", user=" + user + ", intervention=" + intervention
-				+ ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", duration=" + duration
-				+ ", version=" + version + "]";
+		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", title=" + title + ", user=" + user + ", intervention="
+				+ intervention + ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", duration="
+				+ duration + ", version=" + version + "]";
 	}
 
+	
+	
 		
 }

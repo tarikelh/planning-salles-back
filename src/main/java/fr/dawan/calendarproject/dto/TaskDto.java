@@ -12,6 +12,8 @@ public class TaskDto implements Serializable {
 	
 	private long taskIdDg2;
 	
+	private String title;
+	
 	private long interventionId;
 	
 	private UserDto user;
@@ -33,11 +35,12 @@ public class TaskDto implements Serializable {
  
 	
 	
-	public TaskDto(long id, long taskIdDg2, long interventionId, UserDto user,
+	public TaskDto(long id, long taskIdDg2, String title, long interventionId, UserDto user,
 			String slug, LocalDate beginDate, LocalDate endDate, double duration, int version) {
 		super();
 		this.id = id;
 		this.taskIdDg2 = taskIdDg2;
+		this.title = title;
 		this.interventionId = interventionId;
 		this.user = user;
 		this.slug = slug;
@@ -63,6 +66,14 @@ public class TaskDto implements Serializable {
 
 	public void setTaskIdDg2(long taskIdDg2) {
 		this.taskIdDg2 = taskIdDg2;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public long getInterventionId() {

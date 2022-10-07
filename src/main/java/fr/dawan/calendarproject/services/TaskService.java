@@ -15,7 +15,7 @@ public interface TaskService {
 	
 	List<TaskDto> getAllTaskForInternventionId(long interventionId);
 	
-	List<TaskDto> getAllBySlugLike(String search);
+	List<TaskDto> getAllBySlugLikeOrTitleLike(String search);
 	
 	List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId);
 	
