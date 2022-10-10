@@ -4,10 +4,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -23,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.TaskDg2Dto;
 import fr.dawan.calendarproject.dto.TaskDto;
@@ -31,7 +28,6 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserType;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.TaskMapper;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
@@ -155,18 +151,100 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	@Override
 	public TaskDto saveOrUpdate(TaskDto taskDto) {
-
-		checkUniqueness(taskDto);
 		
-		if(taskDto.getId() > 0 && !taskRepository.existsById(taskDto.getId())) {
-			return null;
+		TaskDto result = null;
+		
+		//setting task to persist
+		Task taskToPersist = taskMapper.taskDtoToTask(taskDto);
+		
+		
+		//Setting User
+		Optional<User> u = userRepository.findById(taskDto.getUser().getId());
+		
+		if(u.isPresent()) {
+			taskToPersist.setUser(u.get());
+		}else {
+			taskToPersist.setUser(null);
 		}
 		
-		Task t = taskMapper.taskDtoToTask(taskDto);
 		
-		t = taskRepository.saveAndFlush(t);
+		//Setting intervention associated to the Task
+		Optional<Intervention> intervention = interventionRepository.findById(taskDto.getInterventionId());
 	
-		return taskMapper.taskToTaskDto(t);
+		if(intervention.isPresent()) {
+			taskToPersist.setIntervention(intervention.get());
+		}else {
+			taskToPersist.setIntervention(null);
+		}
+		
+		//Calculation of the duration of the task
+		long duration = ChronoUnit.DAYS.between(taskToPersist.getBeginDate(), taskToPersist.getEndDate());
+		taskToPersist.setDuration(duration == 0 ? 1 : duration);
+		
+		
+		// Update
+		if(taskDto.getId() > 0 && taskRepository.existsById(taskDto.getId())) {
+			
+			Optional<Task> existingTask = taskRepository.findById(taskDto.getId());
+			
+			//If title changes the slug is then changed
+			if(existingTask.isPresent() && !existingTask.get().getTitle().equals(taskToPersist.getTitle())) {
+				
+				taskToPersist.setSlug(slugCreator(taskDto.getTitle()));
+			}
+			
+		}
+		
+		//Create
+		if(taskDto.getId() == 0) {
+			
+			taskToPersist.setSlug(slugCreator(taskToPersist.getTitle()));
+			taskToPersist.setVersion(0);
+		}
+		
+		taskToPersist = taskRepository.saveAndFlush(taskToPersist);
+	
+		result = taskMapper.taskToTaskDto(taskToPersist);
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Creates a unique slug for tasks
+	 * @param title of the task we want to create a Slug for
+	 * @return the constructed slug as String
+	 */
+	public String slugCreator(String title) {
+		
+		
+		StringBuilder slugBuilder = new StringBuilder();
+		
+		for (char character: title.toLowerCase().toCharArray()) {
+			
+			if(character == ' ') {
+				slugBuilder.append('-');
+			}else{
+				slugBuilder.append(character);
+			}
+				
+		} 
+		
+		String constructedSlug = slugBuilder.toString();
+		
+		Optional<Task> slug = taskRepository.findBySlug(constructedSlug);
+		int countDuplicates = 0;
+		String resultSlug = constructedSlug;
+		
+		while(slug.isPresent()) {
+			
+			countDuplicates++;
+			resultSlug = constructedSlug + '-' + countDuplicates;
+			slug = taskRepository.findBySlug(resultSlug);
+			
+		}
+		
+		return resultSlug;
 	}
 
 	/**
@@ -190,26 +268,11 @@ public class TaskServiceImpl implements TaskService{
 	 * @param taskDto An object representing a Task.
 	 * 
 	 */
-	public void checkUniqueness(TaskDto taskDto) {
-		
-		List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
-		
-		
-		if(!duplicates.isEmpty () && taskDto.getId() == 0) {
-			
-			Set<APIError> errors = new HashSet<>();
-		
-			String instanceClass = duplicates.get(0).getClass().toString();
-			String path = "api/task";
-			
-			
-			errors.add(new APIError(505, instanceClass, "This task is not unique", "Task slug already exists" ,path));
-		
-			throw new EntityFormatException(errors);
-			
-		}
-		
-	}
+//	public void checkUniqueness(TaskDto taskDto,String typeMessage, String errorMessage) {
+//			
+//			
+//		
+//	}
 
 	/**
 	 * Fetches all tasks from dawan API and persists them into the database
@@ -271,9 +334,11 @@ public class TaskServiceImpl implements TaskService{
 				
 
 				
-				List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
+				Optional<Task> duplicatesSlug = taskRepository.findBySlug(task.getSlug());
+				Optional<Task> duplicateIdDg2 = taskRepository.findByTaskIdDg2(task.getTaskIdDg2());
+			
 				
-				if(duplicates.isEmpty()) {
+				if(!duplicatesSlug.isPresent() && !duplicateIdDg2.isPresent()) {
 					
 					try {
 						taskRepository.saveAndFlush(task);
