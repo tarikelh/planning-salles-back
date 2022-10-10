@@ -190,7 +190,7 @@ public class TaskServiceImpl implements TaskService{
 			//If title changes the slug is then changed
 			if(existingTask.isPresent() && !existingTask.get().getTitle().equals(taskToPersist.getTitle())) {
 				
-				taskToPersist.setSlug(slugCreator(taskDto.getTitle()));
+				taskToPersist.setSlug(slugCreator(taskDto.getTitle(), taskDto.getBeginDate().toString()));
 			}
 			
 		}
@@ -198,7 +198,7 @@ public class TaskServiceImpl implements TaskService{
 		//Create
 		if(taskDto.getId() == 0) {
 			
-			taskToPersist.setSlug(slugCreator(taskToPersist.getTitle()));
+			taskToPersist.setSlug(slugCreator(taskDto.getTitle(), taskDto.getBeginDate().toString()));
 			taskToPersist.setVersion(0);
 		}
 		
@@ -212,10 +212,11 @@ public class TaskServiceImpl implements TaskService{
 	
 	/**
 	 * Creates a unique slug for tasks
-	 * @param title of the task we want to create a Slug for
+	 * @param title : the title of the task we want to create a Slug for
+	 * @param dateStart : the date of beggining of the task
 	 * @return the constructed slug as String
 	 */
-	public String slugCreator(String title) {
+	public String slugCreator(String title, String dateStart) {
 		
 		
 		StringBuilder slugBuilder = new StringBuilder();
@@ -228,9 +229,9 @@ public class TaskServiceImpl implements TaskService{
 				slugBuilder.append(character);
 			}
 				
-		} 
+		}
 		
-		String constructedSlug = slugBuilder.toString();
+		String constructedSlug = slugBuilder.toString() + '-' + dateStart;
 		
 		Optional<Task> slug = taskRepository.findBySlug(constructedSlug);
 		int countDuplicates = 0;
@@ -259,20 +260,6 @@ public class TaskServiceImpl implements TaskService{
 		taskRepository.deleteById(id);
 	}
 	
-	
-
-	
-	/**
-	 * Checks whether a newly registered task is valid and throws an exception if not
-	 * 
-	 * @param taskDto An object representing a Task.
-	 * 
-	 */
-//	public void checkUniqueness(TaskDto taskDto,String typeMessage, String errorMessage) {
-//			
-//			
-//		
-//	}
 
 	/**
 	 * Fetches all tasks from dawan API and persists them into the database
