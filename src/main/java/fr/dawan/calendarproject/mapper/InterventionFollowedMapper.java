@@ -12,29 +12,53 @@ import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class, InterventionFollowedRepository.class })
+@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class,
+		InterventionFollowedRepository.class, InterventionMapper.class, UserMapper.class })
 public interface InterventionFollowedMapper {
 
-
-	@Mapping(target = "interventionId", source = "intervention.id")
-	@Mapping(target = "studentId", source = "student.id")
+//	@Mapping(target = "userDto.locationId", source = "user.location.id")
+//	@Mapping(target = "interventionDto.courseIdDg2", source = "intervention.course.idDg2")
+//	@Mapping(target = "interventionDto.locationId", source = "intervention.location.id")
+//	@Mapping(target = "interventionDto.locationIdDg2", source = "intervention.location.idDg2")
+//	@Mapping(target = "interventionDto.masterInterventionId", source = "intervention.masterIntervention.id")
+	@Mapping(target = "userDto", source = "user")
+	@Mapping(target = "interventionDto", source = "intervention")
 	InterventionFollowedDto interventionFollowedToInterventionFollowedDto(InterventionFollowed interventionFollowed);
-	
-	@Mapping(target = "intervention", ignore = true)
-	@Mapping(target = "student", ignore = true)
+
+//	"interventionsFollowed, masterInterventionIdTemp, optionSlug, user". Mapping from property "InterventionDto intervention" to "Intervention 
+//	 intervention".
+//	- Unmapped target properties: "enumCompany, enumType, interventionsFollowed, location, skills". Mapping from property "UserDto user" to "User user".
+
+//	@Mapping(target = "user.enumType", source = "userDto.type")
+//	@Mapping(target = "user.enumCompany", source = "userDto.company")
+//	@Mapping(target = "user.location.id", source = "userDto.locationId")
+//	@Mapping(target = "user.skills", ignore = true)
+//	
+//	@Mapping(target = "intervention.course.id", source = "interventionDto.courseId")
+//	@Mapping(target = "intervention.location.id", source = "interventionDto.locationId")
+//	@Mapping(target = "intervention.masterIntervention.id", source = "interventionDto.masterInterventionId")
+//	
+//	@Mapping(target = "interventioninterventionsFollowed", source = "interventionDto.courseId")
+//	@Mapping(target = "intervention.masterInterventionIdTemp", source = "interventionDto.locationId")
+//	@Mapping(target = "intervention.optionSlug",  ignore = true)
+//	@Mapping(target = "intervention.user.id", source = "interventionDto.userId")
+
+	@Mapping(target = "user", source = "userDto")
+	@Mapping(target = "intervention", source = "interventionDto")
 	InterventionFollowed interventionFollowedDtoToInterventionFollowed(InterventionFollowedDto interventionFollowedDto);
-	
-	@Mapping(target = "interventionId", source = "intervention.id")
-	@Mapping(target = "studentId", source = "student.id")
-	List<InterventionFollowedDto> listInterventionFollowedToListInterventionFollowedDto(List<InterventionFollowed> interventionFollowed);
-	
-	@Mapping(target = "intervention.id", source = "interventionId")
-	@Mapping(target = "student.id", source = "studentId")
-	List<InterventionFollowed> listInterventionFollowedDtoToListInterventionFollowed(List<InterventionFollowedDto> interventionFollowedDto);
-	
+
+	List<InterventionFollowedDto> listInterventionFollowedToListInterventionFollowedDto(
+			List<InterventionFollowed> interventionFollowed);
+
+//	@Mapping(target = "intervention.id", source = "interventionId")
+//	@Mapping(target = "student.id", source = "studentId")
+	List<InterventionFollowed> listInterventionFollowedDtoToListInterventionFollowed(
+			List<InterventionFollowedDto> interventionFollowedDto);
+
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "student.idDg2", source = "personId")
+	@Mapping(target = "user.idDg2", source = "personId")
 	@Mapping(target = "intervention.idDg2", source = "interventionId")
 	@Mapping(target = "version", ignore = true)
-	InterventionFollowed interventionFollowedDG2DtoToInterventionFollowed(InterventionFollowedDG2Dto interventionFollowedDG2Dto);
+	InterventionFollowed interventionFollowedDG2DtoToInterventionFollowed(
+			InterventionFollowedDG2Dto interventionFollowedDG2Dto);
 }

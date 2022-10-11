@@ -20,7 +20,7 @@ public class InterventionFollowed {
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "student_id")
-	User student;
+	User user;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "intervention_id")
@@ -35,14 +35,16 @@ public class InterventionFollowed {
 	public InterventionFollowed() {
 	}
 
-	public InterventionFollowed(long id, User student, Intervention intervention, String registrationSlug,
-			int version) {
+
+	public InterventionFollowed(long id, User user, Intervention intervention, String registrationSlug, int version) {
+		super();
 		this.id = id;
-		this.student = student;
+		this.user = user;
 		this.intervention = intervention;
 		this.registrationSlug = registrationSlug;
 		this.version = version;
 	}
+
 
 	public long getId() {
 		return id;
@@ -52,13 +54,15 @@ public class InterventionFollowed {
 		this.id = id;
 	}
 
-	public User getStudent() {
-		return student;
+	public User getUser() {
+		return user;
 	}
 
-	public void setStudent(User student) {
-		this.student = student;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
+
 
 	public Intervention getIntervention() {
 		return intervention;
@@ -85,16 +89,19 @@ public class InterventionFollowed {
 		this.version = version;
 	}
 
+
 	@Override
 	public String toString() {
-		return "InterventionsFollowed [id=" + id + ", student=" + student + ", intervention=" + intervention
+		return "InterventionFollowed [id=" + id + ", user=" + user + ", intervention=" + intervention
 				+ ", registrationSlug=" + registrationSlug + ", version=" + version + "]";
 	}
 
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(intervention, student);
+		return Objects.hash(id, intervention, registrationSlug, user, version);
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -105,12 +112,10 @@ public class InterventionFollowed {
 		if (getClass() != obj.getClass())
 			return false;
 		InterventionFollowed other = (InterventionFollowed) obj;
-		return Objects.equals(intervention, other.intervention) && Objects.equals(student, other.student);
+		return id == other.id && Objects.equals(intervention, other.intervention)
+				&& Objects.equals(registrationSlug, other.registrationSlug) && Objects.equals(user, other.user)
+				&& version == other.version;
 	}
 
 	
-	
-	
-	
-
 }

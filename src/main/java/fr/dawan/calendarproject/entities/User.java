@@ -74,7 +74,7 @@ public class User {
 	private LocalDate endDate;
 	
 	//ToDo check if we need getter and setter on dto
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "user")
 	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version

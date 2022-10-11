@@ -37,11 +37,13 @@ public interface UserMapper {
 
 	@Mapping(source = "locationId", target = "location")
 	@Mapping(source = "skills", target = "skills")
+	@Mapping(target = "interventionsFollowed", ignore = true)
 	@Mapping(source = "type", target = "enumType")
 	@Mapping(source = "company", target = "enumCompany")
 	User advancedUserDtoToUser(AdvancedUserDto advUser);
 
 	@Mapping(target = "skills", ignore = true)
+	@Mapping(target = "interventionsFollowed", ignore = true)
 	@Mapping(source = "locationId", target = "location")
 	@Mapping(source = "type", target = "enumType")
 	@Mapping(source = "company", target = "enumCompany")
@@ -59,6 +61,7 @@ public interface UserMapper {
 	@Mapping(target = "enumType", source = "type")
 	@Mapping(target = "location", ignore = true)
 	@Mapping(target = "skills", ignore = true)
+	@Mapping(target = "interventionsFollowed", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "idDg2", source = "personId")
 	@Mapping(target = "employeeIdDg2", source = "employeeId")
