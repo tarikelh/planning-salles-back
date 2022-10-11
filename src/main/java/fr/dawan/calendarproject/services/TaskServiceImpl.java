@@ -3,7 +3,6 @@ package fr.dawan.calendarproject.services;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -357,17 +356,9 @@ public class TaskServiceImpl implements TaskService{
 	 * @exception Exception returns an exception if the request fails
 	 */
 	@Override
-	public List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId ) {
+	public List<TaskDto> getAllTaskAssignedBetween(LocalDate start, LocalDate end) {
 		
-		List<TaskDto> result = new ArrayList<>();
-		
-		if(userId != 0) {
-			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllByUserIdBetweenDates(start, end, userId));
-		}else{
-			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllBetweenDates(start, end));
-		}
-		
-		return result;
+		return taskMapper.taskListToTaskDtoList(taskRepository.getAllAssignedBetweenDates(start, end));
 					
 	}
 

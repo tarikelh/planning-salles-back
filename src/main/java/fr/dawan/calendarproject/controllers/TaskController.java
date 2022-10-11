@@ -1,10 +1,8 @@
 package fr.dawan.calendarproject.controllers;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -165,19 +163,12 @@ public class TaskController {
 	}
 	
 	//GET
-	@GetMapping(value={"/between/{start}/{end}", "/between/{start}/{end}/{userId}"}, produces="application/json" )
+	@GetMapping(value={"/between/{start}/{end}"}, produces="application/json" )
 	public List<TaskDto> getAllBetweenDatesOptionalUser(@PathVariable("start") String start, 
-															@PathVariable("end") String end, 
-															@PathVariable(value="userId", required=false) Optional<Long> userId){
+															@PathVariable("end") String end){
 		
-		List<TaskDto> result = new ArrayList<>();
-		
-		if(userId.isPresent()) {
-			result = taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), userId.get());
-		}else {
-			result = taskService.getAllTaskBetweenOptionalUser(LocalDate.parse(start), LocalDate.parse(end), 0);
-		}
-		return result;
+		return  taskService.getAllTaskAssignedBetween(LocalDate.parse(start), LocalDate.parse(end));
+
 	}
 	
 	
