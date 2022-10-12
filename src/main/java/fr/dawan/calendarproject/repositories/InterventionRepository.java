@@ -70,6 +70,10 @@ public interface InterventionRepository extends JpaRepository<Intervention, Long
 	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId")
 	List<Intervention> getAllByUserId(@Param("userId") long userId);
 
+	
+	@Query("FROM Intervention i LEFT JOIN FETCH i.location LEFT JOIN FETCH i.user WHERE i.isMaster = false AND i.user.id = :userId AND i.dateStart >= :dateStart")
+	List<Intervention> getAllByUserIdAfterDate(@Param("userId") long userId, @Param("dateStart") LocalDate dateStart);
+	
 	Optional<Intervention> findBySlug(String slug);
 
 	@Query("FROM Intervention i WHERE i.slug LIKE %:slug%")

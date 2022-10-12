@@ -20,6 +20,8 @@ public interface InterventionService {
 	List<InterventionDto> getAllInterventions(int page, int max);
 
 	List<InterventionDto> getAllByUserId(long userId);
+	
+	List<InterventionDto> getAllByUserIdAfterDate(long userId, LocalDate dateStart);
 
 	List<InterventionDto> searchBy(long userId, Map<String, String[]> paramsMap);
 

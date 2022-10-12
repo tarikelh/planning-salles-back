@@ -64,6 +64,13 @@ public class InterventionController {
 	public List<InterventionDto> getAllByUserId(@PathVariable("userId") long userId) {
 		return interventionService.getAllByUserId(userId);
 	}
+	
+	// GET - user - id - after - date
+	@GetMapping(value = "/user/{userId}/{start}", produces = "application/json")
+	public List<InterventionDto> getAllByUserIdAfterDate(@PathVariable("userId") long userId, @PathVariable("start") String start) {
+		
+		return interventionService.getAllByUserIdAfterDate(userId, LocalDate.parse(start));
+	}
 
 	// GET - user - id & filters
 	// /api/interventions/filter/{userId}?filterCourse=agile&filterLocation=1&filterValidated=true&filterType=INTERN

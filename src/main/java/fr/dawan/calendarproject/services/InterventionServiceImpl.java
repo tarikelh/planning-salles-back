@@ -888,4 +888,10 @@ public class InterventionServiceImpl implements InterventionService {
 		}
 		return slug;
 	}
+
+	@Override
+	public List<InterventionDto> getAllByUserIdAfterDate(long userId, LocalDate dateStart) {
+		
+		return interventionMapper.listInterventionToListInterventionDto(interventionRepository.getAllByUserIdAfterDate(userId, dateStart));
+	}
 }
