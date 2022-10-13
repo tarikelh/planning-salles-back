@@ -853,7 +853,7 @@ public class InterventionServiceImpl implements InterventionService {
 					.findAllByIdDg2(interv.getMasterInterventionIdTemp());
 
 			for(Intervention masterInter : mIntervLst) {
-				if (!interv.isMaster() && (interv.getUser() == null || interv.getUser().getEmployeeIdDg2() < 0)
+				if (!interv.isMaster() && (interv.getUser() == null || interv.getUser().getIdDg2() < 0)
 						&& interv.getMasterInterventionIdTemp() != 0) { 
 					interv.setUser(masterInter.getUser());
 					interv = interventionRepository.saveAndFlush(interv);
