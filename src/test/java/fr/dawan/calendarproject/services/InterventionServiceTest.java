@@ -109,11 +109,11 @@ class InterventionServiceTest {
 	
 	LocalDate date = LocalDate.now();
 
-	Location location = new Location(1, "Paris", "FR", "red", 0);
-	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", 0);
+	Location location = new Location(1, 0, "Paris", "FR", "red", false, 0);
+	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", false, 0);
 	CourseDto courseDto = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
-	UserDto userDto = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
-			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
+	UserDto userDto = new UserDto(1, 1, 1,"Daniel", "Balavoine",1,"dbalavoine@dawan.fr", "testPassword",
+			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "",date.toString(),0);
 
 	private String email = "admin@dawan.fr";
 	private String pwd = "testPassword";
@@ -126,39 +126,39 @@ class InterventionServiceTest {
 
 		LocalDate date = LocalDate.now();
 
-		Location mockedLoc = new Location(1, "Paris", "red", "FR", 0);
+		Location mockedLoc = new Location(1, 0, "Paris", "red", "FR", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
 		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		course = new Course(2, 548, "C#", "5", "slug", 0);
 		
 		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
 		
-		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", mockedLoc, mockedCourse,
+		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", email, mockedLoc, mockedCourse,
 				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0));
 
-		Intervention masterDummy = new Intervention(2, 2, "masterSlug", "I am a master Intervention", mockedLoc,
+		Intervention masterDummy = new Intervention(2, 2, "masterSlug", "I am a master Intervention", email, mockedLoc,
 				mockedCourse, mockedUser, 1, InterventionStatus.INTERN, true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0, email, null, 0);
 		interventions.add(masterDummy);
 
-		Intervention slaveDummy = new Intervention(3, 3, "slaveSlug", "I am a slave Intervention", mockedLoc,
+		Intervention slaveDummy = new Intervention(3, 3, "slaveSlug", "I am a slave Intervention", email, mockedLoc,
 				mockedCourse, mockedUser, 1, InterventionStatus.INTERN, true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), masterDummy, false, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), masterDummy, false, 0, email, null, 0);
 		interventions.add(slaveDummy);
 
 		iDtos.add(new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 1, 1, 1, 1, 1, 1, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
-				0));
+				email, 0));
 
 		iDtos.add(new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 1, 1, 1, 1, 1, 1, "INTERN",
 				true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0));
+				LocalTime.of(17, 0), 0, true, email, 0));
 
 		iDtos.add(new InterventionDto(3, 3, "slaveSlug", "I am a slave Intervention", 1, 1, 1, 1, 1, 1, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
-				false, 0));
+				false, email, 0));
 
 		intMementoDtos.add(new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Paris", 1, 1,
 				"Java for intermediate level", 1, 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),
@@ -167,13 +167,13 @@ class InterventionServiceTest {
 		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0),
 				new MementoMessageDto(1, " has been created by ", email, ""), 0));
 		
-		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",email, locationDto,
 				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
-				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,email, 1));
 
-		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",locationDto,
+		advInterventions.add(new AdvancedInterventionDto(1,1,"advInter slug","advInter comment",email, locationDto,
 				courseDto, userDto,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
-				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1));
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,email, 1));
 
 	}
 
@@ -286,19 +286,19 @@ class InterventionServiceTest {
 
 		InterventionDto newIntervDto = new InterventionDto(0, 0, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0, 1,
 				"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, false, 0);
+				LocalTime.of(17, 0), 0, false, email, 0);
 
-		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, 1,
+		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, mockedUser, 1,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0);
 
-		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", mockedLoc, mockedCourse,
+		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", email, mockedLoc, mockedCourse,
 				mockedUser, 1, InterventionStatus.INTERN, true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0);
 
 		InterventionDto expectedInterv = new InterventionDto(5, 5, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0,
 				1, "INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, false, 0);
+				LocalTime.of(17, 0), 0, false, email, 0);
 
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
@@ -338,19 +338,19 @@ class InterventionServiceTest {
 
 		InterventionDto newIntervDto = new InterventionDto(0, 0, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0, 1,
 				"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0);
+				LocalTime.of(17, 0), 0, true, email, 0);
 
-		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, 1,
+		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, null, 1,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0, email, null, 0);
 
-		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", null, null, null, 1,
+		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", null, null, null, null, 1,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, true, 0, email, null, 0);
 
 		InterventionDto expectedInterv = new InterventionDto(5, 5, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0,
 				1, "INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0);
+				LocalTime.of(17, 0), 0, true, email, 0);
 
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
@@ -389,19 +389,19 @@ class InterventionServiceTest {
 
 		InterventionDto newIntervDto = new InterventionDto(0, 0, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0, 1,
 				"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 2, false, 0);
+				LocalTime.of(17, 0), 2, false, email, 0);
 
-		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, 1,
+		Intervention newInterv = new Intervention(0, 0, "newSlug", "I am a New Intervention", null, null, null, mockedUser, 1,
 				InterventionStatus.INTERN, true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1), false, 0);
+				LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1), false, 0, email, null, 0);
 
-		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", mockedLoc, mockedCourse,
+		Intervention savedInterv = new Intervention(5, 5, "newSlug", "I am a New Intervention", email, mockedLoc, mockedCourse,
 				mockedUser, 1, InterventionStatus.INTERN, true, LocalDate.now().plusDays(7),
-				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1), false, 0);
+				LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), interventions.get(1), false, 0, email, null, 0);
 
 		InterventionDto expectedInterv = new InterventionDto(5, 5, "newSlug", "I am a New Intervention", 0, 0, 0, 0, 0,
 				1, "INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 2, false, 0);
+				LocalTime.of(17, 0), 2, false, email, 0);
 
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
@@ -570,10 +570,10 @@ class InterventionServiceTest {
 	void shouldReturnTrueWhenInterventionHasNoError() {
 		LocalDate date = LocalDate.now();
 
-		Location mockedLoc = new Location(1, "Paris", "FR", "red", 0);
+		Location mockedLoc = new Location(1, 0, "Paris", "FR", "red", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
 		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
 
@@ -713,30 +713,30 @@ class InterventionServiceTest {
 		List<InterventionDto> expected = new ArrayList<InterventionDto>();
 		List<DateRangeDto> dates = new ArrayList<DateRangeDto>();
 
-		Intervention masterIntervention = new Intervention(4, 4, "masterSlug", "", null, null, null, 0,
+		Intervention masterIntervention = new Intervention(4, 4, "masterSlug", "", null, null, null, null, 0,
 				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), null, true, 0);
+				LocalTime.of(17, 0), null, true, 0, email, null, 0);
 
 		InterventionDto masterInterventionDto = new InterventionDto(4, 4, "masterSlug", "", 0, 0, 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0);
+				LocalTime.of(17, 0), 0, true, email, 0);
 
-		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", Mockito.mock(Location.class),
+		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", email, Mockito.mock(Location.class),
 				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.SUR_MESURE, true,
-				LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+				LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0));
 
-		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", Mockito.mock(Location.class),
+		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", email, Mockito.mock(Location.class),
 				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.SUR_MESURE, true,
 				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), null,
-				false, 0));
+				false, 0, email, null, 0));
 
 		expected.add(masterInterventionDto);
 		expected.add(new InterventionDto(1, 1, "newSlug", "I am lambda Intervention", 0, 0, 0, 0, 0, 1, "SUR_MESURE",
 				true, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false,
-				0));
+				email, 0));
 		expected.add(new InterventionDto(4, 4, "newSlug", "I am lambda Intervention", 0, 0, 0, 0, 0, 1, "SUR_MESURE",
 				true, LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				0, false, 0));
+				0, false, email, 0));
 
 		dates.add(new DateRangeDto(1, LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0),
 				LocalTime.of(17, 0)));
@@ -772,13 +772,13 @@ class InterventionServiceTest {
 		List<InterventionDto> expected = new ArrayList<InterventionDto>();
 		InterventionDto master = new InterventionDto(2, 2, "masterSlug", "I am a master Intervention", 0, 0, 0, 0, 0, 0,
 				"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(13), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0);
+				LocalTime.of(17, 0), 0, true, email, 0);
 
 		expected.add(master);
 		expected.add(iDtos.get(2));
 		expected.add(new InterventionDto(4, 4, "masterSlug", "I am a master Intervention", 0, 0, 0, 0, 0, 0, "INTERN",
 				true, LocalDate.now().plusDays(11), LocalDate.now().plusDays(13), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0));
+				LocalTime.of(17, 0), 0, true, email, 0));
 
 		dates.add(new DateRangeDto(3, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
 				LocalTime.of(17, 0)));

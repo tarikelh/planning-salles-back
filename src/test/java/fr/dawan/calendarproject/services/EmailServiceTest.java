@@ -70,31 +70,31 @@ class EmailServiceTest {
 	public void beforeEach() {
 		Course mockedCourse = Mockito.mock(Course.class);
 		
-		Location loc = new Location(1, "Paris", "red", "FR", 0);
+		Location loc = new Location(1, 0, "Paris", "red", "FR", false, 0);
 
 		LocalDate date = LocalDate.now();
 		
 		receiver = new User(1, 1, 1, "Daniel", "Balavoine", loc,
 				"dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		
 		iList.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention",
-				loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
+				null, loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
 				LocalDate.now(), LocalDate.now().plusDays(5),
-				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0));
+				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, null, null, 0));
 
 		Intervention masterDummy = new Intervention(2, 2, "masterSlug", "I am a master Intervention",
-				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
+				null, loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0),
-				null, true, 0);
+				null, true, 0, null, null, 0);
 		iList.add(masterDummy);
 
 		Intervention slaveDummy = new Intervention(3, 3, "slaveSlug", "I am a slave Intervention",
-				loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
+				null, loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10),
 				LocalTime.of(9, 0), LocalTime.of(17, 0),
-				masterDummy, false, 0);
+				masterDummy, false, 0, null, null, 0);
 		
 		iList.add(slaveDummy);
 	}

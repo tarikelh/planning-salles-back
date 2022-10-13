@@ -95,13 +95,13 @@ class UserServiceTest {
 		LocalDate date = LocalDate.now();
 
 		uList.add(new User(1, 1, 1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0));
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0));
 
 		uList.add(new User(2, 2, 2, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", "testPasswordPolnareff", null,
-				UserType.COMMERCIAL, UserCompany.JEHANN, "",date, 0));
+				UserType.COMMERCIAL, UserCompany.JEHANN, "",date, null, 0));
 
 		uList.add(new User(3, 3, 3, "Charles", "Aznavour", loc, "caznavour@dawan.fr", "testPasswordAznav", null,
-				UserType.FORMATEUR, UserCompany.JEHANN, "",date, 0));
+				UserType.FORMATEUR, UserCompany.JEHANN, "",date, null, 0));
 
 		uDtoList.add(new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0,
 				"dbalavoine@dawan.fr", null, "ADMINISTRATIF",
@@ -114,10 +114,10 @@ class UserServiceTest {
 				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null));
 
 		userFromDG2 = new User(4, 4,4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.FORMATEUR,
-				UserCompany.JEHANN, "",date, 0);
+				UserCompany.JEHANN, "",date, null, 0);
 		
 		userAdminFromDG2 = new User(4, 4,4, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.ADMINISTRATIF,
-				UserCompany.JEHANN, "",date, 0);
+				UserCompany.JEHANN, "",date, null, 0);
 		
 		usersDG2.add(new UserDG2Dto(4, 4, "zcrijze", "ecqiuv",
 				1, "zdokpcopi@dawan.fr", "FORMATEUR", "JEHANN",
@@ -248,7 +248,7 @@ class UserServiceTest {
 		AdvancedUserDto expected = new AdvancedUserDto(0, 0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr", "testPassword",
 				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skills);
 		User repoReturn = new User(3, 3, 3, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",date, 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",date, null, 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
 		when(skillRepository.findByTitle(any(String.class))).thenReturn(Optional.of(s1));
@@ -289,11 +289,11 @@ class UserServiceTest {
 		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
 				"newStrongPassword", "ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
 		User newPwd = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "newStrongPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN,"", LocalDate.now(), 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN,"", LocalDate.now(), null, 0);
 		User oldPwd = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), 0);
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), null, 0);
 		User newHashed = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "hashedNewStrongPassword",
-				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), 0);
+				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), null, 0);
 		AdvancedUserDto expected = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
 				"hashedNewStrongPassword", "ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
 
