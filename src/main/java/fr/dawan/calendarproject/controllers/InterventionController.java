@@ -67,7 +67,7 @@ public class InterventionController {
 	
 	// GET - user - id - after - date
 	@GetMapping(value = "/user/{userId}/{start}", produces = "application/json")
-	public List<InterventionDto> getAllByUserIdAfterDate(@PathVariable("userId") long userId, @PathVariable("start") String start) {
+	public List<AdvancedInterventionDto2> getAllByUserIdAfterDate(@PathVariable("userId") long userId, @PathVariable("start") String start) {
 		
 		return interventionService.getAllByUserIdAfterDate(userId, LocalDate.parse(start));
 	}
