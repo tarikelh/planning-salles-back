@@ -12,10 +12,10 @@ import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class, TaskRepository.class, UserMapper.class })
+@Mapper(componentModel = "spring", uses = { InterventionRepository.class , UserRepository.class, TaskRepository.class, UserMapper.class, InterventionMapper.class })
 public interface TaskMapper {
 	
-	@Mapping(target="interventionId", source="intervention.id" )
+	
 	TaskDto taskToTaskDto(Task task);
 	
 	
