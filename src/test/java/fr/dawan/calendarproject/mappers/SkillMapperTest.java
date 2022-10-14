@@ -57,15 +57,15 @@ class SkillMapperTest {
 
 	@BeforeEach
 	void before() {
-		location = new Location(1, "paris", "#32656", "FR", 1);
+		location = new Location(1, "paris", "#32656", "FR", false, 1);
 
 		LocalDate date = LocalDate.now(); 
 		
-		user = new User(1, 1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date, 0);
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
 
-		user2 = new User(2, 2, 2, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null,
-				UserType.FORMATEUR, UserCompany.JEHANN, "./image/img.png",date, 0 );
+		user2 = new User(2L, 2L, 2L, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null,
+				UserType.FORMATEUR, UserCompany.JEHANN, "./image/img.png",date, null, 0 );
 
 		usersId.add(user.getId());
 		usersId.add(user2.getId());

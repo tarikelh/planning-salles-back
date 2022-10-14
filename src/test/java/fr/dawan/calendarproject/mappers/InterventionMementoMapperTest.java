@@ -42,7 +42,7 @@ class InterventionMementoMapperTest {
 
 	@BeforeEach
 	void before() {
-		location = new Location(1, "paris", "#32656", "FR", 1);
+		location = new Location(1, "paris", "#32656", "FR", false, 1);
 		course = new Course(1, 1, "C#", "5", "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
@@ -51,16 +51,16 @@ class InterventionMementoMapperTest {
 		
 		LocalDate date = LocalDate.now();
 		
-		user = new User(1, 1,  1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date, 0);
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
 
-		masterIntervention = new Intervention(3, 3, "slug-3", "com", location, course, user, 0,
+		masterIntervention = new Intervention(3, 3, "slug-3", "com", null, location, course, user, 0,
 				InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), null, true, 0);
+				LocalTime.of(17, 0), null, true, 0, null, null, 0);
 
-		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN,
+		intervention = new Intervention(1, 1, "slug-1", "com", null, location, course, user, 0, InterventionStatus.INTERN,
 				true, LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				masterIntervention, false, 0);
+				masterIntervention, false, 0, null, null, 0);
 
 		interventionMementoDto = new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Bordeaux", 1,
 				1, "Java for intermediate level", 1, 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),

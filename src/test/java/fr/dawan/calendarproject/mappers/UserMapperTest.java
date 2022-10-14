@@ -22,6 +22,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.dto.UserDto;
+import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.InterventionFollowed;
 import fr.dawan.calendarproject.entities.Location;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
@@ -50,6 +52,7 @@ class UserMapperTest {
 
 	private User user = new User();
 	private User user2 = new User();
+	private User interventionFollowedUser = new User();
 	private List<Long> usersId = new ArrayList<>();
 	private UserDto userDto = new UserDto();
 	private AdvancedUserDto advUserDto = new AdvancedUserDto();
@@ -57,21 +60,26 @@ class UserMapperTest {
 	private List<String> skillsString = new ArrayList<>();
 	private Set<Skill> skills = new HashSet<>();
 	private Set<User> usersSet = new HashSet<>();
+	private Set<InterventionFollowed> interventionFollowedSet = new HashSet<>();	
 	private List<User> usersList = new ArrayList<>();
 	private Skill skill = new Skill();
 	private Location location = new Location();
 	private Location location2 = new Location();
 	private String stringSkills;
-
+	private InterventionFollowed interventionFollowed = new InterventionFollowed();
+	private Intervention followedIntervention = new Intervention();
+	
+	
 	@BeforeEach
 	void before() {
 		skill = new Skill(2, "skill2", null, 1);
 		skillsString.add(skill.getTitle());
 		stringSkills = "PHP, MVC, .Net";
 		skills.add(skill);
+		
 
-		location = new Location(1, "paris", "#FFFFFF", "FR", 1);
-		location2 = new Location(4, "Lille", "#FFFFF1", "EN", 1);
+		location = new Location(1, "paris", "#FFFFFF", "FR", false, 1);
+		location2 = new Location(4, "Lille", "#FFFFF1", "EN", false, 1);
 		
 		LocalDate date = LocalDate.now();
 		
@@ -87,11 +95,15 @@ class UserMapperTest {
 				1, "dtoname@dawan.fr","COMMERCIAL",
 				"DAWAN",stringSkills,"2022-12-31",0);
 
-		user = new User(3, 3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png",date, 1);
-
-		user2 = new User(5, 5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png",date, 1);
+//		user = new User(3, 3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
+//				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png",date,null,0);
+//
+//		user2 = new User(5, 5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
+//				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png",date, 0);
+		
+		interventionFollowedUser = new User(7L,7L,7L,"interventionFollowed","user",location,"qkjfjhsd@gmail.fr",
+				"sqlkfz",skills,UserType.ADMINISTRATIF,UserCompany.DAWAN,"",date,null,0);
+		interventionFollowed = new InterventionFollowed();
 
 		usersSet.add(user);
 		usersSet.add(user2);
