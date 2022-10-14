@@ -53,7 +53,7 @@ class ResourceServiceTest {
 	@BeforeEach
 	void beforeEach() throws Exception {
 		
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1L, "Paris", "FR", "red", false, 0);
 		
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		
@@ -169,7 +169,7 @@ class ResourceServiceTest {
 	@Test
 	void testSaveNewResource() {
 
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1, "Paris", "FR", "red", false, 0);
 
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		
@@ -213,7 +213,7 @@ class ResourceServiceTest {
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	void shouldReturnFalseWhenResourceIsNotUniq() {
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1L, "Paris", "FR", "red", false, 0);
 		
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		

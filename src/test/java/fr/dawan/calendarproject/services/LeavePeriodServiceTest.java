@@ -64,7 +64,7 @@ class LeavePeriodServiceTest {
 
 		LocalDate date = LocalDate.now();
 
-		User user = new User(1, 1, 1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
+		User user = new User(1L, 1L, 1L, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
 		lpList.add(new LeavePeriod(1, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));

@@ -70,16 +70,16 @@ class EmailServiceTest {
 	public void beforeEach() {
 		Course mockedCourse = Mockito.mock(Course.class);
 		
-		Location loc = new Location(1, 0, "Paris", "red", "FR", false, 0);
+		Location loc = new Location(1L, "Paris", "red", "FR", false, 0);
 
 		LocalDate date = LocalDate.now();
 		
-		receiver = new User(1, 1, 1, "Daniel", "Balavoine", loc,
+		receiver = new User(1L, 1L, 1L, "Daniel", "Balavoine", loc,
 				"dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		
 		iList.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention",
-				null, loc, mockedCourse, receiver, 1, InterventionStatus.SUR_MESURE, true,
+				null, loc, mockedCourse, receiver, 1, InterventionStatus.INTERN, true,
 				LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, null, null, 0));
 

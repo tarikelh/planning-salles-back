@@ -54,7 +54,7 @@ class RoomServiceTest {
 	@BeforeEach
 	void beforeEach()throws Exception{
 		
-		Location location = new Location (1,"Paris","FR","",1,0);
+		Location location = new Location (1,"Paris","FR","",false,0);
 		
 		rList.add (new Room(1,1,"Room 1",25,true,0, location));
 		rList.add (new Room(2,2,"Room 2",25,true,0, location));
@@ -126,7 +126,7 @@ class RoomServiceTest {
 	@Test
 	void testSaveNewResource() {
 
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1, "Paris", "FR", "red", false, 0);
 		
 		RoomDto toCreate = new RoomDto(0,4,"Room 4",25,true,1,0);
 		Room repoReturn = new Room(4,4,"Room 4",25,true,0, location );

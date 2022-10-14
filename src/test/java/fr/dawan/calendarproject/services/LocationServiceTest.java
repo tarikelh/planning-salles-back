@@ -58,10 +58,10 @@ class LocationServiceTest {
 
 	@BeforeEach
 	void beforeEach() throws Exception {
-		lList.add(new Location(1,1, "Paris", "FR", "red", false, 0));
-		lList.add(new Location(2,2, "Nantes", "FR", "blue", false, 0));
-		lList.add(new Location(3,3, "Lyon", "FR", "pink", false, 0));
-		lList.add(new Location(4,4, "Montpellier", "FR", "green", false, 0));
+		lList.add(new Location(1,"Paris", "FR", "red", false, 0));
+		lList.add(new Location(2,"Nantes", "FR", "blue", false, 0));
+		lList.add(new Location(3,"Lyon", "FR", "pink", false, 0));
+		lList.add(new Location(4,"Montpellier", "FR", "green", false, 0));
 
 		lDtoList.add(new LocationDto(1, 1, "Paris", "FR", "red", false, 0));
 		lDtoList.add(new LocationDto(2, 2, "Nantes", "FR", "blue", false, 0));
@@ -139,7 +139,7 @@ class LocationServiceTest {
 	@Test
 	void testSaveNewLocation() {
 		LocationDto toCreate = new LocationDto(0, 0, "Toulouse", "brown", "FR", false, 0);
-		Location repoReturn = new Location(5, 0, "Toulouse", "brown", "FR", false, 0);
+		Location repoReturn = new Location(5, "Toulouse", "brown", "FR", false, 0);
 		LocationDto expected = new LocationDto(5, 5, "Toulouse", "brown", "FR", false, 0);
 
 		when(locationMapper.locationDtoToLocation(any(LocationDto.class))).thenReturn(repoReturn);

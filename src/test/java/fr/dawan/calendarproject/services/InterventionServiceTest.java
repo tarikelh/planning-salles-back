@@ -109,7 +109,7 @@ class InterventionServiceTest {
 	
 	LocalDate date = LocalDate.now();
 
-	Location location = new Location(1, 0, "Paris", "FR", "red", false, 0);
+	Location location = new Location(1L,"Paris", "FR", "red", false, 0);
 	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", false, 0);
 	CourseDto courseDto = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
 	UserDto userDto = new UserDto(1, 1, 1,"Daniel", "Balavoine",1,"dbalavoine@dawan.fr", "testPassword",
@@ -126,16 +126,16 @@ class InterventionServiceTest {
 
 		LocalDate date = LocalDate.now();
 
-		Location mockedLoc = new Location(1, 0, "Paris", "red", "FR", false, 0);
+		Location mockedLoc = new Location(1 ,"Paris", "red", "FR", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
-		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		course = new Course(2, 548, "C#", "5", "slug", 0);
 		
 		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
 		
 		interventions.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention", email, mockedLoc, mockedCourse,
-				mockedUser, 1, InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5),
+				mockedUser, 1, InterventionStatus.INTRA, true, LocalDate.now(), LocalDate.now().plusDays(5),
 				LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0));
 
 		Intervention masterDummy = new Intervention(2, 2, "masterSlug", "I am a master Intervention", email, mockedLoc,
@@ -570,9 +570,9 @@ class InterventionServiceTest {
 	void shouldReturnTrueWhenInterventionHasNoError() {
 		LocalDate date = LocalDate.now();
 
-		Location mockedLoc = new Location(1, 0, "Paris", "FR", "red", false, 0);
+		Location mockedLoc = new Location(1L,"Paris", "FR", "red", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
-		User mockedUser = new User(1, 1, 1, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));
@@ -714,7 +714,7 @@ class InterventionServiceTest {
 		List<DateRangeDto> dates = new ArrayList<DateRangeDto>();
 
 		Intervention masterIntervention = new Intervention(4, 4, "masterSlug", "", null, null, null, null, 0,
-				InterventionStatus.SUR_MESURE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
+				InterventionStatus.POE, true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
 				LocalTime.of(17, 0), null, true, 0, email, null, 0);
 
 		InterventionDto masterInterventionDto = new InterventionDto(4, 4, "masterSlug", "", 0, 0, 0, 0, 0, 0,
@@ -722,11 +722,11 @@ class InterventionServiceTest {
 				LocalTime.of(17, 0), 0, true, email, 0);
 
 		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", email, Mockito.mock(Location.class),
-				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.SUR_MESURE, true,
+				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.POE, true,
 				LocalDate.now(), LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), null, false, 0, email, null, 0));
 
 		saveAllReturn.add(new Intervention(1, 1, "newSlug", "I am lambda Intervention", email, Mockito.mock(Location.class),
-				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.SUR_MESURE, true,
+				Mockito.mock(Course.class), Mockito.mock(User.class), 1, InterventionStatus.INTERN, true,
 				LocalDate.now().plusDays(3), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), null,
 				false, 0, email, null, 0));
 
