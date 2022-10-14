@@ -65,7 +65,7 @@ public class InterventionMementoControllerTest {
 
 		InterventionMementoDto mockedIntMemento = Mockito.mock(InterventionMementoDto.class);
 		intDto = new InterventionDto(1, 1, "lambdaSlug", "I am lambda Intervention", 0, 0, 0, 0, 0, 0, "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, email, 0);
 
 		mementos.add(new InterventionMemento(1, mockedIntMemento,
 				new MementoMessageDto(1, " has been created by ", email, ""), 0));

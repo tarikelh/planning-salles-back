@@ -40,7 +40,7 @@ class CompareGenericTest {
 
 	@Test
 	void shouldReturnNullIfNotSameObject() throws Exception {
-		Location newLocation = new Location(1L, "Bordeaux", "#FFFFF", "FR", 0);
+		Location newLocation = new Location(1L, "Bordeaux", "#FFFFF", "FR", false, 0);
 
 		String result = CompareGeneric.compareObjects(newLocation, courses.get(0));
 

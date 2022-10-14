@@ -101,8 +101,8 @@ class InterventionControllerTest {
 
 	LocalDate date = LocalDate.now();
 
-	Location location = new Location(1, "Paris", "FR", "red", 0);
-	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", 0);
+	Location location = new Location(1, "Paris", "FR", "red", false, 0);
+	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", false, 0);
 	CourseDto course = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
 	UserDto user = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
 			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
@@ -115,16 +115,16 @@ class InterventionControllerTest {
 		InterventionDto interventionDto = Mockito.mock(InterventionDto.class);
 
 		intervs.add(new InterventionDto(1, 1, "slug-1", "commentaire id 1", 1, 1, 1, 1, 1, 0, "SUR_MESURE", true,
-				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0));
+				LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, null, 0));
 		intervs.add(new InterventionDto(2, 2, "slug-2", "commentaire id 2", 2, 2, 2, 2, 2, 0, "INTERN", true, LocalDate.now(),
-				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, 0));
+				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, true, null, 0));
 		intervs.add(new InterventionDto(3, 3, "slug-3", "commentaire id 3", 3, 3, 3, 3, 3, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
-				false, 0));
+				false, null, 0));
 		
-		advIntervs.add(new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",locationDto,
+		advIntervs.add(new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",null, locationDto,
 				course,user,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
-				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,1,eventSiblings));
+				LocalTime.now(),LocalTime.now().plusHours(7L), interventionDto,true,null, 1,eventSiblings));
 	}
 
 	@Test
@@ -191,7 +191,7 @@ class InterventionControllerTest {
 		final long id = 2;
 		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, true, 0);
+				LocalTime.of(17, 0), 0, true, null, 0);
 
 		when(interventionService.getById(id)).thenReturn(masterInterv);
 
@@ -204,7 +204,7 @@ class InterventionControllerTest {
 		final long id = 2;
 		InterventionDto masterInterv = new InterventionDto(1, 1, "slug-1", "I am lambda Intervention", 0, 0, 0, 0, 0, 0,
 				"SUR_MESURE", true, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), 0, false, 0);
+				LocalTime.of(17, 0), 0, false, null, 0);
 
 		when(interventionService.getById(id)).thenReturn(masterInterv);
 
@@ -271,11 +271,11 @@ class InterventionControllerTest {
 	void shouldCreateNewIntervention() throws Exception {
 		InterventionDto interv = new InterventionDto(0, 0, "slug-4", "commentaire id 4", 4, 4, 4, 4, 4, 0, "INTERN", true,
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,
-				false, 0);
+				false, null, 0);
 		
-		AdvancedInterventionDto2 result = new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",locationDto,
+		AdvancedInterventionDto2 result = new AdvancedInterventionDto2(1,1,"advInter slug","advInter comment",null, locationDto,
 				course,user,1,"INTERN",true, LocalDate.now(),LocalDate.now().plusDays(1L),
-				LocalTime.now(),LocalTime.now().plusHours(7L), interv,true,1,eventSiblings);
+				LocalTime.now(),LocalTime.now().plusHours(7L), interv,true,null, 1,eventSiblings);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String intervJson = objectMapper.writeValueAsString(interv);
