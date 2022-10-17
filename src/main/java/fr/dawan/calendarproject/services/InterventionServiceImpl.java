@@ -787,7 +787,14 @@ public class InterventionServiceImpl implements InterventionService {
 					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
 
 					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
-
+					Intervention alreadyInDbOption = interventionRepository.findBySlug(interv.getSlug() + "-option").orElse(null);
+					
+					if(alreadyInDbOption != null) {
+						interv.setId(alreadyInDbOption.getId());
+						interv.setVersion(alreadyInDbOption.getVersion());
+						interv.setSlug(i.getSlug());
+					}
+					
 					if (alreadyInDb != null) {
 						interv.setId(alreadyInDb.getId());
 						interv.setVersion(alreadyInDb.getVersion());
@@ -846,7 +853,7 @@ public class InterventionServiceImpl implements InterventionService {
 					.findAllByIdDg2(interv.getMasterInterventionIdTemp());
 
 			for(Intervention masterInter : mIntervLst) {
-				if (!interv.isMaster() && (interv.getUser() == null || interv.getUser().getEmployeeIdDg2() < 0)
+				if (!interv.isMaster() && (interv.getUser() == null || interv.getUser().getIdDg2() < 0)
 						&& interv.getMasterInterventionIdTemp() != 0) { 
 					interv.setUser(masterInter.getUser());
 					interv = interventionRepository.saveAndFlush(interv);
