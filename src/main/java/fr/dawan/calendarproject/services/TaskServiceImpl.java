@@ -157,24 +157,32 @@ public class TaskServiceImpl implements TaskService{
 		Task taskToPersist = taskMapper.taskDtoToTask(taskDto);
 		
 		
-		//Setting User
-		Optional<User> u = userRepository.findById(taskDto.getUser().getId());
-		
-		if(u.isPresent()) {
-			taskToPersist.setUser(u.get());
+		if(taskDto.getUser() != null) {
+			Optional<User> u = userRepository.findById(taskDto.getUser().getId());
+			
+			if(u.isPresent()) {
+				taskToPersist.setUser(u.get());
+			}else {
+				taskToPersist.setUser(null);
+			}
 		}else {
 			taskToPersist.setUser(null);
 		}
+		//Setting User
 		
 		
 		//Setting intervention associated to the Task
-		Optional<Intervention> intervention = interventionRepository.findById(taskDto.getIntervention().getId());
-	
-		if(intervention.isPresent()) {
-			taskToPersist.setIntervention(intervention.get());
+		if(taskDto.getIntervention() != null) {
+			Optional<Intervention> intervention = interventionRepository.findById(taskDto.getIntervention().getId());
+			if(intervention.isPresent()) {
+				taskToPersist.setIntervention(intervention.get());
+			}else {
+				taskToPersist.setIntervention(null);
+			}
 		}else {
 			taskToPersist.setIntervention(null);
-		}
+		}		
+
 		
 		//Calculation of the duration of the task
 		long duration = ChronoUnit.DAYS.between(taskToPersist.getBeginDate(), taskToPersist.getEndDate());
