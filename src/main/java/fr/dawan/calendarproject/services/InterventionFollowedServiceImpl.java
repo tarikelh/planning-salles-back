@@ -148,7 +148,6 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 			}
 			intervFolloDto = intervFolloMapper.interventionFollowedToInterventionFollowedDto(i);
 		}
-		System.out.println(intervFolloDto);
 		return intervFolloDto;
 	}
 
