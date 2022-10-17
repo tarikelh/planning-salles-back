@@ -19,7 +19,7 @@ public class InterventionFollowed {
 	private long id;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "student_id")
+	@JoinColumn(name = "user_id")
 	User user;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
@@ -99,7 +99,7 @@ public class InterventionFollowed {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, intervention, registrationSlug, user, version);
+		return Objects.hash(intervention, registrationSlug, user, version);
 	}
 
 
@@ -112,10 +112,12 @@ public class InterventionFollowed {
 		if (getClass() != obj.getClass())
 			return false;
 		InterventionFollowed other = (InterventionFollowed) obj;
-		return id == other.id && Objects.equals(intervention, other.intervention)
+		return Objects.equals(intervention, other.intervention)
 				&& Objects.equals(registrationSlug, other.registrationSlug) && Objects.equals(user, other.user)
 				&& version == other.version;
 	}
+
+
 
 	
 }

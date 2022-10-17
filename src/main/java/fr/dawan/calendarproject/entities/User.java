@@ -263,7 +263,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(company, email, interventionsFollowed, lastName, location, skills, type);
+		return Objects.hash(company, email, lastName, location, skills, type);
 	}
 
 	@Override
@@ -276,7 +276,6 @@ public class User {
 			return false;
 		User other = (User) obj;
 		return company == other.company && Objects.equals(email, other.email)
-				&& Objects.equals(interventionsFollowed, other.interventionsFollowed)
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
 				&& Objects.equals(skills, other.skills) && type == other.type;
 	}
@@ -286,7 +285,7 @@ public class User {
 		return "User [id=" + id + ", idDg2=" + idDg2 + ", employeeIdDg2=" + employeeIdDg2 + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", location=" + location + ", email=" + email + ", password=" + password
 				+ ", skills=" + skills + ", type=" + type + ", company=" + company + ", imagePath=" + imagePath
-				+ ", endDate=" + endDate + ", interventionsFollowed=" + interventionsFollowed + ", version=" + version
+				+ ", endDate=" + endDate + " , version=" + version
 				+ "]";
 	}
 

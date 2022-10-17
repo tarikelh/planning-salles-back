@@ -85,7 +85,6 @@ public class Intervention implements Cloneable {
 	@Column(columnDefinition = "TEXT")
 	private String customers;
 	
-	//ToDo check if we need getter and setter on dto
 	@OneToMany(mappedBy = "intervention")
 	Set<InterventionFollowed> interventionsFollowed;
 
@@ -303,7 +302,7 @@ public class Intervention implements Cloneable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(comment, course, customers, dateEnd, dateStart, interventionsFollowed, location, slug, type,
+		return Objects.hash(comment, course, customers, dateEnd, dateStart, location, slug, type,
 				user, validated);
 	}
 
@@ -319,7 +318,6 @@ public class Intervention implements Cloneable {
 		return Objects.equals(comment, other.comment) && Objects.equals(course, other.course)
 				&& Objects.equals(customers, other.customers) && Objects.equals(dateEnd, other.dateEnd)
 				&& Objects.equals(dateStart, other.dateStart)
-				&& Objects.equals(interventionsFollowed, other.interventionsFollowed)
 				&& Objects.equals(location, other.location) && Objects.equals(slug, other.slug) && type == other.type
 				&& Objects.equals(user, other.user) && validated == other.validated;
 	}
@@ -333,7 +331,7 @@ public class Intervention implements Cloneable {
 				+ dateStart + ", dateEnd=" + dateEnd + ", timeStart=" + timeStart + ", timeEnd=" + timeEnd
 				+ ", masterIntervention=" + masterIntervention + ", isMaster=" + isMaster
 				+ ", masterInterventionIdTemp=" + masterInterventionIdTemp + ", customers=" + customers
-				+ ", interventionsFollowed=" + interventionsFollowed + ", version=" + version + "]";
+				+ ", version=" + version + "]";
 	}
 
 	public String toContentString() {

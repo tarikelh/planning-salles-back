@@ -6,23 +6,25 @@ public class InterventionFollowedDto {
 
 	private UserDto userDto;
 	
-	private InterventionDto interventionDto;
+	private AdvancedInterventionDto advInterventionDto;
 	
 	private String registrationSlug;
 	
 	private int version;
 
-	public InterventionFollowedDto(long id, UserDto userDto, InterventionDto interventionDto, String registrationSlug,
-			int version) {
-		super();
-		this.id = id;
-		this.userDto = userDto;
-		this.interventionDto = interventionDto;
-		this.registrationSlug = registrationSlug;
-		this.version = version;
-	}
+	
 
-	public long getId() {
+	public InterventionFollowedDto(long id, UserDto userDto, AdvancedInterventionDto advInterventionDto,
+            String registrationSlug, int version) {
+        super();
+        this.id = id;
+        this.userDto = userDto;
+        this.advInterventionDto = advInterventionDto;
+        this.registrationSlug = registrationSlug;
+        this.version = version;
+    }
+
+    public long getId() {
 		return id;
 	}
 
@@ -38,15 +40,15 @@ public class InterventionFollowedDto {
 		this.userDto = userDto;
 	}
 
-	public InterventionDto getInterventionDto() {
-		return interventionDto;
-	}
+	public AdvancedInterventionDto getAdvInterventionDto() {
+        return advInterventionDto;
+    }
 
-	public void setInterventionDto(InterventionDto interventionDto) {
-		this.interventionDto = interventionDto;
-	}
+    public void setAdvInterventionDto(AdvancedInterventionDto advInterventionDto) {
+        this.advInterventionDto = advInterventionDto;
+    }
 
-	public String getRegistrationSlug() {
+    public String getRegistrationSlug() {
 		return registrationSlug;
 	}
 
