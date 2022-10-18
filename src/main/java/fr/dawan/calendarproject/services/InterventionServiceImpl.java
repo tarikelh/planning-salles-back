@@ -754,8 +754,15 @@ public class InterventionServiceImpl implements InterventionService {
 					type = null;
 					break;
 				}
+				
+				if(type == null) {
+				    i.setType(null);
+				}
+				else {
+				    i.setType(type.toString());
+				}
 
-				i.setType(type.toString());
+				
 
 				i.setValidated(i.getAttendeesCount() > 0 && !optionsOnly);
 
