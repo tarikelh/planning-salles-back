@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -50,6 +51,7 @@ public class InterventionMementoDto implements Cloneable {
 
 	private long masterInterventionIdTemp;
 
+	@Column(columnDefinition = "TEXT")
 	private String customers;
 
 	private String optionSlug;

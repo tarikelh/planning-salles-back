@@ -1,5 +1,5 @@
 package fr.dawan.calendarproject.enums;
 
 public enum LeavePeriodType {
-    CP, CEF, CSS, CM, CPAT, CMAT, RC, RTTC, RTTI, CR, CRA, UL
+    CP, CEF, CSS, CM, CPAT, CPAR, CMAT, RC, RTTC, RTTI, CR, CRA, UL
 }
