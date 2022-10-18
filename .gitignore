@@ -15,6 +15,7 @@ target/
 .metadata
 .mvn
 
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
