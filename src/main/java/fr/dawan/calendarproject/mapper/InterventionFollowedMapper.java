@@ -12,29 +12,29 @@ import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
-@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class, InterventionFollowedRepository.class })
+@Mapper(componentModel = "spring", uses = { UserRepository.class, InterventionRepository.class,
+		InterventionFollowedRepository.class, InterventionMapper.class, UserMapper.class })
 public interface InterventionFollowedMapper {
 
-
-	@Mapping(target = "interventionId", source = "intervention.id")
-	@Mapping(target = "studentId", source = "student.id")
+	@Mapping(target = "userDto", source = "user")
+	@Mapping(target = "advInterventionDto", source = "intervention")
 	InterventionFollowedDto interventionFollowedToInterventionFollowedDto(InterventionFollowed interventionFollowed);
-	
-	@Mapping(target = "intervention", ignore = true)
-	@Mapping(target = "student", ignore = true)
+
+	@Mapping(target = "user", source = "userDto")
+	@Mapping(target = "intervention", source = "advInterventionDto")
 	InterventionFollowed interventionFollowedDtoToInterventionFollowed(InterventionFollowedDto interventionFollowedDto);
-	
-	@Mapping(target = "interventionId", source = "intervention.id")
-	@Mapping(target = "studentId", source = "student.id")
-	List<InterventionFollowedDto> listInterventionFollowedToListInterventionFollowedDto(List<InterventionFollowed> interventionFollowed);
-	
-	@Mapping(target = "intervention.id", source = "interventionId")
-	@Mapping(target = "student.id", source = "studentId")
-	List<InterventionFollowed> listInterventionFollowedDtoToListInterventionFollowed(List<InterventionFollowedDto> interventionFollowedDto);
-	
+
+	List<InterventionFollowedDto> listInterventionFollowedToListInterventionFollowedDto(
+			List<InterventionFollowed> interventionFollowed);
+
+
+	List<InterventionFollowed> listInterventionFollowedDtoToListInterventionFollowed(
+			List<InterventionFollowedDto> interventionFollowedDto);
+
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "student.idDg2", source = "personId")
+	@Mapping(target = "user.idDg2", source = "personId")
 	@Mapping(target = "intervention.idDg2", source = "interventionId")
 	@Mapping(target = "version", ignore = true)
-	InterventionFollowed interventionFollowedDG2DtoToInterventionFollowed(InterventionFollowedDG2Dto interventionFollowedDG2Dto);
+	InterventionFollowed interventionFollowedDG2DtoToInterventionFollowed(
+			InterventionFollowedDG2Dto interventionFollowedDG2Dto);
 }

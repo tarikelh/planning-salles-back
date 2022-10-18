@@ -80,9 +80,22 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(interventionsFoll);
 	}
 
+	/**
+	 * Counts the number of interventions Followed involving to a specific type of user.
+	 * 
+	 * @param type A String referring to a type of user.
+	 * 
+	 * @return CountDto Returns the number of interventions, according to the search
+	 *         criteria.
+	 *
+	 */
 	@Override
-	public CountDto count() {
-		return new CountDto(intervFolloRepository.count());
+	public CountDto count(String type) {
+		CountDto countDto = new CountDto();
+		if (UserType.contains(type)) {
+			countDto.setNb(intervFolloRepository.findByUserType(UserType.valueOf(type)).size());
+		}
+		return countDto;
 	}
 
 	/**
@@ -122,7 +135,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 	 */
 	@Override
 	public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) {
-		InterventionFollowedDto intervFollDto = null;
+		InterventionFollowedDto intervFolloDto = null;
 		if (interventionsFollowed.getId() <= 0
 				|| intervFolloRepository.findById(interventionsFollowed.getId()).isPresent()) {
 			InterventionFollowed i = intervFolloMapper
@@ -133,9 +146,9 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			intervFollDto = intervFolloMapper.interventionFollowedToInterventionFollowedDto(i);
+			intervFolloDto = intervFolloMapper.interventionFollowedToInterventionFollowedDto(i);
 		}
-		return intervFollDto;
+		return intervFolloDto;
 	}
 
 	/**
@@ -147,8 +160,9 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 	 *
 	 */
 	@Override
-	public List<InterventionFollowedDto> findAllByUserType(UserType type) {
-		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(intervFolloRepository.getAllByUserType(type));
+	public List<InterventionFollowedDto> findAllByUserType(String type) {
+		UserType userType = Enum.valueOf(UserType.class, type);
+		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(intervFolloRepository.findByUserType(userType));
 	}
 	
 	/**
@@ -162,8 +176,9 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 	 *
 	 */
 	@Override
-	public List<InterventionFollowedDto> findAllByUserTypeAndDateRange(UserType type, LocalDate start, LocalDate end) {
-		List<InterventionFollowed> lstIntervFollo = intervFolloRepository.getAllByUserTypeAndDateRange(type, start, end);
+	public List<InterventionFollowedDto> findAllByUserTypeAndDateRange(String type, LocalDate start, LocalDate end) {
+		UserType userType = Enum.valueOf(UserType.class, type);
+		List<InterventionFollowed> lstIntervFollo = intervFolloRepository.getAllByUserTypeAndDateRange(userType, start, end);
 		return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(lstIntervFollo);
 	}
 
@@ -224,9 +239,9 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 						.interventionFollowedDG2DtoToInterventionFollowed(iFDG2);
 				intervsFoll.setIntervention(
 						interventionRepository.findByIdDg2WithOutOption(iFDG2.getInterventionId()).orElse(null));
-				intervsFoll.setStudent(userRepository.findByIdDg2(iFDG2.getPersonId()).orElse(null));
+				intervsFoll.setUser(userRepository.findByIdDg2(iFDG2.getPersonId()).orElse(null));
 
-				if (intervsFoll != null && intervsFoll.getIntervention() != null && intervsFoll.getStudent() != null) {
+				if (intervsFoll != null && intervsFoll.getIntervention() != null && intervsFoll.getUser() != null) {
 
 					InterventionFollowed alreadyInDb = intervFolloRepository
 							.findByRegistrationSlug(iFDG2.getRegistrationSlug()).orElse(null);
