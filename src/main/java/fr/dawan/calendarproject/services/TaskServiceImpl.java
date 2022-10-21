@@ -153,34 +153,19 @@ public class TaskServiceImpl implements TaskService{
 		
 		TaskDto result = null;
 		
-		//setting task to persist
+		//Setting task to persist
 		Task taskToPersist = taskMapper.taskDtoToTask(taskDto);
 		
-		
-		if(taskDto.getUser() != null) {
-			Optional<User> u = userRepository.findById(taskDto.getUser().getId());
-			
-			if(u.isPresent()) {
-				taskToPersist.setUser(u.get());
-			}else {
-				taskToPersist.setUser(null);
-			}
-		}else {
-			taskToPersist.setUser(null);
-		}
 		//Setting User
-		
-		
+		if(taskDto.getUser() != null) {
+			User u = userRepository.findById(taskDto.getUser().getId()).orElse(null);
+			taskToPersist.setUser(u);
+
+		}
 		//Setting intervention associated to the Task
 		if(taskDto.getIntervention() != null) {
-			Optional<Intervention> intervention = interventionRepository.findById(taskDto.getIntervention().getId());
-			if(intervention.isPresent()) {
-				taskToPersist.setIntervention(intervention.get());
-			}else {
-				taskToPersist.setIntervention(null);
-			}
-		}else {
-			taskToPersist.setIntervention(null);
+			Intervention intervention = interventionRepository.findById(taskDto.getIntervention().getId()).orElse(null);
+			taskToPersist.setIntervention(intervention);
 		}		
 
 		
@@ -202,11 +187,9 @@ public class TaskServiceImpl implements TaskService{
 			
 		}
 		
-		//Create
+		// Create
 		if(taskDto.getId() == 0) {
-			
 			taskToPersist.setSlug(slugCreator(taskDto.getTitle(), taskDto.getBeginDate().toString()));
-			taskToPersist.setVersion(0);
 		}
 		
 		taskToPersist = taskRepository.saveAndFlush(taskToPersist);
