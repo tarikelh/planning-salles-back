@@ -20,8 +20,8 @@ public interface InterventionFollowedMapper {
 	@Mapping(target = "advInterventionDto", source = "intervention")
 	InterventionFollowedDto interventionFollowedToInterventionFollowedDto(InterventionFollowed interventionFollowed);
 
-	@Mapping(target = "user", source = "userDto")
-	@Mapping(target = "intervention", source = "advInterventionDto")
+	@Mapping(target = "user", ignore = true)
+	@Mapping(target = "intervention", ignore = true)
 	InterventionFollowed interventionFollowedDtoToInterventionFollowed(InterventionFollowedDto interventionFollowedDto);
 
 	List<InterventionFollowedDto> listInterventionFollowedToListInterventionFollowedDto(

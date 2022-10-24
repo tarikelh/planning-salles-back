@@ -63,6 +63,14 @@ public class InterventionFollowedDto {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+	
+	public long getUserId() {
+        return this.userDto.getId();
+    }
+	
+	public long getInterventionId() {
+        return this.advInterventionDto.getId();
+    }
 
 	
 }

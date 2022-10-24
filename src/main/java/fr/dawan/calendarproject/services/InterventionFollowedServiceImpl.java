@@ -4,7 +4,9 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -21,11 +23,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionFollowedDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionFollowedDto;
+import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionFollowed;
+import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.InterventionFollowedMapper;
 import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
@@ -137,13 +143,36 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      *
      */
     @Override
-    public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) {
+    public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowedDto) {
         InterventionFollowedDto intervFolloDto = null;
-        if (interventionsFollowed.getId() <= 0
-                || intervFolloRepository.findById(interventionsFollowed.getId()).isPresent()) {
+        
+        if (interventionsFollowedDto.getId() <= 0
+                || intervFolloRepository.findById(interventionsFollowedDto.getId()).isPresent()) {
+            
             InterventionFollowed i = intervFolloMapper
-                    .interventionFollowedDtoToInterventionFollowed(interventionsFollowed);
+                    .interventionFollowedDtoToInterventionFollowed(interventionsFollowedDto);
+            User user = userRepository.findById(interventionsFollowedDto.getUserId()).orElse(null);
+            Intervention intervention = interventionRepository.findById(interventionsFollowedDto.getInterventionId()).orElse(null);
+            if(user != null) {
+                i.setUser(user);
+            }
+            else {
+                Set<APIError> errors = new HashSet<>();
+                errors.add(new APIError(404, "User", "User not found",
+                        "User with id " + interventionsFollowedDto.getUserId() + " not found", "/api/users"));
 
+                throw new EntityFormatException(errors);
+            }
+            if(intervention != null) {
+                i.setIntervention(intervention);
+            }
+            else {
+                Set<APIError> errors = new HashSet<>();
+                errors.add(new APIError(404, "Intervention", "Intervention not found",
+                        "Intervention with id " + interventionsFollowedDto.getInterventionId() + " not found", "/api/interventions"));
+
+                throw new EntityFormatException(errors);
+            }
             if (i.getRegistrationSlug() == null || i.getRegistrationSlug().equals("")) {
                 i.setRegistrationSlug(createInterventionFollowedRegistrationSlug(i));
             }
