@@ -27,4 +27,5 @@ public interface InterventionFollowedService {
 	int fetchAllDG2InterventionsFollowed(String email, String password, LocalDate start, LocalDate end) throws Exception;
 
 	List<InterventionFollowedDto> findAllByUserTypeAndDateRange(String type, LocalDate start, LocalDate end);
+	
 }

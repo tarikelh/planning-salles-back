@@ -15,16 +15,7 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface InterventionFollowedRepository extends JpaRepository<InterventionFollowed, Long> {
 
-	List<InterventionFollowed> findByUserType(@Param("type") UserType type);
-	
-//	@Query("FROM InterventionFollowed iFollowed "
-//			+ "LEFT JOIN FETCH iFollowed.student iFolloStud "
-//			+ "LEFT JOIN FETCH iFollowed.intervention i "
-//			+ "WHERE iFolloStud.type= :type "
-//			+ "AND i.dateStart >= :start "
-//			+ "AND i.dateEnd <= :end")
-//	List<InterventionFollowed> getAllByUserTypeAndDateRange(@Param("type") UserType type,
-//			@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
+	List<InterventionFollowed> findByUserType(@Param("type") UserType type);	
 	
 	@Query("FROM InterventionFollowed iFollowed "
 			+ "LEFT JOIN FETCH iFollowed.user u "
@@ -35,16 +26,13 @@ public interface InterventionFollowedRepository extends JpaRepository<Interventi
 	List<InterventionFollowed> getAllByUserTypeAndDateRange(@Param("type") UserType type,
 			@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 
-//	@Query("FROM InterventionFollowed iFollowed JOIN iFollowed.intervention i "
-//			+ "WHERE i.dateStart >= :start AND i.dateEnd <= :end")
-//	List<InterventionFollowed> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
-	
 	@Query("FROM InterventionFollowed iFollowed "
 			+ "LEFT JOIN iFollowed.intervention i "
 			+ "WHERE i.dateStart >= :start "
 			+ "AND i.dateEnd <= :end")
 	List<InterventionFollowed> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
-	
 
 	Optional<InterventionFollowed> findByRegistrationSlug(String registrationSlug);
+	
+    List<InterventionFollowed> findAllByRegistrationSlugContaining(String registrationSlug);
 }

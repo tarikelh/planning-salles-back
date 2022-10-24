@@ -12,111 +12,109 @@ import javax.persistence.Version;
 
 @Entity
 public class InterventionFollowed {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	User user;
-	
-	@ManyToOne
-	@JoinColumn(name = "intervention_id")
-	Intervention intervention;
-	
-	private String registrationSlug;
-	
-	@Version
-	private int version;
 
-	
-	public InterventionFollowed() {
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 
-	public InterventionFollowed(long id, User user, Intervention intervention, String registrationSlug, int version) {
-		super();
-		this.id = id;
-		this.user = user;
-		this.intervention = intervention;
-		this.registrationSlug = registrationSlug;
-		this.version = version;
-	}
+    @ManyToOne
+    @JoinColumn(name = "intervention_id")
+    Intervention intervention;
 
+    private String registrationSlug;
 
-	public long getId() {
-		return id;
-	}
+    @Version
+    private int version;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public InterventionFollowed() {
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public InterventionFollowed(long id, User user, Intervention intervention, String registrationSlug, int version) {
+        super();
+        this.id = id;
+        this.user = user;
+        this.intervention = intervention;
+        this.registrationSlug = registrationSlug;
+        this.version = version;
+    }
 
+    public long getId() {
+        return id;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
+    public User getUser() {
+        return user;
+    }
 
-	public Intervention getIntervention() {
-		return intervention;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public void setIntervention(Intervention intervention) {
-		this.intervention = intervention;
-	}
-	
+    public Intervention getIntervention() {
+        return intervention;
+    }
 
-	public String getRegistrationSlug() {
-		return registrationSlug;
-	}
+    public void setIntervention(Intervention intervention) {
+        this.intervention = intervention;
+    }
 
-	public void setRegistrationSlug(String registrationSlug) {
-		this.registrationSlug = registrationSlug;
-	}
+    public String getRegistrationSlug() {
+        return registrationSlug;
+    }
 
-	public int getVersion() {
-		return version;
-	}
+    public void setRegistrationSlug(String registrationSlug) {
+        this.registrationSlug = registrationSlug;
+    }
 
-	public void setVersion(int version) {
-		this.version = version;
-	}
+    public int getVersion() {
+        return version;
+    }
 
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
-	@Override
-	public String toString() {
-		return "InterventionFollowed [id=" + id + ", user=" + user + ", intervention=" + intervention
-				+ ", registrationSlug=" + registrationSlug + ", version=" + version + "]";
-	}
+    public String getFirstName() {
+        return this.user.getFirstName();
 
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(intervention, registrationSlug, user, version);
-	}
+    public String getLastName() {
+        return this.user.getLastName();
 
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		InterventionFollowed other = (InterventionFollowed) obj;
-		return Objects.equals(intervention, other.intervention)
-				&& Objects.equals(registrationSlug, other.registrationSlug) && Objects.equals(user, other.user)
-				&& version == other.version;
-	}
+    @Override
+    public String toString() {
+        return "InterventionFollowed [id=" + id + ", user=" + user + ", intervention=" + intervention
+                + ", registrationSlug=" + registrationSlug + ", version=" + version + "]";
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(intervention, registrationSlug, user, version);
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        InterventionFollowed other = (InterventionFollowed) obj;
+        return Objects.equals(intervention, other.intervention)
+                && Objects.equals(registrationSlug, other.registrationSlug) && Objects.equals(user, other.user)
+                && version == other.version;
+    }
 
-	
 }
