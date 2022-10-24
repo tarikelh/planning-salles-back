@@ -158,7 +158,7 @@ public class TaskServiceImpl implements TaskService{
 		
 		//Setting User
 		if(taskDto.getUser() != null) {
-			User u = userRepository.findById(taskDto.getUser().getId()).orElse(null);
+			User u = userRepository.findById(taskDto.getUserId()).orElse(null);
 			taskToPersist.setUser(u);
 
 		}
