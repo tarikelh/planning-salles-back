@@ -164,7 +164,7 @@ public class TaskServiceImpl implements TaskService{
 		}
 		//Setting intervention associated to the Task
 		if(taskDto.getIntervention() != null) {
-			Intervention intervention = interventionRepository.findById(taskDto.getIntervention().getId()).orElse(null);
+			Intervention intervention = interventionRepository.findById(taskDto.getInterventionId()).orElse(null);
 			taskToPersist.setIntervention(intervention);
 		}		
 
