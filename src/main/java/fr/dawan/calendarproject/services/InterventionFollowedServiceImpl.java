@@ -137,7 +137,6 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      *
      */
     @Override
-    // ToDo vérifier si la méthode marche
     public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) {
         InterventionFollowedDto intervFolloDto = null;
         if (interventionsFollowed.getId() <= 0
@@ -145,8 +144,8 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
             InterventionFollowed i = intervFolloMapper
                     .interventionFollowedDtoToInterventionFollowed(interventionsFollowed);
 
-            if (i.getRegistrationSlug() == null) {
-                i.setRegistrationSlug(creatInterventionFollowedRegistrationSlug(i));
+            if (i.getRegistrationSlug() == null || i.getRegistrationSlug().equals("")) {
+                i.setRegistrationSlug(createInterventionFollowedRegistrationSlug(i));
             }
             try {
                 i = intervFolloRepository.saveAndFlush(i);
@@ -214,10 +213,8 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      * @param dateStart : the date of beggining of the task
      * @return the constructed slug as String
      */
-
-    @SuppressWarnings("null")
-    private String creatInterventionFollowedRegistrationSlug(InterventionFollowed intervFollowed) {
-        StringBuilder registrationSlug = null;
+    private String createInterventionFollowedRegistrationSlug(InterventionFollowed intervFollowed) {
+        StringBuilder registrationSlug = new StringBuilder();
         List<InterventionFollowed> intervsFollowed;
         String lastName = "";
         String firstName = "";
