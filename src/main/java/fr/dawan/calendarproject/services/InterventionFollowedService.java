@@ -18,7 +18,7 @@ public interface InterventionFollowedService {
 
 	void deleteById(long id);
 
-	InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed);
+	InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) throws Exception;
 	
 	List<InterventionFollowedDto> findAllByUserType(String type);
 	

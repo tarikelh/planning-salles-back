@@ -63,12 +63,12 @@ public class InterventionFollowedController {
 	}
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionFollowedDto save(@RequestBody InterventionFollowedDto iFollo) {
+	public InterventionFollowedDto save(@RequestBody InterventionFollowedDto iFollo) throws Exception {
 		return iFolloService.saveOrUpdate(iFollo);
 	}
 
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Object> update(@RequestBody InterventionFollowedDto iFollo) {
+	public ResponseEntity<Object> update(@RequestBody InterventionFollowedDto iFollo) throws Exception {
 
 		InterventionFollowedDto response = iFolloService.saveOrUpdate(iFollo);
 

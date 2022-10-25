@@ -140,42 +140,48 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      * @return InterventionFollowedDto Returns the newly created Intervention or an
      *         updated
      *         one.
+     * @throws Exception 
      *
      */
     @Override
-    public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowedDto) {
+    public InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowedDto) throws Exception {
+
         InterventionFollowedDto intervFolloDto = null;
-        
+
         if (interventionsFollowedDto.getId() <= 0
                 || intervFolloRepository.findById(interventionsFollowedDto.getId()).isPresent()) {
+            
+
             
             InterventionFollowed i = intervFolloMapper
                     .interventionFollowedDtoToInterventionFollowed(interventionsFollowedDto);
             User user = userRepository.findById(interventionsFollowedDto.getUserId()).orElse(null);
-            Intervention intervention = interventionRepository.findById(interventionsFollowedDto.getInterventionId()).orElse(null);
-            if(user != null) {
+            Intervention intervention = interventionRepository.findById(interventionsFollowedDto.getInterventionId())
+                    .orElse(null);
+            if (user != null) {
                 i.setUser(user);
-            }
-            else {
+            } else {
                 Set<APIError> errors = new HashSet<>();
                 errors.add(new APIError(404, "User", "User not found",
                         "User with id " + interventionsFollowedDto.getUserId() + " not found", "/api/users"));
 
                 throw new EntityFormatException(errors);
             }
-            if(intervention != null) {
+            if (intervention != null) {
                 i.setIntervention(intervention);
-            }
-            else {
+            } else {
                 Set<APIError> errors = new HashSet<>();
                 errors.add(new APIError(404, "Intervention", "Intervention not found",
-                        "Intervention with id " + interventionsFollowedDto.getInterventionId() + " not found", "/api/interventions"));
+                        "Intervention with id " + interventionsFollowedDto.getInterventionId() + " not found",
+                        "/api/interventions"));
 
                 throw new EntityFormatException(errors);
             }
+            checkValidity(user.getId(), intervention);
             if (i.getRegistrationSlug() == null || i.getRegistrationSlug().equals("")) {
                 i.setRegistrationSlug(createInterventionFollowedRegistrationSlug(i));
             }
+            
             try {
                 i = intervFolloRepository.saveAndFlush(i);
             } catch (Exception e) {
@@ -184,6 +190,46 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
             intervFolloDto = intervFolloMapper.interventionFollowedToInterventionFollowedDto(i);
         }
         return intervFolloDto;
+    }
+
+    /**
+     * Checks whether a newly registered intervention is valid.
+     * 
+     * @param iFollowed An object representing an InterventionFollowed.
+     * 
+     * @return boolean Returns a boolean to say whether or not the
+     *         interventionFollowed is
+     *         correct.
+     *
+     * @throws Exception 
+     */
+
+    public void checkValidity(long userId, Intervention intervention) throws Exception {
+        Set<APIError> errors = new HashSet<>();
+
+
+        List<Intervention> intervs = interventionRepository.findFromUserByDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
+            if (!intervs.isEmpty())  {
+                String message = "InterventionFollowed dates overlap the intervention with id: "
+                        + intervs.get(0).getId() + ".";
+                errors.add(new APIError(404, "intervention", "DateOverlap", message, "/api/interventionsFollowed"));
+            }
+   
+        
+            List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
+            if (!intervsFollow.isEmpty())  {
+                String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
+                        + intervsFollow.get(0).getId() + ".";
+                errors.add(new APIError(404, "interventionFollowed", "DateOverlap", message, "/api/interventionsFollowed"));
+            }
+
+
+        if (!errors.isEmpty())
+
+        {
+            throw new EntityFormatException(errors);
+        }
+
     }
 
     /**
