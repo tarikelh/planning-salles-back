@@ -55,7 +55,7 @@ public class InterventionFollowedController {
 	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			iFolloService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Intervention Followed with id " + id + " deleted");
+			return ResponseEntity.status(HttpStatus.OK).body("Intervention Followed with id " + id + " deleted");
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Intervention Followed with id " + id + " Not Found");
