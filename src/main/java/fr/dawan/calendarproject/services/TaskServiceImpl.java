@@ -27,7 +27,9 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.mapper.TaskMapper;
+import fr.dawan.calendarproject.mapper.UserMapper;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -45,6 +47,13 @@ public class TaskServiceImpl implements TaskService{
 	private TaskMapper taskMapper;
 	
 	@Autowired
+	private UserMapper userMapper;
+	
+
+	@Autowired
+	private InterventionMapper interventionMapper;
+	
+	@Autowired
 	private UserRepository userRepository;
 	
 	@Autowired
@@ -60,11 +69,13 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto
 	 */
 	@Override
-	public List<TaskDto> getAllTask() {
-		
-		return taskMapper.taskListToTaskDtoList(taskRepository.findAll());			
+	public List<TaskDto> getAllTask() throws Exception{
+		List<Task> tasks = taskRepository.findAll();
+		return taskMapper.taskListToTaskDtoList(tasks);	
 
 	}
+	
+	
 	
 	
 	/**
@@ -74,7 +85,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllTaskForUserId(long userId) {
+	public List<TaskDto> getAllTaskForUserId(long userId) throws Exception{
 		
 		return taskMapper.taskListToTaskDtoList(taskRepository.findByUserId(userId));			
 	}
@@ -87,7 +98,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllTaskForInternventionId(long interventionId) {
+	public List<TaskDto> getAllTaskForInternventionId(long interventionId) throws Exception{
 		
 		return taskMapper.taskListToTaskDtoList(taskRepository.findByInterventionId(interventionId));			
 	}
@@ -100,7 +111,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllBySlugLikeOrTitleLike(String search) {
+	public List<TaskDto> getAllBySlugLikeOrTitleLike(String search) throws Exception{
 
 		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContainingOrTitleContaining(search, search));
 	}
@@ -114,7 +125,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns null if no task was found 
 	 */
 	@Override
-	public TaskDto getTaskById(long id) {
+	public TaskDto getTaskById(long id) throws Exception{
 		
 		
 		Optional<Task> task = taskRepository.findById(id);
@@ -135,7 +146,7 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public CountDto count(String search) {
+	public CountDto count(String search) throws Exception{
 
 		return new CountDto(taskRepository.findAllBySlugContainingOrTitleContaining(search, search).size());
 
@@ -149,7 +160,7 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public TaskDto saveOrUpdate(TaskDto taskDto) {
+	public TaskDto saveOrUpdate(TaskDto taskDto) throws Exception{
 		
 		TaskDto result = null;
 		
@@ -206,7 +217,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @param dateStart : the date of beggining of the task
 	 * @return the constructed slug as String
 	 */
-	public String slugCreator(String title, String dateStart) {
+	public String slugCreator(String title, String dateStart) throws Exception{
 		
 		
 		StringBuilder slugBuilder = new StringBuilder();
@@ -245,7 +256,7 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public void deleteById(long id) {
+	public void deleteById(long id) throws Exception{
 
 		taskRepository.deleteById(id);
 	}
@@ -347,7 +358,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @exception Exception returns an exception if the request fails
 	 */
 	@Override
-	public List<TaskDto> getAllTaskAssignedBetween(LocalDate start, LocalDate end) {
+	public List<TaskDto> getAllTaskAssignedBetween(LocalDate start, LocalDate end) throws Exception{
 		
 		return taskMapper.taskListToTaskDtoList(taskRepository.getAllAssignedBetweenDates(start, end));
 					
@@ -362,11 +373,13 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public CountDto countByUserType(String type) {
+	public CountDto countByUserType(String type) throws Exception{
 		
 		UserType userType = Enum.valueOf(UserType.class, type);
 		
 		return new CountDto(taskRepository.findByUserType(userType).size());
 	}
+
+
 	
 }

@@ -29,16 +29,23 @@ public class TaskController {
 	@Autowired
 	private TaskService taskService;
 	
+	
+	
 	//GET
 	@GetMapping(produces = "application/json")
-	public List<TaskDto> getAll(){
+	public List<TaskDto> getAll() throws Exception{
 		
-		return taskService.getAllTask();	
+		try {
+			return taskService.getAllTask();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return null;
 	}
 
 	//GET
 	@GetMapping( value = "/{id}", produces = "application/json")
-	public ResponseEntity<Object> getById(@PathVariable(value = "id") long id){
+	public ResponseEntity<Object> getById(@PathVariable(value = "id") long id) throws Exception{
 
 		ResponseEntity<Object> result = null;
 
@@ -54,7 +61,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/user/{id}", produces = "application/json" )
-	public List<TaskDto> getAllByUserId(@PathVariable(value = "id") long id){
+	public List<TaskDto> getAllByUserId(@PathVariable(value = "id") long id) throws Exception{
 		
 		return taskService.getAllTaskForUserId(id);
 		
@@ -62,7 +69,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/intervention/{id}", produces = "application/json" )
-	public List<TaskDto> getAllByInterventionId(@PathVariable(value = "id") long id){
+	public List<TaskDto> getAllByInterventionId(@PathVariable(value = "id") long id) throws Exception{
 		
 		return taskService.getAllTaskForInternventionId(id);
 		
@@ -71,7 +78,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/search/{search}", produces= "application/json")
-	public List<TaskDto> getAllBySlugLikeOrTitleLike(@PathVariable(value= "search") String search){
+	public List<TaskDto> getAllBySlugLikeOrTitleLike(@PathVariable(value= "search") String search) throws Exception{
 		
 		return taskService.getAllBySlugLikeOrTitleLike(search);
 	}
@@ -80,7 +87,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/count/{search}", produces = "application/json")
-	public CountDto getCountTasks(@PathVariable(value="search") String search) {
+	public CountDto getCountTasks(@PathVariable(value="search") String search)  throws Exception{
 		
 		return taskService.count(search);
 	}
@@ -88,7 +95,7 @@ public class TaskController {
 	
 	//Post
 	@PostMapping(consumes="application/json" , produces= "application/json")
-	public ResponseEntity<Object> saveTask(@RequestBody TaskDto taskDto){
+	public ResponseEntity<Object> saveTask(@RequestBody TaskDto taskDto) throws Exception{
 		
 		ResponseEntity<Object> result = null;
 		
@@ -105,7 +112,7 @@ public class TaskController {
 	
 	//PUT
 	@PutMapping(consumes="application/json", produces="application/json")
-	public ResponseEntity<Object> updateTask(@RequestBody TaskDto taskDto) {
+	public ResponseEntity<Object> updateTask(@RequestBody TaskDto taskDto)  throws Exception{
 		
 		ResponseEntity<Object> result = null;
 
@@ -124,7 +131,7 @@ public class TaskController {
 	
 	//DELETE
 	@DeleteMapping(value= "/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable("id") long id){
+	public ResponseEntity<String> deleteById(@PathVariable("id") long id) throws Exception{
 		
 		ResponseEntity<String> result = null;
 
@@ -143,7 +150,7 @@ public class TaskController {
 	@GetMapping(value="/dg2/{start}/{end}", produces="application/json")
 	public ResponseEntity<String> fetchAllFromDg2(@RequestHeader Map<String,String> headers, 
 													@PathVariable("start") String start, 
-													@PathVariable("end") String end  ){
+													@PathVariable("end") String end  ) throws Exception{
 		
 		ResponseEntity<String> result = null;
 		
@@ -165,7 +172,7 @@ public class TaskController {
 	//GET
 	@GetMapping(value={"/between/{start}/{end}"}, produces="application/json" )
 	public List<TaskDto> getAllBetweenDatesOptionalUser(@PathVariable("start") String start, 
-															@PathVariable("end") String end){
+															@PathVariable("end") String end) throws Exception{
 		
 		return  taskService.getAllTaskAssignedBetween(LocalDate.parse(start), LocalDate.parse(end));
 
@@ -174,7 +181,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping( value = "/count/userType/{type}", produces = "application/json")
-	public CountDto getCountByUserType(@PathVariable(value="type") String type) {
+	public CountDto getCountByUserType(@PathVariable(value="type") String type)  throws Exception{
 		
 		return taskService.countByUserType(type);
 	}

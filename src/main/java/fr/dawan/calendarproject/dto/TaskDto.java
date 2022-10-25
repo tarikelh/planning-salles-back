@@ -130,12 +130,19 @@ public class TaskDto implements Serializable {
 		this.user = user;
 	}
 	
-	
 	public long getUserId() {
-		return this.user.getId();
+		if(this.user!=null)
+			return this.user.getId();
+		else
+			return 0;
 	}
 	
 	public long getInterventionId() {
-		return this.intervention.getId();
+		if(this.intervention!=null)
+			return this.intervention.getId();
+		else
+			return 0;
 	}
+	
+
 }

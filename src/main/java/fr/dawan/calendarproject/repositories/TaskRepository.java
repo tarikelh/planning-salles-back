@@ -15,6 +15,7 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
 
+	@Query("SELECT t FROM Task t JOIN t.user u JOIN u.location lo LEFT JOIN u.skills sk LEFT JOIN t.intervention interv")
 	List<Task> findAll();
 	
 	Optional<Task> findById(long id);

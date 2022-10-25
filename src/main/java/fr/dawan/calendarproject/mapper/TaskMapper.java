@@ -36,6 +36,6 @@ public interface TaskMapper {
 	Task taskDg2DtoToTask( TaskDg2Dto taskDg2Dto );
 	
 	
-	List<TaskDto> taskListToTaskDtoList(List<Task> tasks);
+	List<TaskDto> taskListToTaskDtoList(List<Task> tasks) throws Exception;
 	
 }
