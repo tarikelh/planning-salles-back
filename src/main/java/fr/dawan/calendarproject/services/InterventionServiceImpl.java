@@ -36,6 +36,8 @@ import fr.dawan.calendarproject.dto.InterventionDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionDto;
 import fr.dawan.calendarproject.entities.Course;
 import fr.dawan.calendarproject.entities.Intervention;
+import fr.dawan.calendarproject.entities.InterventionFollowed;
+import fr.dawan.calendarproject.entities.LeavePeriod;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.InterventionStatus;
 import fr.dawan.calendarproject.enums.UserType;
@@ -43,13 +45,16 @@ import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionCustomRepository;
+import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.LeavePeriodRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.XProperty;
+import net.sf.ehcache.search.expression.IsNull;
 
 @Service
 @Transactional
@@ -69,7 +74,13 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private InterventionFollowedRepository intervFolloRepository;
 
+	@Autowired
+	private LeavePeriodRepository leavePeriodRepository;
+	
 	@Autowired
 	private InterventionCaretaker caretaker;
 
@@ -81,6 +92,7 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Autowired
 	private LeavePeriodService leavePeriodService;
+	
 
 	/**
 	 * Fetches all of the existing interventions.
@@ -215,40 +227,41 @@ public class InterventionServiceImpl implements InterventionService {
 
 	@Override
 	public AdvancedInterventionDto2 saveOrUpdate(InterventionDto intervention, String email) throws Exception {
+		
 		AdvancedInterventionDto2 advancedInterventionDto2 = null;
+		
+		Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
 
-		if (intervention.getId() > 0 && interventionRepository.existsById(intervention.getId())) {
-			checkIntegrity(intervention);
-			Intervention interv = interventionMapper.interventionDtoToIntervention(intervention);
-
-			if (intervention.isMaster()) {
-				interv.setLocation(null);
-				interv.setCourse(null);
-				interv.setUser(null);
-			} else {
-				interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
-				interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
-				interv.setUser(userRepository.getOne(intervention.getUserId()));
-			}
-
-			if (intervention.getMasterInterventionId() > 0)
-				interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
-			else
-				interv.setMasterIntervention(null);
-
-			if (interv.getSlug() == null) {
-				interv.setSlug(creatInterventionSlug(interv));
-			}
-
-			interv = interventionRepository.saveAndFlush(interv);
-
-			caretaker.addMemento(email, interv);
-
-			advancedInterventionDto2 = interventionMapper.interventionToAdvInterventionDto2(interv);
-			advancedInterventionDto2.setEventSiblings(interventionMapper
-					.listInterventionToListAdvInterventionDto(interventionRepository.findSibblings(interv.getCourseId(),
-							interv.getDateStart(), interv.getDateEnd(), interv.getId(), interv.getUserId())));
+		checkIntegrity(intervention);
+		 
+		if (intervention.isMaster()) {
+			interv.setLocation(null);
+			interv.setCourse(null);
+			interv.setUser(null);
+		} else {
+			interv.setLocation(locationRepository.getOne(intervention.getLocationId()));
+			interv.setCourse(courseRepository.getOne(intervention.getCourseId()));
+			interv.setUser(userRepository.getOne(intervention.getUserId()));
 		}
+			
+		if (intervention.getMasterInterventionId() > 0)
+			interv.setMasterIntervention(interventionRepository.getOne(intervention.getMasterInterventionId()));
+		else
+			interv.setMasterIntervention(null);
+			
+		if (interv.getSlug() == null) {
+			interv.setSlug(creatInterventionSlug(interv));
+		}
+			
+		interv = interventionRepository.saveAndFlush(interv);
+			
+		caretaker.addMemento(email, interv);
+			
+		advancedInterventionDto2 = interventionMapper.interventionToAdvInterventionDto2(interv);
+		advancedInterventionDto2.setEventSiblings(interventionMapper
+				.listInterventionToListAdvInterventionDto(interventionRepository.findSibblings(interv.getCourseId(),
+						interv.getDateStart(), interv.getDateEnd(), interv.getId(), interv.getUserId())));
+						
 		return advancedInterventionDto2;
 	}
 
@@ -481,20 +494,46 @@ public class InterventionServiceImpl implements InterventionService {
 				errors.add(new APIError(404, instanceClass, "UserNotFound", message, path));
 			}
 		}
+		
+		String errorMessage = "";
+		String dateOverLapError = "DateOverlap";
 
-		// Verify if an intervention from the same user and not a sibling (course
-		// different) is not overlapping with the new intervention
-		for (Intervention interv : interventionRepository.findFromUserByDateRange(i.getUserId(), i.getDateStart(),
-				i.getDateEnd())) {
-			if (interv.getId() != i.getId() && interv.getCourse().getId() != i.getCourseId()) {
-				String message = "Intervention dates overlap the intervention with id: " + interv.getId() + ".";
-				errors.add(new APIError(404, instanceClass, "DateOverlap", message, path));
-			}
-		}
+        List<Intervention> intervs = interventionRepository.findInterventionsOverlapingByUserIdAndDates(i.getUserId(),
+        		i.getDateStart(), i.getDateEnd());
+        
+        //Check if there is no overlaping intervention found in the list AND if it is not empty check if the intervention is not the one we are working on
+        if (!intervs.isEmpty() && intervs.get(0).getId() != i.getId()) {
+        	errorMessage = "Intervention dates overlap the intervention with id : "
+                    + intervs.get(0).getId() + ".";
+            errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
+        }
+        
 
-		if (!errors.isEmpty()) {
-			throw new EntityFormatException(errors);
-		}
+        List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(i.getUserId(),
+        		i.getDateStart(), i.getDateEnd());
+        
+        
+        if (!intervsFollow.isEmpty()) {
+        	errorMessage = "Intervention dates overlap the interventionFollowed with id: "
+                    + intervsFollow.get(0).getId() + ".";
+            errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
+        }
+        
+
+        List<LeavePeriod> leavePeriods = leavePeriodRepository.getAllOverlapingByUserIdAndDates(i.getUserId(),
+        		i.getDateStart(), i.getDateEnd());
+
+        if (!leavePeriods.isEmpty()) {
+        	errorMessage = "InterventionFollowed dates overlap the Leave period with id: "
+                    + leavePeriods.get(0).getId() + ".";
+            errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
+        }
+        
+
+        
+        if (!errors.isEmpty()) {
+            throw new EntityFormatException(errors);
+        }
 
 		return true;
 	}
