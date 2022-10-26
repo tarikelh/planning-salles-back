@@ -65,11 +65,19 @@ public class InterventionFollowedDto {
 	}
 	
 	public long getUserId() {
-        return this.userDto.getId();
+	    long userId = 0;
+	    if(this.userDto != null) {
+	        userId = this.userDto.getId(); 
+	    }
+        return userId;
     }
 	
 	public long getInterventionId() {
-        return this.advInterventionDto.getId();
+	    long interventionId = 0;
+        if(this.advInterventionDto != null) {
+            interventionId = this.advInterventionDto.getId();
+        }
+        return interventionId;
     }
 
 	

@@ -66,6 +66,14 @@ public class InterventionFollowed {
         this.intervention = intervention;
     }
 
+    public long getInterventionId() {
+        long interventionId = 0;
+        if(this.intervention != null) {
+            interventionId = this.intervention.getId();
+        }
+        return interventionId;
+    }
+    
     public String getRegistrationSlug() {
         return registrationSlug;
     }

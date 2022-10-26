@@ -57,7 +57,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 
     @Autowired
     private LeavePeriodRepository leavePeriodRepository;
-    
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -145,7 +145,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      * @return InterventionFollowedDto Returns the newly created Intervention or an
      *         updated
      *         one.
-     * @throws Exception 
+     * @throws Exception
      *
      */
     @Override
@@ -155,9 +155,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 
         if (interventionsFollowedDto.getId() <= 0
                 || intervFolloRepository.findById(interventionsFollowedDto.getId()).isPresent()) {
-            
 
-            
             InterventionFollowed i = intervFolloMapper
                     .interventionFollowedDtoToInterventionFollowed(interventionsFollowedDto);
             User user = userRepository.findById(interventionsFollowedDto.getUserId()).orElse(null);
@@ -186,7 +184,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
             if (i.getRegistrationSlug() == null || i.getRegistrationSlug().equals("")) {
                 i.setRegistrationSlug(createInterventionFollowedRegistrationSlug(i));
             }
-            
+
             try {
                 i = intervFolloRepository.saveAndFlush(i);
             } catch (Exception e) {
@@ -206,41 +204,43 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      *         interventionFollowed is
      *         correct.
      *
-     * @throws Exception 
+     * @throws Exception
      */
 
     public void checkValidity(long userId, Intervention intervention) throws Exception {
         Set<APIError> errors = new HashSet<>();
-        
+
         String errorType = "DateOverlap";
         String apiRoute = "/api/interventionsFollowed";
 
-        List<Intervention> intervs = interventionRepository.findInterventionsOverlapingByUserIdAndDates(userId, intervention.getDateStart(), intervention.getDateEnd());
-        if (!intervs.isEmpty())  {
-        	String message = "InterventionFollowed dates overlap the intervention with id: "
-        			+ intervs.get(0).getId() + ".";
-        	errors.add(new APIError(404, "intervention", errorType, message, apiRoute));
-        }
-   
-        
-        List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
-            
-        if (!intervsFollow.isEmpty())  {
-        	String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
-        			+ intervsFollow.get(0).getId() + ".";
-        	errors.add(new APIError(404, "interventionFollowed", errorType, message, apiRoute));
-        }
-        
-        List<LeavePeriod> leavePeriods = leavePeriodRepository.getAllOverlapingByUserIdAndDates(userId, intervention.getDateStart(), intervention.getDateEnd());
-
-        if(!leavePeriods.isEmpty()) {
-        	String message = "InterventionFollowed dates overlap the Leave period with id: "
-        			+ leavePeriods.get(0).getId() + ".";
-        	errors.add(new APIError(404, "leavePeriod", errorType, message, apiRoute));
+        List<Intervention> intervs = interventionRepository.findInterventionsOverlapingByUserIdAndDates(userId,
+                intervention.getDateStart(), intervention.getDateEnd());
+        if (!intervs.isEmpty()) {
+            String message = "InterventionFollowed dates overlap the intervention with id: "
+                    + intervs.get(0).getId() + ".";
+            errors.add(new APIError(404, "intervention", errorType, message, apiRoute));
         }
 
-        if (!errors.isEmpty()){
-        	throw new EntityFormatException(errors);
+        List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(userId,
+                intervention.getDateStart(), intervention.getDateEnd());
+
+        if (!intervsFollow.isEmpty()) {
+            String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
+                    + intervsFollow.get(0).getId() + ".";
+            errors.add(new APIError(404, "interventionFollowed", errorType, message, apiRoute));
+        }
+
+        List<LeavePeriod> leavePeriods = leavePeriodRepository.getAllOverlapingByUserIdAndDates(userId,
+                intervention.getDateStart(), intervention.getDateEnd());
+
+        if (!leavePeriods.isEmpty()) {
+            String message = "InterventionFollowed dates overlap the Leave period with id: "
+                    + leavePeriods.get(0).getId() + ".";
+            errors.add(new APIError(404, "leavePeriod", errorType, message, apiRoute));
+        }
+
+        if (!errors.isEmpty()) {
+            throw new EntityFormatException(errors);
         }
     }
 
@@ -302,25 +302,15 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
      */
     private String createInterventionFollowedRegistrationSlug(InterventionFollowed intervFollowed) {
         StringBuilder registrationSlug = new StringBuilder();
-        List<InterventionFollowed> intervsFollowed;
         String lastName = "";
         String firstName = "";
 
         if (intervFollowed != null) {
             lastName = intervFollowed.getLastName();
             firstName = intervFollowed.getFirstName();
-            registrationSlug.append(lastName).append("-").append(firstName).append("-");
+            registrationSlug.append(lastName).append("-").append(firstName).append("-")
+                    .append(intervFollowed.getInterventionId());
 
-            intervsFollowed = intervFolloRepository
-                    .findAllByRegistrationSlugContaining(registrationSlug.toString());
-
-            if (!intervsFollowed.isEmpty()) {
-                registrationSlug.append("1--").append(lastName).append("-")
-                        .append(firstName).append("-1-").append(intervsFollowed.size() + 1);
-
-            } else {
-                registrationSlug.append("-");
-            }
 
         }
         return registrationSlug.toString();
