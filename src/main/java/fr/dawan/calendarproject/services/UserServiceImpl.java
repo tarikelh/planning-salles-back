@@ -572,7 +572,7 @@ public class UserServiceImpl implements UserService {
 			try {
 
 				User u = new User();
-				u.setIdDg2(-1 * lo.getId());
+				u.setIdDg2(-1 * lo.getIdDg2());
 
 				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
@@ -583,7 +583,7 @@ public class UserServiceImpl implements UserService {
 					u.setType(UserType.INTERV_NOT_ASSIGN);
 					u.setFirstName("NOT ASSIGNED");
 					u.setLastName(lo.getCity());
-					u.setEmployeeIdDg2(-1 * lo.getId());
+					u.setEmployeeIdDg2(-1 * lo.getIdDg2());
 
 					u = userRepository.saveAndFlush(u);
 					result.add(userMapper.userToAdvancedUserDto(u));

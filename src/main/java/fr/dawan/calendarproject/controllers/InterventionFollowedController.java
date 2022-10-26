@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.InterventionFollowedDto;
-import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.services.InterventionFollowedService;
 
 @RestController
@@ -42,9 +41,9 @@ public class InterventionFollowedController {
 		return iFolloService.getAllInterventionsFollowed(page-1, size);
 	}
 
-	@GetMapping(value = "/count", produces = "application/json")
-	public CountDto count() {
-		return iFolloService.count();
+	@GetMapping(value = "/count/{type}", produces = "application/json")
+	public CountDto count(@PathVariable("type") String type) {
+		return iFolloService.count(type);
 	}
 	
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
@@ -56,7 +55,7 @@ public class InterventionFollowedController {
 	public ResponseEntity<String> deleteById(@PathVariable(value = "id") long id) {
 		try {
 			iFolloService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Intervention Followed with id " + id + " deleted");
+			return ResponseEntity.status(HttpStatus.OK).body("Intervention Followed with id " + id + " deleted");
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("Intervention Followed with id " + id + " Not Found");
@@ -64,12 +63,12 @@ public class InterventionFollowedController {
 	}
 
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public InterventionFollowedDto save(@RequestBody InterventionFollowedDto iFollo) {
+	public InterventionFollowedDto save(@RequestBody InterventionFollowedDto iFollo) throws Exception {
 		return iFolloService.saveOrUpdate(iFollo);
 	}
 
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Object> update(@RequestBody InterventionFollowedDto iFollo) {
+	public ResponseEntity<Object> update(@RequestBody InterventionFollowedDto iFollo) throws Exception {
 
 		InterventionFollowedDto response = iFolloService.saveOrUpdate(iFollo);
 
@@ -81,12 +80,12 @@ public class InterventionFollowedController {
 	}
 
 	@GetMapping(value = "/userType/{type}", produces = "application/json")
-	 List<InterventionFollowedDto> getAllByUserType(@PathVariable("type") UserType type) {
+	 List<InterventionFollowedDto> getAllByUserType(@PathVariable("type") String type) {
 		return iFolloService.findAllByUserType(type);
 	}
 	
 	@GetMapping(value = "/userTypeAndDateRange/{type}/{start}/{end}", produces = "application/json")
-	 List<InterventionFollowedDto> getAllByUserTypeAndDateRange(@PathVariable("type") UserType type, @PathVariable("start") String start, @PathVariable("end") String end) {
+	 List<InterventionFollowedDto> getAllByUserTypeAndDateRange(@PathVariable("type") String type, @PathVariable("start") String start, @PathVariable("end") String end) {
 		return iFolloService.findAllByUserTypeAndDateRange(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 	

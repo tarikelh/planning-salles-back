@@ -10,10 +10,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.dawan.calendarproject.entities.Task;
+import fr.dawan.calendarproject.enums.UserType;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
 
+	@Query("SELECT t FROM Task t JOIN t.user u JOIN u.location lo LEFT JOIN u.skills sk LEFT JOIN t.intervention interv")
 	List<Task> findAll();
 	
 	Optional<Task> findById(long id);
@@ -24,15 +26,13 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	List<Task> findByInterventionId(long interventionId);
 	
-	@Query("FROM Task t WHERE t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end")
-	List<Task> getAllBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
+	@Query("FROM Task t WHERE t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end AND t.user IS NOT NULL")
+	List<Task> getAllAssignedBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
 	
-	@Query("FROM Task t WHERE (t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end) AND t.user.id = :userId")
-	List<Task> getAllByUserIdBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd, @Param("userId") long userId);
+	List<Task> findByUserType(UserType type);
 	
-	List<Task> findAllBySlugContaining(String slug);
+	List<Task> findAllBySlugContainingOrTitleContaining(String slug, String title);
 	
-	List<Task> findBySlugOrTaskIdDg2(String slug, long taskIdDg2);
-	
+	Optional<Task> findBySlug(String slug);
 	
 }

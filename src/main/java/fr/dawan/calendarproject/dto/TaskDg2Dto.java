@@ -8,11 +8,13 @@ public class TaskDg2Dto implements Serializable{
 	
 	private long taskId;
 	
+	private String title;
+	
 	private long employeeId;
 	
 	private long personId;
 	
-	private String registrationSlug;
+	private String taskSlug;
 	
 	private String beginAt;
 	
@@ -25,13 +27,14 @@ public class TaskDg2Dto implements Serializable{
 	public TaskDg2Dto() {
 	}
 
-	public TaskDg2Dto(long taskId, long employeeId, long personId, String registrationSlug, String beginAt,
+	public TaskDg2Dto(long taskId, String title, long employeeId, long personId, String taskSlug, String beginAt,
 			String finishAt, long interventionId) {
 		super();
 		this.taskId = taskId;
+		this.title = title;
 		this.employeeId = employeeId;
 		this.personId = personId;
-		this.registrationSlug = registrationSlug;
+		this.taskSlug = taskSlug;
 		this.beginAt = beginAt;
 		this.finishAt = finishAt;
 		this.interventionId = interventionId;
@@ -44,6 +47,15 @@ public class TaskDg2Dto implements Serializable{
 	public void setTaskId(long taskId) {
 		this.taskId = taskId;
 	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 
 	public long getEmployeeId() {
 		return employeeId;
@@ -61,13 +73,14 @@ public class TaskDg2Dto implements Serializable{
 		this.personId = personId;
 	}
 
-	public String getRegistrationSlug() {
-		return registrationSlug;
+	public String getTaskSlug() {
+		return taskSlug;
 	}
 
-	public void setRegistrationSlug(String registrationSlug) {
-		this.registrationSlug = registrationSlug;
+	public void setTaskSlug(String taskSlug) {
+		this.taskSlug = taskSlug;
 	}
+
 
 	public String getBeginAt() {
 		return beginAt;

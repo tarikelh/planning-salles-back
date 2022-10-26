@@ -1,7 +1,6 @@
 package fr.dawan.calendarproject.repositories;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +25,6 @@ public interface ResourceRepository extends JpaRepository<Resource,Long> {
 	 
 	 @Query("FROM Resource r WHERE r.quantity = :quantity")
 	 List<Resource> findByQuantity(@Param("quantity") int quantity);
-	 
-	 //List<Resource> findByQuantityContaining(int quantity);
 	 
 	 @Query("FROM Resource r WHERE r.quantity >= :value1 AND r.quantity <= :value2")
 	 List<Resource> findByQuantityRange(@Param("value1") int value1, @Param("value2") int value2);

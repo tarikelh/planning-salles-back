@@ -21,7 +21,7 @@ public class Course {
 	@Column(nullable = true)
 	private long idDg2;
 
-	@Column(nullable = false, length = 350)
+	@Column(nullable = false, length = 255)
 	private String title;
 
 	@Column(nullable = true)
