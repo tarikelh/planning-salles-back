@@ -29,12 +29,14 @@ import fr.dawan.calendarproject.dto.InterventionFollowedDG2Dto;
 import fr.dawan.calendarproject.dto.InterventionFollowedDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.InterventionFollowed;
+import fr.dawan.calendarproject.entities.LeavePeriod;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserType;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.InterventionFollowedMapper;
 import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
+import fr.dawan.calendarproject.repositories.LeavePeriodRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
 
 @Service
@@ -53,6 +55,9 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
     @Autowired
     private InterventionRepository interventionRepository;
 
+    @Autowired
+    private LeavePeriodRepository leavePeriodRepository;
+    
     @Autowired
     RestTemplate restTemplate;
 
@@ -206,30 +211,37 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
 
     public void checkValidity(long userId, Intervention intervention) throws Exception {
         Set<APIError> errors = new HashSet<>();
+        
+        String errorType = "DateOverlap";
+        String apiRoute = "/api/interventionsFollowed";
 
-
-        List<Intervention> intervs = interventionRepository.findFromUserByDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
-            if (!intervs.isEmpty())  {
-                String message = "InterventionFollowed dates overlap the intervention with id: "
-                        + intervs.get(0).getId() + ".";
-                errors.add(new APIError(404, "intervention", "DateOverlap", message, "/api/interventionsFollowed"));
-            }
+        List<Intervention> intervs = interventionRepository.findInterventionsOverlapingByUserIdAndDates(userId, intervention.getDateStart(), intervention.getDateEnd());
+        if (!intervs.isEmpty())  {
+        	String message = "InterventionFollowed dates overlap the intervention with id: "
+        			+ intervs.get(0).getId() + ".";
+        	errors.add(new APIError(404, "intervention", errorType, message, apiRoute));
+        }
    
         
-            List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
-            if (!intervsFollow.isEmpty())  {
-                String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
-                        + intervsFollow.get(0).getId() + ".";
-                errors.add(new APIError(404, "interventionFollowed", "DateOverlap", message, "/api/interventionsFollowed"));
-            }
+        List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(userId, intervention.getDateStart(), intervention.getDateEnd());
+            
+        if (!intervsFollow.isEmpty())  {
+        	String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
+        			+ intervsFollow.get(0).getId() + ".";
+        	errors.add(new APIError(404, "interventionFollowed", errorType, message, apiRoute));
+        }
+        
+        List<LeavePeriod> leavePeriods = leavePeriodRepository.getAllOverlapingByUserIdAndDates(userId, intervention.getDateStart(), intervention.getDateEnd());
 
-
-        if (!errors.isEmpty())
-
-        {
-            throw new EntityFormatException(errors);
+        if(!leavePeriods.isEmpty()) {
+        	String message = "InterventionFollowed dates overlap the Leave period with id: "
+        			+ leavePeriods.get(0).getId() + ".";
+        	errors.add(new APIError(404, "leavePeriod", errorType, message, apiRoute));
         }
 
+        if (!errors.isEmpty()){
+        	throw new EntityFormatException(errors);
+        }
     }
 
     /**
