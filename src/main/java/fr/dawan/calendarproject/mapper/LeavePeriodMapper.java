@@ -19,6 +19,9 @@ public interface LeavePeriodMapper {
 	@Mapping(target = "user", ignore = true)
 	LeavePeriod leavePeriodDtoToLeavePeriod(LeavePeriodDto leavePeriodDto);
 
+	@Mapping(target = "id", ignore=true)
+	@Mapping(target = "idDg2", source="id")
+	@Mapping(target = "version", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "firstDay", source = "firstDay")
 	@Mapping(target = "lastDay", source = "lastDay")

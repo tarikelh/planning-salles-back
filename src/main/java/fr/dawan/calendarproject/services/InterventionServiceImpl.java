@@ -54,7 +54,7 @@ import fr.dawan.calendarproject.tools.ICalTools;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.XProperty;
-import net.sf.ehcache.search.expression.IsNull;
+
 
 @Service
 @Transactional
@@ -804,7 +804,6 @@ public class InterventionServiceImpl implements InterventionService {
 				i.setDateEnd(i.getDateEnd().substring(0, 10));
 
 				Intervention interv = interventionMapper.interventionDG2DtoToIntervention(i);
-				interv.setOptionSlug(i.getOptionSlug());
 				interv.setMasterInterventionIdTemp(i.getMasterInterventionId());
 
 				Optional<Course> c = courseRepository.findByIdDg2(i.getCourseId());
@@ -827,18 +826,19 @@ public class InterventionServiceImpl implements InterventionService {
 
 					interv.setCustomers(interventionMapper.listCustomerDtotoString(i.getCustomers()));
 
-					Intervention alreadyInDb = interventionRepository.findBySlug(interv.getSlug()).orElse(null);
-					Intervention alreadyInDbOption = interventionRepository.findBySlug(interv.getSlug() + "-option").orElse(null);
+					Intervention alreadyInDb = interventionRepository.findByIdDg2(interv.getIdDg2()).orElse(null);
+//					Intervention alreadyInDbOption = interventionRepository.findByIdDg2(interv.getSlug() + "-option").orElse(null);
 					
-					if(alreadyInDbOption != null) {
-						interv.setId(alreadyInDbOption.getId());
-						interv.setVersion(alreadyInDbOption.getVersion());
-						interv.setSlug(i.getSlug());
-					}
+//					if(alreadyInDbOption != null) {
+//						interv.setId(alreadyInDbOption.getId());
+//						interv.setVersion(alreadyInDbOption.getVersion());
+//						interv.setSlug(i.getSlug());
+//					}
 					
 					if (alreadyInDb != null) {
 						interv.setId(alreadyInDb.getId());
 						interv.setVersion(alreadyInDb.getVersion());
+						interv.setSlug(i.getSlug());
 						if (endPoint.equals("options")) {
 							interv.setSlug(i.getSlug() + "-option");
 						} 
