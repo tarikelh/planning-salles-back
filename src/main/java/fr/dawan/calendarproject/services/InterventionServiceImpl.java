@@ -501,13 +501,16 @@ public class InterventionServiceImpl implements InterventionService {
         List<Intervention> intervs = interventionRepository.findInterventionsOverlapingByUserIdAndDates(i.getUserId(),
         		i.getDateStart(), i.getDateEnd());
         
-        //Check if there is no overlaping intervention found in the list AND if it is not empty check if the intervention is not the one we are working on
-        if (!intervs.isEmpty() && intervs.get(0).getId() != i.getId()) {
-        	errorMessage = "Intervention dates overlap the intervention with id : "
-                    + intervs.get(0).getId() + ".";
-            errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
-        }
-        
+        // Verify if an intervention from the same user and not a sibling (course
+        // different) is not overlapping with the new intervention
+        for (Intervention intervention : intervs) {
+        	if (intervention.getId() != i.getId() && intervention.getCourseId() != i.getCourseId()) {
+        		errorMessage = "Intervention dates overlap the intervention with id : "
+        				+ intervention.getId() + ".";
+        		errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
+        	}
+		}
+        	
 
         List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(i.getUserId(),
         		i.getDateStart(), i.getDateEnd());
@@ -524,12 +527,11 @@ public class InterventionServiceImpl implements InterventionService {
         		i.getDateStart(), i.getDateEnd());
 
         if (!leavePeriods.isEmpty()) {
-        	errorMessage = "InterventionFollowed dates overlap the Leave period with id: "
+        	errorMessage = "Intervention dates overlap the Leave period with id: "
                     + leavePeriods.get(0).getId() + ".";
             errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
         }
         
-
         
         if (!errors.isEmpty()) {
             throw new EntityFormatException(errors);
