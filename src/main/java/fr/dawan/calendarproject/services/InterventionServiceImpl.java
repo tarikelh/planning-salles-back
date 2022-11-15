@@ -43,6 +43,7 @@ import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.repositories.CourseRepository;
 import fr.dawan.calendarproject.repositories.InterventionCustomRepository;
+import fr.dawan.calendarproject.repositories.InterventionFollowedRepository;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
@@ -85,6 +86,9 @@ public class InterventionServiceImpl implements InterventionService {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private InterventionFollowedRepository interventionFollowedRepository;
 
     /**
      * Fetches all of the existing interventions.
@@ -196,19 +200,22 @@ public class InterventionServiceImpl implements InterventionService {
         Intervention intToDelete = interventionRepository.findById(id).orElse(null);
 
         if (intToDelete != null) {
-            if (intToDelete.isMaster()) {
-                taskRepository.findByInterventionId(intToDelete.getId()).forEach(task -> {
-                    taskRepository.deleteById(task.getId());
-                });
+            taskRepository.findByInterventionId(intToDelete.getId()).forEach(task -> {
+                taskRepository.deleteById(task.getId());
+            });
 
+            interventionFollowedRepository.findByInterventionId(intToDelete.getId()).forEach(iFollowed -> {
+                interventionFollowedRepository.deleteById(iFollowed.getId());
+            });
+            
+            if (intToDelete.isMaster()) {
+                
                 interventionRepository.findByMasterInterventionIdOrderByDateStart(intToDelete.getId())
                         .forEach(interv -> {
                             deleteById(interv.getId(), email);
-//                            interv.setMasterIntervention(null);
-//                            interventionRepository.saveAndFlush(interv);
                         });
 
-            }
+            }           
             interventionRepository.deleteById(id);
 
             try {

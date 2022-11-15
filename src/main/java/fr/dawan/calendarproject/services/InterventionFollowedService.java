@@ -20,6 +20,8 @@ public interface InterventionFollowedService {
 
 	InterventionFollowedDto saveOrUpdate(InterventionFollowedDto interventionsFollowed) throws Exception;
 	
+	List<InterventionFollowedDto> findAllByInterventionId(long interventionId);
+	
 	List<InterventionFollowedDto> findAllByUserType(String type);
 	
 	List<InterventionFollowedDto> findAllByDateRange(LocalDate start, LocalDate end);
