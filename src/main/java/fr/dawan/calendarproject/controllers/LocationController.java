@@ -40,7 +40,7 @@ public class LocationController {
 			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
 			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
 			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		return locationService.getAllLocations(page, size, search);
+		return locationService.getAllLocations(page-1, size, search);
 	}
 
 	// COUNT

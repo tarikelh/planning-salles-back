@@ -36,7 +36,7 @@ public class LeavePeriod {
 	private boolean endsAfternoon;
 	private double days;
 	
-	@Column(nullable = true, length = 5000)
+	@Column(nullable = true, columnDefinition = "TEXT")
 	private String comments;
 	
 	public LeavePeriod() {
