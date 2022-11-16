@@ -503,14 +503,17 @@ public class InterventionServiceImpl implements InterventionService {
         
         // Verify if an intervention from the same user and not a sibling (course
         // different) is not overlapping with the new intervention
-        for (Intervention intervention : intervs) {
-        	if (intervention.getId() != i.getId() && intervention.getCourseId() != i.getCourseId()) {
-        		errorMessage = "Intervention dates overlap the intervention with id : "
-        				+ intervention.getId() + ".";
-        		errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
-        	}
+		for (Intervention intervention : intervs) {
+			if (intervention.getId() != i.getId()
+					&& (intervention.getCourseId() != i.getCourseId() || (intervention.getCourseId() == i.getCourseId()
+							&& (!intervention.getDateStart().isEqual(i.getDateStart())
+									|| !intervention.getDateEnd().isEqual(i.getDateEnd()))))) {
+				errorMessage = "Intervention dates overlap the intervention with id : " + intervention.getId() + ".";
+				errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
+			}
+
 		}
-        	
+     	
 
         List<InterventionFollowed> intervsFollow = intervFolloRepository.getAllByUserIdAndDateRange(i.getUserId(),
         		i.getDateStart(), i.getDateEnd());
