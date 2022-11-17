@@ -3,6 +3,7 @@ package fr.dawan.calendarproject.dto;
 public class LeavePeriodDto {
 
 	private long id;
+	private long idDg2;
 	private long employeeId;
 	private String employeeFullName;
 	private String slug;
@@ -13,14 +14,16 @@ public class LeavePeriodDto {
 	private boolean endsAfternoon;
 	private double days;
 	private String comments;
+	private int version;
 
 	public LeavePeriodDto() {
 		super();
 	}
 
-	public LeavePeriodDto(long id, long employeeId, String employeeFullName, String slug, String type, String firstDay, boolean startsAfternoon,
-                    String lastDay, boolean endsAfternoon, double days, String comments) {
+	public LeavePeriodDto(long id, long idDg2, long employeeId, String employeeFullName, String slug, String type, String firstDay, boolean startsAfternoon,
+                    String lastDay, boolean endsAfternoon, double days, String comments, int version) {
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.employeeId = employeeId;
 		this.employeeFullName = employeeFullName;
 		this.slug = slug;
@@ -31,6 +34,7 @@ public class LeavePeriodDto {
 		this.endsAfternoon = endsAfternoon;
 		this.days = days;
 		this.comments = comments;
+		this.version = version;
 	}
 
 	public long getId() {
@@ -39,6 +43,14 @@ public class LeavePeriodDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public long getEmployeeId() {
@@ -119,6 +131,14 @@ public class LeavePeriodDto {
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 }

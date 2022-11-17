@@ -58,8 +58,8 @@ public class LeavePeriodController {
 		String[] splitUserDG2String = userDG2.split(":");
 
 		try {
-			leavePeriodService.fetchAllDG2LeavePeriods(splitUserDG2String[0], splitUserDG2String[1], firstDay, lastDay );
-			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch data from the webservice DG2");
+			int count = leavePeriodService.fetchAllDG2LeavePeriods(splitUserDG2String[0], splitUserDG2String[1], firstDay, lastDay );
+			return ResponseEntity.status(HttpStatus.OK).body("Succeed to fetch " + count + " leave periods from the webservice DG2");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

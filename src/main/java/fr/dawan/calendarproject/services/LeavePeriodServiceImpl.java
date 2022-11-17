@@ -136,20 +136,22 @@ public class LeavePeriodServiceImpl implements LeavePeriodService {
 				lpDg2.setFirstDay(lpDg2.getFirstDay().split("T")[0]);
 				lpDg2.setLastDay(lpDg2.getLastDay().split("T")[0]);
 				
+				
 				LeavePeriod leavePeriodImport = leavePeriodMapper.leavePeriodDg2DtoToLeavePeriod(lpDg2);
 				
-				
-				List<LeavePeriod> optLeavePeriod = leavePeriodRepository
-						.findByUserEmployeeId(lpDg2.getEmployeeId());
-
-				if (!optLeavePeriod.contains(leavePeriodImport)) {
-					count++;
-					try {
-						leavePeriodImport.setUser(userRepository.findByEmployeeIdDg2(lpDg2.getEmployeeId()).orElse(null));
-						leavePeriodRepository.saveAndFlush(leavePeriodImport);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				LeavePeriod alreadyInDb = leavePeriodRepository.findByIdDg2(leavePeriodImport.getIdDg2()).orElse(null);
+				if(alreadyInDb != null) {
+					leavePeriodImport.setId(alreadyInDb.getId());
+					leavePeriodImport.setSlug(alreadyInDb.getSlug());
+					leavePeriodImport.setVersion(alreadyInDb.getVersion());
+				}
+						
+				count++;
+				try {
+					leavePeriodImport.setUser(userRepository.findByEmployeeIdDg2(lpDg2.getEmployeeId()).orElse(null));
+					leavePeriodRepository.saveAndFlush(leavePeriodImport);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}

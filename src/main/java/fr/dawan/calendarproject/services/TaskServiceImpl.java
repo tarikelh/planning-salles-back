@@ -303,12 +303,12 @@ public class TaskServiceImpl implements TaskService{
 				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
 				
 				
-				List<Intervention> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
+				Intervention inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId()).orElse(null);
 				
 				
 				//TODO Ask for Slug of the intervention associated to the task
-				if(!inter.isEmpty()) {
-					task.setIntervention(inter.get(0));
+				if(inter != null) {
+					task.setIntervention(inter);
 				}
 				 
 				Optional<User> user = userRepository.findByEmployeeIdDg2(taskDg2.getEmployeeId());
