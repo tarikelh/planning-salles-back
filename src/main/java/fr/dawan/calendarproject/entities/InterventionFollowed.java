@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
@@ -18,12 +17,10 @@ public class InterventionFollowed {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "intervention_id")
-    Intervention intervention;
+    private Intervention intervention;
 
     private String registrationSlug;
 
@@ -66,7 +63,7 @@ public class InterventionFollowed {
         this.intervention = intervention;
     }
 
-    public long getInterventionId() {
+    public long getIdOfIntervention() {
         long interventionId = 0;
         if(this.intervention != null) {
             interventionId = this.intervention.getId();

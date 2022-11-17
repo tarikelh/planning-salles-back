@@ -79,18 +79,23 @@ public class InterventionFollowedController {
 					.body("Intervention Followed with id " + iFollo.getId() + " Not Found");
 	}
 
+	@GetMapping(value = "/interventionId/{id}", produces = "application/json")
+    List<InterventionFollowedDto> getAllByInterventionId(@PathVariable("id") long interventionId) {
+       return iFolloService.findAllByInterventionId(interventionId);
+   }
+	
 	@GetMapping(value = "/userType/{type}", produces = "application/json")
-	 List<InterventionFollowedDto> getAllByUserType(@PathVariable("type") String type) {
+	public List<InterventionFollowedDto> getAllByUserType(@PathVariable("type") String type) {
 		return iFolloService.findAllByUserType(type);
 	}
 	
 	@GetMapping(value = "/userTypeAndDateRange/{type}/{start}/{end}", produces = "application/json")
-	 List<InterventionFollowedDto> getAllByUserTypeAndDateRange(@PathVariable("type") String type, @PathVariable("start") String start, @PathVariable("end") String end) {
+	public List<InterventionFollowedDto> getAllByUserTypeAndDateRange(@PathVariable("type") String type, @PathVariable("start") String start, @PathVariable("end") String end) {
 		return iFolloService.findAllByUserTypeAndDateRange(type, LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
 	@GetMapping(value = "/dateRange/{start}/{end}", produces = "application/json")
-	 List<InterventionFollowedDto> getAllByDateRange(@PathVariable("start") String start, @PathVariable("end") String end) {
+	public List<InterventionFollowedDto> getAllByDateRange(@PathVariable("start") String start, @PathVariable("end") String end) {
 		return iFolloService.findAllByDateRange(LocalDate.parse(start), LocalDate.parse(end));
 	}
 	
