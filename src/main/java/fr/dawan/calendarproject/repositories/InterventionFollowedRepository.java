@@ -40,7 +40,14 @@ public interface InterventionFollowedRepository extends JpaRepository<Interventi
 			+ "WHERE i.dateStart >= :start "
 			+ "AND i.dateEnd <= :end")
 	List<InterventionFollowed> findAllByDateRange(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
-
+	
+//	@Query("FROM InterventionFollowed iFollowed "
+//            + "LEFT JOIN FETCH iFollowed.intervention i "
+//            + "WHERE i.id = :id")
+//    List<InterventionFollowed> getAllByInterventionId(@Param("id") long intervId);
+	
+	List<InterventionFollowed> findByInterventionId(long interventionId);
+	
 	Optional<InterventionFollowed> findByRegistrationSlug(String registrationSlug);
 	
     List<InterventionFollowed> findAllByRegistrationSlugContaining(String registrationSlug);

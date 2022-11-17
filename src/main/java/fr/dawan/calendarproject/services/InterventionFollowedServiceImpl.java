@@ -245,6 +245,20 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
     }
 
     /**
+     * Fetches all of the existing interventions Followed according to an intervention's id.
+     * 
+     * @param interventionId A long referring to the intervention id.
+     * 
+     * @return Returns a list of InterventionFollowedDto.
+     *
+     */
+    @Override
+    public List<InterventionFollowedDto> findAllByInterventionId(long interventionId) {
+        return intervFolloMapper.listInterventionFollowedToListInterventionFollowedDto(
+                intervFolloRepository.findByInterventionId(interventionId));
+    }
+    
+    /**
      * Fetches all of the existing interventions Followed with a specific user type.
      * 
      * @param type A UserType referring to the type of user.
@@ -309,7 +323,7 @@ public class InterventionFollowedServiceImpl implements InterventionFollowedServ
             lastName = intervFollowed.getLastName();
             firstName = intervFollowed.getFirstName();
             registrationSlug.append(lastName).append("-").append(firstName).append("-")
-                    .append(intervFollowed.getInterventionId());
+                    .append(intervFollowed.getIdOfIntervention());
 
 
         }

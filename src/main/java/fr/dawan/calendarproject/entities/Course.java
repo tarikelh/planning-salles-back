@@ -25,7 +25,7 @@ public class Course {
 	private String title;
 
 	@Column(nullable = true)
-	private String duration;
+	private double duration;
 
 	@Column(unique = true)
 	private String slug;
@@ -38,7 +38,7 @@ public class Course {
 
 	}
 
-	public Course(long id, long idDg2, String title, String duration, String slug, int version) {
+	public Course(long id, long idDg2, String title, double duration, String slug, int version) {
 		setId(id);
 		setIdDg2(idDg2);
 		setTitle(title);
@@ -71,11 +71,11 @@ public class Course {
 		this.title = title;
 	}
 
-	public String getDuration() {
+	public double getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(double duration) {
 		this.duration = duration;
 	}
 

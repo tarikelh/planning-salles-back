@@ -40,7 +40,7 @@ public class CourseController {
 			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
 			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
 			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		return courseService.getAllCourses(page, size, search);
+		return courseService.getAllCourses(page-1, size, search);
 	}
 
 	// COUNT

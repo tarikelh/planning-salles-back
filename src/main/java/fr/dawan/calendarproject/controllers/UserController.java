@@ -47,7 +47,7 @@ public class UserController {
 			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
 			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
 			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
-		return userService.getAllUsers(page, size, search);
+		return userService.getAllUsers(page-1, size, search);
 	}
 
 	// COUNT

@@ -27,7 +27,7 @@ public class RoomController {
             @RequestParam(value = "page", defaultValue = "-1", required = false) int page,
             @RequestParam(value = "max", defaultValue = "-1", required = false) int max,
             @RequestParam(value = "search", defaultValue = "", required = false) String search) {
-        return roomService.getAllRooms(page, max, search);
+        return roomService.getAllRooms(page-1, max, search);
     }
 
     @GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
