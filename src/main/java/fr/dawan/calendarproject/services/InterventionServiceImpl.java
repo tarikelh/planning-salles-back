@@ -215,10 +215,6 @@ public class InterventionServiceImpl implements InterventionService {
             });
 
             if (intToDelete.isMaster()) {
-                taskRepository.findByInterventionId(intToDelete.getId()).forEach(task -> {
-                    taskRepository.deleteById(task.getId());
-                });
-
                 interventionRepository.findByMasterInterventionIdOrderByDateStart(intToDelete.getId())
                         .forEach(interv -> {
                             deleteById(interv.getId(), email);
