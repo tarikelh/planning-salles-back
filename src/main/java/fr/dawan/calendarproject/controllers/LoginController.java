@@ -1,7 +1,9 @@
 package fr.dawan.calendarproject.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -95,12 +97,24 @@ public class LoginController {
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<Object> checkLogin(@RequestBody LoginDto loginDto) throws Exception {
 		ResponseEntity<Object> responseEntity = null;
+		
+		// email domains allowed
+		String listDomains = "@jehann.fr;@dawan.fr"; // TODO externalize domains in application.properties
+		String[] domains = listDomains.split(";");
+		
+		// check if email domain of loginDto is allowed
+		boolean auth = false;
+		for (int i = 0; i < domains.length; i++) {
+			if (auth == false) {
+				auth = loginDto.getEmail().contains(domains[i]);
+			}
+		}
 
-		if (loginDto.getEmail().contains("@dawan.fr") // TODO externalize domains in application.properties and split
-				|| loginDto.getEmail().contains("@jehann.fr")) {
+		// if email domain is allowed
+		if (auth) {
 			// login via LDAP
 			try {
-				Hashtable<String, String> environment = new Hashtable<String, String>();
+				Hashtable<String, String> environment = new Hashtable<>();
 				environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 				environment.put(Context.PROVIDER_URL, ldapUrl);
 				environment.put(Context.SECURITY_PROTOCOL, ldapProtocol);
@@ -118,7 +132,9 @@ public class LoginController {
 				environment.put(Context.SECURITY_PRINCIPAL,
 						"uid=" + uid + ",ou=" + organizationUnit + ",ou=Utilisateurs,dc=dawan,dc=fr");
 				environment.put(Context.SECURITY_CREDENTIALS, loginDto.getPassword());
+
 				DirContext ctx = new InitialDirContext(environment);
+
 				logger.info("Login of user " + loginDto.getEmail() + " from : " + request.getRemoteAddr());
 				ctx.close();
 
@@ -131,13 +147,12 @@ public class LoginController {
 					return ResponseEntity.status(HttpStatus.NOT_FOUND)
 							.body("Erreur : Utilisateur inconnue ! (demander une synchronisation de la base)");
 				}
+				
 			} catch (Exception ex) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 						.body("Erreur : identifiant ou mot de passe incorrect !");
 			}
-		} 
-		return responseEntity;
-		
+		}
 //		else { // login via Db
 //			UserDto userInDb = userService.findByEmail(loginDto.getEmail());
 //			if (userInDb != null && userInDb.getPassword().equals(HashTools.hashSHA512(loginDto.getPassword()))) {
@@ -147,6 +162,7 @@ public class LoginController {
 //				throw new Exception("Error : invalid credentials !");
 //			}
 //		}
+		return responseEntity;
 	}
 
 	private LoginResponseDto createTokenFromUser(UserDto userDto) throws Exception {
