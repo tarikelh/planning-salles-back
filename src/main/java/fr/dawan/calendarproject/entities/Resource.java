@@ -26,7 +26,6 @@ public class Resource {
 	private int quantity;
 	
 	@ManyToOne
-	@JoinColumn(name = "room_id")
 	private Room room;
 	
 	@Version 
