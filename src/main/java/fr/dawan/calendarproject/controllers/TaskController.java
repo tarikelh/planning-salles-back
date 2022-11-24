@@ -171,7 +171,7 @@ public class TaskController {
 	
 	//GET
 	@GetMapping(value={"/userType/{type}/between/{start}/{end}"}, produces="application/json" )
-	public List<TaskDto> getAllBetweenDatesOptionalUser(@PathVariable("start") String start, 
+	public List<TaskDto> getAllBetweenDatesAndUserType(@PathVariable("start") String start, 
 															@PathVariable("end") String end,
 															@PathVariable("type") String type) throws Exception{
 		
