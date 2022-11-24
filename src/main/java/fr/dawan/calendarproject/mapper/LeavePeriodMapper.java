@@ -12,7 +12,7 @@ import fr.dawan.calendarproject.entities.LeavePeriod;
 @Mapper(componentModel = "spring")
 public interface LeavePeriodMapper {
 
-	@Mapping(target = "employeeId", source = "user.employeeIdDg2")
+	@Mapping(target = "employeeId", source = "user.id")
 	@Mapping(target = "employeeFullName", source = "user.fullname")
 	LeavePeriodDto leavePeriodToLeavePeriodDto(LeavePeriod leavePeriod);
 
@@ -27,7 +27,7 @@ public interface LeavePeriodMapper {
 	@Mapping(target = "lastDay", source = "lastDay")
 	LeavePeriod leavePeriodDg2DtoToLeavePeriod(LeavePeriodDg2Dto leavePeriodDg2Dto);
 	
-	@Mapping(target = "employeeId", source = "user.employeeIdDg2")
+	@Mapping(target = "employeeId", source = "user.id")
 	@Mapping(target = "employeeFullName", source = "user.fullname")
 	List<LeavePeriodDto> listLeavePeriodToListLeavePeriodDto(List<LeavePeriod> leavePeriods);
 
