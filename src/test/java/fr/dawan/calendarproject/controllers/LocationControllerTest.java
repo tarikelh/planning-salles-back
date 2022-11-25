@@ -58,9 +58,9 @@ class LocationControllerTest {
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-		locs.add(new LocationDto(1, 1, "Paris", "#40A497", "FR", 0));
-		locs.add(new LocationDto(2, 2, "Nantes", "#9859C6", "FR", 0));
-		locs.add(new LocationDto(3, 3, "Nogent-Le-Rotrou", "#59C674", "FR", 0));
+//		locs.add(new LocationDto(1, 1, "Paris", "#40A497", "FR", 0));
+//		locs.add(new LocationDto(2, 2, "Nantes", "#9859C6", "FR", 0));
+//		locs.add(new LocationDto(3, 3, "Nogent-Le-Rotrou", "#59C674", "FR", 0));
 	}
 
 	@Test

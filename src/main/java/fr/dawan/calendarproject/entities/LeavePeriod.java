@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 
 import fr.dawan.calendarproject.enums.LeavePeriodType;
 
@@ -22,6 +23,8 @@ public class LeavePeriod {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	private long idDg2;
+	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
 
@@ -36,17 +39,21 @@ public class LeavePeriod {
 	private boolean endsAfternoon;
 	private double days;
 	
-	@Column(nullable = true, length = 5000)
+	@Column(nullable = true, columnDefinition = "TEXT")
 	private String comments;
+	
+	@Version
+	private int version; 
 	
 	public LeavePeriod() {
 		super();
 	}
 
-	public LeavePeriod(long id, User user, String slug, LeavePeriodType type, LocalDate firstDay,
-			boolean startsAfternoon, LocalDate lastDay, boolean endsAfternoon, double days, String comments) {
+	public LeavePeriod(long id, long idDg2, User user, String slug, LeavePeriodType type, LocalDate firstDay,
+			boolean startsAfternoon, LocalDate lastDay, boolean endsAfternoon, double days, String comments, int version) {
 		super();
 		this.id = id;
+		this.idDg2 = idDg2;
 		this.user = user;
 		this.slug = slug;
 		this.type = type;
@@ -56,6 +63,7 @@ public class LeavePeriod {
 		this.endsAfternoon = endsAfternoon;
 		this.days = days;
 		this.comments = comments;
+		this.version = version;
 	}
 
 	public long getId() {
@@ -64,6 +72,14 @@ public class LeavePeriod {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getIdDg2() {
+		return idDg2;
+	}
+
+	public void setIdDg2(long idDg2) {
+		this.idDg2 = idDg2;
 	}
 
 	public User getUser() {
@@ -137,4 +153,13 @@ public class LeavePeriod {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+		
 }

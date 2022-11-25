@@ -3,15 +3,16 @@ package fr.dawan.calendarproject.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class InterventionMementoDto implements Cloneable {
 
 	private long interventionId;
-	
+
 	private long idDg2;
-	
+
 	private String slug;
 
 	private String comment;
@@ -19,19 +20,19 @@ public class InterventionMementoDto implements Cloneable {
 	private long locationId;
 
 	private String locationCity;
-	
+
 	private long locationIdDg2;
 
 	private long courseId;
 
 	private String courseTitle;
-	
+
 	private long courseIdDg2;
 
 	private long userId;
 
 	private String userFullName;
-	
+
 	private int attendeesCount;
 
 	private String type;
@@ -48,42 +49,82 @@ public class InterventionMementoDto implements Cloneable {
 
 	private long masterInterventionId;
 
+	private long masterInterventionIdTemp;
+
+	@Column(columnDefinition = "TEXT")
+	private String customers;
+
+	private String optionSlug;
+
+//	private Set<Long> interventionsFollowedId;
+
 	private boolean isMaster;
 
 	public InterventionMementoDto() {
 	}
 
+//	public InterventionMementoDto(long interventionId, long idDg2, String slug, String comment, long locationId,
+//			String locationCity, long locationIdDg2, long courseId, String courseTitle, long courseIdDg2, long userId,
+//			String userFullName, int attendeesCount, String type, boolean validated, LocalDate dateStart,
+//			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
+//		this.interventionId = interventionId;
+//		this.idDg2 = idDg2;
+//		this.slug = slug;
+//		this.comment = comment;
+//		this.locationId = locationId;
+//		this.locationCity = locationCity;
+//		this.locationIdDg2 = locationIdDg2;
+//		this.courseId = courseId;
+//		this.courseTitle = courseTitle;
+//		this.courseIdDg2 = courseIdDg2;
+//		this.userId = userId;
+//		this.userFullName = userFullName;
+//		this.attendeesCount = attendeesCount;
+//		this.type = type;
+//		this.validated = validated;
+//		this.dateStart = dateStart;
+//		this.dateEnd = dateEnd;
+//		this.timeStart = timeStart;
+//		this.timeEnd = timeEnd;
+//		this.masterInterventionId = masterInterventionId;
+//		this.isMaster = isMaster;
+//	}
+
 	public InterventionMementoDto(long interventionId, long idDg2, String slug, String comment, long locationId,
-			String locationCity, long locationIdDg2, long courseId, String courseTitle, long courseIdDg2, long userId,
-			String userFullName, int attendeesCount, String type, boolean validated, LocalDate dateStart,
-			LocalDate dateEnd, LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, boolean isMaster) {
-		this.interventionId = interventionId;
-		this.idDg2 = idDg2;
-		this.slug = slug;
-		this.comment = comment;
-		this.locationId = locationId;
-		this.locationCity = locationCity;
-		this.locationIdDg2 = locationIdDg2;
-		this.courseId = courseId;
-		this.courseTitle = courseTitle;
-		this.courseIdDg2 = courseIdDg2;
-		this.userId = userId;
-		this.userFullName = userFullName;
-		this.attendeesCount = attendeesCount;
-		this.type = type;
-		this.validated = validated;
-		this.dateStart = dateStart;
-		this.dateEnd = dateEnd;
-		this.timeStart = timeStart;
-		this.timeEnd = timeEnd;
-		this.masterInterventionId = masterInterventionId;
-		this.isMaster = isMaster;
-	}
+		String locationCity, long locationIdDg2, long courseId, String courseTitle, long courseIdDg2, long userId,
+		String userFullName, int attendeesCount, String type, boolean validated, LocalDate dateStart, LocalDate dateEnd,
+		LocalTime timeStart, LocalTime timeEnd, long masterInterventionId, long masterInterventionIdTemp,
+		String customers, String optionSlug, boolean isMaster) {
+	this.interventionId = interventionId;
+	this.idDg2 = idDg2;
+	this.slug = slug;
+	this.comment = comment;
+	this.locationId = locationId;
+	this.locationCity = locationCity;
+	this.locationIdDg2 = locationIdDg2;
+	this.courseId = courseId;
+	this.courseTitle = courseTitle;
+	this.courseIdDg2 = courseIdDg2;
+	this.userId = userId;
+	this.userFullName = userFullName;
+	this.attendeesCount = attendeesCount;
+	this.type = type;
+	this.validated = validated;
+	this.dateStart = dateStart;
+	this.dateEnd = dateEnd;
+	this.timeStart = timeStart;
+	this.timeEnd = timeEnd;
+	this.masterInterventionId = masterInterventionId;
+	this.masterInterventionIdTemp = masterInterventionIdTemp;
+	this.customers = customers;
+	this.optionSlug = optionSlug;
+	this.isMaster = isMaster;
+}
 
 	public long getInterventionId() {
 		return interventionId;
 	}
-
+	
 	public void setInterventionId(long interventionId) {
 		this.interventionId = interventionId;
 	}
@@ -200,6 +241,38 @@ public class InterventionMementoDto implements Cloneable {
 		this.masterInterventionId = masterInterventionId;
 	}
 
+	public long getMasterInterventionIdTemp() {
+		return masterInterventionIdTemp;
+	}
+
+	public void setMasterInterventionIdTemp(long masterInterventionIdTemp) {
+		this.masterInterventionIdTemp = masterInterventionIdTemp;
+	}
+
+	public String getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(String customers) {
+		this.customers = customers;
+	}
+
+	public String getOptionSlug() {
+		return optionSlug;
+	}
+
+	public void setOptionSlug(String optionSlug) {
+		this.optionSlug = optionSlug;
+	}
+
+//	public Set<Long> getInterventionsFollowedId() {
+//		return interventionsFollowedId;
+//	}
+//
+//	public void setInterventionsFollowedId(Set<Long> interventionsFollowedId) {
+//		this.interventionsFollowedId = interventionsFollowedId;
+//	}
+
 	public boolean isMaster() {
 		return isMaster;
 	}
@@ -295,6 +368,14 @@ public class InterventionMementoDto implements Cloneable {
 		builder.append(timeEnd);
 		builder.append(";");
 		builder.append(masterInterventionId);
+		builder.append(";");
+		builder.append(masterInterventionIdTemp);
+		builder.append(";");
+		builder.append(customers);
+		builder.append(";");
+		builder.append(optionSlug);
+//		builder.append(";");
+//		builder.append(interventionsFollowedId);
 		builder.append(";");
 		builder.append(isMaster);
 		return builder.toString();

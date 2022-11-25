@@ -35,4 +35,23 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return handleExceptionInternal(ex, ex.getErrors(), headers, HttpStatus.BAD_REQUEST, request);
 	}
+	
+	@ExceptionHandler(value = { Exception.class })
+	protected ResponseEntity<Object> handleConflict2(Exception ex, WebRequest request) {
+
+		HttpHeaders headers = new HttpHeaders();
+		StringWriter sw = new StringWriter();
+
+//		ex.getErrors().forEach(e -> {
+//			sw.append("Type :" + e.getType());
+//			sw.append(" :: :: ");
+//			sw.append("Message :" + e.getMessage());
+//			sw.append("\r\n");
+//
+//		});
+		ex.printStackTrace();
+		Logger.getAnonymousLogger().log(Level.SEVERE, sw.toString());
+
+		return handleExceptionInternal(ex, ex.getMessage(), headers, HttpStatus.BAD_REQUEST, request);
+	}
 }

@@ -40,7 +40,7 @@ public class User {
 	private long idDg2;
 	
 	@Column(nullable = true)
-	private long employeeIdDg2;
+	private Long employeeIdDg2;
 
 	@Column(nullable = false, length = 255)
 	private String firstName;
@@ -74,7 +74,7 @@ public class User {
 	private LocalDate endDate;
 	
 	//ToDo check if we need getter and setter on dto
-	@OneToMany(mappedBy = "student")
+	@OneToMany(mappedBy = "user")
 	Set<InterventionFollowed> interventionsFollowed;
 
 	@Version
@@ -85,7 +85,7 @@ public class User {
 		setSkills(new HashSet<>());
 	}
 
-	public User(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, Location location, String email,
+	public User(long id, long idDg2, Long employeeIdDg2, String firstName, String lastName, Location location, String email,
 			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, 
 			Set<InterventionFollowed> interventionsFollowed, int version) {
 		setId(id);
@@ -113,11 +113,11 @@ public class User {
 		this.endDate = endDate;
 	}
 
-	public long getEmployeeIdDg2() {
+	public Long getEmployeeIdDg2() {
 		return employeeIdDg2;
 	}
 
-	public void setEmployeeIdDg2(long employeeIdDg2) {
+	public void setEmployeeIdDg2(Long employeeIdDg2) {
 		this.employeeIdDg2 = employeeIdDg2;
 	}
 
@@ -263,7 +263,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(company, email, interventionsFollowed, lastName, location, skills, type);
+		return Objects.hash(company, email, lastName, location, skills, type);
 	}
 
 	@Override
@@ -276,7 +276,6 @@ public class User {
 			return false;
 		User other = (User) obj;
 		return company == other.company && Objects.equals(email, other.email)
-				&& Objects.equals(interventionsFollowed, other.interventionsFollowed)
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
 				&& Objects.equals(skills, other.skills) && type == other.type;
 	}
@@ -286,7 +285,7 @@ public class User {
 		return "User [id=" + id + ", idDg2=" + idDg2 + ", employeeIdDg2=" + employeeIdDg2 + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", location=" + location + ", email=" + email + ", password=" + password
 				+ ", skills=" + skills + ", type=" + type + ", company=" + company + ", imagePath=" + imagePath
-				+ ", endDate=" + endDate + ", interventionsFollowed=" + interventionsFollowed + ", version=" + version
+				+ ", endDate=" + endDate + " , version=" + version
 				+ "]";
 	}
 

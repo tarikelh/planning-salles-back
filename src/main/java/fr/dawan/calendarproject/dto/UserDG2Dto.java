@@ -1,5 +1,6 @@
 package fr.dawan.calendarproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,7 +9,7 @@ public class UserDG2Dto {
 
 	@JsonProperty("id")
 	private long employeeId;
-	
+
 	private long personId;
 
 	private String firstName;
@@ -26,6 +27,7 @@ public class UserDG2Dto {
 	private String company;
 
 	@JsonProperty("skill")
+	@JsonAlias("skills")
 	private String skills;
 
 	private String endDate;

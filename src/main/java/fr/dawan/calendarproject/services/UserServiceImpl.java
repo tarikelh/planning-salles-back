@@ -329,6 +329,15 @@ public class UserServiceImpl implements UserService {
 		return true;
 	}
 
+	@Override
+	public void fetchAllDG2Users(String email, String password) throws Exception {
+		// import des employées
+		fetchAllDG2EmployeesOrFreelancers(email, password, false);
+
+		// import des freelancers
+		fetchAllDG2EmployeesOrFreelancers(email, password, true);
+	}
+
 	/**
 	 * Fetches all users in the Dawan API.
 	 * 
@@ -339,12 +348,17 @@ public class UserServiceImpl implements UserService {
 	 *
 	 */
 
-	@Override
-	public void fetchAllDG2Users(String email, String password) throws Exception {
+	public void fetchAllDG2EmployeesOrFreelancers(String email, String password, boolean freelancers) throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<UserDG2Dto> lResJson = new ArrayList<>();
+		String endPoint;
+		if (freelancers) {
+			endPoint = "freelancers";
+		} else {
+			endPoint = "employees";
+		}
 
-		URI url = new URI("https://dawan.org/api2/planning/employees");
+		URI url = new URI("https://dawan.org/api2/planning/" + endPoint);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-AUTH-TOKEN", email + ":" + password);
@@ -360,12 +374,25 @@ public class UserServiceImpl implements UserService {
 				lResJson = objectMapper.readValue(json, new TypeReference<List<UserDG2Dto>>() {
 				});
 				for (UserDG2Dto userDG2Dto : lResJson) {
-					userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+					if (freelancers) {
+						userDG2Dto.setType("INDEPENDANT");
+					} else {
+						userDG2Dto.setType(userDG2JobToUserTypeString(userDG2Dto.getType()));
+					}
+
 					userDG2Dto.setCompany(userDG2CompanyToUserCompanyString(userDG2Dto.getCompany()));
-					if (userDG2Dto.getEndDate() == "")
+
+					if (userDG2Dto.getEndDate() == "" || userDG2Dto.getEndDate() == null)
 						userDG2Dto.setEndDate(null);
 					else {
 						userDG2Dto.setEndDate(userDG2Dto.getEndDate().split("T")[0]);
+					}
+
+					if (userDG2Dto.getEmail() == null || userDG2Dto.getEmail() == "") {
+						StringBuffer buffer = new StringBuffer();
+						buffer.append(userDG2Dto.getFirstName()).append(userDG2Dto.getLastName())
+								.append("@no-email.fr");
+						userDG2Dto.setEmail(buffer.toString());
 					}
 				}
 			} catch (Exception e) {
@@ -377,7 +404,10 @@ public class UserServiceImpl implements UserService {
 				User userImported = userMapper.userDG2DtoToUser(cDG2);
 				userImported.setLastName(userImported.getLastName().toUpperCase());
 				userImported.setLocation(locationRepository.findByIdDg2(cDG2.getLocationId()).orElse(null));
-
+				
+				if (freelancers) {
+					userImported.setEmployeeIdDg2(null);
+				}
 				try {
 					userImported.setSkills(stringToSkillList(cDG2.getSkills()));
 				} catch (Exception e) {
@@ -401,7 +431,7 @@ public class UserServiceImpl implements UserService {
 					if (userImported.getId() == 0)
 						userImported.setId(user.getId());
 
-					if (!user.equals(userImported)) {
+					if (!user.equals(userImported) && !freelancers) {
 						userImported.setId(user.getId());
 						try {
 							userRepository.saveAndFlush(userImported);
@@ -556,7 +586,7 @@ public class UserServiceImpl implements UserService {
 			try {
 
 				User u = new User();
-				u.setIdDg2(-1 * lo.getId());
+				u.setIdDg2(-1 * lo.getIdDg2());
 
 				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
@@ -567,7 +597,7 @@ public class UserServiceImpl implements UserService {
 					u.setType(UserType.INTERV_NOT_ASSIGN);
 					u.setFirstName("NOT ASSIGNED");
 					u.setLastName(lo.getCity());
-					u.setEmployeeIdDg2(-1 * lo.getId());
+					u.setEmployeeIdDg2(-1 * lo.getIdDg2());
 
 					u = userRepository.saveAndFlush(u);
 					result.add(userMapper.userToAdvancedUserDto(u));
