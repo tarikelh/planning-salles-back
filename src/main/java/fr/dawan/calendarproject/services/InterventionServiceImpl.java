@@ -756,7 +756,7 @@ public class InterventionServiceImpl implements InterventionService {
     public int fetchDG2Interventions(String email, String pwd, LocalDate start, LocalDate end) throws Exception {
         int res = fetchDG2InterventionsOnly(false, email, pwd, start, end);
 
-        // ??? why this line ???
+        //TODO delete this and add in SyncService ??? why this line ???
         int res1 = leavePeriodService.fetchAllDG2LeavePeriods(email, pwd, start.toString(), end.toString());
 
         // import options
