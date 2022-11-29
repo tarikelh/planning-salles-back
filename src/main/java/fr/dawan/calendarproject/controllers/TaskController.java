@@ -170,11 +170,12 @@ public class TaskController {
 	}
 	
 	//GET
-	@GetMapping(value={"/between/{start}/{end}"}, produces="application/json" )
-	public List<TaskDto> getAllBetweenDatesOptionalUser(@PathVariable("start") String start, 
-															@PathVariable("end") String end) throws Exception{
+	@GetMapping(value={"/userType/{type}/between/{start}/{end}"}, produces="application/json" )
+	public List<TaskDto> getAllBetweenDatesAndUserType(@PathVariable("start") String start, 
+															@PathVariable("end") String end,
+															@PathVariable("type") String type) throws Exception{
 		
-		return  taskService.getAllTaskAssignedBetween(LocalDate.parse(start), LocalDate.parse(end));
+		return  taskService.getAllTaskAssignedBetweenDatesAndUserType(LocalDate.parse(start), LocalDate.parse(end), type);
 
 	}
 	
