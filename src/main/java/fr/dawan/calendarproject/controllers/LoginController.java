@@ -1,9 +1,8 @@
 package fr.dawan.calendarproject.controllers;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.dawan.calendarproject.dto.LoginDto;
 import fr.dawan.calendarproject.dto.LoginResponseDto;
+import fr.dawan.calendarproject.dto.TokenResponseDto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.interceptors.TokenSaver;
 import fr.dawan.calendarproject.services.UserService;
@@ -97,11 +97,11 @@ public class LoginController {
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public ResponseEntity<Object> checkLogin(@RequestBody LoginDto loginDto) throws Exception {
 		ResponseEntity<Object> responseEntity = null;
-		
+
 		// email domains allowed
 		String listDomains = "@jehann.fr;@dawan.fr"; // TODO externalize domains in application.properties
 		String[] domains = listDomains.split(";");
-		
+
 		// check if email domain of loginDto is allowed
 		boolean auth = false;
 		for (int i = 0; i < domains.length; i++) {
@@ -122,13 +122,13 @@ public class LoginController {
 
 				String organizationUnit = "Dawan";
 				String uid = loginDto.getEmail().substring(0, loginDto.getEmail().indexOf('@'));
-				
+
 				// les utilisateurs jehann se loggent avec un compte : xxxx-jehann
 				if (loginDto.getEmail().contains("@jehann.fr")) {
 					uid = uid + "-jehann";
 					organizationUnit = "jehann";
 				}
-				
+
 				environment.put(Context.SECURITY_PRINCIPAL,
 						"uid=" + uid + ",ou=" + organizationUnit + ",ou=Utilisateurs,dc=dawan,dc=fr");
 				environment.put(Context.SECURITY_CREDENTIALS, loginDto.getPassword());
@@ -140,16 +140,16 @@ public class LoginController {
 
 				// check if user exist in application Db
 				UserDto userInDb = userService.findByEmail(loginDto.getEmail());
-				
+
 				if (userInDb != null) { // user found in DB
 					responseEntity = ResponseEntity.ok(createTokenFromUser(userInDb));
 				} else { // user authenticated via LDAP but no present in DB
 					return ResponseEntity.status(HttpStatus.NOT_FOUND)
 							.body("Erreur : Utilisateur inconnue ! (demander une synchronisation de la base)");
 				}
-				
+
 			} catch (Exception ex) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 						.body("Erreur : identifiant ou mot de passe incorrect !");
 			}
 		}
@@ -175,9 +175,11 @@ public class LoginController {
 
 		String token = jwtTokenUtil.doGenerateToken(claims, userDto.getEmail());
 		TokenSaver.getTokensbyemail().put(userDto.getEmail(), token);
-
-		result.setToken(token);
+		
+		Date tokenExpireDate = jwtTokenUtil.getExpirationDateFromToken(token);
+        
 		result.setUser(userDto);
+		result.setToken(new TokenResponseDto(token, tokenExpireDate));
 
 		logger.info("Login of user " + userDto.getId() + " from : " + request.getRemoteAddr());
 
