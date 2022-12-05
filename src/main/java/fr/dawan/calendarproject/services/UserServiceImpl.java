@@ -306,10 +306,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// password > 8 char min
-		if (u.getPassword().length() < 8) {
-			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
-		}
+//		if (u.getPassword().length() < 8) {
+//			String message = "Password must be at least 8 characters long";
+//			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
+//		}
 
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
