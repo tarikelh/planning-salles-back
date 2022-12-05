@@ -34,6 +34,17 @@ public interface InterventionFollowedRepository extends JpaRepository<Interventi
 	            + "AND i.dateEnd >= :start")
 	    List<InterventionFollowed> getAllByUserIdAndDateRange(@Param("id") long userId,
 	            @Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
+	   
+	   
+	   @Query("FROM InterventionFollowed iFollowed "
+	            + "LEFT JOIN FETCH iFollowed.user u "
+	            + "LEFT JOIN FETCH iFollowed.intervention i "
+	            + "WHERE u.id = :userId "
+	            + "AND iFollowed.id != :intFollowId "
+	            + "AND i.dateStart <= :end "
+	            + "AND i.dateEnd >= :start")
+	   List<InterventionFollowed> getAllByUserIdAndDateRangeExcludingInterventionId(@Param("userId") long userId, @Param("start") LocalDate dateStart, 
+			   @Param("end") LocalDate dateEnd, @Param("intFollowId") long intFollowIdToExclude);
 
 	@Query("FROM InterventionFollowed iFollowed "
 			+ "LEFT JOIN iFollowed.intervention i "

@@ -55,7 +55,9 @@ public class CourseDto {
 	}
 
 	public void setDuration(double duration) {
-		this.duration = duration;
+	  
+	        this.duration = duration;
+       
 	}
 
 	public String getSlug() {

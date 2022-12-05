@@ -54,6 +54,10 @@ public class InterventionFollowed {
     public void setUser(User user) {
         this.user = user;
     }
+    
+    public long getUserId() {
+    	return user.getId();
+    }
 
     public Intervention getIntervention() {
         return intervention;

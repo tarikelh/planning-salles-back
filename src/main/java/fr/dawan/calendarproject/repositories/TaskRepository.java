@@ -15,7 +15,6 @@ import fr.dawan.calendarproject.enums.UserType;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
 
-	@Query("SELECT t FROM Task t JOIN t.user u JOIN u.location lo LEFT JOIN u.skills sk LEFT JOIN t.intervention interv")
 	List<Task> findAll();
 	
 	Optional<Task> findById(long id);
@@ -26,8 +25,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	List<Task> findByInterventionId(long interventionId);
 	
-	@Query("FROM Task t WHERE t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end AND t.user IS NOT NULL")
-	List<Task> getAllAssignedBetweenDates(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd);
+	@Query("FROM Task t WHERE t.beginDate BETWEEN :start AND :end OR t.endDate BETWEEN :start AND :end AND t.user.type = :type")
+	List<Task> getAllAssignedBetweenDatesAndUserType(@Param("start") LocalDate dateStart, @Param("end") LocalDate dateEnd, @Param("type") UserType type);
 	
 	List<Task> findByUserType(UserType type);
 	

@@ -3,22 +3,13 @@ package fr.dawan.calendarproject.dto;
 public class LoginResponseDto {
 
 	private UserDto user;
-	private String token;
+	private TokenResponseDto token;
 
 	public LoginResponseDto() {
-
 	}
 
-	public LoginResponseDto(UserDto user, String token) {
+	public LoginResponseDto(UserDto user, TokenResponseDto token) {
 		this.user = user;
-		this.token = token;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
 		this.token = token;
 	}
 
@@ -28,5 +19,13 @@ public class LoginResponseDto {
 
 	public void setUser(UserDto user) {
 		this.user = user;
+	}
+
+	public TokenResponseDto getToken() {
+		return token;
+	}
+
+	public void setToken(TokenResponseDto token) {
+		this.token = token;
 	}
 }
