@@ -31,16 +31,16 @@ public class SyncServiceImpl implements SyncService {
 
 	@Autowired
 	InterventionFollowedService followedService;
-	
+
 	@Value("${sync.service.startmonth}")
 	private int minusMonth;
-	
+
 	@Value("${sync.service.endmonth}")
 	private int plusMonth;
-	
+
 	@Value("${sync.service.email}")
 	private String email;
-	
+
 	@Value("${sync.service.password}")
 	private String password;
 
@@ -51,7 +51,8 @@ public class SyncServiceImpl implements SyncService {
 
 		LocalDate dateNow = LocalDate.now();
 		LocalDate dateStart = dateNow.minusMonths(minusMonth).minusDays(dateNow.getDayOfMonth() - 1);
-		LocalDate dateEnd = dateNow.plusMonths(plusMonth).plusDays(dateNow.plusMonths(plusMonth).lengthOfMonth() - dateNow.plusMonths(plusMonth).getDayOfMonth());
+		LocalDate dateEnd = dateNow.plusMonths(plusMonth).plusDays(
+				dateNow.plusMonths(plusMonth).lengthOfMonth() - dateNow.plusMonths(plusMonth).getDayOfMonth());
 
 		// try courses import
 		try {
@@ -96,7 +97,10 @@ public class SyncServiceImpl implements SyncService {
 		}
 
 		if (errors.isEmpty()) {
-			result.append("Sync With DG2 pass");
+			result.append("Sync With DG2 pass between : ")
+			      .append(dateStart.toString())
+			      .append(" and ")
+				  .append(dateEnd.toString());
 		} else {
 			for (String error : errors) {
 				result.append(error);
