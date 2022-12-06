@@ -7,6 +7,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,17 +25,33 @@ public class SyncServiceImpl implements SyncService {
 
 	@Autowired
 	InterventionService interventionService;
-	
+
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	InterventionFollowedService followedService;
+	
+	@Value("${sync.service.startmonth}")
+	private int minusMonth;
+	
+	@Value("${sync.service.endmonth}")
+	private int plusMonth;
+	
+	@Value("${sync.service.email}")
+	private String email;
+	
+	@Value("${sync.service.password}")
+	private String password;
 
 	@Override
-	public String allDG2Import(String email, String password, LocalDate start, LocalDate end) throws Exception {
+	public String allDG2Import() throws Exception {
 		StringBuffer result = new StringBuffer();
 		List<String> errors = new ArrayList<>();
+
+		LocalDate dateNow = LocalDate.now();
+		LocalDate dateStart = dateNow.minusMonths(minusMonth).minusDays(dateNow.getDayOfMonth() - 1);
+		LocalDate dateEnd = dateNow.plusMonths(plusMonth).plusDays(dateNow.plusMonths(plusMonth).lengthOfMonth() - dateNow.plusMonths(plusMonth).getDayOfMonth());
 
 		// try courses import
 		try {
@@ -59,21 +76,21 @@ public class SyncServiceImpl implements SyncService {
 
 		// try intervention / leave-period import
 		try {
-			interventionService.fetchDG2Interventions(email, password, start, end);
+			interventionService.fetchDG2Interventions(email, password, dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("Interventions and Leave-periods import fail !");
 		}
-		
+
 		// try task import
 		try {
-			taskService.fetchAllDG2Task(email, password, start, end);
+			taskService.fetchAllDG2Task(email, password, dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("Interventions and Leave-periods import fail !");
 		}
-		
+
 		// try intervention followed import
 		try {
-			followedService.fetchAllDG2InterventionsFollowed(email, password, start, end);
+			followedService.fetchAllDG2InterventionsFollowed(email, password, dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("Interventions and Leave-periods import fail !");
 		}

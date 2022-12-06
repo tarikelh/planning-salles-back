@@ -46,7 +46,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 					&& !request.getRequestURI().equals("/forgot-mobile")
 					&& !request.getRequestURI().equals("/check-token")
 					&& !request.getRequestURI().equals("/reset-password")
-					&& !request.getRequestURI().contains("/ws")) {
+					&& !request.getRequestURI().contains("/ws")
+					&& !request.getRequestURI().contains("/sync")) {
 				String headerAuth = request.getHeader("Authorization");
 				if (headerAuth == null || headerAuth.trim().equals("") || headerAuth.length() < 7) {
 					throw new Exception("Error : missing or invalid token !");
