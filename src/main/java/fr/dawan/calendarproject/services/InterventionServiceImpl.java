@@ -215,10 +215,6 @@ public class InterventionServiceImpl implements InterventionService {
             });
 
             if (intToDelete.isMaster()) {
-                taskRepository.findByInterventionId(intToDelete.getId()).forEach(task -> {
-                    taskRepository.deleteById(task.getId());
-                });
-
                 interventionRepository.findByMasterInterventionIdOrderByDateStart(intToDelete.getId())
                         .forEach(interv -> {
                             deleteById(interv.getId(), email);
@@ -553,6 +549,42 @@ public class InterventionServiceImpl implements InterventionService {
                     + leavePeriods.get(0).getId() + ".";
             errors.add(new APIError(404, instanceClass, dateOverLapError, errorMessage, path));
         }
+        
+        
+        List<InterventionFollowed> interFollowToCheck = intervFolloRepository.findByInterventionId(i.getId());
+        
+        
+        for (InterventionFollowed intFollow : interFollowToCheck) {
+        	
+        	long userId = intFollow.getUserId();
+        	
+        	List<Intervention> intervsForIntFollowOverlap = interventionRepository.findInterventionsOverlapingByUserIdAndDates(userId,
+                    i.getDateStart(), i.getDateEnd());
+            if (!intervsForIntFollowOverlap.isEmpty()) {
+                String message = "InterventionFollowed dates overlap the intervention with id: "
+                        + intervsForIntFollowOverlap.get(0).getId() + ".";
+                errors.add(new APIError(404, "intervention", dateOverLapError, message, path));
+            }
+
+            List<InterventionFollowed> intFollowForIntFollowOverlap = intervFolloRepository.getAllByUserIdAndDateRangeExcludingInterventionId(userId,
+                    i.getDateStart(), i.getDateEnd(), intFollow.getId());
+
+            if (!intFollowForIntFollowOverlap.isEmpty()) {
+                String message = "InterventionFollowed dates overlap the interventionFollowed with id: "
+                        + intFollowForIntFollowOverlap.get(0).getId() + ".";
+                errors.add(new APIError(404, "interventionFollowed", dateOverLapError, message, path));
+            }
+
+            List<LeavePeriod> leavePeriodsForIntFollowOverlap = leavePeriodRepository.getAllOverlapingByUserIdAndDates(userId,
+                    i.getDateStart(), i.getDateEnd());
+
+            if (!leavePeriodsForIntFollowOverlap.isEmpty()) {
+                String message = "InterventionFollowed dates overlap the Leave period with id: "
+                        + leavePeriodsForIntFollowOverlap.get(0).getId() + ".";
+                errors.add(new APIError(404, "leavePeriod", dateOverLapError, message, path));
+            }
+		}
+        
 
         if (!errors.isEmpty()) {
             throw new EntityFormatException(errors);

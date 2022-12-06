@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
 		List<AdvancedUserDto> result = new ArrayList<>();
-
+		type = type.toUpperCase();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByTypeAndEndDateIsNull(userType);
@@ -306,10 +306,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// password > 8 char min
-		if (u.getPassword().length() < 8) {
-			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
-		}
+//		if (u.getPassword().length() < 8) {
+//			String message = "Password must be at least 8 characters long";
+//			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
+//		}
 
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
@@ -467,15 +467,29 @@ public class UserServiceImpl implements UserService {
 		}
 		String lowerCaseJob = job.toLowerCase();
 
-		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager")) {
+		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager") || lowerCaseJob.contains("Assistante Administrative")) {
 			return UserType.ADMINISTRATIF.toString();
-		} else if (lowerCaseJob.contains("commercial")) {
-			return UserType.COMMERCIAL.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
-		} else {
+		} else if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("assistant commercial") || lowerCaseJob.contains("commerciale export")) {
+			return UserType.COMMERCIAL.toString();
+		
+		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
+			return UserType.INDEPENDANT.toString();
+		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("technicien support") || lowerCaseJob.contains("concepteur développeur d'applications")
+			|| lowerCaseJob.contains("concepteur UI")){
 			return UserType.APPRENTI.toString();
-		}
+		} else if (lowerCaseJob.contains("it") || lowerCaseJob.contains("administrateur systèmes et réseaux") || lowerCaseJob.contains("administrateur systèmes et réseaux, développeur")) {
+			return UserType.IT.toString();
+		} else if (lowerCaseJob.contains("compt") || lowerCaseJob.contains("comptable")){
+			return UserType.COMPTABLE.toString();
+		} else if (lowerCaseJob.contains("rh") || lowerCaseJob.contains("assistante rh cfa") || lowerCaseJob.contains("responsable recrutement et formation")
+				|| lowerCaseJob.contains("consultant") || lowerCaseJob.contains("assistant administratif recrutement et formation")
+				|| lowerCaseJob.contains("assistante emploi formation") || lowerCaseJob.contains("conseillère emploi formation")){
+			return UserType.RH.toString();
+		} else {
+			return UserType.NOT_FOUND.toString();
+		}		
 	}
 
 	/**

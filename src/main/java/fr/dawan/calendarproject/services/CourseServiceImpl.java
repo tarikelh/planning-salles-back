@@ -224,6 +224,8 @@ public class CourseServiceImpl implements CourseService {
 			lResJson = Arrays.asList(resArray);
 			for (CourseDG2Dto cDG2 : lResJson) {
 				Course courseImport = courseMapper.courseDG2DtoToCourse(cDG2);
+				
+				
 				Optional<Course> optCourse = courseRepository.findBySlug(courseImport.getSlug());
 
 				if (!optCourse.isPresent() || !optCourse.get().equals(courseImport)) {

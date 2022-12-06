@@ -358,9 +358,11 @@ public class TaskServiceImpl implements TaskService{
 	 * @exception Exception returns an exception if the request fails
 	 */
 	@Override
-	public List<TaskDto> getAllTaskAssignedBetween(LocalDate start, LocalDate end) throws Exception{
+	public List<TaskDto> getAllTaskAssignedBetweenDatesAndUserType(LocalDate start, LocalDate end, String userType) throws Exception{
 		
-		return taskMapper.taskListToTaskDtoList(taskRepository.getAllAssignedBetweenDates(start, end));
+		UserType type = Enum.valueOf(UserType.class , userType);
+		
+		return taskMapper.taskListToTaskDtoList(taskRepository.getAllAssignedBetweenDatesAndUserType(start, end, type));
 					
 	}
 
