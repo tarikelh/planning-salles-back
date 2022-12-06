@@ -4,14 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 public class SyncServiceImpl implements SyncService {
 
 	@Autowired
@@ -86,14 +83,14 @@ public class SyncServiceImpl implements SyncService {
 		try {
 			taskService.fetchAllDG2Task(email, password, dateStart, dateEnd);
 		} catch (Exception e) {
-			errors.add("Interventions and Leave-periods import fail !");
+			errors.add("Task import fail !");
 		}
 
 		// try intervention followed import
 		try {
 			followedService.fetchAllDG2InterventionsFollowed(email, password, dateStart, dateEnd);
 		} catch (Exception e) {
-			errors.add("Interventions and Leave-periods import fail !");
+			errors.add("InterventionsFollowed import fail !");
 		}
 
 		if (errors.isEmpty()) {
