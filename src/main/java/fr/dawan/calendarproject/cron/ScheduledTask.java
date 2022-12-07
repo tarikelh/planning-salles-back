@@ -19,7 +19,7 @@ public class ScheduledTask {
 	SyncService syncService;
 
 	// Seconds Minutes Hours Day Of Month Month Day Of Week Year
-	@Scheduled(cron = "00 03 17 1/1 * ?") // chaque jour à 7h du matin
+	@Scheduled(cron = "00 00 07 1/1 * ?") // chaque jour à 7h du matin
 	@Async("myTasksExecutor")
 	public void AutoSyncDG2Task() {
 		try {
