@@ -9,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.SyncReportDto;
 import fr.dawan.calendarproject.entities.SyncReport;
+import fr.dawan.calendarproject.mapper.SyncReportMapper;
 import fr.dawan.calendarproject.repositories.SyncRepository;
 
 @Service
 public class SyncServiceImpl implements SyncService {
+	
+	//TODO add comments
 
 	@Autowired
 	CourseService courseService;
@@ -35,11 +39,14 @@ public class SyncServiceImpl implements SyncService {
 	
 	@Autowired
 	SyncRepository syncRepository;
+	
+	@Autowired
+	SyncReportMapper syncReportMapper;
 
-	@Value("${sync.service.startmonth}")
+	@Value("${sync.service.minusMonth}")
 	private int minusMonth;
 
-	@Value("${sync.service.endmonth}")
+	@Value("${sync.service.plusMonth}")
 	private int plusMonth;
 
 	@Value("${sync.service.email}")
@@ -133,5 +140,15 @@ public class SyncServiceImpl implements SyncService {
 	@Override
 	public String saveSyncReport(SyncReport syncReport) {
 		return syncRepository.saveAndFlush(syncReport).toString();
+	}
+
+	@Override
+	public List<SyncReportDto> getAll() {
+		return syncReportMapper.listSyncReportToListSyncReportDto(syncRepository.findAll());
+	}
+
+	@Override
+	public SyncReportDto getLast() {
+		return syncReportMapper.syncReportToSyncReportDto(syncRepository.findLastByOrderByEndOfSync().orElse(null));
 	}
 }

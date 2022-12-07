@@ -476,7 +476,7 @@ public class UserServiceImpl implements UserService {
 		
 		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
 			return UserType.INDEPENDANT.toString();
-		} else if (lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("technicien support") || lowerCaseJob.contains("concepteur développeur d'applications")
+		} else if (lowerCaseJob.contains("cda") || lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("technicien support") || lowerCaseJob.contains("concepteur développeur d'applications")
 			|| lowerCaseJob.contains("concepteur UI")){
 			return UserType.APPRENTI.toString();
 		} else if (lowerCaseJob.contains("it") || lowerCaseJob.contains("administrateur systèmes et réseaux") || lowerCaseJob.contains("administrateur systèmes et réseaux, développeur")) {
