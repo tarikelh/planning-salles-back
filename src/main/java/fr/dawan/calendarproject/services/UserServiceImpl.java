@@ -31,6 +31,7 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.HistoricDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.dto.TrainingDG2Dto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Skill;
@@ -220,7 +221,7 @@ public class UserServiceImpl implements UserService {
 		if (user.getSkills() != null) {
 			user.getSkills().forEach(skill -> {
 
-				Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
+				Optional<Skill> skillinDb = skillRepository.findByTitle(skill.getTitle());
 				if (skillinDb.isPresent())
 					skillsList.add(skillinDb.get());
 			});
@@ -286,8 +287,8 @@ public class UserServiceImpl implements UserService {
 
 		// IF Skill > Must EXIST
 		if (u.getSkills() != null) {
-			for (String skill : u.getSkills()) {
-				if (!skillRepository.findByTitle(skill).isPresent()) {
+			for (SkillDto skill : u.getSkills()) {
+				if (!skillRepository.findByTitle(skill.getTitle()).isPresent()) {
 					String message = "Skill with id: " + skill + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}

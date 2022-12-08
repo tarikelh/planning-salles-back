@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.services.SkillService;
 
 @RestController
@@ -28,13 +28,13 @@ public class SkillController {
 
 	// GET
 	@GetMapping(produces = "application/json")
-	public List<AdvancedSkillDto> getAll() {
+	public List<SkillDto> getAll() {
 		return skillService.getAllSkills();
 	}
 
 	// GET
 	@GetMapping(value = { "/pagination" }, produces = "application/json")
-	public List<AdvancedSkillDto> getAllPagination(
+	public List<SkillDto> getAllPagination(
 			@RequestParam(value = "page", defaultValue = "-1", required = false) int page,
 			@RequestParam(value = "size", defaultValue = "-1", required = false) int size,
 			@RequestParam(value = "search", defaultValue = "", required = false) String search) {
@@ -50,7 +50,7 @@ public class SkillController {
 	// GET - id
 	@GetMapping(value = "/{id}", produces = { "application/json", "application/xml" })
 	public ResponseEntity<Object> getById(@PathVariable("id") long id) {
-		AdvancedSkillDto skill = skillService.getById(id);
+		SkillDto skill = skillService.getById(id);
 
 		if (skill != null)
 			return ResponseEntity.status(HttpStatus.OK).body(skill);
@@ -71,14 +71,14 @@ public class SkillController {
 
 	// POST - ajouter (ou modifier)
 	@PostMapping(consumes = "application/json", produces = "application/json")
-	public AdvancedSkillDto save(@RequestBody AdvancedSkillDto skill) {
+	public SkillDto save(@RequestBody SkillDto skill) {
 		return skillService.saveOrUpdate(skill);
 	}
 
 	// PUT - modifier
 	@PutMapping(consumes = "application/json", produces = "application/json")
-	public ResponseEntity<Object> update(@RequestBody AdvancedSkillDto skill) {
-		AdvancedSkillDto updatedSkill = skillService.saveOrUpdate(skill);
+	public ResponseEntity<Object> update(@RequestBody SkillDto skill) {
+		SkillDto updatedSkill = skillService.saveOrUpdate(skill);
 
 		if (updatedSkill != null)
 			return ResponseEntity.status(HttpStatus.OK).body(updatedSkill);
