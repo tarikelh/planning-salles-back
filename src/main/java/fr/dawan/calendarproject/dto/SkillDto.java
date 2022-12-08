@@ -1,18 +1,30 @@
 package fr.dawan.calendarproject.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class SkillDto {
 	private long id;
 
 	private String title;
+	
+	private List<Long> usersId;
 
 	private int version;
 	
+	
+
 	public SkillDto() {
+		super();
+		this.usersId = new ArrayList<>();
 	}
 
-	public SkillDto(long id, String title, int version) {
+	public SkillDto(long id, String title, List<Long> usersId, int version) {
+		super();
 		this.id = id;
 		this.title = title;
+		this.usersId = usersId;
 		this.version = version;
 	}
 
@@ -40,13 +52,17 @@ public class SkillDto {
 		this.version = version;
 	}
 
+	public List<Long> getUsersId() {
+		return usersId;
+	}
+
+	public void setUsersId(List<Long> usersId) {
+		this.usersId = usersId;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		return result;
+		return Objects.hash(id, title, usersId, version);
 	}
 
 	@Override
@@ -58,13 +74,10 @@ public class SkillDto {
 		if (getClass() != obj.getClass())
 			return false;
 		SkillDto other = (SkillDto) obj;
-		if (id != other.id)
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		return true;
+		return id == other.id && Objects.equals(title, other.title) && Objects.equals(usersId, other.usersId)
+				&& version == other.version;
 	}
+	
+	
+	
 }

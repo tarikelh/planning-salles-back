@@ -15,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.dawan.calendarproject.dto.APIError;
-import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -49,10 +49,10 @@ public class SkillServiceImpl implements SkillService {
 	 */
 
 	@Override
-	public List<AdvancedSkillDto> getAllSkills() {
+	public List<SkillDto> getAllSkills() {
 		List<Skill> skills = skillRepository.findAll();
 
-		List<AdvancedSkillDto> result = new ArrayList<>();
+		List<SkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
@@ -72,7 +72,7 @@ public class SkillServiceImpl implements SkillService {
 	 */
 
 	@Override
-	public List<AdvancedSkillDto> getAllSkills(int page, int size, String search) {
+	public List<SkillDto> getAllSkills(int page, int size, String search) {
 		Pageable pagination = null;
 
 		if (page > -1 && size > 0)
@@ -82,7 +82,7 @@ public class SkillServiceImpl implements SkillService {
 
 		List<Skill> skills = skillRepository.findAllByTitleContaining(search, pagination).get()
 				.collect(Collectors.toList());
-		List<AdvancedSkillDto> result = new ArrayList<>();
+		List<SkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
 			result.add(skillMapper.skillToAdvancedSkillDto(s));
@@ -115,7 +115,7 @@ public class SkillServiceImpl implements SkillService {
 	 */
 
 	@Override
-	public AdvancedSkillDto getById(long id) {
+	public SkillDto getById(long id) {
 		Optional<Skill> skill = skillRepository.findById(id);
 
 		if (skill.isPresent())
@@ -146,7 +146,7 @@ public class SkillServiceImpl implements SkillService {
 	 */
 
 	@Override
-	public AdvancedSkillDto saveOrUpdate(AdvancedSkillDto skill) {
+	public SkillDto saveOrUpdate(SkillDto skill) {
 		checkIntegrity(skill);
 
 		if (skill.getId() > 0 && !skillRepository.findById(skill.getId()).isPresent())
@@ -174,7 +174,7 @@ public class SkillServiceImpl implements SkillService {
 	 *
 	 */
 
-	public boolean checkIntegrity(AdvancedSkillDto s) {
+	public boolean checkIntegrity(SkillDto s) {
 		Set<APIError> errors = new HashSet<>();
 		String instanceClass = s.getClass().toString();
 		String path = "/api/skills";
