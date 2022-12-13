@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import fr.dawan.calendarproject.dto.LoginDto;
 import fr.dawan.calendarproject.dto.SyncReportDto;
 import fr.dawan.calendarproject.entities.SyncReport;
 import fr.dawan.calendarproject.mapper.SyncReportMapper;
@@ -49,14 +50,14 @@ public class SyncServiceImpl implements SyncService {
 	@Value("${sync.service.plusMonth}")
 	private int plusMonth;
 
-	@Value("${sync.service.email}")
-	private String email;
-
-	@Value("${sync.service.password}")
-	private String password;
+//	@Value("${sync.service.email}")
+//	private String email;
+//
+//	@Value("${sync.service.password}")
+//	private String password;
 
 	@Override
-	public String allDG2Import() throws Exception {
+	public String allDG2Import(LoginDto loginDto) throws Exception {
 		long startMilli = System.currentTimeMillis();
 		
 		StringBuffer result = new StringBuffer();
@@ -74,42 +75,42 @@ public class SyncServiceImpl implements SyncService {
 		
 		// try courses import
 		try {
-			courseService.fetchAllDG2Courses(email, password);
+			courseService.fetchAllDG2Courses(loginDto.getEmail(), loginDto.getPassword());
 		} catch (Exception e) {
 			errors.add("Courses import fail !");
 		}
 
 		// try locations import
 		try {
-			locationService.fetchAllDG2Locations(email, password);
+			locationService.fetchAllDG2Locations(loginDto.getEmail(), loginDto.getPassword());
 		} catch (Exception e) {
 			errors.add("Locations import fail !");
 		}
 
 		// try users and skills import
 		try {
-			userService.fetchAllDG2Users(email, password);
+			userService.fetchAllDG2Users(loginDto.getEmail(), loginDto.getPassword());
 		} catch (Exception e) {
 			errors.add("Users and Skills import fail !");
 		}
 
 		// try intervention / leave-period import
 		try {
-			interventionService.fetchDG2Interventions(email, password, dateStart, dateEnd);
+			interventionService.fetchDG2Interventions(loginDto.getEmail(), loginDto.getPassword(), dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("Interventions and Leave-periods import fail !");
 		}
 
 		// try task import
 		try {
-			taskService.fetchAllDG2Task(email, password, dateStart, dateEnd);
+			taskService.fetchAllDG2Task(loginDto.getEmail(), loginDto.getPassword(), dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("Task import fail !");
 		}
 
 		// try intervention followed import
 		try {
-			followedService.fetchAllDG2InterventionsFollowed(email, password, dateStart, dateEnd);
+			followedService.fetchAllDG2InterventionsFollowed(loginDto.getEmail(), loginDto.getPassword(), dateStart, dateEnd);
 		} catch (Exception e) {
 			errors.add("InterventionsFollowed import fail !");
 		}
