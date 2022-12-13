@@ -23,7 +23,7 @@ public class ScheduledTask {
 	@Async("myTasksExecutor")
 	public void AutoSyncDG2Task() {
 		try {
-			LOGGER.info(syncService.allDG2Import());
+			LOGGER.info("syncService.allDG2Import()");
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 		}
