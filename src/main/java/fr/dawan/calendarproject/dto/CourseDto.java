@@ -8,7 +8,7 @@ public class CourseDto {
 
 	private String title;
 
-	private String duration;
+	private double duration;
 
 	private String slug;
 
@@ -17,7 +17,7 @@ public class CourseDto {
 	public CourseDto() {
 	}
 
-	public CourseDto(long id, long idDg2, String title, String duration, String slug, int version) {
+	public CourseDto(long id, long idDg2, String title, double duration, String slug, int version) {
 		this.id = id;
 		this.idDg2 = idDg2;
 		this.title = title;
@@ -50,12 +50,14 @@ public class CourseDto {
 		this.title = title;
 	}
 
-	public String getDuration() {
+	public double getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
-		this.duration = duration;
+	public void setDuration(double duration) {
+	  
+	        this.duration = duration;
+       
 	}
 
 	public String getSlug() {

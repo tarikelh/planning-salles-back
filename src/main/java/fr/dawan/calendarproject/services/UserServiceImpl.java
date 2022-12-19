@@ -31,6 +31,7 @@ import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.CourseDG2Dto;
 import fr.dawan.calendarproject.dto.HistoricDto;
 import fr.dawan.calendarproject.dto.ResetResponse;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.dto.TrainingDG2Dto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.entities.Skill;
@@ -151,7 +152,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<AdvancedUserDto> getAllUsersByType(String type) {
 		List<AdvancedUserDto> result = new ArrayList<>();
-
+		type = type.toUpperCase();
 		if (UserType.contains(type)) {
 			UserType userType = UserType.valueOf(type);
 			List<User> users = userRepository.findAllByTypeAndEndDateIsNull(userType);
@@ -220,7 +221,7 @@ public class UserServiceImpl implements UserService {
 		if (user.getSkills() != null) {
 			user.getSkills().forEach(skill -> {
 
-				Optional<Skill> skillinDb = skillRepository.findByTitle(skill);
+				Optional<Skill> skillinDb = skillRepository.findByTitle(skill.getTitle());
 				if (skillinDb.isPresent())
 					skillsList.add(skillinDb.get());
 			});
@@ -286,8 +287,8 @@ public class UserServiceImpl implements UserService {
 
 		// IF Skill > Must EXIST
 		if (u.getSkills() != null) {
-			for (String skill : u.getSkills()) {
-				if (!skillRepository.findByTitle(skill).isPresent()) {
+			for (SkillDto skill : u.getSkills()) {
+				if (!skillRepository.findByTitle(skill.getTitle()).isPresent()) {
 					String message = "Skill with id: " + skill + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
@@ -306,10 +307,10 @@ public class UserServiceImpl implements UserService {
 		}
 
 		// password > 8 char min
-		if (u.getPassword().length() < 8) {
-			String message = "Password must be at least 8 characters long";
-			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
-		}
+//		if (u.getPassword().length() < 8) {
+//			String message = "Password must be at least 8 characters long";
+//			errors.add(new APIError(305, instanceClass, "PasswordTooShort", message, path));
+//		}
 
 		// Company + type enums must be valid
 		if (!UserCompany.contains(u.getCompany())) {
@@ -467,15 +468,29 @@ public class UserServiceImpl implements UserService {
 		}
 		String lowerCaseJob = job.toLowerCase();
 
-		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager")) {
+		if (lowerCaseJob.contains("associé") || lowerCaseJob.contains("gérant") || lowerCaseJob.contains("manager") || lowerCaseJob.contains("Assistante Administrative")) {
 			return UserType.ADMINISTRATIF.toString();
-		} else if (lowerCaseJob.contains("commercial")) {
-			return UserType.COMMERCIAL.toString();
 		} else if (lowerCaseJob.contains("formateur") || lowerCaseJob.contains("formatrice")) {
 			return UserType.FORMATEUR.toString();
-		} else {
+		} else if (lowerCaseJob.contains("commercial") || lowerCaseJob.contains("assistant commercial") || lowerCaseJob.contains("commerciale export")) {
+			return UserType.COMMERCIAL.toString();
+		
+		} else if (lowerCaseJob.contains("independant") || lowerCaseJob.contains("independante")) {
+			return UserType.INDEPENDANT.toString();
+		} else if (lowerCaseJob.contains("mdp") || lowerCaseJob.contains("cda") || lowerCaseJob.contains("apprenti") || lowerCaseJob.contains("technicien support") || lowerCaseJob.contains("concepteur développeur d'applications")
+			|| lowerCaseJob.contains("concepteur UI")){
 			return UserType.APPRENTI.toString();
-		}
+		} else if (lowerCaseJob.contains("it") || lowerCaseJob.contains("administrateur systèmes et réseaux") || lowerCaseJob.contains("administrateur systèmes et réseaux, développeur")) {
+			return UserType.IT.toString();
+		} else if (lowerCaseJob.contains("compt") || lowerCaseJob.contains("comptable")){
+			return UserType.COMPTABLE.toString();
+		} else if (lowerCaseJob.contains("rh") || lowerCaseJob.contains("assistante rh cfa") || lowerCaseJob.contains("responsable recrutement et formation")
+				|| lowerCaseJob.contains("consultant") || lowerCaseJob.contains("assistant administratif recrutement et formation")
+				|| lowerCaseJob.contains("assistante emploi formation") || lowerCaseJob.contains("conseillère emploi formation")){
+			return UserType.RH.toString();
+		} else {
+			return UserType.NOT_FOUND.toString();
+		}		
 	}
 
 	/**
@@ -572,7 +587,7 @@ public class UserServiceImpl implements UserService {
 			try {
 
 				User u = new User();
-				u.setIdDg2(-1 * lo.getId());
+				u.setIdDg2(-1 * lo.getIdDg2());
 
 				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
@@ -583,7 +598,7 @@ public class UserServiceImpl implements UserService {
 					u.setType(UserType.INTERV_NOT_ASSIGN);
 					u.setFirstName("NOT ASSIGNED");
 					u.setLastName(lo.getCity());
-					u.setEmployeeIdDg2(-1 * lo.getId());
+					u.setEmployeeIdDg2(-1 * lo.getIdDg2());
 
 					u = userRepository.saveAndFlush(u);
 					result.add(userMapper.userToAdvancedUserDto(u));

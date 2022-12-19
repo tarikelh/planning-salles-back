@@ -29,5 +29,6 @@ public interface InterventionMementoMapper {
 	@Mapping(target = "masterIntervention.id", source = "masterInterventionId")
 	@Mapping(target = "type", source = "type")
 	@Mapping(target = "version", ignore = true)
+	@Mapping(target = "interventionsFollowed", ignore = true)
 	Intervention interventionMementoDtoToIntervention(InterventionMementoDto iMemDto);
 }

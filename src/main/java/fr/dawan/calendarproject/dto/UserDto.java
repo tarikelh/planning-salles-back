@@ -15,8 +15,6 @@ public class UserDto {
 	private long locationId;
 
 	private String email;
-	
-	private String password;
 
 	private String type;
 	
@@ -41,7 +39,6 @@ public class UserDto {
 		this.lastName = lastName;
 		this.locationId = locationId;
 		this.email = email;
-		this.password = password;
 		this.type = type;
 		this.company = company;
 		this.imagePath = imagePath;
@@ -103,14 +100,6 @@ public class UserDto {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getType() {

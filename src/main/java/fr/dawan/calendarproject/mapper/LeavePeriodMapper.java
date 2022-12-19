@@ -12,19 +12,22 @@ import fr.dawan.calendarproject.entities.LeavePeriod;
 @Mapper(componentModel = "spring")
 public interface LeavePeriodMapper {
 
-	@Mapping(target = "employeeId", source = "user.employeeIdDg2")
+	@Mapping(target = "employeeId", source = "user.id")
 	@Mapping(target = "employeeFullName", source = "user.fullname")
 	LeavePeriodDto leavePeriodToLeavePeriodDto(LeavePeriod leavePeriod);
 
 	@Mapping(target = "user", ignore = true)
 	LeavePeriod leavePeriodDtoToLeavePeriod(LeavePeriodDto leavePeriodDto);
 
+	@Mapping(target = "id", ignore=true)
+	@Mapping(target = "idDg2", source="id")
+	@Mapping(target = "version", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "firstDay", source = "firstDay")
 	@Mapping(target = "lastDay", source = "lastDay")
 	LeavePeriod leavePeriodDg2DtoToLeavePeriod(LeavePeriodDg2Dto leavePeriodDg2Dto);
 	
-	@Mapping(target = "employeeId", source = "user.employeeIdDg2")
+	@Mapping(target = "employeeId", source = "user.id")
 	@Mapping(target = "employeeFullName", source = "user.fullname")
 	List<LeavePeriodDto> listLeavePeriodToListLeavePeriodDto(List<LeavePeriod> leavePeriods);
 

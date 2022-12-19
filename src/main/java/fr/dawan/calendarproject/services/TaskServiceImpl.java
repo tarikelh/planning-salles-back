@@ -2,11 +2,9 @@ package fr.dawan.calendarproject.services;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -22,15 +20,16 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import fr.dawan.calendarproject.dto.APIError;
 import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.TaskDg2Dto;
 import fr.dawan.calendarproject.dto.TaskDto;
 import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.entities.User;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
+import fr.dawan.calendarproject.enums.UserType;
+import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.mapper.TaskMapper;
+import fr.dawan.calendarproject.mapper.UserMapper;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -48,6 +47,13 @@ public class TaskServiceImpl implements TaskService{
 	private TaskMapper taskMapper;
 	
 	@Autowired
+	private UserMapper userMapper;
+	
+
+	@Autowired
+	private InterventionMapper interventionMapper;
+	
+	@Autowired
 	private UserRepository userRepository;
 	
 	@Autowired
@@ -63,11 +69,13 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto
 	 */
 	@Override
-	public List<TaskDto> getAllTask() {
-		
-		return taskMapper.taskListToTaskDtoList(taskRepository.findAll());			
+	public List<TaskDto> getAllTask() throws Exception{
+		List<Task> tasks = taskRepository.findAll();
+		return taskMapper.taskListToTaskDtoList(tasks);	
 
 	}
+	
+	
 	
 	
 	/**
@@ -77,7 +85,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllTaskForUserId(long userId) {
+	public List<TaskDto> getAllTaskForUserId(long userId) throws Exception{
 		
 		return taskMapper.taskListToTaskDtoList(taskRepository.findByUserId(userId));			
 	}
@@ -90,7 +98,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllTaskForInternventionId(long interventionId) {
+	public List<TaskDto> getAllTaskForInternventionId(long interventionId) throws Exception{
 		
 		return taskMapper.taskListToTaskDtoList(taskRepository.findByInterventionId(interventionId));			
 	}
@@ -103,9 +111,9 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns a list of TaskDto  
 	 */
 	@Override
-	public List<TaskDto> getAllBySlugLike(String search) {
+	public List<TaskDto> getAllBySlugLikeOrTitleLike(String search) throws Exception{
 
-		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContaining(search));
+		return taskMapper.taskListToTaskDtoList(taskRepository.findAllBySlugContainingOrTitleContaining(search, search));
 	}
 	
 	
@@ -117,7 +125,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @return Returns null if no task was found 
 	 */
 	@Override
-	public TaskDto getTaskById(long id) {
+	public TaskDto getTaskById(long id) throws Exception{
 		
 		
 		Optional<Task> task = taskRepository.findById(id);
@@ -134,13 +142,13 @@ public class TaskServiceImpl implements TaskService{
 	 * Counts the number of Tasks containing the value passed in String search
 	 * 
 	 * @param Search : A string of the value which is searched
-	 * @return CountDto : Returns the number of locations that match with the search word
+	 * @return CountDto : Returns the number of tasks that match with the search word
 	 * 
 	 */
 	@Override
-	public CountDto count(String search) {
+	public CountDto count(String search) throws Exception{
 
-		return new CountDto(taskRepository.findAllBySlugContaining(search).size());
+		return new CountDto(taskRepository.findAllBySlugContainingOrTitleContaining(search, search).size());
 
 	}
 
@@ -152,19 +160,93 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public TaskDto saveOrUpdate(TaskDto taskDto) {
-
-		checkUniqueness(taskDto);
+	public TaskDto saveOrUpdate(TaskDto taskDto) throws Exception{
 		
-		if(taskDto.getId() > 0 && !taskRepository.existsById(taskDto.getId())) {
-			return null;
+		TaskDto result = null;
+		
+		//Setting task to persist
+		Task taskToPersist = taskMapper.taskDtoToTask(taskDto);
+		
+		//Setting User
+		if(taskDto.getUser() != null) {
+			User u = userRepository.findById(taskDto.getUserId()).orElse(null);
+			taskToPersist.setUser(u);
+
+		}
+		//Setting intervention associated to the Task
+		if(taskDto.getIntervention() != null) {
+			Intervention intervention = interventionRepository.findById(taskDto.getInterventionId()).orElse(null);
+			taskToPersist.setIntervention(intervention);
+		}		
+
+		
+		//Calculation of the duration of the task
+		long duration = ChronoUnit.DAYS.between(taskToPersist.getBeginDate(), taskToPersist.getEndDate());
+		taskToPersist.setDuration(duration == 0 ? 1 : duration);
+		
+		
+		// Update
+		if(taskDto.getId() > 0 && taskRepository.existsById(taskDto.getId())) {
+			
+			Optional<Task> existingTask = taskRepository.findById(taskDto.getId());
+			
+			//If title changes the slug is then changed
+			if(existingTask.isPresent() && !existingTask.get().getTitle().equals(taskToPersist.getTitle())) {
+				
+				taskToPersist.setSlug(slugCreator(taskDto.getTitle(), taskDto.getBeginDate().toString()));
+			}
+			
 		}
 		
-		Task t = taskMapper.taskDtoToTask(taskDto);
+		// Create
+		if(taskDto.getId() == 0) {
+			taskToPersist.setSlug(slugCreator(taskDto.getTitle(), taskDto.getBeginDate().toString()));
+		}
 		
-		t = taskRepository.saveAndFlush(t);
+		taskToPersist = taskRepository.saveAndFlush(taskToPersist);
 	
-		return taskMapper.taskToTaskDto(t);
+		result = taskMapper.taskToTaskDto(taskToPersist);
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Creates a unique slug for tasks
+	 * @param title : the title of the task we want to create a Slug for
+	 * @param dateStart : the date of beggining of the task
+	 * @return the constructed slug as String
+	 */
+	public String slugCreator(String title, String dateStart) throws Exception{
+		
+		
+		StringBuilder slugBuilder = new StringBuilder();
+		
+		for (char character: title.toLowerCase().toCharArray()) {
+			
+			if(character == ' ') {
+				slugBuilder.append('-');
+			}else{
+				slugBuilder.append(character);
+			}
+				
+		}
+		
+		String constructedSlug = slugBuilder.toString() + '-' + dateStart;
+		
+		Optional<Task> slug = taskRepository.findBySlug(constructedSlug);
+		int countDuplicates = 0;
+		String resultSlug = constructedSlug;
+		
+		while(slug.isPresent()) {
+			
+			countDuplicates++;
+			resultSlug = constructedSlug + '-' + countDuplicates;
+			slug = taskRepository.findBySlug(resultSlug);
+			
+		}
+		
+		return resultSlug;
 	}
 
 	/**
@@ -174,40 +256,11 @@ public class TaskServiceImpl implements TaskService{
 	 * 
 	 */
 	@Override
-	public void deleteById(long id) {
+	public void deleteById(long id) throws Exception{
 
 		taskRepository.deleteById(id);
 	}
 	
-	
-
-	
-	/**
-	 * Checks whether a newly registered task is valid and throws an exception if not
-	 * 
-	 * @param taskDto An object representing a Task.
-	 * 
-	 */
-	public void checkUniqueness(TaskDto taskDto) {
-		
-		List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(taskDto.getSlug(), taskDto.getTaskIdDg2());
-		
-		
-		if(!duplicates.isEmpty () && taskDto.getId() == 0) {
-			
-			Set<APIError> errors = new HashSet<>();
-		
-			String instanceClass = duplicates.get(0).getClass().toString();
-			String path = "api/task";
-			
-			
-			errors.add(new APIError(505, instanceClass, "This task is not unique", "Task slug already exists" ,path));
-		
-			throw new EntityFormatException(errors);
-			
-		}
-		
-	}
 
 	/**
 	 * Fetches all tasks from dawan API and persists them into the database
@@ -246,16 +299,16 @@ public class TaskServiceImpl implements TaskService{
 			
 				taskDg2.setBeginAt(taskDg2.getBeginAt().substring(0, 10));
 				taskDg2.setFinishAt(taskDg2.getFinishAt().substring(0, 10));
-					
+				
 				Task task = taskMapper.taskDg2DtoToTask(taskDg2);
 				
 				
-				List<Intervention> inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId());
+				Intervention inter = interventionRepository.findByIdDg2(taskDg2.getInterventionId()).orElse(null);
 				
 				
 				//TODO Ask for Slug of the intervention associated to the task
-				if(!inter.isEmpty()) {
-					task.setIntervention(inter.get(0));
+				if(inter != null) {
+					task.setIntervention(inter);
 				}
 				 
 				Optional<User> user = userRepository.findByEmployeeIdDg2(taskDg2.getEmployeeId());
@@ -263,11 +316,17 @@ public class TaskServiceImpl implements TaskService{
 				if(user.isPresent()) {
 					task.setUser(user.get());
 				}
+				
+				long duration = ChronoUnit.DAYS.between(task.getBeginDate(), task.getEndDate());
+				task.setDuration(duration == 0 ? 1 : duration);
+				
 
 				
-				List<Task> duplicates = taskRepository.findBySlugOrTaskIdDg2(task.getSlug(), task.getTaskIdDg2());
+				Optional<Task> duplicatesSlug = taskRepository.findBySlug(task.getSlug());
+				Optional<Task> duplicateIdDg2 = taskRepository.findByTaskIdDg2(task.getTaskIdDg2());
+			
 				
-				if(duplicates.isEmpty()) {
+				if(!duplicatesSlug.isPresent() && !duplicateIdDg2.isPresent()) {
 					
 					try {
 						taskRepository.saveAndFlush(task);
@@ -299,17 +358,30 @@ public class TaskServiceImpl implements TaskService{
 	 * @exception Exception returns an exception if the request fails
 	 */
 	@Override
-	public List<TaskDto> getAllTaskBetweenOptionalUser(LocalDate start, LocalDate end, long userId ) {
+	public List<TaskDto> getAllTaskAssignedBetweenDatesAndUserType(LocalDate start, LocalDate end, String userType) throws Exception{
 		
-		List<TaskDto> result = new ArrayList<>();
+		UserType type = Enum.valueOf(UserType.class , userType);
 		
-		if(userId != 0) {
-			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllByUserIdBetweenDates(start, end, userId));
-		}else{
-			result = taskMapper.taskListToTaskDtoList(taskRepository.getAllBetweenDates(start, end));
-		}
-		
-		return result;
+		return taskMapper.taskListToTaskDtoList(taskRepository.getAllAssignedBetweenDatesAndUserType(start, end, type));
 					
 	}
+
+	/**
+	 * 
+	 * Counts the number of Tasks having User type passed as parameter
+	 * 
+	 * @param type : UserType value that corresponds to the type of users we want to count tasks
+	 * @return CountDto : Returns the number of tasks that have the UserType passed
+	 * 
+	 */
+	@Override
+	public CountDto countByUserType(String type) throws Exception{
+		
+		UserType userType = Enum.valueOf(UserType.class, type);
+		
+		return new CountDto(taskRepository.findByUserType(userType).size());
+	}
+
+
+	
 }

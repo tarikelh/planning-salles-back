@@ -20,7 +20,10 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
+	@Column(nullable = true)
 	private long taskIdDg2;
+	
+	private String title;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
@@ -37,6 +40,9 @@ public class Task {
 	@Column(nullable= false, columnDefinition="DATE")
 	private LocalDate endDate;
 	
+	@Column(nullable=false)
+	private double duration;
+	
 	@Version
 	private int version;
 	
@@ -46,21 +52,20 @@ public class Task {
 
 	}
 
-
-
-	public Task(long id, long taskIdDg2, User user, Intervention intervention, String slug, LocalDate beginDate, LocalDate endDate,
-			int version) {
+	public Task(long id, long taskIdDg2, String title, User user, Intervention intervention, String slug,
+			LocalDate beginDate, LocalDate endDate, double duration, int version) {
 		super();
 		this.id = id;
 		this.taskIdDg2 = taskIdDg2;
+		this.title = title;
 		this.user = user;
 		this.intervention = intervention;
 		this.slug = slug;
 		this.beginDate = beginDate;
 		this.endDate = endDate;
+		this.duration = duration;
 		this.version = version;
 	}
-
 
 
 	public long getId() {
@@ -78,11 +83,18 @@ public class Task {
 		return taskIdDg2;
 	}
 
-
-
 	public void setTaskIdDg2(long taskIdDg2) {
 		this.taskIdDg2 = taskIdDg2;
 	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 
 	public User getUser() {
 		return user;
@@ -143,6 +155,15 @@ public class Task {
 	}
 
 
+	public double getDuration() {
+		return duration;
+	}
+
+	public void setDuration(double duration) {
+		this.duration = duration;
+	}
+
+
 
 	public int getVersion() {
 		return version;
@@ -154,14 +175,10 @@ public class Task {
 		this.version = version;
 	}
 
-
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(beginDate, endDate, id, intervention, slug, taskIdDg2, user, version);
+		return Objects.hash(beginDate, duration, endDate, id, intervention, slug, taskIdDg2, title, user, version);
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -172,29 +189,22 @@ public class Task {
 		if (getClass() != obj.getClass())
 			return false;
 		Task other = (Task) obj;
-		return Objects.equals(beginDate, other.beginDate) && Objects.equals(endDate, other.endDate) && id == other.id
+		return Objects.equals(beginDate, other.beginDate)
+				&& Double.doubleToLongBits(duration) == Double.doubleToLongBits(other.duration)
+				&& Objects.equals(endDate, other.endDate) && id == other.id
 				&& Objects.equals(intervention, other.intervention) && Objects.equals(slug, other.slug)
-				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(user, other.user) && version == other.version;
+				&& taskIdDg2 == other.taskIdDg2 && Objects.equals(title, other.title)
+				&& Objects.equals(user, other.user) && version == other.version;
 	}
-
-
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", user=" + user + ", intervention=" + intervention
-				+ ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", version=" + version + "]";
+		return "Task [id=" + id + ", taskIdDg2=" + taskIdDg2 + ", title=" + title + ", user=" + user + ", intervention="
+				+ intervention + ", slug=" + slug + ", beginDate=" + beginDate + ", endDate=" + endDate + ", duration="
+				+ duration + ", version=" + version + "]";
 	}
 
-
-
-	
-
-
-
 	
 	
-	
-	
-
 		
 }
