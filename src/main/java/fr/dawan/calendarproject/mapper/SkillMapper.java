@@ -12,8 +12,8 @@ public interface SkillMapper {
 
 
 	@Mapping(source = "users", target = "usersId")
-	SkillDto skillToAdvancedSkillDto(Skill skill);
+	SkillDto skillToSkillDto(Skill skill);
 
 	@Mapping(source = "usersId", target = "users")
-	Skill advancedSkillDtoToSkill(SkillDto advSkill);
+	Skill skillDtoToSkill(SkillDto advSkill);
 }

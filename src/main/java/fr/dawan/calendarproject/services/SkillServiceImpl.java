@@ -55,7 +55,7 @@ public class SkillServiceImpl implements SkillService {
 		List<SkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
-			result.add(skillMapper.skillToAdvancedSkillDto(s));
+			result.add(skillMapper.skillToSkillDto(s));
 		}
 		return result;
 	}
@@ -85,7 +85,7 @@ public class SkillServiceImpl implements SkillService {
 		List<SkillDto> result = new ArrayList<>();
 
 		for (Skill s : skills) {
-			result.add(skillMapper.skillToAdvancedSkillDto(s));
+			result.add(skillMapper.skillToSkillDto(s));
 		}
 
 		return result;
@@ -119,7 +119,7 @@ public class SkillServiceImpl implements SkillService {
 		Optional<Skill> skill = skillRepository.findById(id);
 
 		if (skill.isPresent())
-			return skillMapper.skillToAdvancedSkillDto(skill.get());
+			return skillMapper.skillToSkillDto(skill.get());
 
 		return null;
 	}
@@ -152,7 +152,7 @@ public class SkillServiceImpl implements SkillService {
 		if (skill.getId() > 0 && !skillRepository.findById(skill.getId()).isPresent())
 			return null;
 
-		Skill s = skillMapper.advancedSkillDtoToSkill(skill);
+		Skill s = skillMapper.skillDtoToSkill(skill);
 
 		Set<User> usersList = new HashSet<>();
 		if (skill.getUsersId() != null) {
@@ -162,7 +162,7 @@ public class SkillServiceImpl implements SkillService {
 
 		s = skillRepository.saveAndFlush(s);
 
-		return skillMapper.skillToAdvancedSkillDto(s);
+		return skillMapper.skillToSkillDto(s);
 	}
 	
 	/**
