@@ -30,7 +30,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.dawan.calendarproject.dto.AdvancedSkillDto;
+import fr.dawan.calendarproject.dto.SkillDto;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.SkillService;
 
@@ -53,15 +54,15 @@ class SkillControllerTest {
 	@MockBean
 	private TokenInterceptor tokenInterceptor;
 
-	private List<AdvancedSkillDto> skills = new ArrayList<AdvancedSkillDto>();
+	private List<SkillDto> skills = new ArrayList<SkillDto>();
 
 	@BeforeEach()
 	void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-		skills.add(new AdvancedSkillDto(1, "DevOps", 0, null));
-		skills.add(new AdvancedSkillDto(2, "POO", 0, null));
-		skills.add(new AdvancedSkillDto(3, "SQL", 0, null));
+		skills.add(new SkillDto(1, "DevOps", null, 0));
+		skills.add(new SkillDto(2, "POO", null, 0));
+		skills.add(new SkillDto(3, "SQL", null, 0));
 	}
 
 	@Test
@@ -129,12 +130,12 @@ class SkillControllerTest {
 
 	@Test
 	void shouldCreateNewSkill() throws Exception {
-		AdvancedSkillDto skillToCreate = new AdvancedSkillDto(0, "DevOps", 0, null);
+		SkillDto skillToCreate = new SkillDto(0, "DevOps", null, 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToCreateJson = objectMapper.writeValueAsString(skillToCreate);
 
-		when(skillService.saveOrUpdate(any(AdvancedSkillDto.class))).thenReturn(skills.get(0));
+		when(skillService.saveOrUpdate(any(SkillDto.class))).thenReturn(skills.get(0));
 
 		mockMvc.perform(post("/api/skills").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.content(skillToCreateJson)).andExpect(status().isOk())
@@ -144,12 +145,12 @@ class SkillControllerTest {
 
 	@Test
 	void shouldUpdateSkill() throws Exception {
-		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(1, "SuperDevOps", 0, null);
+		SkillDto skillToUpdate = new SkillDto(1, "SuperDevOps", null, 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToUpdateJson = objectMapper.writeValueAsString(skillToUpdate);
 
-		when(skillService.saveOrUpdate(any(AdvancedSkillDto.class))).thenReturn(skillToUpdate);
+		when(skillService.saveOrUpdate(any(SkillDto.class))).thenReturn(skillToUpdate);
 
 		mockMvc.perform(put("/api/skills/").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.accept(MediaType.APPLICATION_JSON).content(skillToUpdateJson)).andExpect(status().isOk())
@@ -158,7 +159,7 @@ class SkillControllerTest {
 
 	@Test
 	void shouldReturn404WhenUpdateWrongId() throws Exception {
-		AdvancedSkillDto skillToUpdate = new AdvancedSkillDto(15454, "SuperDevOps", 0, null);
+		SkillDto skillToUpdate = new SkillDto(15454, "SuperDevOps", null, 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String skillToUpdateJson = objectMapper.writeValueAsString(skillToUpdate);
