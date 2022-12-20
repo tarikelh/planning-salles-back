@@ -160,9 +160,9 @@ class InterventionServiceTest {
 				LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0), LocalTime.of(17, 0), 2,
 				false, email, 0));
 
-		intMementoDtos.add(new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Paris", 1, 1,
+		intMementoDtos.add(new InterventionMementoDto(0, 0L, "slug-0", "I am a new Intervention", 1, "Paris", 1, 1,
 				"Java for intermediate level", 1, 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false));
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0,0, "customers","optionSlug", false));
 
 		interventionMementos.add(new InterventionMemento(1, intMementoDtos.get(0),
 				new MementoMessageDto(1, " has been created by ", email, ""), 0));
@@ -303,7 +303,7 @@ class InterventionServiceTest {
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
 						"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-						LocalTime.of(17, 0), 0, false),
+						LocalTime.of(17, 0), 0, 0, email, email, false),
 				new MementoMessageDto(1, " has been created by ", "admin@dawan.fr", ""), 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
@@ -355,7 +355,7 @@ class InterventionServiceTest {
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
 						"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-						LocalTime.of(17, 0), 0, true),
+						LocalTime.of(17, 0), 0, 0, email, email, true),
 				new MementoMessageDto(1, " has been created by ", "admin@dawan.fr", ""), 0);
 
 		when(interventionRepository.findFromUserByDateRange(any(Long.class), any(LocalDate.class),
@@ -406,7 +406,7 @@ class InterventionServiceTest {
 		InterventionMemento mementoInterv = new InterventionMemento(1,
 				new InterventionMementoDto(5, 5, "slug-5", "I am a New Intervention", 0, "", 0, 0, "", 0, 0, "", 10,
 						"INTERN", true, LocalDate.now().plusDays(7), LocalDate.now().plusDays(10), LocalTime.of(9, 0),
-						LocalTime.of(17, 0), 0, false),
+						LocalTime.of(17, 0), 0, 0, email, email, false),
 				new MementoMessageDto(1, " has been created by ", "admin@dawan.fr", ""), 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
@@ -571,7 +571,7 @@ class InterventionServiceTest {
 		LocalDate date = LocalDate.now();
 
 		Location mockedLoc = new Location(1L,"Paris", "FR", "red", false, 0);
-		Course mockedCourse = new Course(1, 1, "Java course for beginners", "5", "slug", 0);
+		Course mockedCourse = new Course(1, 1, "Java course for beginners", 5, "slug", 0);
 		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
