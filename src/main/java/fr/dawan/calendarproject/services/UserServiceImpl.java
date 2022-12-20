@@ -289,7 +289,7 @@ public class UserServiceImpl implements UserService {
 		if (u.getSkills() != null) {
 			for (SkillDto skill : u.getSkills()) {
 				if (!skillRepository.findByTitle(skill.getTitle()).isPresent()) {
-					String message = "Skill with id: " + skill + " does not exist.";
+					String message = "Skill with id: " + skill.getTitle() + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}
