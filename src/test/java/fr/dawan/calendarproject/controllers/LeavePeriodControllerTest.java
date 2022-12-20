@@ -57,9 +57,9 @@ class LeavePeriodControllerTest {
 
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
-		leavePeriods.add(new LeavePeriodDto(1, 1, "Daniel Balavoine", "Bla1", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments" ));
-		leavePeriods.add(new LeavePeriodDto(2, 1, "Daniel Balavoine", "Bla2", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"  ));
-		leavePeriods.add(new LeavePeriodDto(3, 1, "Daniel Balavoine", "Bla3", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"  ));
+		leavePeriods.add(new LeavePeriodDto(1, 1, 5, "Daniel Balavoine", "Bla1", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		leavePeriods.add(new LeavePeriodDto(2, 1, 5, "Daniel Balavoine", "Bla2", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		leavePeriods.add(new LeavePeriodDto(3, 1, 5, "Daniel Balavoine", "Bla3", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
 	}
 
 	@Test

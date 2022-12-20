@@ -18,16 +18,16 @@ class CompareGenericTest {
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-		courses.add(new Course(1, 1, "Java course for beginners", "5", "slug", 0));
-		courses.add(new Course(2, 2, "C# course for intermediate level", "1", "slug", 0));
-		courses.add(new Course(3, 3, "JavaScript course for beginners", "3", "slug", 0));
+		courses.add(new Course(1, 1, "Java course for beginners", 5.00, "slug", 0));
+		courses.add(new Course(2, 2, "C# course for intermediate level", 1.00, "slug", 0));
+		courses.add(new Course(3, 3, "JavaScript course for beginners", 3.00, "slug", 0));
 	}
 
 	@Test
 	void shouldCompareTwoObjects() throws Exception {
-		Course newCourse1 = new Course(1, 1, "Java course for beginners Updated", "5", "slug", 0);
-		Course newCourse2 = new Course(1, 1, "Java course for beginners", "3", "slug", 0);
-		Course newCourse3 = new Course(1, 1, "Java course for beginners Updated", "3", "slug", 0);
+		Course newCourse1 = new Course(1, 1, "Java course for beginners Updated", 5.00, "slug", 0);
+		Course newCourse2 = new Course(1, 1, "Java course for beginners", 3.00, "slug", 0);
+		Course newCourse3 = new Course(1, 1, "Java course for beginners Updated", 3.00, "slug", 0);
 
 		String result1 = CompareGeneric.compareObjects(newCourse1, courses.get(0));
 		String result2 = CompareGeneric.compareObjects(newCourse2, courses.get(0));

@@ -23,9 +23,9 @@ class CsvToolsGenericTest {
 
 	@BeforeEach()
 	public void beforeEach() throws Exception {
-		courses.add(new Course(1, 1, "Java course for beginners", "5", "slug", 0));
-		courses.add(new Course(2, 2, "C# course for intermediate level", "1", "slug", 0));
-		courses.add(new Course(3, 3, "JavaScript course for beginners", "3", "slug", 0));
+		courses.add(new Course(1, 1, "Java course for beginners", 5.00, "slug", 0));
+		courses.add(new Course(2, 2, "C# course for intermediate level", 1.00, "slug", 0));
+		courses.add(new Course(3, 3, "JavaScript course for beginners", 3.00, "slug", 0));
 
 		pathDoesNotExist = "";
 	}
