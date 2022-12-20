@@ -94,7 +94,7 @@ class SkillMapperTest {
 		when(userMapper.setUsersToListLong(any())).thenReturn(usersId);
 
 		// mapping
-		AdvancedSkillDto mappedAdvancedSkillDto = skillMapper.skillToAdvancedSkillDto(skill);
+		AdvancedSkillDto mappedAdvancedSkillDto = skillMapper.skillToSkillDto(skill);
 
 		// assert
 		assertEquals(mappedAdvancedSkillDto.getId(), skill.getId());
@@ -109,7 +109,7 @@ class SkillMapperTest {
 		when(userMapper.listLongToSetUsers(any())).thenReturn(users);
 
 		// mapping
-		Skill mappedSkill = skillMapper.advancedSkillDtoToSkill(advSkillDto);
+		Skill mappedSkill = skillMapper.skillDtoToSkill(advSkillDto);
 
 		// assert
 		assertEquals(mappedSkill.getId(), advSkillDto.getId());
