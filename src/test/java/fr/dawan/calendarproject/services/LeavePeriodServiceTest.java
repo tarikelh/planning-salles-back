@@ -67,15 +67,15 @@ class LeavePeriodServiceTest {
 		User user = new User(1L, 1L, 1L, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
-		lpList.add(new LeavePeriod(1, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(2, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(3, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(4, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
+		lpList.add(new LeavePeriod(1, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(2, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(3, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(4, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
 
-		lpDtoList.add(new LeavePeriodDto(1, 1, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(2, 2, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(3, 3, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(4, 4, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
+		lpDtoList.add(new LeavePeriodDto(1, 1, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(2, 2, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(3, 3, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(4, 4, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
 
 		opLeavePeriod = Optional.of(lpList.get(0));
 	}
