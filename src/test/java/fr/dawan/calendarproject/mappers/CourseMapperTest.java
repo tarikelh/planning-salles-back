@@ -27,9 +27,9 @@ class CourseMapperTest {
 
 	@BeforeEach
 	void before() {
-		courseDto = new CourseDto(1, 1, "title", "5", "slug", 0);
-		course = new Course(2, 2, "eltit", "5", "slug", 1);
-		courseDG2Dto = new CourseDG2Dto("title", "3", "slug", 1);
+		courseDto = new CourseDto(1, 1, "title", 5.00, "slug", 0);
+		course = new Course(2, 2, "eltit", 5.00, "slug", 1);
+		courseDG2Dto = new CourseDG2Dto("title", "5.00", "slug", 1);
 
 	}
 
@@ -66,7 +66,7 @@ class CourseMapperTest {
 
 		// assert
 		assertEquals(mappedCourse.getTitle(), courseDG2Dto.getTitle());
-		assertEquals(mappedCourse.getDuration(), courseDG2Dto.getDuration());
+		assertEquals(mappedCourse.getDuration(), Double.parseDouble(courseDG2Dto.getDuration()));
 		assertEquals(mappedCourse.getSlug(), courseDto.getSlug());
 	}
 
