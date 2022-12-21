@@ -60,15 +60,15 @@ class UserControllerTest {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
 		users.add(new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 1,
-				"dbalavoine@dawan.fr", "testPassword",
+				"dbalavoine@dawan.fr",
 				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null));
 		
 		users.add(new AdvancedUserDto(2, 2, 2, "Michel", "Polnareff", 1,
-				"mpolnareff@dawan.fr", "testPasswordPolnareff",
+				"mpolnareff@dawan.fr",
 				"COMMERCIAL", "JEHANN", "", "2022-12-31", 0, null));
 		
 		users.add(new AdvancedUserDto(3, 3, 3, "Charles", "Aznavour", 1,
-				"caznavour@dawan.fr", "testPasswordAznav",
+				"caznavour@dawan.fr",
 				"FORMATEUR", "JEHANN", "", "2022-12-31", 0, null));
 	}
 	
@@ -163,10 +163,10 @@ class UserControllerTest {
 	@Test
 	void shouldCreateNewUser() throws Exception {
 		AdvancedUserDto newUser = new AdvancedUserDto(0, 0, 0, "Françis", "Cabrel", 1,
-				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"fcabrel@dawan.fr",
 				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null);
 		AdvancedUserDto resUser = new AdvancedUserDto(4, 4, 4, "Françis", "Cabrel", 1,
-				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"fcabrel@dawan.fr",
 				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
@@ -219,7 +219,7 @@ class UserControllerTest {
 	public void shouldReturn404WhenUpdateWithWrongId() throws Exception {
 		
 		AdvancedUserDto wrongIdUser = new AdvancedUserDto(150, 150, 150, "Françis", "Cabrel", 1,
-				"fcabrel@dawan.fr", "testPasswordCabrel",
+				"fcabrel@dawan.fr",
 				"FORMATEUR", "JEHANN", "", "2022-12-31", 0, null);
 		
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
