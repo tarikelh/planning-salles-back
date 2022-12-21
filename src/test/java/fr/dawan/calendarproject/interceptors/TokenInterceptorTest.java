@@ -50,7 +50,7 @@ class TokenInterceptorTest {
 		
 		
 		user = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0,
-				"dbalavoine@dawan.fr", "testPassword",
+				"dbalavoine@dawan.fr",
 				"ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
 	}
 	
@@ -141,7 +141,7 @@ class TokenInterceptorTest {
 	@Test
 	void shouldThrowExceptionWithNoAdminTryingOtherThanGet() throws Exception {
 		AdvancedUserDto userNonAdmin = new AdvancedUserDto(2, 2, 2, "Lucie", "Balavoine", 0,
-				"lbalavoine@dawan.fr", "testPassword2",
+				"lbalavoine@dawan.fr",
 				"FORMATEUR", "DAWAN", "","2022-12-31", 0, null);
 		
 		request.setMethod("POST");
