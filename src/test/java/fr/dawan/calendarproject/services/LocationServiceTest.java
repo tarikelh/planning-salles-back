@@ -52,8 +52,8 @@ class LocationServiceTest {
 	@MockBean
 	private RestTemplate restTemplate;
 
-	private List<Location> lList = new ArrayList<Location>();
-	private List<LocationDto> lDtoList = new ArrayList<LocationDto>();
+	private List<Location> lList = new ArrayList<>();
+	private List<LocationDto> lDtoList = new ArrayList<>();
 	private Optional<Location> opLocation = null;
 
 	@BeforeEach
@@ -78,12 +78,13 @@ class LocationServiceTest {
 
 	@Test
 	void shouldFetchAllLocationAndReturnDtos() {
-		when(locationRepository.findAll()).thenReturn(lList);
+		when(locationRepository.findAllPublished()).thenReturn(lList);
+		
 		when(locationMapper.locationToLocationDto(any(Location.class))).thenReturn(lDtoList.get(0), lDtoList.get(1),
 				lDtoList.get(2), lDtoList.get(3));
 
 		List<LocationDto> result = locationService.getAllLocations();
-
+		
 		assertThat(result).isNotNull();
 		assertEquals(lDtoList.size(), result.size());
 		assertEquals(lDtoList, result);
