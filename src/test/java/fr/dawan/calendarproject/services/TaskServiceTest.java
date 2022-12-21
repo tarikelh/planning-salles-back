@@ -93,7 +93,7 @@ class TaskServiceTest {
 				LocalDate.parse("2022-10-10"), 10, 0);
 		
 		
-		userDto = new UserDto(3L, 3L, 3L, "firstname", "lastname", 5L, "name@dawan.fr", "dffghthghzrazrfg", 
+		userDto = new UserDto(3L, 3L, 3L, "firstname", "lastname", 5L, "name@dawan.fr", 
 				"FORMATEUR", "DAWAN", "gdfsdfzaq.png", "2022-10-01", 1);
 		
 		
