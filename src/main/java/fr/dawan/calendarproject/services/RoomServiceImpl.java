@@ -2,7 +2,6 @@ package fr.dawan.calendarproject.services;
 
 import fr.dawan.calendarproject.dto.*;
 import fr.dawan.calendarproject.entities.Room;
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
 import fr.dawan.calendarproject.mapper.RoomMapper;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.RoomRepository;

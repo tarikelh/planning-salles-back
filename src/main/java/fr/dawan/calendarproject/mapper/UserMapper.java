@@ -56,7 +56,6 @@ public interface UserMapper {
 	UserDto userToUserDto(User user);
 
 	@Mapping(target = "imagePath", ignore = true)
-	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "enumCompany", source = "company")
 	@Mapping(target = "enumType", source = "type")
 	@Mapping(target = "location", ignore = true)

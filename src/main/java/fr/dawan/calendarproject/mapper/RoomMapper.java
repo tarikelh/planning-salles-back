@@ -1,6 +1,6 @@
 package fr.dawan.calendarproject.mapper;
 
-import fr.dawan.calendarproject.dto.RoomDG2Dto;
+//import fr.dawan.calendarproject.dto.RoomDG2Dto;
 import fr.dawan.calendarproject.dto.RoomDto;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.repositories.LocationRepository;

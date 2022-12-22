@@ -1,6 +1,5 @@
 package fr.dawan.calendarproject.enums;
 
-import fr.dawan.calendarproject.entities.User;
 
 public enum InterventionStatus {
 	INTERN, INTRA, POE, TP, SOUS_TRAITANT;

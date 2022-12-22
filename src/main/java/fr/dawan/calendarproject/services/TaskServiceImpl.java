@@ -27,9 +27,7 @@ import fr.dawan.calendarproject.entities.Intervention;
 import fr.dawan.calendarproject.entities.Task;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.enums.UserType;
-import fr.dawan.calendarproject.mapper.InterventionMapper;
 import fr.dawan.calendarproject.mapper.TaskMapper;
-import fr.dawan.calendarproject.mapper.UserMapper;
 import fr.dawan.calendarproject.repositories.InterventionRepository;
 import fr.dawan.calendarproject.repositories.TaskRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
@@ -45,13 +43,6 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	private TaskMapper taskMapper;
-	
-	@Autowired
-	private UserMapper userMapper;
-	
-
-	@Autowired
-	private InterventionMapper interventionMapper;
 	
 	@Autowired
 	private UserRepository userRepository;
