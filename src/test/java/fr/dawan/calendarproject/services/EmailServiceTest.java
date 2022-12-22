@@ -75,7 +75,7 @@ class EmailServiceTest {
 		LocalDate date = LocalDate.now();
 		
 		receiver = new User(1L, 1L, 1L, "Daniel", "Balavoine", loc,
-				"dbalavoine@dawan.fr", "testPassword", null,
+				"dbalavoine@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		
 		iList.add(new Intervention(1, 1, "lambdaSlug", "I am lambda Intervention",

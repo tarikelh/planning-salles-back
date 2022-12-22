@@ -108,10 +108,10 @@ class UserMapperTest {
 				1, "dtoname@dawan.fr","COMMERCIAL",
 				"DAWAN",stringSkills,"2022-12-31",0);
 
-		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
+		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", date, null, 0);
 
-		user2 = new User(5L, 5L, 5L, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
+		user2 = new User(5L, 5L, 5L, "firstname5", "lastname5", location2, "name5@dawan.fr", skills,
 				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png", date, null, 0);
 		
 		
@@ -214,8 +214,7 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersSet.size());
-		assertThat(mappedUserSkillsIds.contains(user.getId())).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2.getId())).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user.getId(), user2.getId());
 	}
 
 	@Test
@@ -225,8 +224,7 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user, user2);
 	}
 
 	@Test
@@ -240,8 +238,7 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user, user2);
 	}
 
 	@Test

@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -142,7 +141,7 @@ class RoomControllerTest {
 	void shouldUpdateRoom() throws Exception {
 
 		RoomDto updated = new RoomDto(rooms.get(0).getId(), rooms.get(0).getIdDg2(), rooms.get(0).getName(),
-				rooms.get(0).getFullCapacity(), rooms.get(0).isAvailable(), rooms.get(0).getLocationId(), rooms.get(0).getVersion());
+				rooms.get(0).getFullCapacity(), rooms.get(0).getIsAvailable(), rooms.get(0).getLocationId(), rooms.get(0).getVersion());
 
 		updated.setName("Room 4.5");
 

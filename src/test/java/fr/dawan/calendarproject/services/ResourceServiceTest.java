@@ -48,7 +48,6 @@ class ResourceServiceTest {
 
 	private List<Resource> rList = new ArrayList<Resource>();
 	private List<ResourceDto> rDtoList = new ArrayList<ResourceDto>();
-	private Optional<Resource> opResource = null;
 
 	@BeforeEach
 	void beforeEach() throws Exception {
@@ -65,7 +64,6 @@ class ResourceServiceTest {
 		rDtoList.add(new ResourceDto(2, 0, 10, "Ecran", 1 ));
 		rDtoList.add(new ResourceDto(3, 0, 10, "Table", 1 ));
 
-		opResource = Optional.of(rList.get(0));
 	}
 
 	@Test

@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.dawan.calendarproject.dto.SkillDto;
-import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.SkillService;
 

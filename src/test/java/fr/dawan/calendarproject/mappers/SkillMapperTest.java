@@ -1,7 +1,5 @@
 package fr.dawan.calendarproject.mappers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -61,10 +59,10 @@ class SkillMapperTest {
 
 		LocalDate date = LocalDate.now(); 
 		
-		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
 
-		user2 = new User(2L, 2L, 2L, "firstname", "lastname", location, "areda2@dawan.fr", "mdpdelux2", null,
+		user2 = new User(2L, 2L, 2L, "firstname", "lastname", location, "areda2@dawan.fr", null,
 				UserType.FORMATEUR, UserCompany.JEHANN, "./image/img.png",date, null, 0 );
 
 		usersId.add(user.getId());

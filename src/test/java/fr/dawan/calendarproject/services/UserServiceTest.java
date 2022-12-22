@@ -95,13 +95,13 @@ class UserServiceTest {
 
 		LocalDate date = LocalDate.now();
 
-		uList.add(new User(1L, 1L, 1L, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
+		uList.add(new User(1L, 1L, 1L, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0));
 
-		uList.add(new User(2L, 2L, 2L, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", "testPasswordPolnareff", null,
+		uList.add(new User(2L, 2L, 2L, "Michel", "Polnareff", loc, "mpolnareff@dawan.fr", null,
 				UserType.COMMERCIAL, UserCompany.JEHANN, "",date, null, 0));
 
-		uList.add(new User(3L, 3L, 3L, "Charles", "Aznavour", loc, "caznavour@dawan.fr", "testPasswordAznav", null,
+		uList.add(new User(3L, 3L, 3L, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null,
 				UserType.FORMATEUR, UserCompany.JEHANN, "",date, null, 0));
 
 		uDtoList.add(new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0,
@@ -114,10 +114,10 @@ class UserServiceTest {
 		uDtoList.add(new AdvancedUserDto(3, 3, 3, "Charles", "Aznavour", 0, "caznavour@dawan.fr",
 				"FORMATEUR", "JEHANN", "","2022-12-31", 0, null));
 
-		userFromDG2 = new User(4L, 4L,4L, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.FORMATEUR,
+		userFromDG2 = new User(4L, 4L,4L, "Charles", "Aznavour", loc, "caznavour@dawan.fr",  null, UserType.FORMATEUR,
 				UserCompany.JEHANN, "",date, null, 0);
 		
-		userAdminFromDG2 = new User(4L, 4L,4L, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, null, UserType.ADMINISTRATIF,
+		userAdminFromDG2 = new User(4L, 4L,4L, "Charles", "Aznavour", loc, "caznavour@dawan.fr", null, UserType.ADMINISTRATIF,
 				UserCompany.JEHANN, "",date, null, 0);
 		
 		usersDG2.add(new UserDG2Dto(4, 4, "zcrijze", "ecqiuv",
@@ -253,7 +253,7 @@ class UserServiceTest {
 				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skillsDto);
 		AdvancedUserDto expected = new AdvancedUserDto(0, 0, 0, "Michel", "Delpech", 0, "mdelpech@dawan.fr",
 				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, skillsDto);
-		User repoReturn = new User(3L, 3L, 3L, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", "testPassword", sList,
+		User repoReturn = new User(3L, 3L, 3L, "Michel", "Delpech", mockedLoc, "mdelpech@dawan.fr", sList,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",date, null, 0);
 
 		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
@@ -287,44 +287,6 @@ class UserServiceTest {
 
 		assertThat(result).isNull();
 	}
-
-	@Test
-	void ShouldHashWhenPasswordHasChanged() {
-
-		MockedStatic<HashTools> hashTools = Mockito.mockStatic(HashTools.class);
-		
-		Location mockedLoc = Mockito.mock(Location.class);
-		AdvancedUserDto newPwdDto = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
-				"ADMINISTRATIF", "DAWAN", "", "2022-12-31", 0, null);
-		User newPwd = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "newStrongPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN,"", LocalDate.now(), null, 0);
-		User oldPwd = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), null, 0);
-		User newHashed = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "hashedNewStrongPassword",
-				null, UserType.ADMINISTRATIF, UserCompany.DAWAN, "",LocalDate.now(), null, 0);
-		AdvancedUserDto expected = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0, "dbalavoine@dawan.fr",
-				 "ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
-
-		when(locationRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedLoc));
-		when(userRepository.findDuplicateEmail(any(String.class), any(Long.class))).thenReturn(null);
-		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(oldPwd));
-		when(userMapper.advancedUserDtoToUser(any(AdvancedUserDto.class))).thenReturn(newPwd);
-		when(locationRepository.getOne(any(Long.class))).thenReturn(mockedLoc);
-		hashTools.when(() -> HashTools.hashSHA512(any(String.class))).thenReturn("hashedNewStrongPassword");
-		when(userRepository.getOne(any(Long.class))).thenReturn(oldPwd);
-		when(userRepository.saveAndFlush(any(User.class))).thenReturn(newHashed);
-		when(userMapper.userToAdvancedUserDto(any(User.class))).thenReturn(expected);
-
-		AdvancedUserDto result = userService.saveOrUpdate(newPwdDto);
-
-		assertThat(result).isNotNull();
-		assertEquals(expected, result);
-		assertEquals(false, result.equals(newPwdDto));
-		
-		if (!hashTools.isClosed())
-			hashTools.close();
-		
-		}
 
 
 	@Test
@@ -637,19 +599,8 @@ class UserServiceTest {
 
 		boolean resetStatus = userService.resetPassword(resetResponse);
 
-		assertThat(resetStatus).isFalse();
+		assertThat(resetStatus).isTrue();
 	}
 
-	@Test
-	void shouldResetPasswordWhenSameAsOld() throws Exception {
-		resetResponse.setPassword(uList.get(0).getPassword());
 
-		when(jwtTokenUtil.getUsernameFromToken(any(String.class))).thenReturn(email);
-		when(userRepository.findByEmail(email)).thenReturn(Optional.of(uList.get(0)));
-		when(userRepository.saveAndFlush(any(User.class))).thenReturn(uList.get(0));
-
-		boolean resetStatus = userService.resetPassword(resetResponse);
-
-		assertThat(resetStatus).isFalse();
-	}
 }

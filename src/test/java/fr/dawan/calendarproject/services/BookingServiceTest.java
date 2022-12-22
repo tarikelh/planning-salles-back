@@ -1,12 +1,8 @@
 package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -15,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import fr.dawan.calendarproject.exceptions.EntityFormatException;
-import net.fortuna.ical4j.model.DateRange;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
-import fr.dawan.calendarproject.dto.BookingDto;
 import fr.dawan.calendarproject.dto.BookingDto;
 import fr.dawan.calendarproject.entities.Booking;
 import fr.dawan.calendarproject.entities.Intervention;
-import fr.dawan.calendarproject.entities.Booking;
 import fr.dawan.calendarproject.entities.Room;
 import fr.dawan.calendarproject.mapper.BookingMapper;
 import fr.dawan.calendarproject.repositories.BookingRepository;
@@ -67,9 +57,7 @@ class BookingServiceTest {
 	private BookingDto bookingDto5;
 	private Optional<Booking> optional;
 	
-	private Optional<Booking> nullBooking; 
 	
-	private long nonExistingId;
 	private long count;
 	private Room room1 = new Room();
 	private Room room2 = new Room();
@@ -95,9 +83,6 @@ class BookingServiceTest {
 		
 		count = 5;
 
-		nonExistingId = 6;
-		nullBooking = null;
-				
 		booking1 = new Booking( 1, room1, int1, LocalDate.parse("2022-04-01"), LocalDate.parse("2022-04-10"), 0 );
 		booking2 = new Booking( 2, room2, int2, LocalDate.parse("2022-05-01"), LocalDate.parse("2022-05-10"), 0 );
 		booking3 = new Booking( 3, room1, int3, LocalDate.parse("2022-06-01"), LocalDate.parse("2022-06-10"), 0 );
@@ -170,7 +155,7 @@ class BookingServiceTest {
 		List<BookingDto> result = bookingService.getAllBookings();
 		
 		//Assert
-		assertThat(bDtoList.containsAll(result)).isTrue();
+		assertThat(bDtoList).containsAll(result);
 		
 	}
 	
@@ -188,7 +173,7 @@ class BookingServiceTest {
 		List<BookingDto> result = bookingService.getAllBookings(start, end);
 		
 		//Assert
-		assertThat(bDtoListBetween.containsAll(result)).isTrue();	
+		assertThat(bDtoListBetween).containsAll(result);	
 	
 	}
 	
@@ -207,7 +192,7 @@ class BookingServiceTest {
 		List<BookingDto> result = bookingService.getAllBookingsRoom(room1.getId());
 		
 		//Assert
-		assertThat(bDtoListRoom.containsAll(result)).isTrue();
+		assertThat(bDtoListRoom).containsAll(result);
 		
 	}
 	

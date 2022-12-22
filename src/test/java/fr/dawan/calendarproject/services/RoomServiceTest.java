@@ -49,8 +49,6 @@ class RoomServiceTest {
 	private List<Room> rList = new ArrayList<Room>();
 	private List<RoomDto> rDtoList = new ArrayList<RoomDto>();
 	
-	private Optional<Room> opRoom;
-	
 	@BeforeEach
 	void beforeEach()throws Exception{
 		
@@ -64,7 +62,6 @@ class RoomServiceTest {
 		rDtoList.add(new RoomDto(2, 2, "Room 2", 25 , true , 1 , 0 ));
 		rDtoList.add(new RoomDto(3, 3, "Room 3", 25 , true , 1 , 0 ));
 		
-		opRoom = Optional.of(rList.get(0));
 	}
 
 	@Test

@@ -74,7 +74,7 @@ class TaskServiceTest {
 		
 		location = new Location(5L, "Toulouse", "France", "rose", true, 1);
 		
-		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", new HashSet<Skill>(), 
+		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", new HashSet<Skill>(), 
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", LocalDate.parse("2022-10-01"), new HashSet<InterventionFollowed>() , 1);
 		
 		

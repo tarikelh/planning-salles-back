@@ -1,8 +1,5 @@
 package fr.dawan.calendarproject.controllers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LeavePeriodDto;
 import fr.dawan.calendarproject.interceptors.TokenInterceptor;
 import fr.dawan.calendarproject.services.LeavePeriodService;
@@ -21,12 +18,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,8 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class LeavePeriodControllerTest {
 
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@Autowired
 	private MockMvc mockMvc;
