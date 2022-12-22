@@ -75,4 +75,10 @@ public class CourseDto {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+
+    @Override
+    public String toString() {
+        return "CourseDto [id=" + id + ", idDg2=" + idDg2 + ", title=" + title + ", duration=" + duration + ", slug="
+                + slug + ", version=" + version + "]";
+    }
 }

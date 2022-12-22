@@ -14,7 +14,10 @@ public class InterventionFollowedDto {
 
 	
 
-	public InterventionFollowedDto(long id, UserDto userDto, AdvancedInterventionDto advInterventionDto,
+	public InterventionFollowedDto() {
+    }
+
+    public InterventionFollowedDto(long id, UserDto userDto, AdvancedInterventionDto advInterventionDto,
             String registrationSlug, int version) {
         super();
         this.id = id;
