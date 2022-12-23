@@ -93,58 +93,37 @@ class CourseServiceTest {
 	}
 
 	@Test
-	void shouldGetCoursesAndReturnDtos() {
-		when(courseRepository.findAll()).thenReturn(courses);
-		when(courseMapper.courseToCourseDto(courses.get(0))).thenReturn(cDtos.get(0));
-		when(courseMapper.courseToCourseDto(courses.get(1))).thenReturn(cDtos.get(1));
-		when(courseMapper.courseToCourseDto(courses.get(2))).thenReturn(cDtos.get(2));
+    void shouldGetCoursesAndReturnDtos() {
+        when(courseRepository.findAll()).thenReturn(courses);
+        when(courseMapper.courseToCourseDto(any(Course.class))).thenReturn(cDtos.get(0), cDtos.get(1), cDtos.get(2));
 
-		List<CourseDto> result = courseService.getAllCourses();
+        List<CourseDto> result = courseService.getAllCourses();
 
-		assertThat(result).isNotNull();
-		assertEquals(courses.size(), result.size());
-		assertEquals(cDtos.size(), result.size());
-		assertEquals(cDtos, result);
-	}
+        assertThat(result).isNotNull();
+        assertEquals(courses.size(), result.size());
+        assertEquals(cDtos.size(), result.size());
+        assertEquals(cDtos, result);
+    }
 
-	@Test
-	void shouldGetPaginatedCoursesAndReturnDtos() {
-		Page<Course> p1 = new PageImpl<Course>(courses.subList(0, 1));
-		Page<Course> p2 = new PageImpl<Course>(courses.subList(0, 3));
-		Page<Course> p3 = new PageImpl<Course>(courses.subList(1, 2));
+    @Test
+    void shouldGetPaginatedCoursesAndReturnDtos() {
+        Page<Course> p1 = new PageImpl<Course>(courses.subList(0, 1));
 
-		when(courseRepository.findAllByTitleContaining("Java", PageRequest.of(0, 3))).thenReturn(p1);
-		when(courseRepository.findAllByTitleContaining("course", PageRequest.of(0, 3))).thenReturn(p2);
-		when(courseRepository.findAllByTitleContaining("", PageRequest.of(1, 1))).thenReturn(p3);
-		when(courseRepository.findAllByTitleContaining("", Pageable.unpaged())).thenReturn(p2);
-		when(courseRepository.findAllByTitleContaining("Java", Pageable.unpaged())).thenReturn(p1);
+        when(courseRepository.findAllByTitleContaining("Java", PageRequest.of(0, 3))).thenReturn(p1);
+        when(courseRepository.findAllByTitleContaining("Java", Pageable.unpaged())).thenReturn(p1);
 
-		when(courseMapper.courseToCourseDto(courses.get(0))).thenReturn(cDtos.get(0));
-		when(courseMapper.courseToCourseDto(courses.get(1))).thenReturn(cDtos.get(1));
-		when(courseMapper.courseToCourseDto(courses.get(2))).thenReturn(cDtos.get(2));
+        when(courseMapper.courseToCourseDto(courses.get(0))).thenReturn(cDtos.get(0));
+        
+        List<CourseDto> page1 = courseService.getAllCourses(0, 3, "Java");
+        List<CourseDto> unpaginated = courseService.getAllCourses(-1, -1, "Java");
 
-		List<CourseDto> page1 = courseService.getAllCourses(0, 3, "Java");
-		List<CourseDto> page2 = courseService.getAllCourses(0, 3, "course");
-		List<CourseDto> page3 = courseService.getAllCourses(1, 1, "");
-		List<CourseDto> page4 = courseService.getAllCourses(-1, -1, "");
-		List<CourseDto> page5 = courseService.getAllCourses(-1, -1, "Java");
-
-		assertThat(page1).isNotNull();
-		assertThat(page2).isNotNull();
-		assertThat(page3).isNotNull();
-		assertThat(page4).isNotNull();
-		assertThat(page5).isNotNull();
-		assertEquals(1, page1.size());
-		assertEquals(3, page2.size());
-		assertEquals(1, page3.size());
-		assertEquals(3, page4.size());
-		assertEquals(1, page5.size());
-		assertEquals(page1, cDtos.subList(0, 1));
-		assertEquals(page2, cDtos.subList(0, 3));
-		assertEquals(page3, cDtos.subList(1, 2));
-		assertEquals(page4, cDtos.subList(0, 3));
-		assertEquals(page5, cDtos.subList(0, 1));
-	}
+        assertThat(page1).isNotEmpty();
+        assertEquals(1, page1.size());
+        assertEquals(page1, cDtos.subList(0, 1));
+        assertThat(unpaginated).isNotEmpty();
+        assertEquals(1, unpaginated.size());
+        assertEquals(unpaginated, cDtos.subList(0, 1));
+}
 
 	@Test
 	void shouldGetCourseById() {
