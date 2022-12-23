@@ -67,7 +67,7 @@ class ResetPasswordControllerTest {
 		TokenSaver.getTokensbyemail().put(email, "TokenTestResetPassword");
 		
 		adUserDto = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 0,
-				"dbalavoine@dawan.fr", "testPassword",
+				"dbalavoine@dawan.fr",
 				"ADMINISTRATIF", "DAWAN", "","2022-12-31", 0, null);
 		
 		resetResponse = new ResetResponse("TokenTestResetPassword", "ResetPasswordTest");

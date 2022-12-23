@@ -43,7 +43,7 @@ class InterventionMementoMapperTest {
 	@BeforeEach
 	void before() {
 		location = new Location(1, "paris", "#32656", "FR", false, 1);
-		course = new Course(1, 1, "C#", "5", "slug", 2);
+		course = new Course(1, 1, "C#", 5.00, "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
@@ -51,7 +51,7 @@ class InterventionMementoMapperTest {
 		
 		LocalDate date = LocalDate.now();
 		
-		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
 
 		masterIntervention = new Intervention(3, 3, "slug-3", "com", null, location, course, user, 0,
@@ -63,8 +63,9 @@ class InterventionMementoMapperTest {
 				masterIntervention, false, 0, null, null, 0);
 
 		interventionMementoDto = new InterventionMementoDto(0, 0, "slug-0", "I am a new Intervention", 1, "Bordeaux", 1,
-				1, "Java for intermediate level", 1, 1, "Admin Fullname", 10, "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false);
+				1, "Java for intermediate level", 1, 1, "Admin Fullname", 10, "INTERN", true, LocalDate.now(),
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, 0, "", "option slug", false);
+		
 	}
 
 	@Test

@@ -69,9 +69,6 @@ class InterventionServiceTest {
 	@Autowired
 	private InterventionService interventionService;
 
-	@Autowired
-	private LeavePeriodService leavePeriodService;
-
 	@MockBean
 	private InterventionRepository interventionRepository;
 
@@ -112,7 +109,7 @@ class InterventionServiceTest {
 	Location location = new Location(1L,"Paris", "FR", "red", false, 0);
 	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", false, 0);
 	CourseDto courseDto = new CourseDto(1, 1, "Java course for beginners", 2.5, "slug", 0);
-	UserDto userDto = new UserDto(1, 1, 1,"Daniel", "Balavoine",1,"dbalavoie@dawan.fr", "testPassword",
+	UserDto userDto = new UserDto(1, 1, 1,"Daniel", "Balavoine",1,"dbalavoie@dawan.fr",
 			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "",date.toString(),0);
 
 	private String email = "admin@dawan.fr";
@@ -128,7 +125,7 @@ class InterventionServiceTest {
 
 		Location mockedLoc = new Location(1 ,"Paris", "red", "FR", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", 2.5, "slug", 0);
-		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 		course = new Course(2, 548, "C#", 2.5, "slug", 0);
 		
@@ -572,7 +569,7 @@ class InterventionServiceTest {
 
 		Location mockedLoc = new Location(1L,"Paris", "FR", "red", false, 0);
 		Course mockedCourse = new Course(1, 1, "Java course for beginners", 5, "slug", 0);
-		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+		User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
 		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(mockedUser));

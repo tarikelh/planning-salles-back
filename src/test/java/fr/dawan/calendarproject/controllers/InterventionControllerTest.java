@@ -103,8 +103,8 @@ class InterventionControllerTest {
 
 	Location location = new Location(1, "Paris", "FR", "red", false, 0);
 	LocationDto locationDto = new LocationDto(1, 1, "Paris", "FR", "red", false, 0);
-	CourseDto course = new CourseDto(1, 1, "Java course for beginners", "5", "slug", 0);
-	UserDto user = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr", "testPassword",
+	CourseDto course = new CourseDto(1, 1, "Java course for beginners", 5.00, "slug", 0);
+	UserDto user = new UserDto(1, 1, 1, "Daniel", "Balavoine", location.getId(), "dbalavoine@dawan.fr",
 			UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "", date.toString(), 0);
 
 	@BeforeEach()

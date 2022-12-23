@@ -40,7 +40,7 @@ class BookingMapperTest {
     void before() {
         Location mockedLoc = new Location(1 ,"Paris", "red", "FR", false, 0);
         Course mockedCourse = new Course(1, 1, "Java course for beginners", 2.5, "slug", 0);
-        User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", "testPassword", null,
+        User mockedUser = new User(1L, 1L, 1L, "Daniel", "Balavoine", mockedLoc, "dbalavoine@dawan.fr", null,
                 UserType.ADMINISTRATIF, UserCompany.DAWAN, "", LocalDate.now(), null, 0);
         
         room = new Room(1,1,"Room 1",25,true,0, mockedLoc);

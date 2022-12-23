@@ -71,7 +71,7 @@ class InterventionMapperTest {
 	@BeforeEach
 	void before() {
 		location = new Location(1, "paris", "#32656", "FR", false, 1);
-		course = new Course(1, 1, "C#", "5", "slug", 2);
+		course = new Course(1, 1, "C#", 5.00, "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
@@ -79,7 +79,7 @@ class InterventionMapperTest {
 		
 		LocalDate date = LocalDate.now();
 		
-		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", null,
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", null,
 				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
 //		user = new User(1, 1, 1, "firstname", "lastname", 1, "areda@dawan.fr", "mdpdelux", skills.toArray(),
 //				UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "./image/img.png", date.toString(),0);
@@ -170,8 +170,8 @@ class InterventionMapperTest {
 
 		// assert
 		assertEquals(mappedInterventionDtoList.size(), interventionList.size());
-		assertThat(mappedInterventionDtoList.contains(interventionDto)).isFalse();
-		assertThat(mappedInterventionDtoList.contains(interventionDto2)).isFalse();
+		assertThat(mappedInterventionDtoList).doesNotContain(interventionDto, interventionDto2);
+
 	}
 
 	@Test
@@ -182,8 +182,7 @@ class InterventionMapperTest {
 
 		// assert
 		assertEquals(mappedInterventionList.size(), interventionDtoList.size());
-		assertThat(mappedInterventionList.contains(intervention)).isFalse();
-		assertThat(mappedInterventionList.contains(intervention2)).isFalse();
+		assertThat(mappedInterventionList).doesNotContain(intervention, intervention2);
 	}
 
 	@Test
