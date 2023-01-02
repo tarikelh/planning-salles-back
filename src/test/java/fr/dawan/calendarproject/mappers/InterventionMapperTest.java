@@ -70,8 +70,8 @@ class InterventionMapperTest {
 
 	@BeforeEach
 	void before() {
-		location = new Location(1, "paris", "#32656", "FR", 1);
-		course = new Course(1, 1, "C#", "5", "slug", 2);
+		location = new Location(1, "paris", "#32656", "FR", false, 1);
+		course = new Course(1, 1, "C#", 5.00, "slug", 2);
 
 		skills.add(new Skill(1, "sql", null, 3));
 		skills.add(new Skill(2, "c#", null, 4));
@@ -79,32 +79,34 @@ class InterventionMapperTest {
 		
 		LocalDate date = LocalDate.now();
 		
-		user = new User(1, 1, 1, "firstname", "lastname", location, "areda@dawan.fr", "mdpdelux", skills,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date, 0);
+		user = new User(1L, 1L, 1L, "firstname", "lastname", location, "areda@dawan.fr", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "./image/img.png",date,null, 0);
+//		user = new User(1, 1, 1, "firstname", "lastname", 1, "areda@dawan.fr", "mdpdelux", skills.toArray(),
+//				UserType.ADMINISTRATIF.toString(), UserCompany.DAWAN.toString(), "./image/img.png", date.toString(),0);
 
-		masterIntervention = new Intervention(5, 5, "slug-3", "com", location, course, user, 0,
+		masterIntervention = new Intervention(5, 5, "slug-3", "com", null, location, course, user, 0,
 				InterventionStatus.INTERN, true, LocalDate.now(), LocalDate.now().plusDays(6), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), null, true, 0);
+				LocalTime.of(17, 0), null, true, 0, null, null, 0);
 
-		intervention = new Intervention(1, 1, "slug-1", "com", location, course, user, 0, InterventionStatus.INTERN,
+		intervention = new Intervention(1, 1, "slug-1", "com", null, location, course, user, 0, InterventionStatus.INTERN,
 				true, LocalDate.now(), LocalDate.now().plusDays(4), LocalTime.of(9, 0), LocalTime.of(17, 0),
-				masterIntervention, false, 0);
+				masterIntervention, false, 0, null, null, 0);
 
-		intervention2 = new Intervention(7, 7, "slug-7", "com7", location, course, user, 0,
-				InterventionStatus.SUR_MESURE, false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
-				LocalTime.of(17, 0), masterIntervention, false, 0);
+		intervention2 = new Intervention(7, 7, "slug-7", "com7", null, location, course, user, 0,
+				InterventionStatus.INTRA, false, LocalDate.now(), LocalDate.now().plusDays(5), LocalTime.of(9, 0),
+				LocalTime.of(17, 0), masterIntervention, false, 0, null, null, 0);
 
 		interventionDto = new InterventionDto(5, 5, "slug-5", "coms5", location.getId(), location.getIdDg2(),
 				course.getId(), course.getIdDg2(), user.getId(), 0, "SUR_MESURE", true, LocalDate.now(),
-				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
+				LocalDate.now().plusDays(2), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, null, 0);
 
 		interventionDto2 = new InterventionDto(2, 2, "slug-2", "coms", location.getId(), location.getIdDg2(),
 				course.getId(), course.getIdDg2(), user.getId(), 0, "INTERN", true, LocalDate.now(),
-				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, 0);
+				LocalDate.now().plusDays(5), LocalTime.of(9, 0), LocalTime.of(17, 0), 0, false, null, 0);
 
 		interventionDG2Dto = new InterventionDG2Dto(35, location.getId(), course.getId(), user.getId(),
-				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", true,
-				masterIntervention.getId(), false, 5);
+				LocalDate.now().toString(), LocalDate.now().plusDays(4).toString(), "slug-1", "INTERN", null, true,
+				masterIntervention.getId(), false, 5, null);
 
 		interventionList.add(intervention);
 		interventionList.add(intervention2);
@@ -168,8 +170,8 @@ class InterventionMapperTest {
 
 		// assert
 		assertEquals(mappedInterventionDtoList.size(), interventionList.size());
-		assertThat(mappedInterventionDtoList.contains(interventionDto)).isFalse();
-		assertThat(mappedInterventionDtoList.contains(interventionDto2)).isFalse();
+		assertThat(mappedInterventionDtoList).doesNotContain(interventionDto, interventionDto2);
+
 	}
 
 	@Test
@@ -180,8 +182,7 @@ class InterventionMapperTest {
 
 		// assert
 		assertEquals(mappedInterventionList.size(), interventionDtoList.size());
-		assertThat(mappedInterventionList.contains(intervention)).isFalse();
-		assertThat(mappedInterventionList.contains(intervention2)).isFalse();
+		assertThat(mappedInterventionList).doesNotContain(intervention, intervention2);
 	}
 
 	@Test

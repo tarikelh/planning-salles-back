@@ -1,6 +1,5 @@
 package fr.dawan.calendarproject.services;
 
-import fr.dawan.calendarproject.dto.CountDto;
 import fr.dawan.calendarproject.dto.LeavePeriodDg2Dto;
 import fr.dawan.calendarproject.dto.LeavePeriodDto;
 import fr.dawan.calendarproject.entities.LeavePeriod;
@@ -64,18 +63,18 @@ class LeavePeriodServiceTest {
 
 		LocalDate date = LocalDate.now();
 
-		User user = new User(1, 1, 1, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", "testPassword", null,
-				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, 0);
+		User user = new User(1L, 1L, 1L, "Daniel", "Balavoine", loc, "dbalavoine@dawan.fr", null,
+				UserType.ADMINISTRATIF, UserCompany.DAWAN, "", date, null, 0);
 
-		lpList.add(new LeavePeriod(1, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(2, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(3, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
-		lpList.add(new LeavePeriod(4, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments"));
+		lpList.add(new LeavePeriod(1, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(2, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(3, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
+		lpList.add(new LeavePeriod(4, 0, user, "Bla", LeavePeriodType.CP, date,true, date, false, 0.5, "No comments", 0));
 
-		lpDtoList.add(new LeavePeriodDto(1, 1, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(2, 2, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(3, 3, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
-		lpDtoList.add(new LeavePeriodDto(4, 4, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments"));
+		lpDtoList.add(new LeavePeriodDto(1, 1, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(2, 2, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(3, 3, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
+		lpDtoList.add(new LeavePeriodDto(4, 4, 0, "Daniel Balavoine", "Bla", "CP",date.toString(), true, date.toString(), false, 0.5 , "No comments", 0));
 
 		opLeavePeriod = Optional.of(lpList.get(0));
 	}
@@ -88,8 +87,7 @@ class LeavePeriodServiceTest {
 	@Test
 	void shouldFetchAllLeavePeriodAndReturnDtos() {
 		when(leavePeriodRepository.findAll()).thenReturn(lpList);
-		when(leavePeriodMapper.leavePeriodToLeavePeriodDto(any(LeavePeriod.class))).thenReturn(lpDtoList.get(0), lpDtoList.get(1),
-				lpDtoList.get(2), lpDtoList.get(3));
+		when(leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(lpList)).thenReturn(lpDtoList);
 
 		List<LeavePeriodDto> result = leavePeriodService.getAllLeavePeriods();
 
@@ -100,25 +98,25 @@ class LeavePeriodServiceTest {
 
 	@Test
 	void shouldGetLeavePeriodByEmployeeId() {
-		when(leavePeriodRepository.findByUserEmployeeId(any(long.class))).thenReturn(lpList);
-		when(leavePeriodMapper.leavePeriodToLeavePeriodDto(any(LeavePeriod.class))).thenReturn(lpDtoList.get(1));
+		when(leavePeriodRepository.findByUserEmployeeId(any(long.class))).thenReturn(lpList.subList(1,2));
+		when(leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(lpList.subList(1,2))).thenReturn(lpDtoList.subList(1,2));
 
-		LeavePeriodDto result = leavePeriodService.getAllLeavePeriodsByEmployeeId(1).get(1);
+		List<LeavePeriodDto> result = leavePeriodService.getAllLeavePeriodsByEmployeeId(1);
 
-		assertThat(result).isNotNull();
-		assertEquals(lpDtoList.get(1), result);
+		assertThat(result).isNotEmpty();
+		assertEquals(lpDtoList.subList(1,2), result);
 	}
 
 	@Test
 	void shouldGetLeavePeriodWithBetweenInterval() {
 		when(leavePeriodRepository.getAllByUserTypeAndDates(any(UserType.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(lpList.subList(2,3));
-		when(leavePeriodMapper.leavePeriodToLeavePeriodDto(any(LeavePeriod.class))).thenReturn(lpDtoList.get(2));
+		when(leavePeriodMapper.listLeavePeriodToListLeavePeriodDto(lpList.subList(2,3))).thenReturn(lpDtoList.subList(2,3));
 
 		List<LeavePeriodDto> result = leavePeriodService.getBetween("ADMINISTRATIF",Mockito.mock(LocalDate.class), Mockito.mock(LocalDate.class));
 
-		assertThat(result).isNotNull();
+		assertThat(result).isNotEmpty();
 		assertEquals(lpDtoList.subList(2,3), result);
-		assertEquals(1, result.size());
+		assertEquals(lpDtoList.subList(2,3).size(), result.size());
 	}
 
 

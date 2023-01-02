@@ -1,5 +1,8 @@
 package fr.dawan.calendarproject.mapper;
 
+import java.util.List;
+import java.util.Set;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,8 +15,12 @@ public interface SkillMapper {
 
 
 	@Mapping(source = "users", target = "usersId")
-	SkillDto skillToAdvancedSkillDto(Skill skill);
+	SkillDto skillToSkillDto(Skill skill);
 
 	@Mapping(source = "usersId", target = "users")
-	Skill advancedSkillDtoToSkill(SkillDto advSkill);
+	Skill skillDtoToSkill(SkillDto advSkill);
+	
+	Set<Skill> skillDtoListToSkillSet(List<SkillDto> listSkillDto);
+	
+	List<SkillDto> skillSetToSkillDtoList(Set<Skill> skills);
 }

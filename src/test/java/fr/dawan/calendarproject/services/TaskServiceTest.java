@@ -2,8 +2,6 @@ package fr.dawan.calendarproject.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -76,7 +74,7 @@ class TaskServiceTest {
 		
 		location = new Location(5L, "Toulouse", "France", "rose", true, 1);
 		
-		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", new HashSet<Skill>(), 
+		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", new HashSet<Skill>(), 
 				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", LocalDate.parse("2022-10-01"), new HashSet<InterventionFollowed>() , 1);
 		
 		
@@ -93,7 +91,7 @@ class TaskServiceTest {
 				LocalDate.parse("2022-10-10"), 10, 0);
 		
 		
-		userDto = new UserDto(3L, 3L, 3L, "firstname", "lastname", 5L, "name@dawan.fr", "dffghthghzrazrfg", 
+		userDto = new UserDto(3L, 3L, 3L, "firstname", "lastname", 5L, "name@dawan.fr", 
 				"FORMATEUR", "DAWAN", "gdfsdfzaq.png", "2022-10-01", 1);
 		
 		

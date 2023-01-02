@@ -21,7 +21,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 	
 	Optional<Course> findByIdDg2(long idDg2);
 
-	Course findByTitleAndDuration(String title, String duration);
+	Course findByTitleAndDuration(String title, double d);
 
 	Page<Course> findAllByTitleContaining(String title, Pageable pageable);
 

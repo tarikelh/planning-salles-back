@@ -21,8 +21,8 @@ public interface BookingMapper {
 	
 	@Mapping(target="beginDate", source="dateStart")
 	@Mapping(target="endingDate", source="dateEnd")
-	@Mapping(target="room", ignore=true)
-	@Mapping(target="intervention", ignore=true)
+	@Mapping(target="room", source="roomId")
+	@Mapping(target="intervention", source="interventionId")
 	@Mapping(target="range", ignore=true)
 	Booking bookingDtoTobooking(BookingDto bookingDto);
 	

@@ -15,7 +15,7 @@ public class UserDto {
 	private long locationId;
 
 	private String email;
-
+	
 	private String type;
 	
 	private String company;
@@ -30,7 +30,7 @@ public class UserDto {
 	}
 
 	public UserDto(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, long locationId,
-			String email, String password, String type, String company, String imagePath, String endDate, int version) {
+			String email, String type, String company, String imagePath, String endDate, int version) {
 		super();
 		this.id = id;
 		this.idDg2 = idDg2;
@@ -145,5 +145,5 @@ public class UserDto {
 	public String getFullName() {
 		return getLastName() + " " + getFirstName();
 	}
-
+	
 }

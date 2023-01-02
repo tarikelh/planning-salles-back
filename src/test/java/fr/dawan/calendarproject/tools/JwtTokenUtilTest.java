@@ -28,7 +28,6 @@ class JwtTokenUtilTest {
 	private static String email1; // verify generate
 	private static String email2; // get with generate
 	private static String email3; // wrong
-	private static String token1;
 	private static String token2;
 	private static String token3;
 	

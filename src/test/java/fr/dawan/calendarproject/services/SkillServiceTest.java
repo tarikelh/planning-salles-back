@@ -22,8 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import fr.dawan.calendarproject.dto.AdvancedSkillDto;
 import fr.dawan.calendarproject.dto.CountDto;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.entities.Skill;
 import fr.dawan.calendarproject.entities.User;
 import fr.dawan.calendarproject.exceptions.EntityFormatException;
@@ -47,18 +47,26 @@ class SkillServiceTest {
 	@MockBean
 	private SkillMapper skillMapper;
 	
-	private List<Skill> sList = new ArrayList<Skill>();
-	private List<AdvancedSkillDto> sDtoList = new ArrayList<AdvancedSkillDto>();
+	private List<Skill> sList = new ArrayList<>();
+	private List<SkillDto> sDtoList = new ArrayList<>();
+	
+	
+	List<Long> userList = new ArrayList<Long>();
 	
 	@BeforeEach
 	public void beforeEach() {
+		
+		userList.add(10L);
+		userList.add(11L);
+		
 		sList.add(new Skill(1, "DevOps", null, 0));
 		sList.add(new Skill(2, "POO", null, 0));
 		sList.add(new Skill(3, "SQL", null, 0));
 		
-		sDtoList.add(new AdvancedSkillDto(1, "DevOps", 0, null));
-		sDtoList.add(new AdvancedSkillDto(2, "POO", 0, null));
-		sDtoList.add(new AdvancedSkillDto(3, "SQL", 0, null));
+		sDtoList.add(new SkillDto(1, "DevOps", null, 0));
+		sDtoList.add(new SkillDto(2, "POO", null, 0));
+		sDtoList.add(new SkillDto(3, "SQL", null, 0));
+		
 	}
 
 	@Test
@@ -69,10 +77,10 @@ class SkillServiceTest {
 	@Test
 	void shouldGetSkillsAndReturnDtos() {
 		when(skillRepository.findAll()).thenReturn(sList);
-		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class)))
+		when(skillMapper.skillToSkillDto(any(Skill.class)))
 			.thenReturn(sDtoList.get(0), sDtoList.get(1), sDtoList.get(2));
 		
-		List<AdvancedSkillDto> result = skillService.getAllSkills();
+		List<SkillDto> result = skillService.getAllSkills();
 		
 		assertThat(result).isNotNull();
 		assertEquals(sList.size(), result.size());
@@ -85,10 +93,10 @@ class SkillServiceTest {
 		Page<Skill> p1 = new PageImpl<Skill>(sList.subList(0, 2));
 
 		when(skillRepository.findAllByTitleContaining(any(String.class), any(Pageable.class))).thenReturn(p1);
-		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class)))
+		when(skillMapper.skillToSkillDto(any(Skill.class)))
 			.thenReturn(sDtoList.get(0), sDtoList.get(1));
 		
-		List<AdvancedSkillDto> result = skillService.getAllSkills(0, 2, "");
+		List<SkillDto> result = skillService.getAllSkills(0, 2, "");
 		
 		assertThat(result).isNotNull();
 		assertEquals(sList.subList(0, 2).size(), result.size());
@@ -100,10 +108,10 @@ class SkillServiceTest {
 
 		when(skillRepository.findAllByTitleContaining(any(String.class), any(Pageable.class)))
 			.thenReturn(unpagedSkills);
-		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class)))
+		when(skillMapper.skillToSkillDto(any(Skill.class)))
 			.thenReturn(sDtoList.get(0), sDtoList.get(1));
 		
-		List<AdvancedSkillDto> result = skillService.getAllSkills(0, 2, "");
+		List<SkillDto> result = skillService.getAllSkills(0, 2, "");
 		
 		assertThat(result).isNotNull();
 		assertEquals(sList.size(), result.size());
@@ -122,9 +130,9 @@ class SkillServiceTest {
 	@Test
 	void shouldGetSkillById() {
 		when(skillRepository.findById(any(long.class))).thenReturn(Optional.of(sList.get(1)));
-		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class))).thenReturn(sDtoList.get(1));
+		when(skillMapper.skillToSkillDto(any(Skill.class))).thenReturn(sDtoList.get(1));
 		
-		AdvancedSkillDto result = skillService.getById(2);
+		SkillDto result = skillService.getById(2);
 		
 		assertThat(result).isNotNull();
 		assertEquals(sDtoList.get(1), result);
@@ -134,23 +142,23 @@ class SkillServiceTest {
 	void shouldReturnNullWhenSkillIdIsUnknown() {
 		when(skillRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
-		AdvancedSkillDto result = skillService.getById(2222);
+		SkillDto result = skillService.getById(2222);
 
 		assertThat(result).isNull();
 	}
 
 	@Test
 	void shouldSaveNewSkill() {
-		AdvancedSkillDto toCreate = new AdvancedSkillDto(0, "Java Expert", 0, null);
+		SkillDto toCreate = new SkillDto(0, "Java Expert", null, 0);
 		Skill repoReturn = new Skill(3, "Java Expert", null, 0);
-		AdvancedSkillDto expected = new AdvancedSkillDto(3, "Java Expert", 0, null);
+		SkillDto expected = new SkillDto(0, "Java Expert", null, 0);
 
-		when(skillMapper.advancedSkillDtoToSkill(any(AdvancedSkillDto.class)))
+		when(skillMapper.skillDtoToSkill(any(SkillDto.class)))
 				.thenReturn(repoReturn);
 		when(skillRepository.saveAndFlush(any(Skill.class))).thenReturn(repoReturn);
-		when(skillMapper.skillToAdvancedSkillDto(any(Skill.class))).thenReturn(expected);
+		when(skillMapper.skillToSkillDto(any(Skill.class))).thenReturn(expected);
 
-		AdvancedSkillDto result = skillService.saveOrUpdate(toCreate);
+		SkillDto result = skillService.saveOrUpdate(toCreate);
 
 		assertThat(result).isNotNull();
 		assertEquals(expected, result);
@@ -158,22 +166,19 @@ class SkillServiceTest {
 	
 	@Test
 	void ShouldReturnNullWhenUpdateSkillWithWrongId() {
-		AdvancedSkillDto toUpdate = new AdvancedSkillDto(1000, "Java Expert", 0, null);
+		SkillDto toUpdate = new SkillDto(1000, "Java Expert", null, 0);
 
 		when(skillRepository.findById(any(long.class))).thenReturn(Optional.empty());
 
-		AdvancedSkillDto result = skillService.saveOrUpdate(toUpdate);
+		SkillDto result = skillService.saveOrUpdate(toUpdate);
 
 		assertThat(result).isNull();
 	}
 
 	@Test
 	void shouldReturnTrueWhenSkillIntegrityIsOkay() {
-		List<Long> userList = new ArrayList<Long>();
-		userList.add(10L);
-		userList.add(11L);
 		
-		AdvancedSkillDto badSkill = new AdvancedSkillDto(1000, "Java Expert", 0, userList);
+		SkillDto badSkill = new SkillDto(1000, "Java Expert", userList, 0);
 		
 		when(userRepository.findById(any(long.class)))
 			.thenReturn(Optional.of(Mockito.mock(User.class)));
@@ -185,11 +190,8 @@ class SkillServiceTest {
 
 	@Test
 	void shouldThrowErrorWhenSkillIntegrityIsBad() {
-		List<Long> userList = new ArrayList<Long>();
-		userList.add(10L);
-		userList.add(11L);
-		
-		AdvancedSkillDto badSkill = new AdvancedSkillDto(1000, "Java Expert", 0, userList);
+
+		SkillDto badSkill = new SkillDto(1000, "Java Expert", userList, 0);
 		
 		when(userRepository.findById(any(long.class))).thenReturn(Optional.empty());
 		

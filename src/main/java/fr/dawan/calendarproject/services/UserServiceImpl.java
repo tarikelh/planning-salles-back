@@ -43,8 +43,6 @@ import fr.dawan.calendarproject.mapper.UserMapper;
 import fr.dawan.calendarproject.repositories.LocationRepository;
 import fr.dawan.calendarproject.repositories.SkillRepository;
 import fr.dawan.calendarproject.repositories.UserRepository;
-import fr.dawan.calendarproject.tools.HashTools;
-import fr.dawan.calendarproject.tools.JwtTokenUtil;
 
 @Service
 @Transactional
@@ -64,9 +62,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
 
 	@Value("${vue.baseurl}")
 	private String vueUrl;
@@ -230,19 +225,6 @@ public class UserServiceImpl implements UserService {
 
 		u.setLocation(locationRepository.getOne(user.getLocationId()));
 
-		// Hash Password
-		try {
-			if (user.getId() == 0) {
-				u.setPassword(HashTools.hashSHA512(u.getPassword()));
-			} else {
-				User userInDB = userRepository.getOne(u.getId());
-				if (!userInDB.getPassword().equals(u.getPassword())) {
-					u.setPassword(HashTools.hashSHA512(u.getPassword()));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		u = userRepository.saveAndFlush(u);
 		return userMapper.userToAdvancedUserDto(u);
 	}
@@ -289,7 +271,7 @@ public class UserServiceImpl implements UserService {
 		if (u.getSkills() != null) {
 			for (SkillDto skill : u.getSkills()) {
 				if (!skillRepository.findByTitle(skill.getTitle()).isPresent()) {
-					String message = "Skill with id: " + skill + " does not exist.";
+					String message = "Skill with id: " + skill.getTitle() + " does not exist.";
 					errors.add(new APIError(302, instanceClass, "SkillNotFound", message, path));
 				}
 			}
@@ -417,17 +399,6 @@ public class UserServiceImpl implements UserService {
 
 				User user = userRepository.findByEmail(userImported.getEmail()).orElse(null);
 
-				if (userImported.getPassword() == null) {
-					if (userImported.getType() == UserType.ADMINISTRATIF) {
-						userImported.setPassword(
-								"23b70069ca9be765d92cd05afd7cf009a595732e3c8b477783672e1f0edb74ba01cff566a4fc1e8483da47f96dace545b5cf78540dc68630e06ffe97fc110619");
-
-					} else {
-						userImported.setPassword(
-								"1ccf2b75e2131f50f791b4589a9af59f4e69d9c2f6199f494a6207128f14d222d81f1db3b59cb94045ac1c71c4e008cfaffc9802e273cbe7d378eac0c1360e38");
-					}
-				}
-
 				if (user != null) {
 					if (userImported.getId() == 0)
 						userImported.setId(user.getId());
@@ -503,28 +474,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean resetPassword(ResetResponse reset) throws Exception {
-		String hashedPwd = HashTools.hashSHA512(reset.getPassword());
-		String email = jwtTokenUtil.getUsernameFromToken(reset.getToken());
-
-		User u = userRepository.findByEmail(email).orElse(null);
-		String currentPwd = "";
-
-		if (u != null)
-			currentPwd = HashTools.hashSHA512(u.getPassword());
-
-		if (u != null && !currentPwd.equals(hashedPwd)) {
-
-			u.setPassword(hashedPwd);
-			userRepository.saveAndFlush(u);
-
-			return true;
-		} else if (u != null && currentPwd.equals(hashedPwd)) {
-			// same password
-			return false;
-		} else {
-			// if user == null
-			return false;
-		}
+		
+		//TODO : regarder avec Mohamed pour la nouvelle implémentation
+		
+		return true;
 	}
 
 	private String userDG2CompanyToUserCompanyString(String company) {
@@ -592,7 +545,6 @@ public class UserServiceImpl implements UserService {
 				if (!userRepository.findByIdDg2(u.getIdDg2()).isPresent()) {
 					u.setLocation(lo);
 					u.setEmail("not-assigned-" + lo.getCity() + "@dawan.fr");
-					u.setPassword(HashTools.hashSHA512("NoTaSsIgNeDdAwAn!"));
 					u.setSkills(null);
 					u.setCompany(UserCompany.DAWAN);
 					u.setType(UserType.INTERV_NOT_ASSIGN);

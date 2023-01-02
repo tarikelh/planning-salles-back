@@ -54,7 +54,7 @@ class LoginControllerTest {
 
 	@BeforeEach
 	void beforeEach() throws Exception {
-		user = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 1, "dbalavoine@dawan.fr", "testPassword", "ADMINISTRATIF",
+		user = new AdvancedUserDto(1, 1, 1, "Daniel", "Balavoine", 1, "dbalavoine@dawan.fr", "ADMINISTRATIF",
 				"DAWAN", "", "2022-12-31", 0, null);
 
 		login = new LoginDto("dbalavoine@dawan.fr", "testPassword");

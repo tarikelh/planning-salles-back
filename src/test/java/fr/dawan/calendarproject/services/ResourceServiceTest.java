@@ -48,12 +48,11 @@ class ResourceServiceTest {
 
 	private List<Resource> rList = new ArrayList<Resource>();
 	private List<ResourceDto> rDtoList = new ArrayList<ResourceDto>();
-	private Optional<Resource> opResource = null;
 
 	@BeforeEach
 	void beforeEach() throws Exception {
 		
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1L, "Paris", "FR", "red", false, 0);
 		
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		
@@ -65,7 +64,6 @@ class ResourceServiceTest {
 		rDtoList.add(new ResourceDto(2, 0, 10, "Ecran", 1 ));
 		rDtoList.add(new ResourceDto(3, 0, 10, "Table", 1 ));
 
-		opResource = Optional.of(rList.get(0));
 	}
 
 	@Test
@@ -169,7 +167,7 @@ class ResourceServiceTest {
 	@Test
 	void testSaveNewResource() {
 
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1, "Paris", "FR", "red", false, 0);
 
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		
@@ -213,7 +211,7 @@ class ResourceServiceTest {
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	void shouldReturnFalseWhenResourceIsNotUniq() {
-		Location location = new Location(1, "Paris", "FR", "red", 1, 0);
+		Location location = new Location(1L, "Paris", "FR", "red", false, 0);
 		
 		Room room = new Room(1,1,"Room 1",25,true,0, location);
 		

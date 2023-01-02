@@ -58,6 +58,9 @@ class LocationControllerTest {
 	public void beforeEach() throws Exception {
 		when(tokenInterceptor.preHandle(any(), any(), any())).thenReturn(true);
 
+		locs.add(new LocationDto(1, 1, "Paris", "#40A497", "FR", false, 0));
+		locs.add(new LocationDto(2, 2, "Nantes", "#9859C6", "FR", false, 0));
+		locs.add(new LocationDto(3, 3, "Nogent-Le-Rotrou", "#59C674", "FR", false, 0));
 //		locs.add(new LocationDto(1, 1, "Paris", "#40A497", "FR", 0));
 //		locs.add(new LocationDto(2, 2, "Nantes", "#9859C6", "FR", 0));
 //		locs.add(new LocationDto(3, 3, "Nogent-Le-Rotrou", "#59C674", "FR", 0));
@@ -134,8 +137,8 @@ class LocationControllerTest {
 	@Test
 	void ShouldCreateNewLocation() throws Exception {
 
-		LocationDto newLoc = new LocationDto(0, 0, "Lyon", "#C33E42", "FR", 0);
-		LocationDto resMock = new LocationDto(4, 4, "Lyon", "#C33E42", "FR", 0);
+		LocationDto newLoc = new LocationDto(0, 0, "Lyon", "#C33E42", "FR", false, 0);
+		LocationDto resMock = new LocationDto(4, 4, "Lyon", "#C33E42", "FR", false, 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String newLocJson = objectMapper.writeValueAsString(newLoc);
@@ -152,7 +155,7 @@ class LocationControllerTest {
 	void shouldUpdateLocation() throws Exception {
 		LocationDto updatedLoc = new LocationDto(locs.get(0).getId(), locs.get(0).getIdDg2(), locs.get(0).getCity(), locs.get(0).getColor(),
 				locs.get(0).getCountryCode(),
-				locs.get(0).getVersion());
+				false, locs.get(0).getVersion());
 
 		updatedLoc.setColor("#AED35B");
 
@@ -171,7 +174,7 @@ class LocationControllerTest {
 	@Test
 	void shouldReturn404WhenUpdateWithWrongId() throws Exception {
 
-		LocationDto wrongIdLoc = new LocationDto(12, 12, "Nantes", "#9859C6", "FR", 0);
+		LocationDto wrongIdLoc = new LocationDto(12, 12, "Nantes", "#9859C6", "FR", false, 0);
 
 		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		String wrongIdLocJson = objectMapper.writeValueAsString(wrongIdLoc);

@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import fr.dawan.calendarproject.dto.AdvancedUserDto;
+import fr.dawan.calendarproject.dto.SkillDto;
 import fr.dawan.calendarproject.dto.UserDG2Dto;
 import fr.dawan.calendarproject.dto.UserDto;
 import fr.dawan.calendarproject.entities.Location;
@@ -54,45 +55,66 @@ class UserMapperTest {
 	private UserDto userDto = new UserDto();
 	private AdvancedUserDto advUserDto = new AdvancedUserDto();
 	private UserDG2Dto userDG2Dto = new UserDG2Dto();
-	private List<String> skillsString = new ArrayList<>();
-	private Set<Skill> skills = new HashSet<>();
+
 	private Set<User> usersSet = new HashSet<>();
 	private List<User> usersList = new ArrayList<>();
+	
+	private Set<Skill> skills = new HashSet<>();
 	private Skill skill = new Skill();
-	private Location location = new Location();
-	private Location location2 = new Location();
+	private Skill skill2 = new Skill();
+
+	private List<SkillDto> skillsDto = new ArrayList<>();
+	private SkillDto skillDto = new SkillDto();
+	private SkillDto skillDto2 = new SkillDto();
+	
 	private String stringSkills;
 
+	private Location location = new Location();
+	private Location location2 = new Location();
+	
+	
 	@BeforeEach
 	void before() {
-		skill = new Skill(2, "skill2", null, 1);
-		skillsString.add(skill.getTitle());
-		stringSkills = "PHP, MVC, .Net";
+		
+		skill = new Skill(1, "PHP", null, 0);
+		skill2 = new Skill(2, "MVC", null, 0);
+		
 		skills.add(skill);
+		skills.add(skill2);
+		
+		
+		skillDto = new SkillDto(1, "PHP", null, 0);
+		skillDto = new SkillDto(2, "MVC", null, 0);
+		skillsDto.add(skillDto);
+		skillsDto.add(skillDto2);
+		
+		
+		stringSkills = "PHP, MVC";
 
-		location = new Location(1, "paris", "#FFFFFF", "FR", 1);
-		location2 = new Location(4, "Lille", "#FFFFF1", "EN", 1);
+		location = new Location(1, "paris", "#FFFFFF", "FR", false, 1);
+		location2 = new Location(4, "Lille", "#FFFFF1", "EN", false, 1);
 		
 		LocalDate date = LocalDate.now();
 		
-		advUserDto = new AdvancedUserDto(1, 1, 1, "advfirstname", "advlastname", 1, "advname@dawan.fr",
-				"dsfghhrghzrazrfg",
-				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png","2022-12-31", 1, null);
+		advUserDto = new AdvancedUserDto(1L, 1L, 1L, "advfirstname", "advlastname", 1L, "advname@dawan.fr", 
+				"ADMINISTRATIF", "DAWAN", "gdfsdfzaq.png","2022-12-31", 1, skillsDto );
 
-		userDto = new UserDto(2, 2, 2, "dtofustname", "dtolastname", 4, "dtoname@dawan.fr",
-				"opfdvkzfpdv","COMMERCIAL",
+		userDto = new UserDto(2L, 2L, 2L, "dtofustname", "dtolastname", 4L, "dtoname@dawan.fr" ,"COMMERCIAL", 
 				"DAWAN", "zfzfzh.pngé","2022-12-31", 2);
+		
+
 
 		userDG2Dto = new UserDG2Dto(2,2, "dtofustname", "dtolastname", 
 				1, "dtoname@dawan.fr","COMMERCIAL",
 				"DAWAN",stringSkills,"2022-12-31",0);
 
-		user = new User(3, 3, 3, "firstname", "lastname", location, "name@dawan.fr", "dffghthghzrazrfg", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png",date, 1);
+		user = new User(3L, 3L, 3L, "firstname", "lastname", location, "name@dawan.fr", skills,
+				UserType.FORMATEUR, UserCompany.DAWAN, "gdfsdfzaq.png", date, null, 0);
 
-		user2 = new User(5, 5, 5, "firstname5", "lastname5", location2, "name5@dawan.fr", "qsdijdszjd", skills,
-				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png",date, 1);
-
+		user2 = new User(5L, 5L, 5L, "firstname5", "lastname5", location2, "name5@dawan.fr", skills,
+				UserType.FORMATEUR, UserCompany.DAWAN, "sfdijofez.png", date, null, 0);
+		
+		
 		usersSet.add(user);
 		usersSet.add(user2);
 		usersList.add(user);
@@ -104,20 +126,19 @@ class UserMapperTest {
 	@Test
 	void should_map_userToAdvancedUserDto() {
 		// mocking
-		//when(skillMapper.skillSetToStringList(any(Object.class))).thenReturn(skillsString);
+		when(skillMapper.skillSetToSkillDtoList(skills)).thenReturn(skillsDto);
 
 		// mapping
-		AdvancedUserDto mappedAdvancedUserDto = userMapper.userToAdvancedUserDto(user);
-
+		AdvancedUserDto mappedAdvancedUserDto = userMapper.userToAdvancedUserDto(user);	
+		
 		// assert
 		assertEquals(mappedAdvancedUserDto.getId(), user.getId());
 		assertEquals(mappedAdvancedUserDto.getFirstName(), user.getFirstName());
 		assertEquals(mappedAdvancedUserDto.getLastName(), user.getLastName());
-		assertEquals(mappedAdvancedUserDto.getFullName(), user.getFullname());
+		assertEquals(mappedAdvancedUserDto.getFullName(), user.getLastName() + " " + user.getFirstName());
 		assertEquals(mappedAdvancedUserDto.getLocationId(), user.getLocation().getId());
 		assertEquals(mappedAdvancedUserDto.getEmail(), user.getEmail());
-		assertEquals(mappedAdvancedUserDto.getPassword(), user.getPassword());
-		//assertEquals(mappedAdvancedUserDto.getSkills(), skillsString);
+		assertEquals(mappedAdvancedUserDto.getSkills(), skillsDto);
 		assertEquals(mappedAdvancedUserDto.getType(), user.getType().toString());
 		assertEquals(mappedAdvancedUserDto.getCompany(), user.getCompany().toString());
 		assertEquals(mappedAdvancedUserDto.getImagePath(), user.getImagePath());
@@ -128,11 +149,11 @@ class UserMapperTest {
 	void should_map_advancedUserDtoToUser() {
 		// mocking
 		when(locationRepository.getOne(any(Long.class))).thenReturn(location);
-		//when(skillMapper.listLongToSetSkills(any())).thenReturn(skills);
+		when(skillMapper.skillDtoListToSkillSet(skillsDto)).thenReturn(skills);
 
 		// mapping
 		User mappedUser = userMapper.advancedUserDtoToUser(advUserDto);
-
+	
 		// assert
 		assertEquals(mappedUser.getId(), advUserDto.getId());
 		assertEquals(mappedUser.getFirstName(), advUserDto.getFirstName());
@@ -140,11 +161,10 @@ class UserMapperTest {
 		assertEquals(mappedUser.getFullname(), advUserDto.getFullName());
 		assertEquals(mappedUser.getLocation().getId(), advUserDto.getLocationId());
 		assertEquals(mappedUser.getEmail(), advUserDto.getEmail());
-		assertEquals(mappedUser.getPassword(), advUserDto.getPassword());
 		assertEquals(mappedUser.getType().toString(), advUserDto.getType());
 		assertEquals(mappedUser.getCompany().toString(), advUserDto.getCompany());
 		assertEquals(mappedUser.getImagePath(), advUserDto.getImagePath());
-		//assertEquals(mappedUser.getSkills(), skills);
+		assertEquals(mappedUser.getSkills(), skills);
 		assertEquals(mappedUser.getVersion(), advUserDto.getVersion());
 	}
 
@@ -163,7 +183,6 @@ class UserMapperTest {
 		assertEquals(mappedUser.getFullname(), userDto.getFullName());
 		assertEquals(mappedUser.getLocation().getId(), userDto.getLocationId());
 		assertEquals(mappedUser.getEmail(), userDto.getEmail());
-		assertEquals(mappedUser.getPassword(), userDto.getPassword());
 		assertEquals(mappedUser.getType().toString(), userDto.getType());
 		assertEquals(mappedUser.getCompany().toString(), userDto.getCompany());
 		assertEquals(mappedUser.getImagePath(), userDto.getImagePath());
@@ -182,7 +201,6 @@ class UserMapperTest {
 		assertEquals(mappedUserDto.getFullName(), user.getFullname());
 		assertEquals(mappedUserDto.getLocationId(), user.getLocation().getId());
 		assertEquals(mappedUserDto.getEmail(), user.getEmail());
-		assertEquals(mappedUserDto.getPassword(), user.getPassword());
 		assertEquals(mappedUserDto.getType(), user.getType().toString());
 		assertEquals(mappedUserDto.getCompany(), user.getCompany().toString());
 		assertEquals(mappedUserDto.getImagePath(), user.getImagePath());
@@ -196,8 +214,7 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersSet.size());
-		assertThat(mappedUserSkillsIds.contains(user.getId())).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2.getId())).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user.getId(), user2.getId());
 	}
 
 	@Test
@@ -207,8 +224,7 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user, user2);
 	}
 
 	@Test
@@ -222,16 +238,11 @@ class UserMapperTest {
 
 		// assert
 		assertEquals(mappedUserSkillsIds.size(), usersList.size());
-		assertThat(mappedUserSkillsIds.contains(user)).isTrue();
-		assertThat(mappedUserSkillsIds.contains(user2)).isTrue();
+		assertThat(mappedUserSkillsIds).contains(user, user2);
 	}
 
 	@Test
 	void should_map_userDG2DtoToUser() {
-		// mocking
-		when(locationRepository.getOne(any(Long.class))).thenReturn(location);
-		//when(skillMapper.listLongToSetSkills(any())).thenReturn(skills);
-
 		// mapping
 		User mappedUser = userMapper.userDG2DtoToUser(userDG2Dto);
 
@@ -239,11 +250,9 @@ class UserMapperTest {
 		assertEquals(mappedUser.getIdDg2(), userDG2Dto.getEmployeeId());
 		assertEquals(mappedUser.getFirstName(), userDG2Dto.getFirstName());
 		assertEquals(mappedUser.getLastName(), userDG2Dto.getLastName());
-		// assertEquals(mappedUser.getLocation().getId(), userDG2Dto.getLocationId());
 		assertEquals(mappedUser.getEmail(), userDG2Dto.getEmail());
 		assertEquals(mappedUser.getType().toString(), userDG2Dto.getType());
 		assertEquals(mappedUser.getCompany().toString(), userDG2Dto.getCompany());
-		// assertEquals(mappedUser.getSkills(), skills);
 		assertEquals(mappedUser.getVersion(), userDG2Dto.getVersion());
 	}
 }

@@ -54,9 +54,6 @@ public class User {
 	@Column(unique = true, nullable = false, length = 255)
 	private String email;
 
-	@Column(nullable = false)
-	private String password;
-
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
 	private Set<Skill> skills = new HashSet<>();
@@ -86,7 +83,7 @@ public class User {
 	}
 
 	public User(long id, long idDg2, Long employeeIdDg2, String firstName, String lastName, Location location, String email,
-			String password, Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, 
+			Set<Skill> skills, UserType type, UserCompany company, String imagePath, LocalDate endDate, 
 			Set<InterventionFollowed> interventionsFollowed, int version) {
 		setId(id);
 		setIdDg2(idDg2);
@@ -95,7 +92,6 @@ public class User {
 		setLastName(lastName);
 		setLocation(location);
 		setEmail(email);
-		setPassword(password);
 		setSkills(skills);
 		setType(type);
 		setCompany(company);
@@ -201,14 +197,6 @@ public class User {
 		this.company = company;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -241,26 +229,6 @@ public class User {
 		this.interventionsFollowed = interventionsFollowed;
 	}
 
-	
-//	@Override
-//	public int hashCode() {
-//		return Objects.hash(company, email, lastName, location, skills, type);
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		User other = (User) obj;
-//		return company == other.company && Objects.equals(email, other.email)
-//				&& Objects.equals(lastName, other.lastName) && Objects.equals(location, other.location)
-//				&& Objects.equals(skills, other.skills) && type == other.type;
-//	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(company, email, lastName, location, skills, type);
@@ -283,19 +251,18 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", idDg2=" + idDg2 + ", employeeIdDg2=" + employeeIdDg2 + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", location=" + location + ", email=" + email + ", password=" + password
-				+ ", skills=" + skills + ", type=" + type + ", company=" + company + ", imagePath=" + imagePath
-				+ ", endDate=" + endDate + " , version=" + version
-				+ "]";
+				+ ", lastName=" + lastName + ", location=" + location + ", email=" + email + ", skills=" + skills
+				+ ", type=" + type + ", company=" + company + ", imagePath=" + imagePath + ", endDate=" + endDate
+				+ ", interventionsFollowed=" + interventionsFollowed + ", version=" + version + "]";
 	}
 
 	static public boolean emailIsValid(String email) {
-		Pattern emailRegex = Pattern.compile("^(.+)@(.+)$");
+		Pattern emailRegex = Pattern.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$");
 		final Matcher matcher = emailRegex.matcher(email);
 		return matcher.matches();
 	}
 
 	public String getFullname() {
-		return this.firstName + " " + this.lastName;
+		return this.lastName + " " + this.firstName;
 	}
 }

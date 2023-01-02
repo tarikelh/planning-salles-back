@@ -11,9 +11,9 @@ public class AdvancedUserDto extends UserDto {
 		this.skills = new ArrayList<>();
 	}
 
-	public AdvancedUserDto(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, long locationId, String email, String password,
+	public AdvancedUserDto(long id, long idDg2, long employeeIdDg2, String firstName, String lastName, long locationId, String email,
 			String type, String company, String imagePath, String endDate, int version, List<SkillDto> skills) {
-		super(id, idDg2, employeeIdDg2, firstName, lastName, locationId, email, password, type, company, imagePath, endDate, version);
+		super(id, idDg2, employeeIdDg2, firstName, lastName, locationId, email, type, company, imagePath, endDate, version);
 		setSkills(skills);
 	}
 
@@ -24,4 +24,5 @@ public class AdvancedUserDto extends UserDto {
 	public void setSkills(List<SkillDto> skills) {
 		this.skills = skills;
 	}
+	
 }

@@ -11,7 +11,7 @@ public class RoomDto {
 	
 	private long fullCapacity;
 	
-	private boolean IsAvailable;
+	private boolean isAvailable;
 	
 	private long locationId;
 	
@@ -26,7 +26,7 @@ public class RoomDto {
 		this.idDg2 = idDg2;
 		this.name = name;
 		this.fullCapacity = fullCapacity;
-		IsAvailable = isAvailable;
+		this.isAvailable = isAvailable;
 		this.locationId = locationId;
 		this.version = version;
 	}
@@ -67,16 +67,12 @@ public class RoomDto {
 		return fullCapacity / 2;
 	}
 
-	public boolean isAvailable() {
-		return IsAvailable;
-	}
-
-	public void setAvailable(boolean available) {
-		IsAvailable = available;
+	public boolean getIsAvailable() {
+		return isAvailable;
 	}
 
 	public void setIsAvailable(boolean isAvailable) {
-		IsAvailable = isAvailable;
+		this.isAvailable = isAvailable;
 	}
 
 	public long getLocationId() {
