@@ -85,9 +85,14 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public void deleteById(long id) {
-
-		bookingRepository.deleteById(id);
+	public boolean deleteById(long id) {
+		boolean result = true;
+		try {
+			bookingRepository.deleteById(id);
+		} catch (Exception e) {
+			result = false;
+		}
+		return result;
 	}
 
 	@Override

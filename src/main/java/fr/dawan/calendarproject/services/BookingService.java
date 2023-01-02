@@ -20,7 +20,7 @@ public interface BookingService {
 	
 	long count();
 	
-	void deleteById(long id);
+	boolean deleteById(long id);
 	
 	BookingDto saveOrUpdate(BookingDto bookingDto) throws Exception;
 	
