@@ -14,11 +14,12 @@ public class LocationDG2Dto {
 	public LocationDG2Dto() {
 	}
 
-	public LocationDG2Dto(long id, String name, boolean published, String country) {
+	public LocationDG2Dto(long id, String name, boolean published, String country, String colorCode) {
 		this.id = id;
 		this.name = name;
 		this.published = published;
 		this.country = country;
+		this.colorCode = colorCode;
 	}
 
 	public long getId() {

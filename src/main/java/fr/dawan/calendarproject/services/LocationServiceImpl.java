@@ -227,8 +227,6 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
-				locationImport.setPublished(lDG2.isPublished());
-				locationImport.setColor(lDG2.getColorCode());
 
 				Optional<Location> optLocation = locationRepository.findByIdDg2(locationImport.getIdDg2());
 
@@ -242,7 +240,6 @@ public class LocationServiceImpl implements LocationService {
 					}
 					locationRepository.saveAndFlush(locationImport);
 				} else {
-					// locationImport.setColor("#00CC99");
 					locationRepository.saveAndFlush(locationImport);
 				}
 			}
