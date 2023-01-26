@@ -9,6 +9,7 @@ public class LocationDG2Dto {
 	private String name;
 	private boolean published;
 	private String country;
+	private String colorCode;
 
 	public LocationDG2Dto() {
 	}
@@ -52,4 +53,11 @@ public class LocationDG2Dto {
 		this.country = country;
 	}
 
+	public String getColorCode() {
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
 }
