@@ -8,7 +8,6 @@ import fr.dawan.calendarproject.entities.SyncReport;
 
 public interface SyncService {
 	String allDG2Import(LoginDto loginDto) throws Exception;
-	String locationsDG2Import(LoginDto loginDto) throws Exception;
 
 	String saveSyncReport(SyncReport syncReport);
 

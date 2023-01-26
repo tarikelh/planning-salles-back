@@ -30,16 +30,4 @@ public class SyncController {
 		}
 		return result;
 	}
-
-	@PostMapping(produces = {"application/json", "text/plain"}, consumes = "application/json", path = "locations")
-	public ResponseEntity<String> SyncLocationsWithDG2(@RequestBody LoginDto loginDto) {
-		ResponseEntity<String> result;
-		try {
-			result = ResponseEntity.status(HttpStatus.OK)
-					.body(syncService.locationsDG2Import(loginDto));
-		} catch (Exception e) {
-			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-		}
-		return result;
-	}
 }

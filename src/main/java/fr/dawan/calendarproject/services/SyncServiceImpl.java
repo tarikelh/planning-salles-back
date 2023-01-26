@@ -139,53 +139,6 @@ public class SyncServiceImpl implements SyncService {
 	}
 
 	@Override
-	public String locationsDG2Import(LoginDto loginDto) throws Exception {
-		long startMilli = System.currentTimeMillis();
-
-		StringBuffer result = new StringBuffer();
-		List<String> errors = new ArrayList<>();
-		SyncReport syncReport = new SyncReport();
-
-		LocalDate dateNow = LocalDate.now();
-		LocalDate dateStart = dateNow.minusMonths(minusMonth).minusDays(dateNow.getDayOfMonth() - 1);
-		LocalDate dateEnd = dateNow.plusMonths(plusMonth).plusDays(
-				dateNow.plusMonths(plusMonth).lengthOfMonth() - dateNow.plusMonths(plusMonth).getDayOfMonth());
-
-		syncReport.setEnd(dateEnd);
-		syncReport.setStart(dateStart);
-		syncReport.setStartOfSync(LocalDateTime.now());
-
-		// try locations import
-		try {
-			locationService.fetchAllDG2Locations(loginDto.getEmail(), loginDto.getPassword());
-		} catch (Exception e) {
-			errors.add("Locations import fail !");
-		}
-
-		// end imports
-		syncReport.setDurationInMilli( System.currentTimeMillis() - startMilli);
-		syncReport.setEndOfSync(LocalDateTime.now());
-
-
-		if (errors.isEmpty()) {
-			result.append("Sync With DG2 pass between : ")
-					.append(dateStart.toString())
-					.append(" and ")
-					.append(dateEnd.toString());
-		} else {
-			syncReport.setFailed(true);
-			for (String error : errors) {
-				result.append(error);
-				result.append(" \n");
-			}
-			syncReport.setMessage(result.toString());
-			throw new Exception(saveSyncReport(syncReport));
-		}
-		syncReport.setMessage(result.toString());
-		return saveSyncReport(syncReport);
-	}
-
-	@Override
 	public String saveSyncReport(SyncReport syncReport) {
 		return syncRepository.saveAndFlush(syncReport).toString();
 	}
