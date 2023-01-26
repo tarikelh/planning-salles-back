@@ -9,15 +9,17 @@ public class LocationDG2Dto {
 	private String name;
 	private boolean published;
 	private String country;
+	private String colorCode;
 
 	public LocationDG2Dto() {
 	}
 
-	public LocationDG2Dto(long id, String name, boolean published, String country) {
+	public LocationDG2Dto(long id, String name, boolean published, String country, String colorCode) {
 		this.id = id;
 		this.name = name;
 		this.published = published;
 		this.country = country;
+		this.colorCode = colorCode;
 	}
 
 	public long getId() {
@@ -52,4 +54,11 @@ public class LocationDG2Dto {
 		this.country = country;
 	}
 
+	public String getColorCode() {
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
 }
