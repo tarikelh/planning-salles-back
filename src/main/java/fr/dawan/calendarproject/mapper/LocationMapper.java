@@ -17,7 +17,7 @@ public interface LocationMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "city", source = "name")
 	@Mapping(target = "countryCode", source = "country")
-	@Mapping(target = "color", ignore = true)
+	@Mapping(target = "color", source = "colorCode")
 	@Mapping(target = "idDg2", source = "id")
 	@Mapping(target = "version", ignore = true)
 	Location locationDG2DtoToLocation(LocationDG2Dto locationDG2Dto);

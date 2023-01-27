@@ -17,7 +17,7 @@ import fr.dawan.calendarproject.repositories.SyncRepository;
 
 @Service
 public class SyncServiceImpl implements SyncService {
-	
+
 	//TODO add comments
 
 	@Autowired
@@ -37,10 +37,10 @@ public class SyncServiceImpl implements SyncService {
 
 	@Autowired
 	InterventionFollowedService followedService;
-	
+
 	@Autowired
 	SyncRepository syncRepository;
-	
+
 	@Autowired
 	SyncReportMapper syncReportMapper;
 
@@ -59,7 +59,7 @@ public class SyncServiceImpl implements SyncService {
 	@Override
 	public String allDG2Import(LoginDto loginDto) throws Exception {
 		long startMilli = System.currentTimeMillis();
-		
+
 		StringBuffer result = new StringBuffer();
 		List<String> errors = new ArrayList<>();
 		SyncReport syncReport = new SyncReport();
@@ -72,7 +72,7 @@ public class SyncServiceImpl implements SyncService {
 		syncReport.setEnd(dateEnd);
 		syncReport.setStart(dateStart);
 		syncReport.setStartOfSync(LocalDateTime.now());
-		
+
 		// try courses import
 		try {
 			courseService.fetchAllDG2Courses(loginDto.getEmail(), loginDto.getPassword());
@@ -114,11 +114,11 @@ public class SyncServiceImpl implements SyncService {
 		} catch (Exception e) {
 			errors.add("InterventionsFollowed import fail !");
 		}
-		
+
 		// end imports
 		syncReport.setDurationInMilli( System.currentTimeMillis() - startMilli);
 		syncReport.setEndOfSync(LocalDateTime.now());
-		
+
 
 		if (errors.isEmpty()) {
 			result.append("Sync With DG2 pass between : ")
