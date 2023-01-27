@@ -48,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Fetches all of the existing locations.
-	 * 
+	 *
 	 * @return result Returns a list of locations.
 	 *
 	 */
@@ -66,13 +66,13 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Fetches all of the existing locations, with a pagination system.
-	 * 
+	 *
 	 * @param page   An integer representing the current page displaying the
 	 *               locations.
 	 * @param size   An integer defining the number of locations displayed by page.
 	 * @param search A String representing the admin's input to search for a
 	 *               specific location.
-	 * 
+	 *
 	 * @return result Returns a list of locations, according to the pagination
 	 *         criteria.
 	 *
@@ -99,10 +99,10 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Counts the number of locations.
-	 * 
+	 *
 	 * @param search A String representing the admin's input to search for a
 	 *               specific location.
-	 * 
+	 *
 	 * @return CountDto Returns the number of locations, according to the search
 	 *         criteria.
 	 *
@@ -115,9 +115,9 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Fetches a single location, according to their id.
-	 * 
+	 *
 	 * @param id An unique Integer used to identify each location.
-	 * 
+	 *
 	 * @return LocationDto Returns a single location.
 	 *
 	 */
@@ -132,7 +132,7 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Delete a single location, according to their id.
-	 * 
+	 *
 	 * @param id An unique Integer used to identify each location.
 	 *
 	 */
@@ -144,9 +144,9 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Adds a new location or updates an existing one.
-	 * 
+	 *
 	 * @param locationDto An object representing an Location.
-	 * 
+	 *
 	 * @return LocationDto Returns the newly created user or an updated one.
 	 *
 	 */
@@ -165,9 +165,9 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Checks whether a newly registered location is valid.
-	 * 
+	 *
 	 * @param l An object representing an Location.
-	 * 
+	 *
 	 * @return boolean Returns a boolean to say whether or not the location is
 	 *         correct.
 	 *
@@ -198,10 +198,10 @@ public class LocationServiceImpl implements LocationService {
 
 	/**
 	 * Fetches all locations in the Dawan API.
-	 * 
+	 *
 	 * @param email A String defining a user's email.
 	 * @param pwd   A String defining a user's password.
-	 * 
+	 *
 	 * @exception Exception Returns an exception if the request fails.
 	 *
 	 */
@@ -227,8 +227,7 @@ public class LocationServiceImpl implements LocationService {
 
 			for (LocationDG2Dto lDG2 : lResJson) {
 				Location locationImport = locationMapper.locationDG2DtoToLocation(lDG2);
-				locationImport.setPublished(lDG2.isPublished());
-				
+
 				Optional<Location> optLocation = locationRepository.findByIdDg2(locationImport.getIdDg2());
 
 				if (optLocation.isPresent()) {
@@ -241,7 +240,6 @@ public class LocationServiceImpl implements LocationService {
 					}
 					locationRepository.saveAndFlush(locationImport);
 				} else {
-					locationImport.setColor("#00CC99");
 					locationRepository.saveAndFlush(locationImport);
 				}
 			}
