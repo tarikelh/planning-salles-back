@@ -1,0 +1,59 @@
+image: maven:3-jdk-8
+
+variables:
+  MAVEN_OPTS: >
+    -Dmaven.test.skip=true
+    -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+  ARCHIVE_NAME: planning-jar
+  BUILD_NAME: planning-java
+  BUILD_OUTPUT: target/planning-java.jar
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - runner-java
+  script: 
+    - mvn $MAVEN_OPTS clean package
+    - mv $BUILD_OUTPUT .
+    - tar cfJ "$ARCHIVE_NAME.tar.xz" "$BUILD_NAME.jar"
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - "$ARCHIVE_NAME.tar.xz"
+
+.test:
+  stage: test
+  tags:
+    - runner-java
+  script:
+    - mvn -Dmaven.test.skip=false verify
+  artifacts:
+    expire_in: 1 hour
+
+archive:
+  image: lgatica/openssh-client
+  stage: deploy
+  tags:
+    - runner-java
+  script:
+    - echo "$ARCHIVE_PKEY" > archive_pkey
+    - chmod 400 archive_pkey
+    - chmod 700 .
+    - >
+      echo
+      "put -rp $ARCHIVE_PATH/$ARCHIVE_NAME.tar.xz $ARCHIVE_NAME.tar.xz"
+      > archive_batch
+    - >
+      sftp
+      -i archive_pkey
+      -o UserKnownHostsFile=/dev/null
+      -o StrictHostKeyChecking=no
+      -b archive_batch
+      $ARCHIVE_USER@$ARCHIVE_HOST
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
