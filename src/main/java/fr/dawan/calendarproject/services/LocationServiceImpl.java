@@ -237,6 +237,7 @@ public class LocationServiceImpl implements LocationService {
 						locationImport.setVersion(optLocation.get().getVersion());
 						locationImport.setId(optLocation.get().getId());
 						locationImport.setColor(optLocation.get().getColor());
+						locationImport.setDepartmentCode(optLocation.get().getDepartmentCode());
 					}
 					locationRepository.saveAndFlush(locationImport);
 				} else {

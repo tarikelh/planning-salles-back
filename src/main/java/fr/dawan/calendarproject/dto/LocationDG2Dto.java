@@ -10,16 +10,26 @@ public class LocationDG2Dto {
 	private boolean published;
 	private String country;
 	private String colorCode;
+	private String departmentCode;
+
+	public String getDepartmentCode() {
+		return departmentCode;
+	}
+
+	public void setDepartmentCode(String departmentCode) {
+		this.departmentCode = departmentCode;
+	}
 
 	public LocationDG2Dto() {
 	}
 
-	public LocationDG2Dto(long id, String name, boolean published, String country, String colorCode) {
+	public LocationDG2Dto(long id, String name, boolean published, String country, String colorCode, String departmentCode) {
 		this.id = id;
 		this.name = name;
 		this.published = published;
 		this.country = country;
 		this.colorCode = colorCode;
+		this.departmentCode = departmentCode;
 	}
 
 	public long getId() {

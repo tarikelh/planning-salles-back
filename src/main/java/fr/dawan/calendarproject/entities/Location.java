@@ -2,18 +2,20 @@ package fr.dawan.calendarproject.entities;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) 
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Location {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +26,7 @@ public class Location {
 
 	@Column(nullable = false, length = 255, unique = true)
 	private String city;
-	
+
 	@Column(nullable = false, length = 4)
 	private String countryCode;
 
@@ -33,19 +35,31 @@ public class Location {
 
 	private boolean published;
 	
+	private String departmentCode;
+	
+	public String getDepartmentCode() {
+		return departmentCode;
+	}
+
+	public void setDepartmentCode(String departmentCode) {
+		this.departmentCode = departmentCode;
+	}
+
+		
 	@Version
 	private int version;
 
 	public Location() {
 	}
 
-	public Location(long id, String city, String contryCode, String color, boolean published,  int version) {
+	public Location(long id, String city, String contryCode, String color, boolean published, int version) {
 		setId(id);
 		setCity(city);
 		setCountryCode(contryCode);
 		setColor(color);
 		setPublished(published);
 		setVersion(version);
+
 	}
 
 //	public Location(long id, String city, String contryCode, String color, long idDg2, int version) {
@@ -112,7 +126,7 @@ public class Location {
 	public void setIdDg2(long idDg2) {
 		this.idDg2 = idDg2;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Location [id=" + getId() + ", city=" + getCity() + ", color=" + getColor() + "]";
@@ -136,6 +150,5 @@ public class Location {
 				&& Objects.equals(countryCode, other.countryCode) && idDg2 == other.idDg2
 				&& published == other.published && version == other.version;
 	}
-
 
 }
